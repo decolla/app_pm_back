@@ -1,44 +1,79 @@
+using app_pm_back.Models;
+using app_pm_back.Services;
+using Microsoft.AspNetCore.Diagnostics;
+using MongoDB.Driver;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+builder.Services.AddCors(option => option.AddPolicy("AllowAngularApp", policy =>
+{
+    policy.WithOrigins("http://localhost:4200", "http://localhost");
+    policy.AllowAnyMethod();
+    policy.AllowAnyHeader();
+}));
+string connectionString = builder.Configuration.GetSection("MongoDb").GetSection("ConnectionString").Value;
+Console.WriteLine(connectionString);
+string databaseName = "app_pm_back";
+string collectionName = "pm_data";
+
+builder.Services.AddSingleton<IMongoClient>(new MongoClient(connectionString));
+builder.Services.AddScoped<IMongoDatabase>(sp =>
+    sp.GetRequiredService<IMongoClient>().GetDatabase(databaseName));
+builder.Services.AddScoped<IMongoCollection<NotaModel>>(sp =>
+    sp.GetRequiredService<IMongoDatabase>().GetCollection<NotaModel>(collectionName));
+builder.Services.AddScoped<NotasService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// captura erros
+app.UseExceptionHandler(errorApp =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+
+        var error = context.Features.Get<IExceptionHandlerFeature>();
+        if (error != null)
+        {
+            await context.Response.WriteAsJsonAsync(new
+            {
+                message = "Ocorreu um erro inesperado.",
+                detail = error.Error.Message
+            });
+        }
+    });
+});
+
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+// permite que o angular realize 
+app.UseCors("AllowAngularApp");
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+// endpoint essencial para o cadastro de ativos
+app.MapPost("/notas", async (NotaModel novaNota, app_pm_back.Services.NotasService service) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    var nota = await service.CreateNotaAsync(novaNota);
 
-app.MapGet("/weatherforecast", () =>
+    if (nota == null)
     {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
+        return Results.BadRequest(new { message = "Erro ao criar o ativo." });
+    }
+    else
+    {
+        return Results.Created($"/notas/{nota}", nota);
+    }
+});
+
+app.MapControllers();
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+
