@@ -19,4 +19,13 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="app_pm_back\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\appsettings.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\obj\app_pm_back.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\Properties\launchSettings.json" />
+    </ItemGroup>
+
 </Project>

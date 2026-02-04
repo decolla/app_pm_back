@@ -72,8 +72,74 @@ app.MapPost("/notas", async (NotaModel novaNota, app_pm_back.Services.NotasServi
     }
 });
 
+app.MapGet("/notas", async (app_pm_back.Services.NotasService service) =>
+{
+    try
+    {
+        var notas = await service.GetAllNotasAsync();
+        return Results.Ok(notas);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"Erro ao procurar notas: {e.Message}");
+        throw;
+    }
+});
+
+app.MapGet("/notas/search", async (string id ,app_pm_back.Services.NotasService service) =>
+{
+    try
+    {
+        var nota = await service.GetNotaByIdAsync(id);
+        return Results.Ok(nota);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"Erro ao procurar notas: {e.Message}");
+        throw;
+    }
+});
+
+app.MapGet("/notas/count", async (app_pm_back.Services.NotasService service) =>
+{
+    try
+    {
+        var notas = await service.CountNotasAsync();
+        return Results.Ok(new { count = notas });
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine($"Erro ao procurar notas: {e.Message}");
+        throw;
+    }
+});
+
+app.MapPut("/notas", async (NotaModel nota, app_pm_back.Services.NotasService service) =>
+{
+    try
+    {
+        var result = await service.UpdateNotaAsync(nota);
+        return Results.Ok(new { message = "Nota atualizada com sucesso: " + result.IdMongo });
+    }
+    catch (Exception e){
+        Console.WriteLine($"Erro ao atualizar nota: {e.Message}");
+        return Results.BadRequest(new { message = "Erro ao atualizar nota." });
+    }
+});
+
+app.MapDelete("/notas", async (string id, app_pm_back.Services.NotasService service) =>
+{
+    try
+    {
+        var result = await service.DeleteNotaAsync(id);
+        return Results.Ok(new { message = "Nota deletada com sucesso: " + result.DeletedCount });
+    }
+    catch (Exception e){
+        Console.WriteLine($"Erro ao deletar nota: {e.Message}");
+        return Results.BadRequest(new { message = "Erro ao deletar nota." });
+    }
+});
+
 app.MapControllers();
 
 app.Run();
-
-
