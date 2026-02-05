@@ -1,7 +1,0 @@
-﻿services:
-  app_pm_back:
-    image: app_pm_back
-    build:
-      context: .
-      dockerfile: app_pm_back/Dockerfile
-
