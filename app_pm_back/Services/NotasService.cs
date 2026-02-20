@@ -34,6 +34,15 @@ public class NotasService
     {
         return await _notas.Find(n => true).ToListAsync();
     }
+    
+    // retorna uma página de notas
+    public async Task<List<NotaModel>> GetNotasPaginadasAsync(int pagina, int tamanho)
+    {
+        return await _notas.Find(n => true)
+            .Skip((pagina - 1) * tamanho)
+            .Limit(tamanho)
+            .ToListAsync();
+    }
 
     // retorna uma nota pelo id
     public async Task<NotaModel> GetNotaByIdAsync(string id)

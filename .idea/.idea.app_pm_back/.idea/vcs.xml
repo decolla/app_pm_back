@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/../PythonBot" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../RN_Graph_App_V2/RN_Graph_App" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../app_apm_back" vcs="Git" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../decolla.github.io" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../microservice_alarms" vcs="Git" />
   </component>
 </project>

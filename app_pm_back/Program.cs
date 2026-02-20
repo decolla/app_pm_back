@@ -1,5 +1,6 @@
 using app_pm_back.Models;
 using app_pm_back.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Diagnostics;
 using MongoDB.Driver;
 
@@ -7,7 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
 builder.Services.AddCors(option => option.AddPolicy("AllowAngularApp", policy =>
 {
     policy.WithOrigins("http://localhost:4200", "http://localhost");
@@ -26,6 +26,8 @@ builder.Services.AddScoped<NotasService>();
 builder.Services.AddScoped<IMongoCollection<OrdemModel>>(sp =>
     sp.GetRequiredService<IMongoDatabase>().GetCollection<OrdemModel>("ordens"));
 builder.Services.AddScoped<OrdemService>();
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
@@ -59,12 +61,16 @@ app.UseCors("AllowAngularApp");
 app.UseHttpsRedirection();
 
 // endpoint para o cadastro de notas
-app.MapPost("app/notas", async (NotaModel novaNota, app_pm_back.Services.NotasService service) =>
+app.MapPost("app/notas", async (CreateNotaDto dto, IMapper mapper, app_pm_back.Services.NotasService service) =>
 {
     try
     {
-        var nota = await service.CreateNotaAsync(novaNota);
-        return Results.Created($"app/notas/{nota._id}", nota);
+        // transforma o dto em notaModel
+        var novaNota = mapper.Map<NotaModel>(dto);
+        novaNota.DadosGerais.Status = "ABERTA"; 
+
+        var notaCriada = await service.CreateNotaAsync(novaNota);
+        return Results.Created($"app/notas/{notaCriada._id}", notaCriada);
     }
     catch (Exception e)
     {
@@ -73,17 +79,24 @@ app.MapPost("app/notas", async (NotaModel novaNota, app_pm_back.Services.NotasSe
 });
 
 // endpoint que retorna uma lista todas as notas
-app.MapGet("app/notas", async (app_pm_back.Services.NotasService service) =>
+app.MapGet("app/notas", async (int? pagina, int? tamanho, NotasService service) =>
 {
     try
     {
-        var notas = await service.GetAllNotasAsync()!;
-        return Results.Ok(notas);
+        if (pagina.HasValue || tamanho.HasValue)
+        {
+            int p = pagina ?? 1;
+            int t = tamanho ?? 20;
+            var notasPaginadas = await service.GetNotasPaginadasAsync(p, t);
+            return Results.Ok(notasPaginadas);
+        }
+
+        var todasNotas = await service.GetAllNotasAsync();
+        return Results.Ok(todasNotas);
     }
     catch (Exception e)
     {
-        Console.WriteLine($"Erro ao procurar notas: {e.Message}");
-        return Results.NotFound(new { message = "Erro ao procurar notas." });
+        return Results.BadRequest(new { message = "Erro ao processar notas." });
     }
 });
 
@@ -169,17 +182,24 @@ app.MapPost("app/ordem", async (OrdemModel ordemNova, app_pm_back.Services.Ordem
 });
 
 // endpoint que retorna uma lista todas as ordens
-app.MapGet("app/ordem", async (app_pm_back.Services.OrdemService service) =>
+app.MapGet("app/orden", async (int? pagina, int? tamanho, OrdemService service) =>
 {
     try
     {
-        var ordens = await service.GetAllOrdensAsync();
-        return Results.Ok(ordens);
+        if (pagina.HasValue || tamanho.HasValue)
+        {
+            int p = pagina ?? 1;
+            int t = tamanho ?? 20;
+            var notasPaginadas = await service.GetOrdensPaginadasAsync(p, t);
+            return Results.Ok(notasPaginadas);
+        }
+
+        var todasNotas = await service.GetAllOrdensAsync();
+        return Results.Ok(todasNotas);
     }
     catch (Exception e)
     {
-        Console.WriteLine($"Erro ao procurar ordens: {e.Message}");
-        return Results.NotFound(new { message = "Erro ao procurar ordens." });
+        return Results.BadRequest(new { message = "Erro ao processar notas." });
     }
 });
 
@@ -245,6 +265,5 @@ app.MapDelete("app/ordem/{id}", async (string id, app_pm_back.Services.OrdemServ
     }
 });
 
-app.MapControllers();
 
 app.Run();

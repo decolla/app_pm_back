@@ -10,6 +10,8 @@ public class NotaModel
     public string _id { get; set; } // Id gerado pelo mongo
 
     public string IdOrdem { get; set; }
+    
+    public string? NroOrdem { get; set; } // número da ordem 
 
     public DadosGerais DadosGerais { get; set; } // dados gerais da nota 
 
@@ -22,8 +24,7 @@ public class NotaModel
 
     public Observacoes Observacoes { get; set; } // Observações da nota pelo autor
 
-    public CheckList
-        CheckList { get; set; } // checklist do equipamento, pode marcar os campos se eles se aplicam ou não
+    public CheckList CheckList { get; set; } // checklist do equipamento, pode marcar os campos se eles se aplicam ou não
 
     public string Disponibilidade { get; set; } // O equipamento está disponível
     public DateTime DataAvaria { get; set; } // Data e hora de avaria do equipamento (pode ser nulo)
@@ -47,7 +48,6 @@ public class DadosGerais
 
     public string? Status { get; set; } // status da nota para ordem (autopreencher)
     public string? Titulo { get; set; } // título da nota para ordem
-    public string? NroOrdem { get; set; } // número da ordem 
 }
 
 public class CaracteristicasGerais

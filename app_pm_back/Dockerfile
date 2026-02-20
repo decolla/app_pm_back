@@ -1,5 +1,4 @@
-﻿# Estágio 1: Build da aplicação
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 COPY ["app_apm_back.csproj", "./"]

@@ -42,7 +42,7 @@ public class OrdemService
 
         nota.IdOrdem = ordem._id;
         nota.DadosGerais.Status = "ORDEM_GERADA";
-        nota.DadosGerais.NroOrdem = ordem._id;
+        nota.NroOrdem = ordem._id;
 
         await _notas.ReplaceOneAsync(n => n._id == nota._id, nota);
 
@@ -68,6 +68,15 @@ public class OrdemService
     public async Task<List<OrdemModel>> GetAllOrdensAsync()
     {
         return await _ordens.Find(n => true).ToListAsync();
+    }
+    
+    // retorna uma página de ordens
+    public async Task<List<OrdemModel>> GetOrdensPaginadasAsync(int pagina, int tamanho)
+    {
+        return await _ordens.Find(n => true)
+            .Skip((pagina - 1) * tamanho)
+            .Limit(tamanho)
+            .ToListAsync();
     }
 
     // retorna uma ordem pelo id
