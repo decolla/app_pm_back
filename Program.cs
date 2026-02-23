@@ -62,7 +62,7 @@ app.UseCors("AllowAngularApp");
 // app.UseHttpsRedirection();
 
 // endpoint para o cadastro de notas
-app.MapPost("app/notas", async (CreateNotaDto dto, IMapper mapper, NotasService service) =>
+app.MapPost("notas", async (CreateNotaDto dto, IMapper mapper, NotasService service) =>
 {
     try
     {
@@ -71,7 +71,7 @@ app.MapPost("app/notas", async (CreateNotaDto dto, IMapper mapper, NotasService 
         novaNota.DadosGerais.Status = "ABERTA";
 
         var notaCriada = await service.CreateNotaAsync(novaNota);
-        return Results.Created($"app/notas/{notaCriada.Id}", notaCriada);
+        return Results.Created($"notas/{notaCriada.Id}", notaCriada);
     }
     catch (Exception e)
     {
@@ -80,7 +80,7 @@ app.MapPost("app/notas", async (CreateNotaDto dto, IMapper mapper, NotasService 
 });
 
 // endpoint que retorna uma lista todas as notas
-app.MapGet("app/notas", async (int? pagina, int? tamanho, NotasService service) =>
+app.MapGet("notas", async (int? pagina, int? tamanho, NotasService service) =>
 {
     try
     {
@@ -102,7 +102,7 @@ app.MapGet("app/notas", async (int? pagina, int? tamanho, NotasService service) 
 });
 
 // endpoint para buscar uma nota por Id
-app.MapGet("app/notas/{id}", async (string id, NotasService service) =>
+app.MapGet("notas/{id}", async (string id, NotasService service) =>
 {
     try
     {
@@ -120,7 +120,7 @@ app.MapGet("app/notas/{id}", async (string id, NotasService service) =>
 });
 
 // endpoint para retornar a quantidade de notas no banco
-app.MapGet("app/notas/count", async (NotasService service) =>
+app.MapGet("notas/count", async (NotasService service) =>
 {
     try
     {
@@ -135,7 +135,7 @@ app.MapGet("app/notas/count", async (NotasService service) =>
 });
 
 // endpoint para atualizar uma nota
-app.MapPut("app/notas", async (NotaModel nota, NotasService service) =>
+app.MapPut("notas", async (NotaModel nota, NotasService service) =>
 {
     try
     {
@@ -150,7 +150,7 @@ app.MapPut("app/notas", async (NotaModel nota, NotasService service) =>
 });
 
 // endpoint para deletar uma nota por Id
-app.MapDelete("app/notas/{id}", async (string id, NotasService service) =>
+app.MapDelete("notas/{id}", async (string id, NotasService service) =>
 {
     try
     {
@@ -168,12 +168,12 @@ app.MapDelete("app/notas/{id}", async (string id, NotasService service) =>
 
 
 // endpoint essencial para o cadastro de ordens
-app.MapPost("app/ordem", async (OrdemModel ordemNova, OrdemService service, IMapper mapper) =>
+app.MapPost("ordem", async (OrdemModel ordemNova, OrdemService service, IMapper mapper) =>
 {
     try
     {
         var ordem = await service.CreateOrdemAsync(ordemNova);
-        return Results.Created($"app/ordem/{ordem.Id}", ordem);
+        return Results.Created($"ordem/{ordem.Id}", ordem);
     }
     catch (Exception e)
     {
@@ -183,7 +183,7 @@ app.MapPost("app/ordem", async (OrdemModel ordemNova, OrdemService service, IMap
 });
 
 // endpoint que retorna uma lista todas as ordens
-app.MapGet("app/ordem", async (int? pagina, int? tamanho, OrdemService service) =>
+app.MapGet("ordem", async (int? pagina, int? tamanho, OrdemService service) =>
 {
     try
     {
@@ -205,7 +205,7 @@ app.MapGet("app/ordem", async (int? pagina, int? tamanho, OrdemService service) 
 });
 
 // endpoint para buscar uma ordem por Id
-app.MapGet("app/ordem/{id}", async (string id, OrdemService service) =>
+app.MapGet("ordem/{id}", async (string id, OrdemService service) =>
 {
     try
     {
@@ -223,7 +223,7 @@ app.MapGet("app/ordem/{id}", async (string id, OrdemService service) =>
 });
 
 // endpoint para retornar a quantidade de ordens no banco
-app.MapGet("app/ordem/count", async (OrdemService service) =>
+app.MapGet("ordem/count", async (OrdemService service) =>
 {
     try
     {
@@ -238,7 +238,7 @@ app.MapGet("app/ordem/count", async (OrdemService service) =>
 });
 
 // endpoint para atualizar uma ordem
-app.MapPut("app/ordem", async (OrdemModel ordem, OrdemService service) =>
+app.MapPut("ordem", async (OrdemModel ordem, OrdemService service) =>
 {
     try
     {
@@ -253,7 +253,7 @@ app.MapPut("app/ordem", async (OrdemModel ordem, OrdemService service) =>
 });
 
 // endpoint para deletar uma ordem por Id
-app.MapDelete("app/ordem/{id}", async (string id, OrdemService service) =>
+app.MapDelete("ordem/{id}", async (string id, OrdemService service) =>
 {
     try
     {
