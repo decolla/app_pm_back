@@ -15,12 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
       <_ContentIncludedByDefault Remove="app_pm_back\appsettings.Development.json" />
       <_ContentIncludedByDefault Remove="app_pm_back\appsettings.json" />
       <_ContentIncludedByDefault Remove="app_pm_back\obj\app_pm_back.csproj.nuget.dgspec.json" />
