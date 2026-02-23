@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.23" />
         <PackageReference Include="MongoDB.Driver" Version="3.6.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
@@ -17,6 +18,15 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="app_pm_back\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\appsettings.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\obj\app_pm_back.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\Properties\launchSettings.json" />
     </ItemGroup>
 
 </Project>

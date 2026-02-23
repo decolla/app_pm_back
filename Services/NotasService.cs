@@ -6,79 +6,59 @@ namespace app_pm_back.Services;
 public class NotasService
 {
     private readonly IMongoCollection<NotaModel> _notas;
-    private readonly IMongoCollection<OrdemModel> _ordens;
 
-    public NotasService(IMongoCollection<NotaModel> notas, IMongoCollection<OrdemModel> ordens)
+    // injeção no banco
+    public NotasService(IMongoCollection<NotaModel> notas)
     {
         _notas = notas;
-        _ordens = ordens;
-    }
-    
-    public async Task<NotaModel> CreateNotaAsync(NotaModel nota){
-        try
-        {
-            await _notas.InsertOneAsync(nota);
-            return nota;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"Erro ao criar nota: {e.Message}");
-            return null;
-        }
     }
 
+    // ================================= NOTAS =====================================
+
+    // cria uma nota e insere
+    public async Task<NotaModel> CreateNotaAsync(NotaModel nota)
+    {
+        await _notas.InsertOneAsync(nota);
+        return nota;
+    }
+
+    // atualiza uma nota
     public async Task<NotaModel> UpdateNotaAsync(NotaModel nota)
     {
-        try
-        {
-            await _notas.ReplaceOneAsync( n => n.IdMongo == nota.IdMongo, nota);
-            return nota;
-        }catch(Exception e ){
-            Console.WriteLine($"Erro ao atualizar nota: {e.Message}");
-            return null;
-        }
+        await _notas.ReplaceOneAsync(n => n.Id == nota.Id, nota);
+        return nota;
     }
-    
-    public async Task<List<NotaModel>> GetAllNotasAsync(){
+
+    // retorna todas as notas
+    public async Task<List<NotaModel>>? GetAllNotasAsync()
+    {
         return await _notas.Find(n => true).ToListAsync();
     }
     
-    public async Task<NotaModel> GetNotaByIdAsync(string id){
-        return await _notas.Find(n => n.IdMongo == id).FirstOrDefaultAsync();
+    // retorna uma página de notas
+    public async Task<List<NotaModel>> GetNotasPaginadasAsync(int pagina, int tamanho)
+    {
+        return await _notas.Find(n => true)
+            .Skip((pagina - 1) * tamanho)
+            .Limit(tamanho)
+            .ToListAsync();
     }
-    
-    public async Task<DeleteResult> DeleteNotaAsync(string id){
-        return await _notas.DeleteOneAsync(n => n.IdMongo == id);
+
+    // retorna uma nota pelo id
+    public async Task<NotaModel> GetNotaByIdAsync(string id)
+    {
+        return await _notas.Find(n => n.Id == id).FirstOrDefaultAsync();
     }
-    
-    public async Task<long> CountNotasAsync(){
+
+    // deleta uma nota
+    public async Task<DeleteResult> DeleteNotaAsync(string id)
+    {
+        return await _notas.DeleteOneAsync(n => n.Id == id);
+    }
+
+    // retorna a quantidade de notas no banco
+    public async Task<long> CountNotasAsync()
+    {
         return await _notas.CountDocumentsAsync(n => true);
     }
-
-    public async Task<OrdemModel> CreateOrdemAsync(OrdemModel ordem)
-    {
-        try
-        {
-            var nota = await _notas.Find(n => n.IdMongo == ordem.IdNota).FirstOrDefaultAsync();
-
-            if (nota == null)
-            {
-                throw new FileNotFoundException("Não foi possível encontrar a nota com este id para a ordem");
-            };
-            
-            ordem.IdNota = nota.IdMongo;
-            ordem.ObjetoReferencia.LocalInstalacao = nota.DadosGerais.LocalInstalacao;
-
-            await _ordens.InsertOneAsync(ordem);
-            return ordem;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"Erro ao criar ordem: {e.Message}");
-            return null;
-        }
-        
-        
-    }
-    
 }
