@@ -1,7 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY ["app_apm_back.csproj", "./"]
+COPY ["app_pm_back.csproj", "./"]
 RUN dotnet restore "app_pm_back.csproj"
 
 # Copia o restante dos arquivos e compila
