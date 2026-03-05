@@ -4,8 +4,10 @@ using app_pm_back.Models;
 
 public class AutoMapperProfile : Profile
 {
+    // FAZ O MAPEAMENTO AUTOMÁTICO DE VARIÁVES DE MESMO NOME ENTRE DTO E MODEL
     public AutoMapperProfile()
     {
+        /*
         // cria o mapa de CreateNotaDto para NotaModel
         CreateMap<CreateNotaDto, NotaModel>()
             // ensina que a propriedade DadosGeraisDTO do DTO vai para DadosGerais do Model
@@ -15,6 +17,8 @@ public class AutoMapperProfile : Profile
             // ignora campos que o DTO não tem, para não dar erro
             .ForMember(dest => dest.IdOrdem, opt => opt.Ignore())
             .ForMember(dest => dest.NroOrdem, opt => opt.Ignore());
-        // CreateMap<DadosGeraisDTO, DadosGerais>(); 
+        */
+        CreateMap<CreateNotaPetroDto, NotaPetroModel>();
+        CreateMap<CreateOrdemPetroDto, OrdemPetroModel>();
     }
 }

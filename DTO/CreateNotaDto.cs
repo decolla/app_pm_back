@@ -1,4 +1,4 @@
-using app_pm_back.Models;
+/*using app_pm_back.Models;
 
 namespace app_pm_back.DTO;
 
@@ -32,4 +32,4 @@ public class DadosGeraisDto
     public required string Complemento { get; set; } // complemento do local de instalação do ativo 
 
     public string? Titulo { get; set; } // título da nota para ordem
-}
+}*/

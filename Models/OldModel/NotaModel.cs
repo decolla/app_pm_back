@@ -1,4 +1,4 @@
-using MongoDB.Bson;
+/*using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace app_pm_back.Models;
@@ -90,3 +90,5 @@ public class CheckList
     public float? Pressao { get; set; } = 0;
     public string? Plaqueta { get; set; } = "000000000";
 }
+
+*/

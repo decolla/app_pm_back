@@ -1,99 +1,120 @@
+using app_pm_back.Data;
 using app_pm_back.Models;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services;
 
 public class OrdemService
 {
-    private readonly IMongoCollection<NotaModel> _notas;
-    private readonly IMongoCollection<OrdemModel> _ordens;
+    private readonly AppDbContext _context;
 
-    // injeção no banco
-    public OrdemService(IMongoCollection<OrdemModel> ordens, IMongoCollection<NotaModel> notas)
+    public OrdemService(AppDbContext context)
     {
-        _notas = notas;
-        _ordens = ordens;
+        _context = context;
     }
 
-    // ================================= ORDENS ====================================
-
-    // cria uma ordem e insere
-    public async Task<OrdemModel> CreateOrdemAsync(OrdemModel ordem)
+    /// <summary>
+    /// Cria uma ordem e vincula automaticamente à nota de origem.
+    /// </summary>
+    public async Task<OrdemPetroModel> CreateOrdemAsync(OrdemPetroModel ordem)
     {
-        // procura a nota de origem
-        var nota = await _notas.Find(n => n.Id == ordem.IdNota).FirstOrDefaultAsync();
-
+        // 1. Verifica se a Nota existe no banco antes de criar a Ordem
+        var nota = await _context.NotasPetro.FindAsync(ordem.IdNota);
         if (nota == null)
         {
-            throw new FileNotFoundException("Não foi possível encontrar a nota com este id para a ordem");
+            throw new Exception($"Não foi possível encontrar a Nota com o ID {ordem.IdNota} para gerar a ordem.");
         }
 
-        // passa os parâmetros da nota para a ordem
-        ordem.IdNota = nota.Id;
-        ordem.StatusNota = nota.DadosGerais.Status;
-        ordem.ObjetoReferencia.LocalInstalacao = nota.DadosGerais.LocalInstalacao;
-        ordem.ObjetoReferencia.TAG = nota.DadosGerais.Tag;
-        ordem.Responsabilidades.DataAvaria = nota.DataAvaria;
-        ordem.Database.InicioDesejado = nota.CaracteristicasGerais.DataNota;
-        ordem.Database.ConclDesejado = nota.CaracteristicasGerais.FimDesejado;
+        // 2. Adiciona a Ordem ao contexto
+        _context.OrdensPetro.Add(ordem);
+        
+        // Salva para gerar o IdOrdem no banco (PostgreSQL gera o ID numérico)
+        await _context.SaveChangesAsync();
 
-        // insere a ordem
-        await _ordens.InsertOneAsync(ordem);
-
-        nota.IdOrdem = ordem.Id;
-        nota.DadosGerais.Status = "ORDEM_GERADA";
-        nota.NroOrdem = ordem.Id;
-
-        await _notas.ReplaceOneAsync(n => n.Id == nota.Id, nota);
+        // 3. Atualiza a Nota com o ID da Ordem gerada
+        nota.IdOrdem = ordem.IdOrdem;
+        
+        // Salva a alteração da Nota
+        await _context.SaveChangesAsync();
 
         return ordem;
     }
 
-    // atualiza uma ordem
-    public async Task<OrdemModel> UpdateOrdemAsync(OrdemModel ordem)
+    /// <summary>
+    /// Retorna todas as ordens cadastradas.
+    /// </summary>
+    public async Task<List<OrdemPetroModel>> GetAllOrdensAsync()
     {
-        // procura a ordem de origem
-        var ordemOriginal = await _ordens.Find(n => n.Id == ordem.Id).FirstOrDefaultAsync();
-        if (ordemOriginal == null)
-        {
-            throw new FileNotFoundException("Não foi possível encontrar a ordem com este id");
-        }
-
-        // atualiza a ordem
-        await _ordens.ReplaceOneAsync(n => n.Id == ordem.Id, ordem);
-        return ordem;
-    }
-
-    // retorna todas as ordens 
-    public async Task<List<OrdemModel>> GetAllOrdensAsync()
-    {
-        return await _ordens.Find(n => true).ToListAsync();
-    }
-    
-    // retorna uma página de ordens
-    public async Task<List<OrdemModel>> GetOrdensPaginadasAsync(int pagina, int tamanho)
-    {
-        return await _ordens.Find(n => true)
-            .Skip((pagina - 1) * tamanho)
-            .Limit(tamanho)
+        return await _context.OrdensPetro
+            .Include(o => o.NotaOrigem) // Traz os dados da Nota junto (opcional, remova se quiser só a Ordem)
             .ToListAsync();
     }
 
-    // retorna uma ordem pelo id
-    public async Task<OrdemModel> GetOrdemByIdAsync(string id)
+    /// <summary>
+    /// Retorna ordens com paginação.
+    /// </summary>
+    public async Task<List<OrdemPetroModel>> GetOrdensPaginadasAsync(int pagina, int tamanho)
     {
-        return await _ordens.Find(n => n.Id == id).FirstOrDefaultAsync();
+        return await _context.OrdensPetro
+            .OrderBy(o => o.IdOrdem)
+            .Skip((pagina - 1) * tamanho)
+            .Take(tamanho)
+            .ToListAsync();
     }
 
-    // deleta uma ordem
-    public async Task<DeleteResult> DeleteOrdemAsync(string id)
+    /// <summary>
+    /// Busca uma ordem específica pelo ID.
+    /// </summary>
+    public async Task<OrdemPetroModel?> GetOrdemByIdAsync(long id)
     {
-        return await _ordens.DeleteOneAsync(n => n.Id == id);
+        return await _context.OrdensPetro
+            .Include(o => o.NotaOrigem) // Faz o JOIN automático com a tabela de Notas
+            .FirstOrDefaultAsync(o => o.IdOrdem == id);
     }
 
-    // retorna a quantidade de ordens no banco
+    /// <summary>
+    /// Atualiza os dados de uma ordem existente.
+    /// </summary>
+    public async Task<OrdemPetroModel> UpdateOrdemAsync(OrdemPetroModel ordem)
+    {
+        var existe = await _context.OrdensPetro.AnyAsync(o => o.IdOrdem == ordem.IdOrdem);
+        if (!existe)
+        {
+            throw new Exception("Ordem não encontrada para atualização.");
+        }
+
+        _context.OrdensPetro.Update(ordem);
+        await _context.SaveChangesAsync();
+        
+        return ordem;
+    }
+
+    /// <summary>
+    /// Deleta uma ordem pelo ID.
+    /// </summary>
+    public async Task<bool> DeleteOrdemAsync(long id)
+    {
+        var ordem = await _context.OrdensPetro.FindAsync(id);
+        if (ordem == null) return false;
+
+        // Se deletar a ordem, precisamos desvincular da nota (opcional dependendo da sua regra de negócio)
+        var nota = await _context.NotasPetro.FirstOrDefaultAsync(n => n.IdOrdem == id);
+        if (nota != null)
+        {
+            nota.IdOrdem = null;
+        }
+
+        _context.OrdensPetro.Remove(ordem);
+        var alteracoes = await _context.SaveChangesAsync();
+        
+        return alteracoes > 0;
+    }
+
+    /// <summary>
+    /// Retorna a contagem total de ordens.
+    /// </summary>
     public async Task<long> CountOrdensAsync()
     {
-        return await _ordens.CountDocumentsAsync(n => true);
+        return await _context.OrdensPetro.CountAsync();
     }
 }

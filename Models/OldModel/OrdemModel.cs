@@ -1,4 +1,4 @@
-using MongoDB.Bson;
+/*using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace app_pm_back.Models;
@@ -106,3 +106,4 @@ public class DdsAvaria
     public DateTime FimIndisp { get; set; }
     public TimeSpan DuracaoParada { get; set; } // duração em horas
 }
+*/

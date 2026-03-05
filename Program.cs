@@ -1,31 +1,39 @@
-using app_pm_back.DTO;
-using app_pm_back.Models;
+using System.Reflection;
+using api.Communications.Service.Impl.Data;
+using app_pm_back.Data;
+using app_pm_back.Routes;
 using app_pm_back.Services;
-using AutoMapper;
 using Microsoft.AspNetCore.Diagnostics;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
+
+// apagar depois essa gambiarra aqui
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddCors(option => option.AddPolicy("AllowAngularApp", policy =>
+builder.Services.AddSwaggerGen(c =>
 {
-    policy.WithOrigins("http://localhost:4200", "http://localhost");
-    policy.AllowAnyMethod();
-    policy.AllowAnyHeader();
-}));
-string? connectionString = builder.Configuration.GetSection("MongoDb").GetSection("ConnectionString").Value;
-string databaseName = "app_pm_back";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
+        $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+});
 
-builder.Services.AddSingleton<IMongoClient>(new MongoClient(connectionString));
-builder.Services.AddScoped<IMongoDatabase>(sp =>
-    sp.GetRequiredService<IMongoClient>().GetDatabase(databaseName));
-builder.Services.AddScoped<IMongoCollection<NotaModel>>(sp =>
-    sp.GetRequiredService<IMongoDatabase>().GetCollection<NotaModel>("notas"));
+builder.Services.AddCors(option => option.AddPolicy("AllowAll", policy =>
+{
+    // policy.WithOrigins("http://localhost:4200", "http://localhost");
+    
+    policy.SetIsOriginAllowed(_ => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+}));
+
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// 3. Registra os seus Serviços
+builder.Services.AddScoped<ConvertService>();
+builder.Services.AddScoped<SpreadsheetService>();
 builder.Services.AddScoped<NotasService>();
-builder.Services.AddScoped<IMongoCollection<OrdemModel>>(sp =>
-    sp.GetRequiredService<IMongoDatabase>().GetCollection<OrdemModel>("ordens"));
 builder.Services.AddScoped<OrdemService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
@@ -57,215 +65,12 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 // permite que o angular realize 
-app.UseCors("AllowAngularApp");
+app.UseCors("AllowAll");
 
 // app.UseHttpsRedirection();
 
-// endpoint para o cadastro de notas
-app.MapPost("notas", async (CreateNotaDto dto, IMapper mapper, NotasService service) =>
-{
-    try
-    {
-        // transforma o dto em notaModel
-        var novaNota = mapper.Map<NotaModel>(dto);
-        novaNota.DadosGerais.Status = "ABERTA";
-
-        var notaCriada = await service.CreateNotaAsync(novaNota);
-        return Results.Created($"notas/{notaCriada.Id}", notaCriada);
-    }
-    catch (Exception e)
-    {
-        return Results.BadRequest(new { message = $"Erro ao criar a nota: {e.Message}." });
-    }
-});
-
-// endpoint que retorna uma lista todas as notas
-app.MapGet("notas", async (int? pagina, int? tamanho, NotasService service) =>
-{
-    try
-    {
-        if (pagina.HasValue || tamanho.HasValue)
-        {
-            int p = pagina ?? 1;
-            int t = tamanho ?? 20;
-            var notasPaginadas = await service.GetNotasPaginadasAsync(p, t);
-            return Results.Ok(notasPaginadas);
-        }
-
-        var todasNotas = await service.GetAllNotasAsync()!;
-        return Results.Ok(todasNotas);
-    }
-    catch (Exception)
-    {
-        return Results.BadRequest(new { message = "Erro ao processar notas:." });
-    }
-});
-
-// endpoint para buscar uma nota por Id
-app.MapGet("notas/{id}", async (string id, NotasService service) =>
-{
-    try
-    {
-        var nota = await service.GetNotaByIdAsync(id);
-
-        if (nota.Equals(null)) return Results.NotFound(new { message = "Nota não encontrada" });
-
-        return Results.Ok(nota);
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao procurar nota: {e.Message}");
-        return Results.NotFound(new { message = "Erro ao procurar nota." });
-    }
-});
-
-// endpoint para retornar a quantidade de notas no banco
-app.MapGet("notas/count", async (NotasService service) =>
-{
-    try
-    {
-        var notas = await service.CountNotasAsync();
-        return Results.Ok(new { count = notas });
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao procurar notas: {e.Message}");
-        return Results.NotFound(new { message = "Erro ao procurar ordens." });
-    }
-});
-
-// endpoint para atualizar uma nota
-app.MapPut("notas", async (NotaModel nota, NotasService service) =>
-{
-    try
-    {
-        var result = await service.UpdateNotaAsync(nota);
-        return Results.Ok(new { message = "Nota atualizada com sucesso: " + result.Id });
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao atualizar nota: {e.Message}");
-        return Results.BadRequest(new { message = "Erro ao atualizar nota." });
-    }
-});
-
-// endpoint para deletar uma nota por Id
-app.MapDelete("notas/{id}", async (string id, NotasService service) =>
-{
-    try
-    {
-        var result = await service.DeleteNotaAsync(id);
-        return Results.Ok(new { message = "Nota deletada com sucesso: " + result.DeletedCount });
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao deletar nota: {e.Message}");
-        return Results.BadRequest(new { message = "Erro ao deletar nota." });
-    }
-});
-
-// ========================================= ORDENS =========================================
-
-
-// endpoint essencial para o cadastro de ordens
-app.MapPost("ordem", async (OrdemModel ordemNova, OrdemService service, IMapper mapper) =>
-{
-    try
-    {
-        var ordem = await service.CreateOrdemAsync(ordemNova);
-        return Results.Created($"ordem/{ordem.Id}", ordem);
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao criar a ordem: {e.Message}");
-        return Results.BadRequest(new { message = "Erro ao criar a ordem." });
-    }
-});
-
-// endpoint que retorna uma lista todas as ordens
-app.MapGet("ordem", async (int? pagina, int? tamanho, OrdemService service) =>
-{
-    try
-    {
-        if (pagina.HasValue || tamanho.HasValue)
-        {
-            int p = pagina ?? 1;
-            int t = tamanho ?? 20;
-            var notasPaginadas = await service.GetOrdensPaginadasAsync(p, t);
-            return Results.Ok(notasPaginadas);
-        }
-
-        var todasNotas = await service.GetAllOrdensAsync();
-        return Results.Ok(todasNotas);
-    }
-    catch (Exception)
-    {
-        return Results.BadRequest(new { message = "Erro ao processar notas." });
-    }
-});
-
-// endpoint para buscar uma ordem por Id
-app.MapGet("ordem/{id}", async (string id, OrdemService service) =>
-{
-    try
-    {
-        var ordem = await service.GetOrdemByIdAsync(id);
-
-        if (ordem.Equals(null)) return Results.NotFound(new { message = "Ordem não encontrada" });
-
-        return Results.Ok(ordem);
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao procurar ordem: {e.Message}");
-        return Results.NotFound(new { message = "Erro ao procurar ordem." });
-    }
-});
-
-// endpoint para retornar a quantidade de ordens no banco
-app.MapGet("ordem/count", async (OrdemService service) =>
-{
-    try
-    {
-        var ordens = await service.CountOrdensAsync();
-        return Results.Ok(new { count = ordens });
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao procurar ordens: {e.Message}");
-        return Results.BadRequest(new { message = "Erro ao procurar ordens." });
-    }
-});
-
-// endpoint para atualizar uma ordem
-app.MapPut("ordem", async (OrdemModel ordem, OrdemService service) =>
-{
-    try
-    {
-        var result = await service.UpdateOrdemAsync(ordem);
-        return Results.Ok(new { message = "Ordem atualizada com sucesso: " + result.Id });
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao atualizar ordem: {e.Message}");
-        return Results.BadRequest(new { message = "Erro ao atualizar ordem." });
-    }
-});
-
-// endpoint para deletar uma ordem por Id
-app.MapDelete("ordem/{id}", async (string id, OrdemService service) =>
-{
-    try
-    {
-        var result = await service.DeleteOrdemAsync(id);
-        return Results.Ok(new { message = "Ordem deletada com sucesso: " + result.DeletedCount });
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao deletar ordem: {e.Message}");
-        return Results.BadRequest(new { message = "Erro ao deletar ordem." });
-    }
-});
-
+app.MapNoteEndpoints();
+app.MapOrderEndpoints();
+app.MapSpreadsheetEndpoints();
 
 app.Run();
