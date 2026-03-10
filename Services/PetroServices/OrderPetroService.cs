@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services;
 
-public class OrdemService
+public class OrderPetroService
 {
     private readonly AppDbContext _context;
 
-    public OrdemService(AppDbContext context)
+    public OrderPetroService(AppDbContext context)
     {
         _context = context;
     }

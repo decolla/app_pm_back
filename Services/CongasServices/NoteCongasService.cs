@@ -1,45 +1,44 @@
 using app_pm_back.Data;
 using app_pm_back.Models;
+using app_pm_back.Models.CongasModel;
 using Microsoft.EntityFrameworkCore;
 
-namespace app_pm_back.Services;
+namespace app_pm_back.Services.CongasServices;
 
-public class NotasService
+public class NoteCongasService
 {
     private readonly AppDbContext _context;
 
-    // Injeção do contexto do Entity Framework
-    public NotasService(AppDbContext context)
+    public NoteCongasService(AppDbContext context)
     {
         _context = context;
     }
 
-    // cria uma nota e insere
-    public async Task<NotaPetroModel> CreateNotaAsync(NotaPetroModel nota)
+    public async Task<NoteCongasModel> CreateNotaAsync(NoteCongasModel nota)
     {
-        _context.NotasPetro.Add(nota);
+        _context.NotasCongas.Add(nota);
         await _context.SaveChangesAsync();
-        return nota; // O IdNota será preenchido automaticamente pelo PostgreSQL após o SaveChanges
+        return nota;
     }
-
+    
     // atualiza uma nota
-    public async Task<NotaPetroModel> UpdateNotaAsync(NotaPetroModel nota)
+    public async Task<NoteCongasModel> UpdateNotaAsync(NoteCongasModel nota)
     {
-        _context.NotasPetro.Update(nota);
+        _context.NotasCongas.Update(nota);
         await _context.SaveChangesAsync();
         return nota;
     }
 
     // retorna todas as notas
-    public async Task<List<NotaPetroModel>> GetAllNotasAsync()
+    public async Task<List<NoteCongasModel>> GetAllNotasAsync()
     {
-        return await _context.NotasPetro.ToListAsync();
+        return await _context.NotasCongas.ToListAsync();
     }
     
     // retorna uma página de notas
-    public async Task<List<NotaPetroModel>> GetNotasPaginadasAsync(int pagina, int tamanho)
+    public async Task<List<NoteCongasModel>> GetNotasPaginadasAsync(int pagina, int tamanho)
     {
-        return await _context.NotasPetro.
+        return await _context.NotasCongas.
             OrderBy(n => n.IdNota) // No banco relacional é sempre bom ordenar antes de paginar
             .Skip((pagina - 1) * tamanho)
             .Take(tamanho)
@@ -47,18 +46,18 @@ public class NotasService
     }
 
     // retorna uma nota pelo id
-    public async Task<NotaPetroModel?> GetNotaByIdAsync(int id)
+    public async Task<NoteCongasModel?> GetNotaByIdAsync(int id)
     {
-        return await _context.NotasPetro.FindAsync(id);
+        return await _context.NotasCongas.FindAsync(id);
     }
 
     // deleta uma nota
     public async Task<bool> DeleteNotaAsync(int id)
     {
-        var nota = await _context.NotasPetro.FindAsync(id);
+        var nota = await _context.NotasCongas.FindAsync(id);
         if (nota == null) return false;
 
-        _context.NotasPetro.Remove(nota);
+        _context.NotasCongas.Remove(nota);
         var alteracoes = await _context.SaveChangesAsync();
         
         return alteracoes > 0;
@@ -67,7 +66,7 @@ public class NotasService
     // retorna a quantidade de notas no banco
     public async Task<long> CountNotasAsync()
     {
-        return await _context.NotasPetro.CountAsync();
+        return await _context.NotasCongas.CountAsync();
     }
     
 
@@ -76,10 +75,10 @@ public class NotasService
     public async Task<object> GetFichasPorAtivoAsync(string ativo, string? tipoNota)
     {
         // inicia a query na tabela de notas 
-        var query = _context.NotasPetro.AsQueryable();
+        var query = _context.NotasCongas.AsQueryable();
         
         // procura pelo ativo com mesmo local de instalação ou campo
-        query = query.Where(n => n.LocInstalacao == ativo || n.Campo == ativo || n.Localizacao == ativo);
+        query = query.Where(n => n.LocInstalacao == ativo || n.Denominacao == ativo || n.Local == ativo);
         
         // aplica o filtro para procurar a nota pelo tipo passado
         if (!string.IsNullOrWhiteSpace(tipoNota))

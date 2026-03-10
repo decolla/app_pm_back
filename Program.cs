@@ -3,6 +3,7 @@ using api.Communications.Service.Impl.Data;
 using app_pm_back.Data;
 using app_pm_back.Routes;
 using app_pm_back.Services;
+using app_pm_back.Services.CongasServices;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,8 +34,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // 3. Registra os seus Serviços
 builder.Services.AddScoped<ConvertService>();
 builder.Services.AddScoped<SpreadsheetService>();
-builder.Services.AddScoped<NotasService>();
-builder.Services.AddScoped<OrdemService>();
+builder.Services.AddScoped<NotesPetroService>();
+builder.Services.AddScoped<OrderPetroService>();
+builder.Services.AddScoped<NoteCongasService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -69,8 +71,7 @@ app.UseCors("AllowAll");
 
 // app.UseHttpsRedirection();
 
-app.MapNoteEndpoints();
-app.MapOrderEndpoints();
+app.MapControllers();
 app.MapSpreadsheetEndpoints();
 
 app.Run();
