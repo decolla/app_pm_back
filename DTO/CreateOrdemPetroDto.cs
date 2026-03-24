@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace app_pm_back.DTO;
 
+/// <summary>
+/// DTO para OrdemPetroModel
+/// </summary>
 public class CreateOrdemPetroDto
 {
     /// <summary>

@@ -15,21 +15,24 @@ public class SpreadsheetService
     {
         _convertService = convertService;
     }
-    
+
     public class ResultadoPlanilha
     {
         public string TipoIdentificado { get; set; } = "DESCONHECIDO";
         public List<NotaPetroModel> NotasPetro { get; set; } = new();
         public List<NoteCongasModel> NotasCongas { get; set; } = new();
+        public List<OrdemPetroModel> OrdensPetro { get; set; } = new();
+        public List<OrderCongasModel> OrdensCongas { get; set; } = new();
     }
 
     public async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(IFormFile spreadSheet)
     {
         var resultado = new ResultadoPlanilha();
-        
+
         var extension = Path.GetExtension(spreadSheet.FileName).ToLower();
         Stream csvStream;
 
+        // formato de conversão de Excel para CSV
         if (extension == ".xlsx")
         {
             await using var xlsxStream = spreadSheet.OpenReadStream();
@@ -46,37 +49,64 @@ public class SpreadsheetService
         }
 
         csvStream.Position = 0;
-        const string separator = ";";
-        
-        // Padrão pt-BR para ler datas como DD/MM/AAAA
+
+        // padrão pt-BR para ler datas como DD/MM/AAAA
         CultureInfo culture = CultureInfo.GetCultureInfo("pt-BR");
 
-        using TextFieldParser parser = new TextFieldParser(csvStream, Encoding.UTF8, detectEncoding: true, leaveOpen: false)
-        {
-            TextFieldType = FieldType.Delimited
-        };
+        using TextFieldParser parser =
+            new TextFieldParser(csvStream, Encoding.UTF8, detectEncoding: true, leaveOpen: false)
+            {
+                TextFieldType = FieldType.Delimited
+            };
 
-        parser.SetDelimiters(separator);
+        parser.SetDelimiters(";", ",");
         parser.HasFieldsEnclosedInQuotes = true;
         parser.TrimWhiteSpace = true;
 
-        if (parser.EndOfData) return resultado;
-
-        string[]? header = parser.ReadFields();
-        if (header == null || header.Length == 0) return resultado;
-        
-        // Lê os cabeçalhos
-        string[] headers = parser.ReadFields();
+        string[]? headers = null;
         Dictionary<string, int> columns = new(StringComparer.OrdinalIgnoreCase);
-        for (int i = 0; i < headers.Length; i++)
-        {
-            columns[headers[i].Trim()] = i;
-        }
-        
-        bool isPetro = columns.ContainsKey("Campo seleção") && columns.ContainsKey("CondInstAntAvar");
-        bool isCongas = columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota");
 
-        if (isPetro)
+        while (!parser.EndOfData)
+        {
+            headers = parser.ReadFields();
+            if (headers == null) continue;
+
+            columns.Clear();
+            for (int i = 0; i < headers.Length; i++)
+            {
+                string cleanHeader = headers[i].Replace("\uFEFF", "").Replace("\"", "").Trim();
+                if (!string.IsNullOrWhiteSpace(cleanHeader))
+                {
+                    columns[cleanHeader] = i;
+                }
+            }
+
+            if (columns.ContainsKey("Campo seleção") ||
+                columns.ContainsKey("Campo selecao") ||
+                columns.ContainsKey("Nota") ||
+                columns.ContainsKey("Ordem"))
+            {
+                break;
+            }
+        }
+
+        if (columns.Count == 0) return resultado;
+
+        // DETETIVE
+        Console.WriteLine("\n--- CABEÇALHOS ENCONTRADOS ---");
+        Console.WriteLine(string.Join(" | ", columns.Keys));
+        Console.WriteLine("------------------------------\n");
+
+        // A MÁGICA DA IDENTIFICAÇÃO
+        bool isPetro = columns.ContainsKey("Campo seleção") || columns.ContainsKey("Campo selecao");
+        bool isCongas = columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota");
+        bool isOrdemCongas = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve");
+
+        if (isOrdemCongas)
+        {
+            resultado.TipoIdentificado = "ORDEM_CONGAS";
+        }
+        else if (isPetro)
         {
             resultado.TipoIdentificado = "PETRO";
         }
@@ -86,10 +116,9 @@ public class SpreadsheetService
         }
         else
         {
-            // Não identificou nenhuma das duas
-            return resultado; 
+            return resultado;
         }
-        
+
         while (!parser.EndOfData)
         {
             string[] row = parser.ReadFields();
@@ -101,9 +130,9 @@ public class SpreadsheetService
                 var notaPetro = new NotaPetroModel
                 {
                     IdOrdem = SafeLong("Ordem", row, columns),
-    
+
                     // Nomes mapeados EXATAMENTE como estão no cabeçalho do Excel/CSV
-                    Campo = SafeText("Campo seleção", row, columns) ?? "N/A", 
+                    Campo = SafeText("Campo seleção", row, columns) ?? "N/A",
                     Descricao = SafeText("Descrição", row, columns) ?? "Sem descrição",
                     LocInstalacao = SafeText("Loc.instalação", row, columns) ?? "N/A",
                     LocInstAfetado = SafeText("Loc.inst.afetad", row, columns),
@@ -154,7 +183,7 @@ public class SpreadsheetService
                     CriadoPor = SafeText("Criado por", row, columns),
                     CriadoAs = SafeDate("Criado às", row, columns, culture),
                     Notificador = SafeText("Notificador", row, columns),
-                    PerfCatalogo = SafeText("Perf.catálogo", row, columns ),
+                    PerfCatalogo = SafeText("Perf.catálogo", row, columns),
                     CenTrabRespon = SafeText("CenTrab respon.", row, columns),
                     TxtCodeCodif = SafeText("Txt.code codif.", row, columns),
                     TxtGrpCodific = SafeText("Txt.grp.codific", row, columns),
@@ -162,7 +191,7 @@ public class SpreadsheetService
                     Equipamento = SafeText("Equipamento", row, columns),
                     Denominacao = SafeText("Denominação", row, columns),
                     GrpPlnjPM = SafeText("Grp.plnj.PM", row, columns),
-                    AreaOperacion = SafeText("Área operacion.",row, columns),
+                    AreaOperacion = SafeText("Área operacion.", row, columns),
                     Codificacao = SafeText("Codificação", row, columns),
                     Consequencia = SafeInt("Conseqüência", row, columns),
                     GrupoCodes = SafeText("Grupo de codes", row, columns),
@@ -170,7 +199,38 @@ public class SpreadsheetService
                 };
                 resultado.NotasCongas.Add(notaCongas);
             }
+            else if (resultado.TipoIdentificado == "ORDEM_CONGAS")
+            {
+                // NOVO MAPEAMENTO DA CONGAS 
+                var notaCongas = new OrderCongasModel
+                {
+                    IdOrdem = SafeLong("Ordem", row, columns) ?? 0,
+                    LocInstalacao = SafeText("Loc.instalação", row, columns) ?? "N/A",
+                    StatusSistema = SafeText("Status sistema", row, columns) ?? "Sem status",
+                    StatusUsuario = SafeText("Status usuário", row, columns) ?? "Sem status",
+                    TextoBreve = SafeText("Texto Breve", row, columns) ?? "Sem descrição",
+                    PlanoManut = SafeText("Plano manut.", row, columns) ?? "N/A",
+                    ItemManut = SafeText("Item manut.", row, columns) ?? "N/A",
+                    TipoOrdem = SafeText("Tipo de ordem", row, columns) ?? "N/A",
+                    TipoAtividPM = SafeText("Tipo ativid.PM", row, columns) ?? "N/A",
+                    DataBaseInic = SafeDate("Data-base iníc.", row, columns, culture) ?? DateTime.UtcNow,
+                    DtaInicioReal = SafeDate("Dta.início real", row, columns, culture) ?? DateTime.UtcNow,
+                    DtRealFim = SafeDate("Dt.real fim", row, columns, culture) ?? DateTime.UtcNow,
+                    InicRealHr = SafeDate("InícReal hr.", row, columns, culture) ?? DateTime.UtcNow,
+                    FimRealHora = SafeDate("Fim real hora", row, columns, culture) ?? DateTime.UtcNow,
+                    Local = SafeText("Local", row, columns) ?? "N/A",
+                    Rua = SafeText("Rua", row, columns) ?? "N/A",
+                    Bairro = SafeText("Bairro", row, columns) ?? "N/A",
+                    AreaOperacion = SafeText("Área operacion.", row, columns) ?? "N/A",
+                    CriadoPor = SafeText("Criado por", row, columns),
+                    DataModif = SafeDate("Data modif.", row, columns, culture),
+                    ModificadoPor = SafeText("Modificado por", row, columns),
+                    IdNota = SafeLong("Nota", row, columns),
+                    OrdemPrincip = SafeText("Ordem princip", row, columns)
+                };
+            }
         }
+
         return resultado;
     }
 
@@ -202,11 +262,12 @@ public class SpreadsheetService
     {
         var text = SafeText(colName, row, columns);
         if (string.IsNullOrWhiteSpace(text)) return null;
-    
+
         if (DateTime.TryParse(text, culture, DateTimeStyles.None, out var dt))
         {
-            return DateTime.SpecifyKind(dt, DateTimeKind.Utc); 
+            return DateTime.SpecifyKind(dt, DateTimeKind.Utc);
         }
+
         return null;
     }
 

@@ -4,6 +4,7 @@ using app_pm_back.Data;
 using app_pm_back.Routes;
 using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
+using app_pm_back.Services.PetroServices;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +38,7 @@ builder.Services.AddScoped<SpreadsheetService>();
 builder.Services.AddScoped<NotesPetroService>();
 builder.Services.AddScoped<OrderPetroService>();
 builder.Services.AddScoped<NoteCongasService>();
+builder.Services.AddScoped<OrderCongasService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 

@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Data;
 
-// MAPEAMENTO EF CORE PARA POSTGRESQL
+/// <summary>
+/// MAPEAMENTO EF CORE PARA POSTGRESQL
+/// </summary>
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)

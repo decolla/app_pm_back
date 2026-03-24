@@ -1,6 +1,9 @@
 using app_pm_back.DTO;
 using app_pm_back.Models;
+using app_pm_back.Models.CongasModel;
 using app_pm_back.Services;
+using app_pm_back.Services.CongasServices;
+using app_pm_back.Services.PetroServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,61 +14,43 @@ namespace app_pm_back.Controllers;
 public class OrdersController : ControllerBase
 {
     private readonly OrderPetroService _petroService;
+    private readonly OrderCongasService _congasService;
     private readonly IMapper _mapper;
 
-    public OrdersController(OrderPetroService petroService, IMapper mapper)
+    public OrdersController(OrderPetroService petroService, OrderCongasService congasService, IMapper mapper)
     {
         _petroService = petroService;
+        _congasService = congasService;     
         _mapper = mapper;
     }
 
+   // =========================================================================
+    // ENDPOINTS DA PETRO (Rotas: api/orders/petro/...)
+    // =========================================================================
+
     /// <summary>
-    /// Cria uma ordem a partir de um dto 
+    /// Cadastra uma ordem Petro pelo Dto
     /// </summary>
-    /// <param name="dto"></param>
-    [HttpPost("dto")]
-    public async Task<IActionResult> CreateOrderDto([FromBody] CreateOrdemPetroDto dto)
+    [HttpPost("petro")]
+    public async Task<IActionResult> CriarOrdemPetro([FromBody] CreateOrdemPetroDto dto)
     {
         try
         {
-            var novaOrdem = _mapper.Map<OrdemPetroModel>(dto);
-
-            var notaCriada = await _petroService.CreateOrdemAsync(novaOrdem);
-            return Created($"ordem/{notaCriada.IdOrdem}", notaCriada);
+            var novaNota = _mapper.Map<OrdemPetroModel>(dto);
+            var notaCriada = await _petroService.CreateNotaAsync(novaNota);
+            return Created($"api/orders/petro/{notaCriada.IdNota}", notaCriada);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao criar a ordem: {e.Message}." });
+            return BadRequest(new { message = $"Erro ao criar a ordem Petro: {e.Message}." });
         }
     }
 
     /// <summary>
-    /// Criar uma ordem a partir de um objeto
+    /// Retorna uma lista todas as ordens Petro com sistema de páginas
     /// </summary>
-    /// <param name="order"></param>
-    [HttpPost]
-    public async Task<IActionResult> CreateOrder([FromBody] OrdemPetroModel order)
-    {
-        try
-        {
-            var newOrder = await _petroService.CreateOrdemAsync(order);
-            return Created($"ordem/{newOrder.IdOrdem}", newOrder);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"Erro ao criar a ordem: {e.Message}");
-            return BadRequest(new { message = "Erro ao criar a ordem." });
-        }
-    }
-
-    /// <summary>
-    /// Retorna uma página de ordens com base no parâmetro opcional de página e tamanho
-    /// </summary>
-    /// <param name="pagina"></param>
-    /// <param name="tamanho"></param>
-    /// <returns></returns>
-    [HttpGet]
-    public async Task<IActionResult> GetPage(int? pagina, int? tamanho)
+    [HttpGet("petro")]
+    public async Task<IActionResult> ListarNotasPetro([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
         {
@@ -73,98 +58,200 @@ public class OrdersController : ControllerBase
             {
                 int p = pagina ?? 1;
                 int t = tamanho ?? 20;
-                var notasPaginadas = await _petroService.GetOrdensPaginadasAsync(p, t);
+                var notasPaginadas = await _petroService.GetNotasPaginadasAsync(p, t);
                 return Ok(notasPaginadas);
             }
 
-            var todasNotas = await _petroService.GetAllOrdensAsync();
+            var todasNotas = await _petroService.GetAllNotasAsync();
             return Ok(todasNotas);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return BadRequest(new { message = "Erro ao processar notas." });
+            return BadRequest(new { message = "Erro ao processar ordens Petro." });
         }
     }
 
     /// <summary>
-    /// Busca uma nota por Id
+    /// Conta o número total de ordens Petro salvas no banco
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpGet("{id:long}")]
-    public async Task<IActionResult> SearchOrder(long id)
+    [HttpGet("petro/count")]
+    public async Task<IActionResult> ContarNotasPetro()
     {
         try
         {
-            var ordem = await _petroService.GetOrdemByIdAsync(id);
-
-            if (ordem.Equals(null)) return NotFound(new { message = "Ordem não encontrada" });
-
-            return Ok(ordem);
+            var notas = await _petroService.CountNotasAsync();
+            return Ok(new { count = notas });
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Erro ao procurar ordem: {e.Message}");
-            return NotFound(new { message = "Erro ao procurar ordem." });
+            return NotFound(new { message = "Erro ao procurar notas Petro." });
         }
     }
 
     /// <summary>
-    /// Retorna quantidade de ordens no banco
+    /// Retorna as Fichas de uma nota Petro e suas ocorrências de mesmo tipo
     /// </summary>
-    /// <returns></returns>
-    [HttpPost("count")]
-    public async Task<IActionResult> CountOrders()
+    [HttpGet("petro/ativo/{DNSIoT}")]
+    public async Task<IActionResult> ListarOrdensPorAtivoPetro(string DNSIoT, [FromQuery] string? type)
     {
         try
         {
-            var ordens = await _petroService.CountOrdensAsync();
-            return Ok(new { count = ordens });
+            // FALTA IMPLEMENTAÇÃO. FAZER: após correção das classes 
+            var resultado = await _petroService.GetFichasPorAtivoAsync(DNSIoT, type);
+            return Ok(resultado);
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Erro ao procurar ordens: {e.Message}");
-            return BadRequest(new { message = "Erro ao procurar ordens." });
+            return BadRequest(new { message = "Erro ao buscar fichas do ativo Petro." });
         }
     }
 
     /// <summary>
-    /// Atualiza uma ordem
+    /// Atualiza uma nota Petro de mesmo Id
     /// </summary>
-    /// <param name="ordem"></param>
-    /// <returns></returns>
-    [HttpPut]
-    public async Task<IActionResult> UpdateOrder(OrdemPetroModel ordem)
+    [HttpPut("petro")]
+    public async Task<IActionResult> AtualizarOrdemPetro([FromBody] OrdemPetroModel ordem)
     {
         try
         {
-            var result = await _petroService.UpdateOrdemAsync(ordem);
-            return Ok(new { message = "Ordem atualizada com sucesso: " + result.IdOrdem });
+            var result = await _petroService.UpdateNotaAsync(ordem);
+            return Ok(new { message = "Nota Petro atualizada com sucesso: " + result.IdNota });
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Erro ao atualizar ordem: {e.Message}");
-            return BadRequest(new { message = "Erro ao atualizar ordem." });
+            return BadRequest(new { message = "Erro ao atualizar nota Petro." });
         }
     }
 
     /// <summary>
-    /// Deleta uma ordem por Id
+    /// Delete uma nota Petro de mesmo Id
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpDelete("{id:long}")]
-    public async Task<IActionResult> DeleteOrder(long id)
+    [HttpDelete("petro/{id:int}")]
+    public async Task<IActionResult> DeletarOrdemPetro(int id)
     {
         try
         {
-            var result = await _petroService.DeleteOrdemAsync(id);
-            return Ok(new { message = "Ordem deletada com sucesso" });
+            var result = await _petroService.DeleteNotaAsync(id);
+            return Ok(new { message = "Nota Petro deletada com sucesso" });
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Erro ao deletar ordem: {e.Message}");
-            return BadRequest(new { message = "Erro ao deletar ordem." });
+            return BadRequest(new { message = "Erro ao deletar nota Petro." });
+        }
+    }
+
+
+    // =========================================================================
+    // ENDPOINTS DA CONGAS (Rotas: api/orders/congas/...)
+    // =========================================================================
+
+    /// <summary>
+    /// Cadastra uma nota Congas
+    /// </summary>
+    [HttpPost("congas")]
+    public async Task<IActionResult> CriarOrdemCongas([FromBody] OrderCongasModel ordem)
+    {
+        try
+        {
+            var notaCriada = await _congasService.CreateNotaAsync(ordem);
+            return Created($"api/orders/congas/{notaCriada.IdNota}", notaCriada);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao criar a ordem Congas: {e.Message}." });
+        }
+    }
+
+    /// <summary>
+    /// Retorna uma lista todas as notas Congas com sistema de páginas
+    /// </summary>
+    [HttpGet("congas")]
+    public async Task<IActionResult> ListarOrdensCongas([FromQuery] int? pagina, [FromQuery] int? tamanho)
+    {
+        try
+        {
+            if (pagina.HasValue || tamanho.HasValue)
+            {
+                int p = pagina ?? 1;
+                int t = tamanho ?? 20;
+                var notasPaginadas = await _congasService.GetNotasPaginadasAsync(p, t);
+                return Ok(notasPaginadas);
+            }
+
+            var todasNotas = await _congasService.GetAllNotasAsync();
+            return Ok(todasNotas);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = "Erro ao processar ordens Congas." });
+        }
+    }
+
+    /// <summary>
+    /// Conta o número total de notas Congas salvas no banco
+    /// </summary>
+    [HttpGet("congas/count")]
+    public async Task<IActionResult> ContarNotasCongas()
+    {
+        try
+        {
+            var notas = await _congasService.CountNotasAsync();
+            return Ok(new { count = notas });
+        }
+        catch (Exception e)
+        {
+            return NotFound(new { message = "Erro ao procurar ordens Congas." });
+        }
+    }
+
+    /// <summary>
+    /// Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
+    /// </summary>
+    [HttpGet("congas/ativo/{DNSIoT}")]
+    public async Task<IActionResult> ListarFichasPorAtivoCongas(string DNSIoT, [FromQuery] string? type)
+    {
+        try
+        {
+            var resultado = await _congasService.GetFichasPorAtivoAsync(DNSIoT, type);
+            return Ok(resultado);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = "Erro ao buscar ordens do ativo Congas." });
+        }
+    }
+
+    /// <summary>
+    /// Atualiza uma nota Congas de mesmo Id
+    /// </summary>
+    [HttpPut("congas")]
+    public async Task<IActionResult> AtualizarNotaCongas([FromBody] OrderCongasModel ordem)
+    {
+        try
+        {
+            var result = await _congasService.UpdateNotaAsync(ordem);
+            return Ok(new { message = "Ordem Congas atualizada com sucesso: " + result.IdNota });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = "Erro ao atualizar ordem Congas." });
+        }
+    }
+
+    /// <summary>
+    /// Delete uma nota Congas de mesmo Id
+    /// </summary>
+    [HttpDelete("congas/{id:int}")]
+    public async Task<IActionResult> DeletarNotaCongas(int id)
+    {
+        try
+        {
+            var result = await _congasService.DeleteNotaAsync(id);
+            return Ok(new { message = "Ordem Congas deletada com sucesso" });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = "Erro ao deletar ordem Congas." });
         }
     }
 }

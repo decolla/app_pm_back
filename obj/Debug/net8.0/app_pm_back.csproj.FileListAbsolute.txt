@@ -111,7 +111,6 @@
 /home/decolla/Documentos/Códigos/app_pm_back/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.app_pm_back.props
 /home/decolla/Documentos/Códigos/app_pm_back/obj/Debug/net8.0/staticwebassets.pack.json
 /home/decolla/Documentos/Códigos/app_pm_back/obj/Debug/net8.0/scopedcss/bundle/app_pm_back.styles.css
-/home/decolla/Documentos/Códigos/app_pm_back/obj/Debug/net8.0/app_pm_b.F680B1DC.Up2Date
 /home/decolla/Documentos/Códigos/app_pm_back/obj/Debug/net8.0/app_pm_back.dll
 /home/decolla/Documentos/Códigos/app_pm_back/obj/Debug/net8.0/refint/app_pm_back.dll
 /home/decolla/Documentos/Códigos/app_pm_back/obj/Debug/net8.0/app_pm_back.pdb
@@ -198,3 +197,4 @@
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/tr/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/zh-Hans/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.resources.dll
+/home/decolla/Documentos/Códigos/app_pm_back/obj/Debug/net8.0/app_pm_back.csproj.CopyComplete

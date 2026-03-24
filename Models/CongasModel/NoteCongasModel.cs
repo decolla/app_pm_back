@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.CongasModel;
 
+/// <summary>
+/// Modelo para NotaCongasModel
+/// </summary>
 public class NoteCongasModel
 {
     /// <summary>

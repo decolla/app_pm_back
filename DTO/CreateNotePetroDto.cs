@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace app_pm_back.DTO;
 
+/// <summary>
+/// DTO para NotaPetroModel
+/// </summary>
 public class CreateNotaPetroDto
 {
     /// <summary>

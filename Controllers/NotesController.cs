@@ -1,6 +1,8 @@
 using app_pm_back.DTO;
 using app_pm_back.Models;
+using app_pm_back.Models.CongasModel;
 using app_pm_back.Services;
+using app_pm_back.Services.CongasServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,43 +13,46 @@ namespace app_pm_back.Controllers;
 public class NotesController : ControllerBase
 {
     private readonly NotesPetroService _petroService;
+    private readonly NoteCongasService _congasService;
     private readonly IMapper _mapper;
 
-    public NotesController(NotesPetroService petroService, IMapper mapper)
+    public NotesController(
+        NotesPetroService petroService, 
+        NoteCongasService congasService, 
+        IMapper mapper)
     {
         _petroService = petroService;
+        _congasService = congasService;
         _mapper = mapper;
     }
 
+    // =========================================================================
+    // ENDPOINTS DA PETRO (Rotas: api/notes/petro/...)
+    // =========================================================================
+
     /// <summary>
-    /// Cadastra uma nota pelo Dto
+    /// Cadastra uma nota Petro pelo Dto
     /// </summary>
-    /// <param name="dto"></param>
-    /// <returns></returns>
-    [HttpPost]
-    public async Task<IActionResult> CriarNota([FromBody] CreateNotaPetroDto dto)
+    [HttpPost("petro")]
+    public async Task<IActionResult> CriarNotaPetro([FromBody] CreateNotaPetroDto dto)
     {
         try
         {
             var novaNota = _mapper.Map<NotaPetroModel>(dto);
             var notaCriada = await _petroService.CreateNotaAsync(novaNota);
-
-            return Created($"api/notas/{notaCriada.IdNota}", notaCriada);
+            return Created($"api/notes/petro/{notaCriada.IdNota}", notaCriada);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao criar a nota: {e.Message}." });
+            return BadRequest(new { message = $"Erro ao criar a nota Petro: {e.Message}." });
         }
     }
 
     /// <summary>
-    /// Retorna uma lista todas as notas com sistema de páginas
+    /// Retorna uma lista todas as notas Petro com sistema de páginas
     /// </summary>
-    /// <param name="pagina"></param>
-    /// <param name="tamanho"></param>
-    /// <returns></returns>
-    [HttpGet]
-    public async Task<IActionResult> ListarNotas([FromQuery] int? pagina, [FromQuery] int? tamanho)
+    [HttpGet("petro")]
+    public async Task<IActionResult> ListarNotasPetro([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
         {
@@ -64,16 +69,15 @@ public class NotesController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = "Erro ao processar notas." });
+            return BadRequest(new { message = "Erro ao processar notas Petro." });
         }
     }
 
     /// <summary>
-    /// Conta a quantidade de notas no banco
+    /// Conta o número total de notas Petro salvas no banco
     /// </summary>
-    /// <returns></returns>
-    [HttpGet("count")]
-    public async Task<IActionResult> ContarNotas()
+    [HttpGet("petro/count")]
+    public async Task<IActionResult> ContarNotasPetro()
     {
         try
         {
@@ -82,65 +86,173 @@ public class NotesController : ControllerBase
         }
         catch (Exception e)
         {
-            return NotFound(new { message = "Erro ao procurar notas." });
+            return NotFound(new { message = "Erro ao procurar notas Petro." });
         }
     }
-    
+
     /// <summary>
-    /// Retorna uma lista todas as notas com sistema de páginas
+    /// Retorna as Fichas de uma nota Petro e suas ocorrências de mesmo tipo
     /// </summary>
-    /// <param name="active"></param>
-    /// <param name="tipo"></param>
-    /// <returns></returns>
-    [HttpGet("active/{active}")]
-    public async Task<IActionResult> ListarFichasPorAtivo(string active, [FromQuery] string? tipo)
+    [HttpGet("petro/ativo/{DNSIoT}")]
+    public async Task<IActionResult> ListarFichasPorAtivoPetro(string DNSIoT, [FromQuery] string? type)
     {
         try
         {
-            var resultado = await _petroService.GetFichasPorAtivoAsync(active, tipo);
+            var resultado = await _petroService.GetFichasPorAtivoAsync(DNSIoT, type);
             return Ok(resultado);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = "Erro ao buscar fichas do ativo." });
+            return BadRequest(new { message = "Erro ao buscar fichas do ativo Petro." });
         }
     }
 
     /// <summary>
-    /// Atualiza uma nota de mesmo Id
+    /// Atualiza uma nota Petro de mesmo Id
     /// </summary>
-    /// <param name="nota"></param>
-    /// <returns></returns>
-    [HttpPut]
-    public async Task<IActionResult> AtualizarNota([FromBody] NotaPetroModel nota)
+    [HttpPut("petro")]
+    public async Task<IActionResult> AtualizarNotaPetro([FromBody] NotaPetroModel nota)
     {
         try
         {
             var result = await _petroService.UpdateNotaAsync(nota);
-            return Ok(new { message = "Nota atualizada com sucesso: " + result.IdNota });
+            return Ok(new { message = "Nota Petro atualizada com sucesso: " + result.IdNota });
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = "Erro ao atualizar nota." });
+            return BadRequest(new { message = "Erro ao atualizar nota Petro." });
         }
     }
 
     /// <summary>
-    /// Delete uma nota de mesmo Id
+    /// Delete uma nota Petro de mesmo Id
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeletarNota(int id)
+    [HttpDelete("petro/{id:int}")]
+    public async Task<IActionResult> DeletarNotaPetro(int id)
     {
         try
         {
             var result = await _petroService.DeleteNotaAsync(id);
-            return Ok(new { message = "Nota deletada com sucesso" });
+            return Ok(new { message = "Nota Petro deletada com sucesso" });
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = "Erro ao deletar nota." });
+            return BadRequest(new { message = "Erro ao deletar nota Petro." });
+        }
+    }
+
+
+    // =========================================================================
+    // ENDPOINTS DA CONGAS (Rotas: api/notes/congas/...)
+    // =========================================================================
+
+    /// <summary>
+    /// Cadastra uma nota Congas
+    /// </summary>
+    [HttpPost("congas")]
+    public async Task<IActionResult> CriarNotaCongas([FromBody] NoteCongasModel novaNota)
+    {
+        try
+        {
+            var notaCriada = await _congasService.CreateNotaAsync(novaNota);
+            return Created($"api/notes/congas/{notaCriada.IdNota}", notaCriada);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao criar a nota Congas: {e.Message}." });
+        }
+    }
+
+    /// <summary>
+    /// Retorna uma lista todas as notas Congas com sistema de páginas
+    /// </summary>
+    [HttpGet("congas")]
+    public async Task<IActionResult> ListarNotasCongas([FromQuery] int? pagina, [FromQuery] int? tamanho)
+    {
+        try
+        {
+            if (pagina.HasValue || tamanho.HasValue)
+            {
+                int p = pagina ?? 1;
+                int t = tamanho ?? 20;
+                var notasPaginadas = await _congasService.GetNotasPaginadasAsync(p, t);
+                return Ok(notasPaginadas);
+            }
+
+            var todasNotas = await _congasService.GetAllNotasAsync();
+            return Ok(todasNotas);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = "Erro ao processar notas Congas." });
+        }
+    }
+
+    /// <summary>
+    /// Conta o número total de notas Congas salvas no banco
+    /// </summary>
+    [HttpGet("congas/count")]
+    public async Task<IActionResult> ContarNotasCongas()
+    {
+        try
+        {
+            var notas = await _congasService.CountNotasAsync();
+            return Ok(new { count = notas });
+        }
+        catch (Exception e)
+        {
+            return NotFound(new { message = "Erro ao procurar notas Congas." });
+        }
+    }
+
+    /// <summary>
+    /// Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
+    /// </summary>
+    [HttpGet("congas/ativo/{DNSIoT}")]
+    public async Task<IActionResult> ListarFichasPorAtivoCongas(string DNSIoT, [FromQuery] string? type)
+    {
+        try
+        {
+            var resultado = await _congasService.GetFichasPorAtivoAsync(DNSIoT, type);
+            return Ok(resultado);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = "Erro ao buscar fichas do ativo Congas." });
+        }
+    }
+
+    /// <summary>
+    /// Atualiza uma nota Congas de mesmo Id
+    /// </summary>
+    [HttpPut("congas")]
+    public async Task<IActionResult> AtualizarNotaCongas([FromBody] NoteCongasModel nota)
+    {
+        try
+        {
+            var result = await _congasService.UpdateNotaAsync(nota);
+            return Ok(new { message = "Nota Congas atualizada com sucesso: " + result.IdNota });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = "Erro ao atualizar nota Congas." });
+        }
+    }
+
+    /// <summary>
+    /// Delete uma nota Congas de mesmo Id
+    /// </summary>
+    [HttpDelete("congas/{id:int}")]
+    public async Task<IActionResult> DeletarNotaCongas(int id)
+    {
+        try
+        {
+            var result = await _congasService.DeleteNotaAsync(id);
+            return Ok(new { message = "Nota Congas deletada com sucesso" });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = "Erro ao deletar nota Congas." });
         }
     }
 }

@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.CongasModel;
 
+/// <summary>
+/// Modelo para OrdemCongasModel
+/// </summary>
 public class OrderCongasModel
 {
     /// <summary>
@@ -86,13 +89,13 @@ public class OrderCongasModel
     /// Hora real de início
     /// </summary>
     /// <example>11:00:00</example>
-    public TimeSpan? InicRealHr { get; set; }
+    public DateTime? InicRealHr { get; set; }
 
     /// <summary>
     /// Hora real de fim
     /// </summary>
     /// <example>13:20:00</example>
-    public TimeSpan? FimRealHora { get; set; }
+    public DateTime? FimRealHora { get; set; }
 
     /// <summary>
     /// Grupo de planejamento PM
