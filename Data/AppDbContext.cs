@@ -20,4 +20,6 @@ public class AppDbContext : DbContext
     public DbSet<NoteCongasModel> NotasCongas { get; set; }
     
     public DbSet<OrderCongasModel> OrdensCongas { get; set; }
+    
+    public DbSet<AnnexModel> Anexos { get; set; }
 }

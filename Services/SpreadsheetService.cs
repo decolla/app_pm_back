@@ -202,7 +202,7 @@ public class SpreadsheetService
             else if (resultado.TipoIdentificado == "ORDEM_CONGAS")
             {
                 // NOVO MAPEAMENTO DA CONGAS 
-                var notaCongas = new OrderCongasModel
+                var orderCongas = new OrderCongasModel
                 {
                     IdOrdem = SafeLong("Ordem", row, columns) ?? 0,
                     LocInstalacao = SafeText("Loc.instalação", row, columns) ?? "N/A",
@@ -225,9 +225,10 @@ public class SpreadsheetService
                     CriadoPor = SafeText("Criado por", row, columns),
                     DataModif = SafeDate("Data modif.", row, columns, culture),
                     ModificadoPor = SafeText("Modificado por", row, columns),
-                    IdNota = SafeLong("Nota", row, columns),
+                    NumeroNotaOrigem = SafeLong("Nota", row, columns),
                     OrdemPrincip = SafeText("Ordem princip", row, columns)
                 };
+                resultado.OrdensCongas.Add(orderCongas);
             }
         }
 

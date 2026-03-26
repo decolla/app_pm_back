@@ -16,7 +16,8 @@ public static class SpreadsheetEndpoints
                 IFormFile file,
                 SpreadsheetService spreadsheetService,
                 NotesPetroService notesPetroService,
-                NoteCongasService noteCongasService) =>
+                NoteCongasService noteCongasService,
+                OrderCongasService orderCongasService) =>
             {
                 try
                 {
@@ -29,7 +30,7 @@ public static class SpreadsheetEndpoints
 
                     // 3 = insere as notas no banco de dados usando o seu NotasService
                     int inseridas = 0;
-                    
+
                     // DECISÃO DE ROTA BASEADA NA IDENTIFICAÇÃO
                     if (resultadoPlanilha.TipoIdentificado == "PETRO")
                     {
@@ -37,11 +38,8 @@ public static class SpreadsheetEndpoints
                             return Results.BadRequest(new
                                 { message = "Planilha Petro reconhecida, mas sem dados válidos." });
 
-                        foreach (var nota in resultadoPlanilha.NotasPetro)
-                        {
-                            await notesPetroService.CreateNotaAsync(nota);
-                            inseridas++;
-                        }
+                        await notesPetroService.CreateNotasEmMassaAsync(resultadoPlanilha.NotasPetro.DistinctBy(o => o.IdNota).ToList());
+                        inseridas++;
 
                         return Results.Ok(new { message = $"{inseridas} notas da PETRO processadas com sucesso!" });
                     }
@@ -51,13 +49,21 @@ public static class SpreadsheetEndpoints
                             return Results.BadRequest(new
                                 { message = "Planilha Congas reconhecida, mas sem dados válidos." });
 
-                        foreach (var nota in resultadoPlanilha.NotasCongas)
-                        {
-                            await noteCongasService.CreateNotaAsync(nota);
-                            inseridas++;
-                        }
+                        await noteCongasService.CreateNotasEmMassaAsync(resultadoPlanilha.NotasCongas.DistinctBy(o => o.IdNota).ToList());
+                        inseridas++;
 
                         return Results.Ok(new { message = $"{inseridas} notas da CONGAS processadas com sucesso!" });
+                    }
+                    else if (resultadoPlanilha.TipoIdentificado == "ORDEM_CONGAS")
+                    {
+                        if (!resultadoPlanilha.OrdensCongas.Any())
+                            return Results.BadRequest(new
+                                { message = "Planilha de ordens Congas reconhecida, mas sem dados válidos." });
+
+
+                        await orderCongasService.CreateNotasEmMassaAsync(resultadoPlanilha.OrdensCongas.DistinctBy(o => o.IdOrdem).ToList());
+
+                        return Results.Ok(new { message = $"{inseridas} ordens da CONGAS processadas com sucesso!" });
                     }
                     else
                     {

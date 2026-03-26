@@ -154,7 +154,7 @@ public class OrdersController : ControllerBase
         try
         {
             var notaCriada = await _congasService.CreateNotaAsync(ordem);
-            return Created($"api/orders/congas/{notaCriada.IdNota}", notaCriada);
+            return Created($"api/orders/congas/{notaCriada.NumeroNotaOrigem}", notaCriada);
         }
         catch (Exception e)
         {
@@ -230,7 +230,7 @@ public class OrdersController : ControllerBase
         try
         {
             var result = await _congasService.UpdateNotaAsync(ordem);
-            return Ok(new { message = "Ordem Congas atualizada com sucesso: " + result.IdNota });
+            return Ok(new { message = "Ordem Congas atualizada com sucesso: " + result.NumeroNotaOrigem });
         }
         catch (Exception e)
         {

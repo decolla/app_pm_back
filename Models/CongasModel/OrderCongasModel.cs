@@ -159,7 +159,7 @@ public class OrderCongasModel
     /// Nota atrelada à ordem (Chave Estrangeira lógica)
     /// </summary>
     /// <example>90003663</example>
-    public long? IdNota { get; set; }
+    public long? NumeroNotaOrigem { get; set; }
 
     /// <summary>
     /// Ordem principal vinculada

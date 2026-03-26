@@ -20,7 +20,7 @@ public class ConvertService
         bool utf8WithBom = true,
         bool includeHeader = true,
         int maxDegreeOfParallelism = -1
-        ) 
+    )
     {
         var encoding = utf8WithBom ? new UTF8Encoding(true) : new UTF8Encoding(false);
 

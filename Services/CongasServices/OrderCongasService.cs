@@ -30,7 +30,7 @@ public class OrderCongasService : BaseCrudService<OrderCongasModel>
         
         var fichas = await query.Select(n => new
         {
-            NumerFicha = n.IdNota,
+            NumerFicha = n.NumeroNotaOrigem,
             Data = n.DataModif,
             Tipo = n.TipoOrdem
         }).ToListAsync();

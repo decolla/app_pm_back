@@ -39,6 +39,7 @@ builder.Services.AddScoped<NotesPetroService>();
 builder.Services.AddScoped<OrderPetroService>();
 builder.Services.AddScoped<NoteCongasService>();
 builder.Services.AddScoped<OrderCongasService>();
+builder.Services.AddScoped<AnnexService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
