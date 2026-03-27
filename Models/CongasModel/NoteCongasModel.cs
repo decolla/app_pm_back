@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using app_pm_back.Interfaces;
 
 namespace app_pm_back.Models.CongasModel;
 
 /// <summary>
 /// Modelo para NotaCongasModel
 /// </summary>
-public class NoteCongasModel
+public class NoteCongasModel : IClassifiable
 {
     /// <summary>
     /// Id da Nota
@@ -28,6 +29,29 @@ public class NoteCongasModel
     [Required(ErrorMessage = "O tipo de nota é obrigatório")]
     [Range(1, 2, ErrorMessage = "O tipo de nota deve estar entre 1 e 2")]
     public string TipoNota { get; set; }
+    
+        
+    /// <summary>
+    /// O resultado do tipo da nota
+    /// </summary>
+    /// <example>CORRETIVA ou PREVENTIVA</example>
+    public string? Classificacao { get; set; }
+    
+    /// <summary>
+    /// Quem/o que tomou a decisão da classificação da nota
+    /// </summary>
+    /// <example>"MANUAL", "FILTRO_POR_PALAVRAS", "IA_CATBOOST"</example>
+    public string? MetodoClassificacao { get; set;}
+    
+    /// <summary>
+    /// Identificador de quem classificou a nota. No caso nulo, foi classificado pelo sistema
+    /// </summary>
+    public string? ClassificadoPor { get; set; }
+    
+    /// <summary>
+    /// Data de quando a classificacao ocorreu
+    /// </summary>
+    public DateTime? DataClassificacao { get; set; }
     
     /// <summary>
     /// Local de instalação do campo de seleção

@@ -22,4 +22,6 @@ public class AppDbContext : DbContext
     public DbSet<OrderCongasModel> OrdensCongas { get; set; }
     
     public DbSet<AnnexModel> Anexos { get; set; }
+    
+    public DbSet<RuleClassificationModel> Regras { get; set; }
 }
