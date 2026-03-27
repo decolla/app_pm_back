@@ -195,7 +195,7 @@ public class SpreadsheetService
                     Codificacao = SafeText("Codificação", row, columns),
                     Consequencia = SafeInt("Conseqüência", row, columns),
                     GrupoCodes = SafeText("Grupo de codes", row, columns),
-                    IdOrdem = SafeInt("Ordem", row, columns)
+                    IdOrdem = SafeLong("Ordem", row, columns)
                 };
                 resultado.NotasCongas.Add(notaCongas);
             }

@@ -1,3 +1,4 @@
+using System.Reflection;
 using app_pm_back.Data;
 using app_pm_back.Interfaces;
 using app_pm_back.Models;
@@ -59,38 +60,57 @@ public class ClassificationService<T> where T : class, IClassifiable
     public async Task<List<T>> WordsClassification(List<T>? notasComClassificacao)
     {
         // busco todas as notas/ordems sem classificação
-        var notasSemClassificacao = _dbSet.Where(n => n.Classificacao == null || n.ClassificadoPor == null).ToList();
-        
+        // remover comentário caso deve reavaliar regras já avaladas
+        var notasSemClassificacao =
+            _dbSet.Where(n => n.Classificacao == null /* || n.ClassificadoPor == null*/).ToList();
+
         // leio o campo alvo da regra e busco a palavra chave 
         List<RuleClassificationModel> regras = await _classificationModel.OrderBy(r => r.OrdemPrioridade).ToListAsync();
 
-        // caso a palavra exista atualiza a ficha com o método "FILTRO_PALAVRAS"
+        // dicionário para armazenar um cache das propriedades
+        Dictionary<string, PropertyInfo> cache = new Dictionary<string, PropertyInfo>();
+
         foreach (var regra in regras)
         {
-            foreach (var nota in notasSemClassificacao )
+            if (!cache.ContainsKey(regra.CampoAlvo))
             {
-                string campoAlvo = regra.CampoAlvo;
-                if (nota.GetType().GetProperty(campoAlvo) != null)
+                var prop = typeof(T).GetProperty(regra.CampoAlvo);
+                if (prop != null)
                 {
-                    string palavraChave = regra.PalavraChave;
-                    string? valorAlvo = nota.GetType().GetProperty(campoAlvo)?.GetValue(nota)?.ToString();
-
-                    if (valorAlvo != null && valorAlvo.Contains(palavraChave))
-                    {
-                        nota.Classificacao = regra.ClassificacaoAplicada;
-                        nota.ClassificadoPor = null;
-                        nota.DataClassificacao = DateTime.Now;
-                        nota.MetodoClassificacao = "FILTRO_PALAVRAS";
-                        break;
-                    }
+                    cache[regra.CampoAlvo] = prop;
                 }
             }
         }
+
+        // caso a palavra exista atualiza a ficha com o método "FILTRO_PALAVRAS"
+        foreach (var nota in notasSemClassificacao)
+        {
+            foreach (var regra in regras)
+            {
+                if (!cache.TryGetValue(regra.CampoAlvo, out var propriedadeAlvo))
+                    continue;
+
+                string palavraChave = regra.PalavraChave;
+
+                string? valorAlvo = propriedadeAlvo.GetValue(nota)?.ToString();
+
+                if (valorAlvo != null && valorAlvo.Contains(palavraChave, StringComparison.OrdinalIgnoreCase))
+                {
+                    nota.Classificacao = regra.ClassificacaoAplicada;
+                    nota.ClassificadoPor = null;
+                    nota.DataClassificacao = DateTime.Now;
+                    nota.MetodoClassificacao = "FILTRO_PALAVRAS";
+                    break;
+                }
+            }
+        }
+
         _context.SaveChanges();
         return notasSemClassificacao;
     }
 
     public async Task<List<T>> CatbosstClassification(List<T> notasSemClassficacao, List<T> notasComClassificacao)
     {
+        return null;
     }
 }
