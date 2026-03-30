@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
 
+/// <summary>
+/// Controller para notas
+/// </summary>
 [ApiController]
 [Route("api/notes")]
 public class NotesController : ControllerBase
@@ -16,6 +19,12 @@ public class NotesController : ControllerBase
     private readonly NoteCongasService _congasService;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Construtor
+    /// </summary>
+    /// <param name="petroService"></param>
+    /// <param name="congasService"></param>
+    /// <param name="mapper"></param>
     public NotesController(
         NotesPetroService petroService, 
         NoteCongasService congasService, 
@@ -67,7 +76,7 @@ public class NotesController : ControllerBase
             var todasNotas = await _petroService.GetAllNotasAsync();
             return Ok(todasNotas);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao processar notas Petro." });
         }
@@ -84,7 +93,7 @@ public class NotesController : ControllerBase
             var notas = await _petroService.CountNotasAsync();
             return Ok(new { count = notas });
         }
-        catch (Exception e)
+        catch (Exception )
         {
             return NotFound(new { message = "Erro ao procurar notas Petro." });
         }
@@ -93,15 +102,15 @@ public class NotesController : ControllerBase
     /// <summary>
     /// Retorna as Fichas de uma nota Petro e suas ocorrências de mesmo tipo
     /// </summary>
-    [HttpGet("petro/ativo/{DNSIoT}")]
-    public async Task<IActionResult> ListarFichasPorAtivoPetro(string DNSIoT, [FromQuery] string? type)
+    [HttpGet("petro/ativo/{dnsIoT}")]
+    public async Task<IActionResult> ListarFichasPorAtivoPetro(string dnsIoT, [FromQuery] string? type)
     {
         try
         {
-            var resultado = await _petroService.GetFichasPorAtivoAsync(DNSIoT, type);
+            var resultado = await _petroService.GetFichasPorAtivoAsync(dnsIoT, type);
             return Ok(resultado);
         }
-        catch (Exception e)
+        catch (Exception )
         {
             return BadRequest(new { message = "Erro ao buscar fichas do ativo Petro." });
         }
@@ -118,30 +127,29 @@ public class NotesController : ControllerBase
             var result = await _petroService.UpdateNotaAsync(nota);
             return Ok(new { message = "Nota Petro atualizada com sucesso: " + result.IdNota });
         }
-        catch (Exception e)
+        catch (Exception )
         {
             return BadRequest(new { message = "Erro ao atualizar nota Petro." });
         }
     }
 
     /// <summary>
-    /// Delete uma nota Petro de mesmo Id
+    /// Deleta uma nota Petro de mesmo Id
     /// </summary>
     [HttpDelete("petro/{id:int}")]
     public async Task<IActionResult> DeletarNotaPetro(int id)
     {
         try
         {
-            var result = await _petroService.DeleteNotaAsync(id);
+            await _petroService.DeleteNotaAsync(id);
             return Ok(new { message = "Nota Petro deletada com sucesso" });
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao deletar nota Petro." });
         }
     }
-
-
+    
     // =========================================================================
     // ENDPOINTS DA CONGAS (Rotas: api/notes/congas/...)
     // =========================================================================
@@ -182,7 +190,7 @@ public class NotesController : ControllerBase
             var todasNotas = await _congasService.GetAllNotasAsync();
             return Ok(todasNotas);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao processar notas Congas." });
         }
@@ -199,7 +207,7 @@ public class NotesController : ControllerBase
             var notas = await _congasService.CountNotasAsync();
             return Ok(new { count = notas });
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return NotFound(new { message = "Erro ao procurar notas Congas." });
         }
@@ -208,15 +216,15 @@ public class NotesController : ControllerBase
     /// <summary>
     /// Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
     /// </summary>
-    [HttpGet("congas/ativo/{DNSIoT}")]
-    public async Task<IActionResult> ListarFichasPorAtivoCongas(string DNSIoT, [FromQuery] string? type)
+    [HttpGet("congas/ativo/{dnsIoT}")]
+    public async Task<IActionResult> ListarFichasPorAtivoCongas(string dnsIoT, [FromQuery] string? type)
     {
         try
         {
-            var resultado = await _congasService.GetFichasPorAtivoAsync(DNSIoT, type);
+            var resultado = await _congasService.GetFichasPorAtivoAsync(dnsIoT, type);
             return Ok(resultado);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao buscar fichas do ativo Congas." });
         }
@@ -233,7 +241,7 @@ public class NotesController : ControllerBase
             var result = await _congasService.UpdateNotaAsync(nota);
             return Ok(new { message = "Nota Congas atualizada com sucesso: " + result.IdNota });
         }
-        catch (Exception e)
+        catch (Exception )
         {
             return BadRequest(new { message = "Erro ao atualizar nota Congas." });
         }
@@ -247,10 +255,10 @@ public class NotesController : ControllerBase
     {
         try
         {
-            var result = await _congasService.DeleteNotaAsync(id);
+            await _congasService.DeleteNotaAsync(id);
             return Ok(new { message = "Nota Congas deletada com sucesso" });
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao deletar nota Congas." });
         }

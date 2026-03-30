@@ -7,6 +7,7 @@ using app_pm_back.Services.CongasServices;
 using app_pm_back.Services.PetroServices;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using teste_catboost_cs;
 
 // apagar depois essa gambiarra aqui
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -32,7 +33,6 @@ builder.Services.AddCors(option => option.AddPolicy("AllowAll", policy =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 3. Registra os seus Serviços
 builder.Services.AddScoped<ConvertService>();
 builder.Services.AddScoped<SpreadsheetService>();
 builder.Services.AddScoped<NotesPetroService>();
@@ -40,6 +40,9 @@ builder.Services.AddScoped<OrderPetroService>();
 builder.Services.AddScoped<NoteCongasService>();
 builder.Services.AddScoped<OrderCongasService>();
 builder.Services.AddScoped<AnnexService>();
+
+builder.Services.AddSingleton<Cbm>();
+builder.Services.AddSingleton<ModelMeta>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 

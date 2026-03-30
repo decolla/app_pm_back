@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "MT1txvwxqCw=",
+  "dgSpecHash": "gY/b5VuD4bk=",
   "success": true,
   "projectFilePath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj",
   "expectedPackageFiles": [
     "/home/decolla/.nuget/packages/automapper/12.0.1/automapper.12.0.1.nupkg.sha512",
     "/home/decolla/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/12.0.1/automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
+    "/home/decolla/.nuget/packages/csvhelper/33.1.0/csvhelper.33.1.0.nupkg.sha512",
     "/home/decolla/.nuget/packages/exceldatareader/3.8.0/exceldatareader.3.8.0.nupkg.sha512",
     "/home/decolla/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/decolla/.nuget/packages/microsoft.aspnetcore.openapi/8.0.23/microsoft.aspnetcore.openapi.8.0.23.nupkg.sha512",

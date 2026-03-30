@@ -3,12 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
 
+/// <summary>
+/// Controller para Health
+/// </summary>
 [ApiController]
 [Route("health/")]
 public class HealthController : ControllerBase
 {
     private readonly IReportService _reportService;
     
+    /// <summary>
+    /// Construtor
+    /// </summary>
+    /// <param name="reportService"></param>
     public HealthController(IReportService reportService)
     {
         _reportService = reportService;

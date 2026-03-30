@@ -1,11 +1,17 @@
-using app_pm_back.Models;
 using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
 
 namespace app_pm_back.Routes;
 
+/// <summary>
+/// Rotas para planilhas
+/// </summary>
 public static class SpreadsheetEndpoints
 {
+    /// <summary>
+    /// Mapeia as rotas de planilhas
+    /// </summary>
+    /// <param name="app"></param>
     public static void MapSpreadsheetEndpoints(this IEndpointRouteBuilder app)
     {
         // agrupa as rotas de planilha 

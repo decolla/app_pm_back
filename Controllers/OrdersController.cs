@@ -1,7 +1,6 @@
 using app_pm_back.DTO;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
-using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
 using app_pm_back.Services.PetroServices;
 using AutoMapper;
@@ -9,6 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
 
+/// <summary>
+/// Controller para ordens
+/// </summary>
 [ApiController]
 [Route("api/orders")]
 public class OrdersController : ControllerBase
@@ -17,6 +19,12 @@ public class OrdersController : ControllerBase
     private readonly OrderCongasService _congasService;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Construtor
+    /// </summary>
+    /// <param name="petroService"></param>
+    /// <param name="congasService"></param>
+    /// <param name="mapper"></param>
     public OrdersController(OrderPetroService petroService, OrderCongasService congasService, IMapper mapper)
     {
         _petroService = petroService;
@@ -65,7 +73,7 @@ public class OrdersController : ControllerBase
             var todasNotas = await _petroService.GetAllNotasAsync();
             return Ok(todasNotas);
         }
-        catch (Exception e)
+        catch (Exception )
         {
             return BadRequest(new { message = "Erro ao processar ordens Petro." });
         }
@@ -82,7 +90,7 @@ public class OrdersController : ControllerBase
             var notas = await _petroService.CountNotasAsync();
             return Ok(new { count = notas });
         }
-        catch (Exception e)
+        catch (Exception )
         {
             return NotFound(new { message = "Erro ao procurar notas Petro." });
         }
@@ -91,16 +99,16 @@ public class OrdersController : ControllerBase
     /// <summary>
     /// Retorna as Fichas de uma nota Petro e suas ocorrências de mesmo tipo
     /// </summary>
-    [HttpGet("petro/ativo/{DNSIoT}")]
-    public async Task<IActionResult> ListarOrdensPorAtivoPetro(string DNSIoT, [FromQuery] string? type)
+    [HttpGet("petro/ativo/{dnsIoT}")]
+    public async Task<IActionResult> ListarOrdensPorAtivoPetro(string dnsIoT, [FromQuery] string? type)
     {
         try
         {
             // FALTA IMPLEMENTAÇÃO. FAZER: após correção das classes 
-            var resultado = await _petroService.GetFichasPorAtivoAsync(DNSIoT, type);
+            var resultado = await _petroService.GetFichasPorAtivoAsync(dnsIoT, type);
             return Ok(resultado);
         }
-        catch (Exception e)
+        catch (Exception )
         {
             return BadRequest(new { message = "Erro ao buscar fichas do ativo Petro." });
         }
@@ -117,7 +125,7 @@ public class OrdersController : ControllerBase
             var result = await _petroService.UpdateNotaAsync(ordem);
             return Ok(new { message = "Nota Petro atualizada com sucesso: " + result.IdNota });
         }
-        catch (Exception e)
+        catch (Exception )
         {
             return BadRequest(new { message = "Erro ao atualizar nota Petro." });
         }
@@ -131,10 +139,10 @@ public class OrdersController : ControllerBase
     {
         try
         {
-            var result = await _petroService.DeleteNotaAsync(id);
+           await _petroService.DeleteNotaAsync(id);
             return Ok(new { message = "Nota Petro deletada com sucesso" });
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao deletar nota Petro." });
         }
@@ -181,7 +189,7 @@ public class OrdersController : ControllerBase
             var todasNotas = await _congasService.GetAllNotasAsync();
             return Ok(todasNotas);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao processar ordens Congas." });
         }
@@ -198,7 +206,7 @@ public class OrdersController : ControllerBase
             var notas = await _congasService.CountNotasAsync();
             return Ok(new { count = notas });
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return NotFound(new { message = "Erro ao procurar ordens Congas." });
         }
@@ -207,15 +215,15 @@ public class OrdersController : ControllerBase
     /// <summary>
     /// Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
     /// </summary>
-    [HttpGet("congas/ativo/{DNSIoT}")]
-    public async Task<IActionResult> ListarFichasPorAtivoCongas(string DNSIoT, [FromQuery] string? type)
+    [HttpGet("congas/ativo/{dnsIoT}")]
+    public async Task<IActionResult> ListarFichasPorAtivoCongas(string dnsIoT, [FromQuery] string? type)
     {
         try
         {
-            var resultado = await _congasService.GetFichasPorAtivoAsync(DNSIoT, type);
+            var resultado = await _congasService.GetFichasPorAtivoAsync(dnsIoT, type);
             return Ok(resultado);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao buscar ordens do ativo Congas." });
         }
@@ -232,7 +240,7 @@ public class OrdersController : ControllerBase
             var result = await _congasService.UpdateNotaAsync(ordem);
             return Ok(new { message = "Ordem Congas atualizada com sucesso: " + result.NumeroNotaOrigem });
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao atualizar ordem Congas." });
         }
@@ -246,10 +254,10 @@ public class OrdersController : ControllerBase
     {
         try
         {
-            var result = await _congasService.DeleteNotaAsync(id);
+            await _congasService.DeleteNotaAsync(id);
             return Ok(new { message = "Ordem Congas deletada com sucesso" });
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao deletar ordem Congas." });
         }
