@@ -17,6 +17,8 @@ public class NotesController : ControllerBase
 {
     private readonly NotesPetroService _petroService;
     private readonly NoteCongasService _congasService;
+    private readonly ClassificationService<NotaPetroModel> _classificationServicePetro;
+    private readonly ClassificationService<NoteCongasModel> _classificationServiceCongas;
     private readonly IMapper _mapper;
 
     /// <summary>
@@ -26,8 +28,8 @@ public class NotesController : ControllerBase
     /// <param name="congasService"></param>
     /// <param name="mapper"></param>
     public NotesController(
-        NotesPetroService petroService, 
-        NoteCongasService congasService, 
+        NotesPetroService petroService,
+        NoteCongasService congasService,
         IMapper mapper)
     {
         _petroService = petroService;
@@ -93,7 +95,7 @@ public class NotesController : ControllerBase
             var notas = await _petroService.CountNotasAsync();
             return Ok(new { count = notas });
         }
-        catch (Exception )
+        catch (Exception)
         {
             return NotFound(new { message = "Erro ao procurar notas Petro." });
         }
@@ -110,7 +112,7 @@ public class NotesController : ControllerBase
             var resultado = await _petroService.GetFichasPorAtivoAsync(dnsIoT, type);
             return Ok(resultado);
         }
-        catch (Exception )
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao buscar fichas do ativo Petro." });
         }
@@ -127,7 +129,7 @@ public class NotesController : ControllerBase
             var result = await _petroService.UpdateNotaAsync(nota);
             return Ok(new { message = "Nota Petro atualizada com sucesso: " + result.IdNota });
         }
-        catch (Exception )
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao atualizar nota Petro." });
         }
@@ -149,7 +151,97 @@ public class NotesController : ControllerBase
             return BadRequest(new { message = "Erro ao deletar nota Petro." });
         }
     }
-    
+
+    /// <summary>
+    /// Classifica uma nota Petro com base na classificação humana atribuida a uma nota específica
+    /// </summary>
+    /// <param name="id">Id da nota a ser classificada</param>
+    /// <param name="classificacao"> Classificação a ser atribuída</param>
+    /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
+    /// <returns>Nota atualizada</returns>
+    [HttpPut("petro/classificacao/{id:long}")]
+    public async Task<IActionResult> ClassificacaoHumanaNotaPetro(long id, string classificacao, string idUsuario)
+    {
+        try
+        {
+            var result = await _classificationServicePetro.HumanClassification(id, classificacao, idUsuario);
+            if (result.MetodoClassificacao == "MANUAL")
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(new { message = "Não foi possível classificar esta nota" });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar esta nota: {e.Message}" });
+        }
+    } 
+
+    /// <summary>
+    /// Cria uma regra de classificação por palavras
+    /// </summary>
+    /// <param name="regra">Regra a ser aplicada</param>
+    /// <returns>Regra criada</returns>
+    [HttpPost("petro/classificacao/regra")]
+    public async Task<IActionResult> CriarRegraPetro(RuleClassificationModel regra)
+    {
+        try
+        {
+            var result = await _classificationServicePetro.CreateRule(regra);
+            return Ok(new {message = $"Regra criada com sucesso: {result}"});
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao criar regra {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Classifica uma nota com base uma lista de palavras armazenadas no banco
+    /// </summary>
+    /// <returns>Lista de notas atualizadas</returns>
+    [HttpPost("petro/classificacao/filtro")]
+    public async Task<IActionResult> ClassificacaoPalavrasNotaPetro()
+    {
+        try
+        {
+            // passar uma lista vazia por enquanto 
+            var result = await _classificationServicePetro.WordsClassification([]);
+            if (result.Count > 0)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest("Não foram achadas notas para classificar");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Classifica as notas usando a IA catboost,
+    /// onde ela analisa o texto das notas e classifica-as com base no treinamento
+    /// para notas/ordems corretivas e preventivas 
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost("petro/classificacao/catboost")]
+    public async Task<IActionResult> ClassificacaoCatboostPetro()
+    {
+        try
+        {
+            var result = await _classificationServicePetro.CatboostClassification();
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
+        }
+        
+    }
+
     // =========================================================================
     // ENDPOINTS DA CONGAS (Rotas: api/notes/congas/...)
     // =========================================================================
@@ -241,7 +333,7 @@ public class NotesController : ControllerBase
             var result = await _congasService.UpdateNotaAsync(nota);
             return Ok(new { message = "Nota Congas atualizada com sucesso: " + result.IdNota });
         }
-        catch (Exception )
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao atualizar nota Congas." });
         }
@@ -262,5 +354,96 @@ public class NotesController : ControllerBase
         {
             return BadRequest(new { message = "Erro ao deletar nota Congas." });
         }
+    }
+    
+    
+    /// <summary>
+    /// Classifica uma nota Congas com base na classificação humana atribuida a uma nota específica
+    /// </summary>
+    /// <param name="id">Id da nota a ser classificada</param>
+    /// <param name="classificacao"> Classificação a ser atribuída</param>
+    /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
+    /// <returns>Nota atualizada</returns>
+    [HttpPut("congas/classificacao/{id:long}")]
+    public async Task<IActionResult> ClassificacaoHumanaNotaCongas(long id, string classificacao, string idUsuario)
+    {
+        try
+        {
+            var result = await _classificationServiceCongas.HumanClassification(id, classificacao, idUsuario);
+            if (result.MetodoClassificacao == "MANUAL")
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(new { message = "Não foi possível classificar esta nota" });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar esta nota: {e.Message}" });
+        }
+    } 
+
+    /// <summary>
+    /// Cria uma regra de classificação por palavras
+    /// </summary>
+    /// <param name="regra">Regra a ser aplicada</param>
+    /// <returns>Regra criada</returns>
+    [HttpPost("congas/classificacao/regra")]
+    public async Task<IActionResult> CriarRegraCongas(RuleClassificationModel regra)
+    {
+        try
+        {
+            var result = await _classificationServiceCongas.CreateRule(regra);
+            return Ok(new {message = $"Regra criada com sucesso: {result}"});
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao criar regra {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Classifica uma nota com base uma lista de palavras armazenadas no banco
+    /// </summary>
+    /// <returns>Lista de notas atualizadas</returns>
+    [HttpPost("congas/classificacao/filtro")]
+    public async Task<IActionResult> ClassificacaoPalavrasNotaCongas()
+    {
+        try
+        {
+            // passar uma lista vazia por enquanto 
+            var result = await _classificationServiceCongas.WordsClassification([]);
+            if (result.Count > 0)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest("Não foram achadas notas para classificar");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Classifica as notas usando a IA catboost,
+    /// onde ela analisa o texto das notas e classifica-as com base no treinamento
+    /// para notas/ordems corretivas e preventivas 
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost("congas/classificacao/catboost")]
+    public async Task<IActionResult> ClassificacaoCatboostCongas()
+    {
+        try
+        {
+            var result = await _classificationServiceCongas.CatboostClassification();
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
+        }
+        
     }
 }

@@ -46,4 +46,9 @@ public class AppDbContext : DbContext
     /// Tabela de Regras para classificação
     /// </summary>
     public DbSet<RuleClassificationModel> Regras { get; set; }
+    
+    /// <summary>
+    /// Tabela de Itens de Nota Congas
+    /// </summary>
+    public DbSet<ItemNotaCongasModel> ItemNotaCongas { get; set; }
 }

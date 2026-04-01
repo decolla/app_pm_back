@@ -1,6 +1,7 @@
 using app_pm_back.DTO;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
 using app_pm_back.Services.PetroServices;
 using AutoMapper;
@@ -17,6 +18,8 @@ public class OrdersController : ControllerBase
 {
     private readonly OrderPetroService _petroService;
     private readonly OrderCongasService _congasService;
+    private readonly ClassificationService<OrdemPetroModel> _classificationServicePetro;
+    private readonly ClassificationService<OrderCongasModel> _classificationServiceCongas;
     private readonly IMapper _mapper;
 
     /// <summary>
@@ -147,6 +150,96 @@ public class OrdersController : ControllerBase
             return BadRequest(new { message = "Erro ao deletar nota Petro." });
         }
     }
+    
+    /// <summary>
+    /// Classifica uma ordem Petro com base na classificação humana atribuida a uma nota específica
+    /// </summary>
+    /// <param name="id">Id da ordem a ser classificada</param>
+    /// <param name="classificacao"> Classificação a ser atribuída</param>
+    /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
+    /// <returns>Nota atualizada</returns>
+    [HttpPut("petro/classificacao/{id:long}")]
+    public async Task<IActionResult> ClassificacaoHumanaOrdemPetro(long id, string classificacao, string idUsuario)
+    {
+        try
+        {
+            var result = await _classificationServicePetro.HumanClassification(id, classificacao, idUsuario);
+            if (result.MetodoClassificacao == "MANUAL")
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(new { message = "Não foi possível classificar esta ordem" });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar esta nota: {e.Message}" });
+        }
+    } 
+
+    /// <summary>
+    /// Cria uma regra de classificação por palavras
+    /// </summary>
+    /// <param name="regra">Regra a ser aplicada</param>
+    /// <returns>Regra criada</returns>
+    [HttpPost("petro/classificacao/regra")]
+    public async Task<IActionResult> CriarRegraPetro(RuleClassificationModel regra)
+    {
+        try
+        {
+            var result = await _classificationServicePetro.CreateRule(regra);
+            return Ok(new {message = $"Regra criada com sucesso: {result}"});
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao criar regra {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Classifica uma nota com base uma lista de palavras armazenadas no banco
+    /// </summary>
+    /// <returns>Lista de ordem atualizadas</returns>
+    [HttpPost("petro/classificacao/filtro")]
+    public async Task<IActionResult> ClassificacaoPalavrasOrdemPetro()
+    {
+        try
+        {
+            // passar uma lista vazia por enquanto 
+            var result = await _classificationServicePetro.WordsClassification([]);
+            if (result.Count > 0)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest("Não foram achadas ordem para classificar");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar ordem: {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Classifica as ordens usando a IA catboost,
+    /// onde ela analisa o texto das ordem e classifica-as com base no treinamento
+    /// para notas/ordens corretivas e preventivas 
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost("petro/classificacao/catboost")]
+    public async Task<IActionResult> ClassificacaoCatboostPetro()
+    {
+        try
+        {
+            var result = await _classificationServicePetro.CatboostClassification();
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar ordens: {e.Message}" });
+        }
+        
+    }
 
 
     // =========================================================================
@@ -261,5 +354,95 @@ public class OrdersController : ControllerBase
         {
             return BadRequest(new { message = "Erro ao deletar ordem Congas." });
         }
+    }
+    
+    /// <summary>
+    /// Classifica uma ordem Congas com base na classificação humana atribuida a uma nota específica
+    /// </summary>
+    /// <param name="id">Id da ordem a ser classificada</param>
+    /// <param name="classificacao"> Classificação a ser atribuída</param>
+    /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
+    /// <returns>Nota atualizada</returns>
+    [HttpPut("congas/classificacao/{id:long}")]
+    public async Task<IActionResult> ClassificacaoHumanaNotaCongas(long id, string classificacao, string idUsuario)
+    {
+        try
+        {
+            var result = await _classificationServiceCongas.HumanClassification(id, classificacao, idUsuario);
+            if (result.MetodoClassificacao == "MANUAL")
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(new { message = "Não foi possível classificar esta ordem" });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar esta ordem: {e.Message}" });
+        }
+    } 
+
+    /// <summary>
+    /// Cria uma regra de classificação por palavras
+    /// </summary>
+    /// <param name="regra">Regra a ser aplicada</param>
+    /// <returns>Regra criada</returns>
+    [HttpPost("congas/classificacao/regra")]
+    public async Task<IActionResult> CriarRegraCongas(RuleClassificationModel regra)
+    {
+        try
+        {
+            var result = await _classificationServiceCongas.CreateRule(regra);
+            return Ok(new {message = $"Regra criada com sucesso: {result}"});
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao criar regra {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Classifica uma ordem com base uma lista de palavras armazenadas no banco
+    /// </summary>
+    /// <returns>Lista de ordem atualizadas</returns>
+    [HttpPost("congas/classificacao/filtro")]
+    public async Task<IActionResult> ClassificacaoPalavrasNotaCongas()
+    {
+        try
+        {
+            // passar uma lista vazia por enquanto 
+            var result = await _classificationServiceCongas.WordsClassification([]);
+            if (result.Count > 0)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest("Não foram achadas ordem para classificar");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar ordem: {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Classifica as ordens usando a IA catboost,
+    /// onde ela analisa o texto das ordem e classifica-as com base no treinamento
+    /// para ordem/ordems corretivas e preventivas 
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost("congas/classificacao/catboost")]
+    public async Task<IActionResult> ClassificacaoCatboostCongas()
+    {
+        try
+        {
+            var result = await _classificationServiceCongas.CatboostClassification();
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao classificar ordens: {e.Message}" });
+        }
+        
     }
 }

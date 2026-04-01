@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
+using System.Reflection;
 using System.Text;
 using api.Communications.Service.Impl.Data;
+using app_pm_back.Attributes;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
 using Microsoft.VisualBasic.FileIO;
@@ -23,6 +25,7 @@ public class SpreadsheetService
         public List<NoteCongasModel> NotasCongas { get; set; } = new();
         public List<OrdemPetroModel> OrdensPetro { get; set; } = new();
         public List<OrderCongasModel> OrdensCongas { get; set; } = new();
+        public List<ItemNotaCongasModel> ItensCongas { get; set; } = new();
     }
 
     public async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(IFormFile spreadSheet)
@@ -98,21 +101,26 @@ public class SpreadsheetService
         Console.WriteLine("------------------------------\n");
 
         // A MÁGICA DA IDENTIFICAÇÃO
-        bool isPetro = columns.ContainsKey("Campo seleção") || columns.ContainsKey("Campo selecao");
-        bool isCongas = columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota");
+        bool isNotaPetro = columns.ContainsKey("Campo seleção") || columns.ContainsKey("Campo selecao");
+        bool isNotaCongas = columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota");
         bool isOrdemCongas = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve");
+        bool isItemCongas = columns.ContainsKey("Item") && columns.ContainsKey("Versão");
 
         if (isOrdemCongas)
         {
             resultado.TipoIdentificado = "ORDEM_CONGAS";
         }
-        else if (isPetro)
+        else if (isNotaPetro)
         {
-            resultado.TipoIdentificado = "PETRO";
+            resultado.TipoIdentificado = "NOTA_PETRO";
         }
-        else if (isCongas)
+        else if (isNotaCongas)
         {
-            resultado.TipoIdentificado = "CONGAS";
+            resultado.TipoIdentificado = "NOTA_CONGAS";
+        }
+        else if (isItemCongas)
+        {
+            resultado.TipoIdentificado = "ITEM_CONGAS";
         }
         else
         {
@@ -125,109 +133,20 @@ public class SpreadsheetService
             if (row == null || row.All(string.IsNullOrWhiteSpace)) continue;
 
             if (resultado.TipoIdentificado == "PETRO")
-            {
-                // SEU MAPEAMENTO ANTIGO DA PETRO VEM PARA CÁ
-                var notaPetro = new NotaPetroModel
-                {
-                    IdOrdem = SafeLong("Ordem", row, columns),
-
-                    // Nomes mapeados EXATAMENTE como estão no cabeçalho do Excel/CSV
-                    Campo = SafeText("Campo seleção", row, columns) ?? "N/A",
-                    Descricao = SafeText("Descrição", row, columns) ?? "Sem descrição",
-                    LocInstalacao = SafeText("Loc.instalação", row, columns) ?? "N/A",
-                    LocInstAfetado = SafeText("Loc.inst.afetad", row, columns),
-                    AreaOp = SafeInt("Área operacion.", row, columns) ?? 0,
-                    CenTrabPrinc = SafeText("CenTrabPrinc.", row, columns) ?? "",
-                    DataNota = SafeDate("Data da nota", row, columns, culture) ?? DateTime.UtcNow,
-                    Localizacao = SafeText("Localização", row, columns) ?? "",
-                    GrupoPlanej = SafeText("Grupo planej.", row, columns) ?? "",
-                    TipoNota = SafeText("Tipo de nota", row, columns) ?? "M1",
-                    Impacto = SafeInt("Impacto da Falha", row, columns) ?? 0,
-                    Parada = SafeChar("Parada", row, columns),
-                    InicioIndisp = SafeDate("Início indisp", row, columns, culture),
-                    FimIndisp = SafeDate("Fim indisp", row, columns, culture),
-                    CondInstAntAvar = SafeInt("CondInstAntAvar", row, columns),
-                    CondInstDepAvar = SafeInt("CondInstDepAvar", row, columns),
-                    CondInstAposMed = SafeInt("CondInstApósMed", row, columns)
-                };
+            { 
+                var notaPetro = ReadLineForModel<NotaPetroModel>(row, columns);
                 resultado.NotasPetro.Add(notaPetro);
-            }
+            } 
             else if (resultado.TipoIdentificado == "CONGAS")
             {
                 // NOVO MAPEAMENTO DA CONGAS 
-                var notaCongas = new NoteCongasModel
-                {
-                    NumeroNota = SafeLong("Nota", row, columns) ?? 0,
-                    TipoNota = SafeText("Tipo de nota", row, columns) ?? "MC",
-                    LocInstalacao = SafeText("Loc.instalação", row, columns) ?? "N/A",
-                    StatusSistema = SafeText("Status sistema", row, columns) ?? "Sem status",
-                    StatusUsuario = SafeText("Status usuário", row, columns) ?? "Sem status",
-                    Descricao = SafeText("Descrição", row, columns) ?? "Sem descrição",
-                    Rua = SafeText("Rua", row, columns) ?? "N/A",
-                    Bairro = SafeText("Bairro", row, columns) ?? "N/A",
-                    Local = SafeText("Local", row, columns) ?? "N/A",
-                    DataNota = SafeDate("Data da nota", row, columns, culture) ?? DateTime.UtcNow,
-                    ModificadoEm = SafeDate("Modificado em", row, columns, culture),
-                    ModificadoPor = SafeText("Modificado por", row, columns),
-                    ModificadoAs = SafeDate("Modificado às", row, columns, culture),
-                    TipoPrioridade = SafeText("Tipo prioridade", row, columns) ?? "Sem prioridade",
-                    InicioAvar = SafeDate("InícioAvar", row, columns, culture),
-                    FimAvaria = SafeDate("Fim avaria", row, columns, culture),
-                    HoraInicioAvaria = SafeDate("HoraInícioAvar.", row, columns, culture),
-                    HoraFimAvaria = SafeDate("Hora fim avaria", row, columns, culture),
-                    DtReferencia = SafeDate("Dt.referência", row, columns, culture),
-                    HoraReferencia = SafeDate("Hora referência", row, columns, culture),
-                    Parada = SafeText("Parada", row, columns),
-                    DuracParada = SafeInt("Duraç.parada", row, columns),
-                    DtCriacao = SafeDate("Dt.criação", row, columns, culture),
-                    CriadoPor = SafeText("Criado por", row, columns),
-                    CriadoAs = SafeDate("Criado às", row, columns, culture),
-                    Notificador = SafeText("Notificador", row, columns),
-                    PerfCatalogo = SafeText("Perf.catálogo", row, columns),
-                    CenTrabRespon = SafeText("CenTrab respon.", row, columns),
-                    TxtCodeCodif = SafeText("Txt.code codif.", row, columns),
-                    TxtGrpCodific = SafeText("Txt.grp.codific", row, columns),
-                    LocInstAfetado = SafeText("Loc.inst.afetad", row, columns),
-                    Equipamento = SafeText("Equipamento", row, columns),
-                    Denominacao = SafeText("Denominação", row, columns),
-                    GrpPlnjPM = SafeText("Grp.plnj.PM", row, columns),
-                    AreaOperacion = SafeText("Área operacion.", row, columns),
-                    Codificacao = SafeText("Codificação", row, columns),
-                    Consequencia = SafeInt("Conseqüência", row, columns),
-                    GrupoCodes = SafeText("Grupo de codes", row, columns),
-                    IdOrdem = SafeLong("Ordem", row, columns)
-                };
+                var notaCongas = ReadLineForModel<NoteCongasModel>(row, columns);
                 resultado.NotasCongas.Add(notaCongas);
             }
             else if (resultado.TipoIdentificado == "ORDEM_CONGAS")
             {
                 // NOVO MAPEAMENTO DA CONGAS 
-                var orderCongas = new OrderCongasModel
-                {
-                    IdOrdem = SafeLong("Ordem", row, columns) ?? 0,
-                    LocInstalacao = SafeText("Loc.instalação", row, columns) ?? "N/A",
-                    StatusSistema = SafeText("Status sistema", row, columns) ?? "Sem status",
-                    StatusUsuario = SafeText("Status usuário", row, columns) ?? "Sem status",
-                    TextoBreve = SafeText("Texto Breve", row, columns) ?? "Sem descrição",
-                    PlanoManut = SafeText("Plano manut.", row, columns) ?? "N/A",
-                    ItemManut = SafeText("Item manut.", row, columns) ?? "N/A",
-                    TipoOrdem = SafeText("Tipo de ordem", row, columns) ?? "N/A",
-                    TipoAtividPM = SafeText("Tipo ativid.PM", row, columns) ?? "N/A",
-                    DataBaseInic = SafeDate("Data-base iníc.", row, columns, culture) ?? DateTime.UtcNow,
-                    DtaInicioReal = SafeDate("Dta.início real", row, columns, culture) ?? DateTime.UtcNow,
-                    DtRealFim = SafeDate("Dt.real fim", row, columns, culture) ?? DateTime.UtcNow,
-                    InicRealHr = SafeDate("InícReal hr.", row, columns, culture) ?? DateTime.UtcNow,
-                    FimRealHora = SafeDate("Fim real hora", row, columns, culture) ?? DateTime.UtcNow,
-                    Local = SafeText("Local", row, columns) ?? "N/A",
-                    Rua = SafeText("Rua", row, columns) ?? "N/A",
-                    Bairro = SafeText("Bairro", row, columns) ?? "N/A",
-                    AreaOperacion = SafeText("Área operacion.", row, columns) ?? "N/A",
-                    CriadoPor = SafeText("Criado por", row, columns),
-                    DataModif = SafeDate("Data modif.", row, columns, culture),
-                    ModificadoPor = SafeText("Modificado por", row, columns),
-                    NumeroNotaOrigem = SafeLong("Nota", row, columns),
-                    OrdemPrincip = SafeText("Ordem princip", row, columns)
-                };
+                var orderCongas = ReadLineForModel<OrderCongasModel>(row, columns);
                 resultado.OrdensCongas.Add(orderCongas);
             }
         }
@@ -235,6 +154,47 @@ public class SpreadsheetService
         return resultado;
     }
 
+    public T ReadLineForModel<T>(string[] row, Dictionary<string, int> columns) where T : class, new()
+    {
+        // objeto vazio para receber os dados
+        var model = new T();
+
+        foreach (PropertyInfo property in model.GetType().GetProperties())
+        {
+            // procura-se a propriedade com a etiqueta 
+            var atributo = property.GetCustomAttribute<SheetColumnAttribute>();
+
+            if (atributo != null)
+            {
+                // pega o nome da coluna do Excel
+                string nomeColunaExcel = atributo.NomeDaColuna;
+
+                // procura-se a coluna no CSV
+                if (columns.TryGetValue(nomeColunaExcel.ToUpperInvariant(), out var idx) && idx < row.Length)
+                {
+                    // pega o valor da coluna
+                    string valor = row[idx].Trim();
+
+                    if (!string.IsNullOrWhiteSpace(valor))
+                    {
+                        try
+                        {
+                            // converte o valor para o tipo da propriedade, verificando se é nullable
+                            Type tipo = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                            object valorConvertido = Convert.ChangeType(valor, tipo);
+                            property.SetValue(model, valorConvertido);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Erro ao converter o valor da coluna '{nomeColunaExcel}': {ex.Message}");
+                        }
+                    }
+                }
+            }
+        }
+        return model;
+    }
+    
     // ================= MÉTODOS AUXILIARES SEGUROS =================
 
     private string? SafeText(string colName, string[] row, Dictionary<string, int> columns)
@@ -278,4 +238,5 @@ public class SpreadsheetService
         if (string.IsNullOrWhiteSpace(text) || text.Length == 0) return null;
         return text[0]; // Retorna 'X' por exemplo
     }
+    
 }

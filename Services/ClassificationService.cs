@@ -4,6 +4,7 @@ using System.Text;
 using app_pm_back.Data;
 using app_pm_back.Interfaces;
 using app_pm_back.Models;
+using app_pm_back.Models.CongasModel;
 using CsvHelper;
 using CsvHelper.Configuration.Attributes;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,7 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// <param name="rule">Regra no formato de RuleClassificationModel</param>
     /// <returns>Regra passada como parâmetro</returns>
     public async Task<RuleClassificationModel> CreateRule(RuleClassificationModel rule)
-    {
+    {   
         await _classificationModel.AddAsync(rule);
         await _context.SaveChangesAsync();
         return rule;
@@ -147,9 +148,10 @@ public class ClassificationService<T> where T : class, IClassifiable
     {
         // busco todas as notas/ordems sem classificação
         // remover comentário caso deve reavaliar regras já avaladas
-        var notasSemClassificacao =
-            _dbSet.Where(n => n.Classificacao == null /* || n.ClassificadoPor == null*/).ToList();
-
+        var notasSemClassificacao = await _dbSet
+            .Include("Itens") // tabela filha associada a nota
+            .Where(n => n.Classificacao == null /* || n.ClassificadoPor == null*/).ToListAsync();
+            
         // mapeamento de nomes para o modelo catboost
         Dictionary<string, string> tradutor = new Dictionary<string, string>()
         {
@@ -179,17 +181,33 @@ public class ClassificationService<T> where T : class, IClassifiable
         var textFeatures = new string[notasSemClassificacao.Count][];
 
         // cache de propriedades para melhorar o desempenho usando reflection
-        var cacheProps = new Dictionary<string, PropertyInfo>();
+        var cachePropsNotas = new Dictionary<string, PropertyInfo>();
+        var cachePropsItens = new Dictionary<string, PropertyInfo>();
+        
         foreach (var kvp in tradutor)
         {
-            var prop = typeof(T).GetProperty(kvp.Value);
-            if (prop != null) cacheProps[kvp.Key] = prop;
+            var propNota = typeof(T).GetProperty(kvp.Value);
+            if (propNota != null) cachePropsNotas[kvp.Key] = propNota;
+            else
+            {
+                var propItem = typeof(ItemNotaCongasModel).GetProperty(kvp.Value);
+                if (propItem != null) cachePropsItens[kvp.Key] = propItem;
+            }
         }
 
         // percorre cada nota e preenche a matriz de catFeatures
         for (int i = 0; i < notasSemClassificacao.Count; i++)
         {
             var nota = notasSemClassificacao[i];
+            
+            // tenta pegar o primeiro item associado a nota
+            object? primeiroItem = null;
+            var propItens = nota.GetType().GetProperty("Itens");
+            if (propItens != null)
+            {
+                var colecaoItens = propItens.GetValue(nota) as IEnumerable<object>;
+                primeiroItem = colecaoItens?.FirstOrDefault();
+            }
 
             // array de strings para cada coluna do catFeatures
             var rowCat = new string[_meta.cat_features.Count];
@@ -199,9 +217,13 @@ public class ClassificationService<T> where T : class, IClassifiable
                 string? valor = null;
 
                 // le o valor da propriedade da nota em cache 
-                if (cacheProps.TryGetValue(feature, out var prop))
+                if (cachePropsNotas.TryGetValue(feature, out var prop))
                 {
                     valor = prop.GetValue(nota)?.ToString();
+                }
+                else if (primeiroItem != null && cachePropsItens.TryGetValue(feature, out var propItem))
+                {
+                    valor = propItem.GetValue(primeiroItem)?.ToString();
                 }
 
                 // aplica normalização de ASCII e "missing" para cada valor
@@ -218,9 +240,13 @@ public class ClassificationService<T> where T : class, IClassifiable
                 string valor = null;
 
                 // le o valor da propriedade da nota em cache 
-                if (cacheProps.TryGetValue(feature, out var prop))
+                if (cachePropsNotas.TryGetValue(feature, out var prop))
                 {
                     valor = prop.GetValue(nota)?.ToString();
+                } 
+                else if (primeiroItem != null && cachePropsItens.TryGetValue(feature, out var propItem))
+                {
+                    valor = propItem.GetValue(primeiroItem)?.ToString();
                 }
 
                 // aplica normalização de ASCII e "missing" para cada valor
@@ -281,4 +307,5 @@ public class ClassificationService<T> where T : class, IClassifiable
         return sb.ToString().ToLower();
     }
     
+    // ADICIONAR DPS PARA CLASSIFICAR NOTAS/ORDENS JÁ CLASSIFICADAS ANTERIORMENTE
 }

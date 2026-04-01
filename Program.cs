@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json;
 using api.Communications.Service.Impl.Data;
 using app_pm_back.Data;
 using app_pm_back.Routes;
@@ -39,10 +40,26 @@ builder.Services.AddScoped<NotesPetroService>();
 builder.Services.AddScoped<OrderPetroService>();
 builder.Services.AddScoped<NoteCongasService>();
 builder.Services.AddScoped<OrderCongasService>();
+builder.Services.AddScoped<ItemNoteCongasService>();
 builder.Services.AddScoped<AnnexService>();
 
-builder.Services.AddSingleton<Cbm>();
-builder.Services.AddSingleton<ModelMeta>();
+var modelPath = Path.Combine(AppContext.BaseDirectory, "Data", "catboost_model.cbm");
+var metaPath = Path.Combine(AppContext.BaseDirectory, "Data", "model_meta.json");
+
+// verifica se os ficheiros existem antes de tentar ler (evita crash no 'dotnet ef')
+if (File.Exists(metaPath) && File.Exists(modelPath))
+{
+    var metaJson = File.ReadAllText(metaPath);
+    var modelMeta = JsonSerializer.Deserialize<ModelMeta>(metaJson);
+    builder.Services.AddSingleton(modelMeta);
+
+    var catboostModel = new Cbm(modelPath);
+    builder.Services.AddSingleton(catboostModel);
+}
+else
+{
+    Console.WriteLine("Aviso: Ficheiros do CatBoost não encontrados. O modelo IA não será carregado.");
+}
 
 builder.Services.AddAutoMapper(typeof(Program));
 

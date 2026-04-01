@@ -15,7 +15,7 @@ public class HealthController : ControllerBase
     /// <summary>
     /// Construtor
     /// </summary>
-    /// <param name="reportService"></param>
+    /// <param name="reportService"></param>;
     public HealthController(IReportService reportService)
     {
         _reportService = reportService;
