@@ -2,6 +2,8 @@ using System.Reflection;
 using System.Text.Json;
 using api.Communications.Service.Impl.Data;
 using app_pm_back.Data;
+using app_pm_back.Models;
+using app_pm_back.Models.CongasModel;
 using app_pm_back.Routes;
 using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
@@ -41,6 +43,8 @@ builder.Services.AddScoped<OrderPetroService>();
 builder.Services.AddScoped<NoteCongasService>();
 builder.Services.AddScoped<OrderCongasService>();
 builder.Services.AddScoped<ItemNoteCongasService>();
+builder.Services.AddScoped<ClassificationService<NoteCongasModel>>();
+builder.Services.AddScoped<ClassificationService<NotaPetroModel>>();
 builder.Services.AddScoped<AnnexService>();
 
 var modelPath = Path.Combine(AppContext.BaseDirectory, "Data", "catboost_model.cbm");

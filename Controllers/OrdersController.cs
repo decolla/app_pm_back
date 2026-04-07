@@ -28,10 +28,18 @@ public class OrdersController : ControllerBase
     /// <param name="petroService"></param>
     /// <param name="congasService"></param>
     /// <param name="mapper"></param>
-    public OrdersController(OrderPetroService petroService, OrderCongasService congasService, IMapper mapper)
+    public OrdersController(
+        OrderPetroService petroService, 
+        OrderCongasService congasService,
+        ClassificationService<OrdemPetroModel> classificationServicePetro,
+        ClassificationService<OrderCongasModel> classificationServiceCongas,
+        IMapper mapper
+        )
     {
         _petroService = petroService;
-        _congasService = congasService;     
+        _congasService = congasService;  
+        _classificationServicePetro = classificationServicePetro;
+        _classificationServiceCongas = classificationServiceCongas;
         _mapper = mapper;
     }
 

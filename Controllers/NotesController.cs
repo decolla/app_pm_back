@@ -17,6 +17,7 @@ public class NotesController : ControllerBase
 {
     private readonly NotesPetroService _petroService;
     private readonly NoteCongasService _congasService;
+    private readonly ItemNoteCongasService _itemNoteCongasService;
     private readonly ClassificationService<NotaPetroModel> _classificationServicePetro;
     private readonly ClassificationService<NoteCongasModel> _classificationServiceCongas;
     private readonly IMapper _mapper;
@@ -30,10 +31,16 @@ public class NotesController : ControllerBase
     public NotesController(
         NotesPetroService petroService,
         NoteCongasService congasService,
+        ItemNoteCongasService itemNoteCongasService,
+        ClassificationService<NotaPetroModel> classificationServicePetro,
+        ClassificationService<NoteCongasModel> classificationServiceCongas,
         IMapper mapper)
     {
         _petroService = petroService;
         _congasService = congasService;
+        _itemNoteCongasService = itemNoteCongasService;
+        _classificationServicePetro = classificationServicePetro;
+        _classificationServiceCongas = classificationServiceCongas;
         _mapper = mapper;
     }
 
@@ -353,6 +360,25 @@ public class NotesController : ControllerBase
         catch (Exception)
         {
             return BadRequest(new { message = "Erro ao deletar nota Congas." });
+        }
+    }
+
+    /// <summary>
+    /// Retorna os itens de uma nota Congas
+    /// </summary>
+    /// <param name="notaId">Id da nota a ser realizado a busca</param>
+    [HttpGet("congas/{notaId:long}/items")]
+    public async Task<IActionResult> BuscarItensNota(long notaId)
+    {
+        try
+        {
+            List<ItemNotaCongasModel> lista = await _itemNoteCongasService.GetItemsByNotaIdAsync(notaId);
+            return Ok(lista);
+        }
+        catch (Exception e)
+        {
+
+            return BadRequest(new { message = $"Erro ao buscar itens da nota: {e.Message}" });
         }
     }
     
