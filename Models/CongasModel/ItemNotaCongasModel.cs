@@ -11,12 +11,12 @@ public class ItemNotaCongasModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long IdItem { get; set; }
+    public int IdItem { get; set; }
     
     /// <summary>
     /// Id da nota de congas associada ao item
     /// </summary>
-    public long NoteCongasIdNota { get; set; }
+    public int? NoteCongasIdNota { get; set; }
     
     /// <summary>
     /// Nota de congas relacionada ao item

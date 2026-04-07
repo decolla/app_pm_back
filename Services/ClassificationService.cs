@@ -146,11 +146,9 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// <returns>Notas/ordens atualizadas com base no cáculo de probabilidades do modelo catboost</returns>
     public async Task<List<T>> CatboostClassification()
     {
-        // busco todas as notas/ordems sem classificação
-        // remover comentário caso deve reavaliar regras já avaladas
-        var notasSemClassificacao = await _dbSet
-            .Include("Itens") // tabela filha associada a nota
-            .Where(n => n.Classificacao == null /* || n.ClassificadoPor == null*/).ToListAsync();
+        
+        var notasAtualizadas = new List<T>();
+        int tamanhoLote = 500; // processa 500 por vez
             
         // mapeamento de nomes para o modelo catboost
         Dictionary<string, string> tradutor = new Dictionary<string, string>()
@@ -175,11 +173,7 @@ public class ClassificationService<T> where T : class, IClassifiable
             { "Texto grp.causa", "TextoGrpCausa" },
             { "Txt.code causa", "TxtCodeCausa" }
         };
-
-        // matriz com tamanho exato de lista de notas 
-        var catFeatures = new string[notasSemClassificacao.Count][];
-        var textFeatures = new string[notasSemClassificacao.Count][];
-
+        
         // cache de propriedades para melhorar o desempenho usando reflection
         var cachePropsNotas = new Dictionary<string, PropertyInfo>();
         var cachePropsItens = new Dictionary<string, PropertyInfo>();
@@ -195,90 +189,113 @@ public class ClassificationService<T> where T : class, IClassifiable
             }
         }
 
-        // percorre cada nota e preenche a matriz de catFeatures
-        for (int i = 0; i < notasSemClassificacao.Count; i++)
+        while (true)
         {
-            var nota = notasSemClassificacao[i];
+            // busca apenas um lote de notas sem classificação
+            var lote = await _dbSet
+                .Include("Itens") 
+                .Where(n => n.Classificacao == null || n.Classificacao == "")
+                .Take(tamanhoLote)
+                .ToListAsync();
+
+            // se não encontrou mais nenhuma, sai do loop
+            if (lote.Count == 0)
+                break;
+
+            // matrizes com tamanho exato do LOTE ATUAL
+            var catFeatures = new string[lote.Count][];
+            var textFeatures = new string[lote.Count][];
             
-            // tenta pegar o primeiro item associado a nota
-            object? primeiroItem = null;
-            var propItens = nota.GetType().GetProperty("Itens");
-            if (propItens != null)
+            // percorre cada nota e preenche a matriz de catFeatures
+            for (int i = 0; i < lote.Count; i++)
             {
-                var colecaoItens = propItens.GetValue(nota) as IEnumerable<object>;
-                primeiroItem = colecaoItens?.FirstOrDefault();
-            }
+                var nota = lote[i];
 
-            // array de strings para cada coluna do catFeatures
-            var rowCat = new string[_meta.cat_features.Count];
-            for (int j = 0; j < _meta.cat_features.Count; j++)
-            {
-                var feature = _meta.cat_features[j];
-                string? valor = null;
-
-                // le o valor da propriedade da nota em cache 
-                if (cachePropsNotas.TryGetValue(feature, out var prop))
+                // tenta pegar o primeiro item associado a nota
+                object? primeiroItem = null;
+                var propItens = nota.GetType().GetProperty("Itens");
+                if (propItens != null)
                 {
-                    valor = prop.GetValue(nota)?.ToString();
-                }
-                else if (primeiroItem != null && cachePropsItens.TryGetValue(feature, out var propItem))
-                {
-                    valor = propItem.GetValue(primeiroItem)?.ToString();
+                    var colecaoItens = propItens.GetValue(nota) as IEnumerable<object>;
+                    primeiroItem = colecaoItens?.FirstOrDefault();
                 }
 
-                // aplica normalização de ASCII e "missing" para cada valor
-                rowCat[j] = NormalizeAsciiLower(valor, feature);
+                // array de strings para cada coluna do catFeatures
+                var rowCat = new string[_meta.cat_features.Count];
+                for (int j = 0; j < _meta.cat_features.Count; j++)
+                {
+                    var feature = _meta.cat_features[j];
+                    string? valor = null;
+
+                    // le o valor da propriedade da nota em cache 
+                    if (cachePropsNotas.TryGetValue(feature, out var prop))
+                    {
+                        valor = prop.GetValue(nota)?.ToString();
+                    }
+                    else if (primeiroItem != null && cachePropsItens.TryGetValue(feature, out var propItem))
+                    {
+                        valor = propItem.GetValue(primeiroItem)?.ToString();
+                    }
+
+                    // aplica normalização de ASCII e "missing" para cada valor
+                    rowCat[j] = NormalizeAsciiLower(valor, feature);
+                }
+
+                // salva a linha na matriz
+                catFeatures[i] = rowCat;
+
+                // preenche a matriz de textFeatures
+                var rowText = new string[_meta.text_features.Count];
+                for (int j = 0; j < _meta.text_features.Count; j++)
+                {
+                    string feature = _meta.text_features[j];
+                    string? valor = null;
+
+                    // le o valor da propriedade da nota em cache 
+                    if (cachePropsNotas.TryGetValue(feature, out var prop))
+                    {
+                        valor = prop.GetValue(nota)?.ToString();
+                    }
+                    else if (primeiroItem != null && cachePropsItens.TryGetValue(feature, out var propItem))
+                    {
+                        valor = propItem.GetValue(primeiroItem)?.ToString();
+                    }
+
+                    // aplica normalização de ASCII e "missing" para cada valor
+                    rowText[j] = NormalizeAsciiLower(valor, feature);
+                }
+
+                // salva a linha na matriz
+                textFeatures[i] = rowText;
             }
-            // salva a linha na matriz
-            catFeatures[i] = rowCat;
+
+            // extrai o array de catFeatures e o array de textFeatures
+            // gera um array de probabilidades
+            double[] probabilidades = _cbm.Predict([], catFeatures, textFeatures);
+
+            // classifica as notas com base nas probabilidades
+            for (int i = 0; i < lote.Count; i++)
+            {
+                var nota = lote[i];
+                var chanceDeSerCorretiva = probabilidades[i];
+
+                if (chanceDeSerCorretiva > 0.5)
+                    nota.Classificacao = "CORRETIVA";
+                else
+                    nota.Classificacao = "PREVENTIVA";
+
+                nota.MetodoClassificacao = "IA_CATBOOST";
+                nota.DataClassificacao = DateTime.UtcNow;
+                
+                notasAtualizadas.Add(nota);
+            }
+            // salva o lote no banco de dados
+            await _context.SaveChangesAsync();
             
-            // preenche a matriz de textFeatures
-            var rowText = new string[_meta.text_features.Count];
-            for (int j = 0; j < _meta.text_features.Count; j++)
-            {
-                string feature = _meta.text_features[j];
-                string valor = null;
-
-                // le o valor da propriedade da nota em cache 
-                if (cachePropsNotas.TryGetValue(feature, out var prop))
-                {
-                    valor = prop.GetValue(nota)?.ToString();
-                } 
-                else if (primeiroItem != null && cachePropsItens.TryGetValue(feature, out var propItem))
-                {
-                    valor = propItem.GetValue(primeiroItem)?.ToString();
-                }
-
-                // aplica normalização de ASCII e "missing" para cada valor
-                rowText[j] = NormalizeAsciiLower(valor, feature);
-            }
-            // salva a linha na matriz
-            textFeatures[i] = rowText;
+            // limpeza de memória 
+            _context.ChangeTracker.Clear();
         }
-
-        // extrai o array de catFeatures e o array de textFeatures
-        // gera um array de probabilidades
-        double[] probabilidades = _cbm.Predict([], catFeatures, textFeatures);
-
-        // classifica as notas com base nas probabilidades
-        for (int i = 0;
-             i < notasSemClassificacao.Count;
-             i++)
-        {
-            var nota = notasSemClassificacao[i];
-            var chanceDeSerCorretiva = probabilidades[i];
-
-            if (chanceDeSerCorretiva > 0.5)
-                nota.Classificacao = "CORRETIVA";
-            else
-                nota.Classificacao = "PREVENTIVA";
-
-            nota.MetodoClassificacao = "IA_CATBOOST";
-            nota.DataClassificacao = DateTime.UtcNow;
-        }
-
-        await _context.SaveChangesAsync();
-        return notasSemClassificacao;
+        return notasAtualizadas;
     }
 
     /// <summary>

@@ -29,9 +29,8 @@ public class NoteCongasModel : IClassifiable
     /// </summary>
     /// <example>MC</example>
     [SheetColumn("Tipo de nota")]
-    [Required(ErrorMessage = "O tipo de nota é obrigatório")]
     [Range(1, 2, ErrorMessage = "O tipo de nota deve estar entre 1 e 2")]
-    public string TipoNota { get; set; }
+    public string? TipoNota { get; set; }
     
     /// <summary>
     /// Area operacional da nota 
@@ -67,63 +66,58 @@ public class NoteCongasModel : IClassifiable
     /// </summary>
     /// <example>CG_05_CON_IND_CRM00087</example>
     [SheetColumn("Loc.instalação")]
-    [Required(ErrorMessage = "O Local de instalação é obrigatório")]
-    public string LocInstalacao { get; set; }
+    public string? LocInstalacao { get; set; }
     
     /// <summary>
     /// Status do estado do ativo relatado na nota
     /// </summary>
     /// <example> MSEN </example>
     [SheetColumn("Status sistema")]
-    [Required(ErrorMessage = "O status é obrigatório")]
     [Range(1,4, ErrorMessage = "O status deve estar entre 1 e 4")]
-    public string StatusSistema { get; set; }
+    public string? StatusSistema { get; set; }
     
     /// <summary>
     /// Descrição do estado do ativo relatado na nota
     /// </summary>
     /// <example> APRV </example>
     [SheetColumn("Status usuário")]
-    [Required(ErrorMessage = "O status é obrigatório")]
     [Range(1,4, ErrorMessage = "O status deve estar entre 1 e 4")]
-    public string StatusUsuario { get; set; }
+    public string? StatusUsuario { get; set; }
     
     /// <summary>
     /// Descrição do estado do ativo relatado na nota
     /// </summary>
     /// <example>UAR 2014 - SVVA TROCA DA VALVULA ALIVIO</example>
     [SheetColumn("Descrição")]
-    [Required(ErrorMessage = "A descrição é obrigatória")]
-    public string Descricao { get; set; }
+    public string? Descricao { get; set; }
 
     /// <summary>
     /// Rua da localização
     /// </summary>
     /// <example>R PASCAL 000000</example>
     [SheetColumn("Rua")]
-    public string Rua { get; set; }
+    public string? Rua { get; set; }
     
     /// <summary>
     /// Bairro da localização
     /// </summary>
     /// <example>CAMPO BELO</example>
     [SheetColumn("Bairro")]
-    public string Bairro { get; set; }
+    public string? Bairro { get; set; }
     
     /// <summary>
     /// Local da instalação
     /// </summary>
     /// <example>SAO PAULO</example>
     [SheetColumn("Local")]
-    public string Local { get; set; }
+    public string? Local { get; set; }
     
     /// <summary>
     /// Data de emissão da nota 
     /// </summary>
     /// <example>DD/MM/AAAA</example>
     [SheetColumn("Data da nota")]
-    [Required(ErrorMessage = "A data é obrigatória")]
-    public DateTime DataNota { get; set; }
+    public DateTime? DataNota { get; set; }
     
     /// <summary>
     /// Data de modificação da nota 
@@ -151,8 +145,7 @@ public class NoteCongasModel : IClassifiable
     /// </summary>
     /// <example>PM</example>
     [SheetColumn("Tipo prioridade")]
-    [Required(ErrorMessage = "O tipo de prioridade da nota é obrigatório")]
-    public string TipoPrioridade { get; set; }
+    public string? TipoPrioridade { get; set; }
     
     /// <summary>
     /// Data de início da avaria

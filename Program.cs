@@ -9,6 +9,7 @@ using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
 using app_pm_back.Services.PetroServices;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using teste_catboost_cs;
 
@@ -32,6 +33,17 @@ builder.Services.AddCors(option => option.AddPolicy("AllowAll", policy =>
     policy.SetIsOriginAllowed(_ => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 }));
 
+// aumenta o limite de ficheiros multipart para 200 MB
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 209715200;
+});
+
+// aumenta o limite do servidor para 200 MB
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Limits.MaxRequestBodySize = 209715200;
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -45,6 +57,8 @@ builder.Services.AddScoped<OrderCongasService>();
 builder.Services.AddScoped<ItemNoteCongasService>();
 builder.Services.AddScoped<ClassificationService<NoteCongasModel>>();
 builder.Services.AddScoped<ClassificationService<NotaPetroModel>>();
+builder.Services.AddScoped<ClassificationService<OrderCongasModel>>();
+builder.Services.AddScoped<ClassificationService<OrdemPetroModel>>();
 builder.Services.AddScoped<AnnexService>();
 
 var modelPath = Path.Combine(AppContext.BaseDirectory, "Data", "catboost_model.cbm");

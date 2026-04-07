@@ -46,26 +46,26 @@ public static class SpreadsheetEndpoints
                     int inseridas = 0;
 
                     // DECISÃO DE ROTA BASEADA NA IDENTIFICAÇÃO
-                    if (resultadoPlanilha.TipoIdentificado == "NOTAS_PETRO")
+                    if (resultadoPlanilha.TipoIdentificado == "NOTA_PETRO")
                     {
                         if (!resultadoPlanilha.NotasPetro.Any())
                             return Results.BadRequest(new
                                 { message = "Planilha Petro reconhecida, mas sem dados válidos." });
 
                         await notesPetroService.CreateNotasEmMassaAsync(resultadoPlanilha.NotasPetro
-                            .DistinctBy(o => o.IdNota).ToList());
+                            .ToList());
                         inseridas++;
 
                         return Results.Ok(new { message = $"{inseridas} notas da PETRO processadas com sucesso!" });
                     }
-                    else if (resultadoPlanilha.TipoIdentificado == "NOTAS_CONGAS")
+                    else if (resultadoPlanilha.TipoIdentificado == "NOTA_CONGAS")
                     {
                         if (!resultadoPlanilha.NotasCongas.Any())
                             return Results.BadRequest(new
                                 { message = "Planilha Congas reconhecida, mas sem dados válidos." });
 
                         await noteCongasService.CreateNotasEmMassaAsync(resultadoPlanilha.NotasCongas
-                            .DistinctBy(o => o.IdNota).ToList());
+                            .DistinctBy(o => o.NumeroNota).ToList());
                         inseridas++;
 
                         return Results.Ok(new { message = $"{inseridas} notas da CONGAS processadas com sucesso!" });
@@ -79,7 +79,8 @@ public static class SpreadsheetEndpoints
 
                         await orderCongasService.CreateNotasEmMassaAsync(resultadoPlanilha.OrdensCongas
                             .DistinctBy(o => o.IdOrdem).ToList());
-
+                        inseridas++;
+                        
                         return Results.Ok(new { message = $"{inseridas} ordens da CONGAS processadas com sucesso!" });
                     }
                     else if (resultadoPlanilha.TipoIdentificado == "ORDEM_PETRO")
@@ -91,7 +92,8 @@ public static class SpreadsheetEndpoints
 
                         await orderPetroService.CreateNotasEmMassaAsync(resultadoPlanilha.OrdensPetro
                             .DistinctBy(o => o.IdOrdem).ToList());
-
+                        inseridas++;
+                        
                         return Results.Ok(new { message = $"{inseridas} ordens da PETRO processadas com sucesso!" });
                     }
                     else if (resultadoPlanilha.TipoIdentificado == "ITEM_CONGAS")

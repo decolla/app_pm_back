@@ -104,11 +104,15 @@ public class SpreadsheetService
         bool isNotaPetro = columns.ContainsKey("Campo seleção") || columns.ContainsKey("Campo selecao");
         bool isNotaCongas = columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota");
         bool isOrdemCongas = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve");
-        bool isItemCongas = columns.ContainsKey("Item") && columns.ContainsKey("Versão");
+        bool isItemCongas = columns.ContainsKey("Item") && columns.ContainsKey("Causa") && columns.ContainsKey("Texto da causa");
 
         if (isOrdemCongas)
         {
             resultado.TipoIdentificado = "ORDEM_CONGAS";
+        }
+        else if (isItemCongas)
+        {
+            resultado.TipoIdentificado = "ITEM_CONGAS";
         }
         else if (isNotaPetro)
         {
@@ -117,10 +121,6 @@ public class SpreadsheetService
         else if (isNotaCongas)
         {
             resultado.TipoIdentificado = "NOTA_CONGAS";
-        }
-        else if (isItemCongas)
-        {
-            resultado.TipoIdentificado = "ITEM_CONGAS";
         }
         else
         {
@@ -132,12 +132,12 @@ public class SpreadsheetService
             string[] row = parser.ReadFields();
             if (row == null || row.All(string.IsNullOrWhiteSpace)) continue;
 
-            if (resultado.TipoIdentificado == "PETRO")
+            if (resultado.TipoIdentificado == "NOTA_PETRO")
             { 
                 var notaPetro = ReadLineForModel<NotaPetroModel>(row, columns);
                 resultado.NotasPetro.Add(notaPetro);
             } 
-            else if (resultado.TipoIdentificado == "CONGAS")
+            else if (resultado.TipoIdentificado == "NOTA_CONGAS")
             {
                 // NOVO MAPEAMENTO DA CONGAS 
                 var notaCongas = ReadLineForModel<NoteCongasModel>(row, columns);
@@ -148,6 +148,12 @@ public class SpreadsheetService
                 // NOVO MAPEAMENTO DA CONGAS 
                 var orderCongas = ReadLineForModel<OrderCongasModel>(row, columns);
                 resultado.OrdensCongas.Add(orderCongas);
+            }
+            else if (resultado.TipoIdentificado == "ITEM_CONGAS")
+            {
+                // NOVO MAPEAMENTO DA CONGAS 
+                var orderCongas = ReadLineForModel<ItemNotaCongasModel>(row, columns);
+                resultado.ItensCongas.Add(orderCongas);
             }
         }
 
@@ -181,8 +187,45 @@ public class SpreadsheetService
                         {
                             // converte o valor para o tipo da propriedade, verificando se é nullable
                             Type tipo = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
-                            object valorConvertido = Convert.ChangeType(valor, tipo);
-                            property.SetValue(model, valorConvertido);
+                            object? valorConvertido = null;
+
+                            // 1. Limpar caracteres não numéricos de campos long/int (como 'QM0000...')
+                            if (tipo == typeof(long) || tipo == typeof(int))
+                            {
+                                string numerosApenas = new string(valor.Where(char.IsDigit).ToArray());
+                                if (!string.IsNullOrEmpty(numerosApenas))
+                                {
+                                    valorConvertido = Convert.ChangeType(numerosApenas, tipo);
+                                }
+                            }
+                            // 2. Tratar TimeSpan (Horas)
+                            else if (tipo == typeof(TimeSpan))
+                            {
+                                if (valor == "24:00:00") valor = "23:59:59";
+                                if (TimeSpan.TryParse(valor, out var ts))
+                                {
+                                    valorConvertido = ts;
+                                }
+                            }
+                            // 3. Tratar DateTime (Datas e o lixo "CG01", "PM-MECAN", etc)
+                            else if (tipo == typeof(DateTime))
+                            {
+                                if (DateTime.TryParse(valor, CultureInfo.GetCultureInfo("pt-BR"), DateTimeStyles.None, out var dt))
+                                {
+                                    valorConvertido = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                                }
+                            }
+                            // 4. Conversão padrão para strings e outros tipos
+                            else
+                            {
+                                valorConvertido = Convert.ChangeType(valor, tipo);
+                            }
+
+                            // 5. Atribuir o valor se a conversão funcionou
+                            if (valorConvertido != null)
+                            {
+                                property.SetValue(model, valorConvertido);
+                            }
                         }
                         catch (Exception ex)
                         {
