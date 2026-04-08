@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using app_pm_back.Attributes;
 
 namespace app_pm_back.Models.CongasModel;
@@ -21,6 +22,7 @@ public class ItemNotaCongasModel
     /// <summary>
     /// Nota de congas relacionada ao item
     /// </summary>
+    [JsonIgnore] // impede que o serializador tente ler a nota dentro do item 
     public virtual NoteCongasModel? NoteCongas {get; set;}
     
     /// <summary>

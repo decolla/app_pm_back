@@ -54,9 +54,9 @@ public class ItemsController : ControllerBase
             var todasNotas = await _itemNoteCongasService.GetAllNotasAsync();
             return Ok(todasNotas);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return BadRequest(new { message = "Erro ao processar itens de notas Congas." });
+            return BadRequest(new { message = $"Erro ao processar itens de notas Congas: {e.Message}" });
         }
     }
 

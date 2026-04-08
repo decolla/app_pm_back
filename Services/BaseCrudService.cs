@@ -68,7 +68,6 @@ public abstract class BaseCrudService<T> where T : class
     {
         // O EF.Property permite ordernar dinamicamente sabendo que ambas as tabelas têm a coluna "IdNota"
         return await _dbSet
-            .OrderBy(e => EF.Property<int>(e, "IdNota"))
             .Skip((pagina - 1) * tamanho)
             .Take(tamanho)
             .ToListAsync();
