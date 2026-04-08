@@ -5,8 +5,6 @@ using app_pm_back.Data;
 using app_pm_back.Interfaces;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
-using CsvHelper;
-using CsvHelper.Configuration.Attributes;
 using Microsoft.EntityFrameworkCore;
 using teste_catboost_cs;
 
@@ -44,7 +42,7 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// <param name="rule">Regra no formato de RuleClassificationModel</param>
     /// <returns>Regra passada como parâmetro</returns>
     public async Task<RuleClassificationModel> CreateRule(RuleClassificationModel rule)
-    {   
+    {
         await _classificationModel.AddAsync(rule);
         await _context.SaveChangesAsync();
         return rule;
@@ -146,43 +144,61 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// <returns>Notas/ordens atualizadas com base no cáculo de probabilidades do modelo catboost</returns>
     public async Task<List<T>> CatboostClassification()
     {
-        
         var notasAtualizadas = new List<T>();
         int tamanhoLote = 500; // processa 500 por vez
-            
-        // mapeamento de nomes para o modelo catboost
-        Dictionary<string, string> tradutor = new Dictionary<string, string>()
-        {
-            // NotaRow
-            { "Tipo de nota", "TipoNota" },
-            { "Txt.grp.codific", "TxtGrpCodific" },
-            { "Descrição", "Descricao" },
-            { "Tipo prioridade", "TipoPrioridade" },
-            { "Txt.code codif.", "TxtCodeCodif" },
-            { "Equipamento", "Equipamento" },
-            { "Codificação", "CodificacaoX" },
-            { "Conseqüência", "Consequencia" },
-            { "Grupo de codes", "GrupoDeCodesX" },
 
-            // ItemRow
-            { "Nº de ordenação", "NumOrdenacao" },
-            { "TxtGrpCodPartOb", "TxtGrpCodPartOb" },
-            { "Txt.cod.part.ob", "TxtCodPartOb" },
-            { "Txt.grp.cod.pr.", "TxtGrpCodPr" },
-            { "Txt.code prob.", "TxtCodeProb" },
-            { "Texto grp.causa", "TextoGrpCausa" },
-            { "Txt.code causa", "TxtCodeCausa" }
-        };
-        
+        // descobre se é a classificação de notas ou ordens 
+        bool isNota = typeof(T) == typeof(NoteCongasModel);
+
+        // mapeamento de nomes para o modelo catboost
+        Dictionary<string, string> tradutor = new Dictionary<string, string>();
+
+        if (isNota)
+        {
+            tradutor = new Dictionary<string, string>()
+            {
+                // NotaRow
+                { "Tipo de nota", "TipoNota" },
+                { "Txt.grp.codific", "TxtGrpCodific" },
+                { "Descrição", "Descricao" },
+                { "Tipo prioridade", "TipoPrioridade" },
+                { "Txt.code codif.", "TxtCodeCodif" },
+                { "Equipamento", "Equipamento" },
+                { "Codificação", "CodificacaoX" },
+                { "Conseqüência", "Consequencia" },
+                { "Grupo de codes", "GrupoDeCodesX" },
+
+                // ItemRow
+                { "Nº de ordenação", "NumOrdenacao" },
+                { "TxtGrpCodPartOb", "TxtGrpCodPartOb" },
+                { "Txt.cod.part.ob", "TxtCodPartOb" },
+                { "Txt.grp.cod.pr.", "TxtGrpCodPr" },
+                { "Txt.code prob.", "TxtCodeProb" },
+                { "Texto grp.causa", "TextoGrpCausa" },
+                { "Txt.code causa", "TxtCodeCausa" }
+            };
+        }
+        else
+        {
+            tradutor = new Dictionary<string, string>()
+            {
+                // OrdemRow
+                { "Tipo de nota", "TipoOrdem" },
+                { "Descrição", "TextoBreve" },
+                { "Tipo prioridade", "TipoPrioridade" },
+                { "Equipamento", "Equipamento" },
+            };
+        }
+
         // cache de propriedades para melhorar o desempenho usando reflection
         var cachePropsNotas = new Dictionary<string, PropertyInfo>();
         var cachePropsItens = new Dictionary<string, PropertyInfo>();
-        
+
         foreach (var kvp in tradutor)
         {
             var propNota = typeof(T).GetProperty(kvp.Value);
             if (propNota != null) cachePropsNotas[kvp.Key] = propNota;
-            else
+            else if (isNota) // só procura no item se for nota
             {
                 var propItem = typeof(ItemNotaCongasModel).GetProperty(kvp.Value);
                 if (propItem != null) cachePropsItens[kvp.Key] = propItem;
@@ -191,12 +207,16 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         while (true)
         {
+            // query condicional
+            var query = _dbSet.Where(n => n.Classificacao == null || n.Classificacao == "").AsQueryable();
+
+            if (isNota)
+            {
+                query = query.Include("Itens");
+            }
+
             // busca apenas um lote de notas sem classificação
-            var lote = await _dbSet
-                .Include("Itens") 
-                .Where(n => n.Classificacao == null || n.Classificacao == "")
-                .Take(tamanhoLote)
-                .ToListAsync();
+            var lote = await query.Take(tamanhoLote).ToListAsync();
 
             // se não encontrou mais nenhuma, sai do loop
             if (lote.Count == 0)
@@ -205,7 +225,7 @@ public class ClassificationService<T> where T : class, IClassifiable
             // matrizes com tamanho exato do LOTE ATUAL
             var catFeatures = new string[lote.Count][];
             var textFeatures = new string[lote.Count][];
-            
+
             // percorre cada nota e preenche a matriz de catFeatures
             for (int i = 0; i < lote.Count; i++)
             {
@@ -286,15 +306,17 @@ public class ClassificationService<T> where T : class, IClassifiable
 
                 nota.MetodoClassificacao = "IA_CATBOOST";
                 nota.DataClassificacao = DateTime.UtcNow;
-                
+
                 notasAtualizadas.Add(nota);
             }
+
             // salva o lote no banco de dados
             await _context.SaveChangesAsync();
-            
+
             // limpeza de memória 
             _context.ChangeTracker.Clear();
         }
+
         return notasAtualizadas;
     }
 
@@ -323,6 +345,6 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         return sb.ToString().ToLower();
     }
-    
+
     // ADICIONAR DPS PARA CLASSIFICAR NOTAS/ORDENS JÁ CLASSIFICADAS ANTERIORMENTE
 }

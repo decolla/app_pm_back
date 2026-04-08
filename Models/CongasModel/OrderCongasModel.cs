@@ -16,6 +16,7 @@ public class OrderCongasModel : IClassifiable
     /// <example>200000081207</example>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)] // O ID vem da planilha, não gera automaticamente
+    [SheetColumn("Ordem")]
     public long IdOrdem { get; set; }
     
     /// <summary>

@@ -62,8 +62,8 @@ public class SpreadsheetService
                 TextFieldType = FieldType.Delimited
             };
 
-        parser.SetDelimiters(";", ",");
-        parser.HasFieldsEnclosedInQuotes = true;
+        parser.SetDelimiters(";");
+        parser.HasFieldsEnclosedInQuotes = false;
         parser.TrimWhiteSpace = true;
 
         string[]? headers = null;

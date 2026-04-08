@@ -40,9 +40,7 @@ public static class SpreadsheetEndpoints
 
                 // 2 = lê a planilha usando o serviço adaptado e retorna uma lista de NotaModel
                 var resultadoPlanilha = await spreadsheetService.ReadNotasSpreadSheetAsync(file);
-
-                // 3 = insere as notas no banco de dados usando o seu NotasService
-                int inseridas = 0;
+                
 
                 // DECISÃO DE ROTA BASEADA NA IDENTIFICAÇÃO
                 if (resultadoPlanilha.TipoIdentificado == "NOTA_PETRO")
@@ -53,7 +51,7 @@ public static class SpreadsheetEndpoints
 
                     await notesPetroService.CreateNotasEmMassaAsync(resultadoPlanilha.NotasPetro
                         .ToList());
-                    inseridas++;
+                    var inseridas = resultadoPlanilha.NotasPetro.Count;
 
                     return Results.Ok(new { message = $"{inseridas} notas da PETRO processadas com sucesso!" });
                 }
@@ -65,7 +63,7 @@ public static class SpreadsheetEndpoints
 
                     await noteCongasService.CreateNotasEmMassaAsync(resultadoPlanilha.NotasCongas
                         .DistinctBy(o => o.NumeroNota).ToList());
-                    inseridas++;
+                    var inseridas = resultadoPlanilha.NotasCongas.Count;
 
                     return Results.Ok(new { message = $"{inseridas} notas da CONGAS processadas com sucesso!" });
                 }
@@ -78,7 +76,7 @@ public static class SpreadsheetEndpoints
 
                     await orderCongasService.CreateNotasEmMassaAsync(resultadoPlanilha.OrdensCongas
                         .DistinctBy(o => o.IdOrdem).ToList());
-                    inseridas++;
+                    var inseridas = resultadoPlanilha.OrdensCongas.Count;
 
                     return Results.Ok(new { message = $"{inseridas} ordens da CONGAS processadas com sucesso!" });
                 }
@@ -91,7 +89,7 @@ public static class SpreadsheetEndpoints
 
                     await orderPetroService.CreateNotasEmMassaAsync(resultadoPlanilha.OrdensPetro
                         .DistinctBy(o => o.IdOrdem).ToList());
-                    inseridas++;
+                    var inseridas = resultadoPlanilha.OrdensPetro.Count;
 
                     return Results.Ok(new { message = $"{inseridas} ordens da PETRO processadas com sucesso!" });
                 }
