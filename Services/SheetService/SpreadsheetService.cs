@@ -26,6 +26,7 @@ public class SpreadsheetService
         public List<OrdemPetroModel> OrdensPetro { get; set; } = new();
         public List<OrderCongasModel> OrdensCongas { get; set; } = new();
         public List<ItemNotaCongasModel> ItensCongas { get; set; } = new();
+        public List<EquipmentModel> Equipamentos { get; set; } = new();
     }
 
     public async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(IFormFile spreadSheet)
@@ -87,7 +88,9 @@ public class SpreadsheetService
             if (columns.ContainsKey("Campo seleção") ||
                 columns.ContainsKey("Campo selecao") ||
                 columns.ContainsKey("Nota") ||
-                columns.ContainsKey("Ordem"))
+                columns.ContainsKey("Ordem") ||
+                columns.ContainsKey("Item") ||
+                columns.ContainsKey("Objeto"))
             {
                 break;
             }
@@ -96,7 +99,6 @@ public class SpreadsheetService
         if (columns.Count == 0) return resultado;
 
         // DETETIVE
-        Console.WriteLine("\n--- CABEÇALHOS ENCONTRADOS ---");
         Console.WriteLine(string.Join(" | ", columns.Keys));
         Console.WriteLine("------------------------------\n");
 
@@ -104,7 +106,9 @@ public class SpreadsheetService
         bool isNotaPetro = columns.ContainsKey("Campo seleção") || columns.ContainsKey("Campo selecao");
         bool isNotaCongas = columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota");
         bool isOrdemCongas = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve");
-        bool isItemCongas = columns.ContainsKey("Item") && columns.ContainsKey("Causa") && columns.ContainsKey("Texto da causa");
+        bool isItemCongas = columns.ContainsKey("Item") && columns.ContainsKey("Causa") &&
+                            columns.ContainsKey("Texto da causa");
+        bool isEquipamento = columns.ContainsKey("Objeto") && columns.ContainsKey("GRID");
 
         if (isOrdemCongas)
         {
@@ -122,6 +126,10 @@ public class SpreadsheetService
         {
             resultado.TipoIdentificado = "NOTA_CONGAS";
         }
+        else if (isEquipamento)
+        {
+            resultado.TipoIdentificado = "EQUIPAMENTO_SAP";
+        }
         else
         {
             return resultado;
@@ -133,10 +141,10 @@ public class SpreadsheetService
             if (row == null || row.All(string.IsNullOrWhiteSpace)) continue;
 
             if (resultado.TipoIdentificado == "NOTA_PETRO")
-            { 
+            {
                 var notaPetro = ReadLineForModel<NotaPetroModel>(row, columns);
                 resultado.NotasPetro.Add(notaPetro);
-            } 
+            }
             else if (resultado.TipoIdentificado == "NOTA_CONGAS")
             {
                 // NOVO MAPEAMENTO DA CONGAS 
@@ -154,6 +162,17 @@ public class SpreadsheetService
                 // NOVO MAPEAMENTO DA CONGAS 
                 var orderCongas = ReadLineForModel<ItemNotaCongasModel>(row, columns);
                 resultado.ItensCongas.Add(orderCongas);
+            }
+            else if (resultado.TipoIdentificado == "EQUIPAMENTO_SAP")
+            {
+                var equipamento = ReadLineForModel<EquipmentModel>(row, columns);
+
+                PreencherDetalhesTecnicos(equipamento, row, columns);
+
+                if (!string.IsNullOrWhiteSpace(equipamento.IdEquipamento))
+                {
+                    resultado.Equipamentos.Add(equipamento);
+                }
             }
         }
 
@@ -210,7 +229,8 @@ public class SpreadsheetService
                             // 3. Tratar DateTime (Datas e o lixo "CG01", "PM-MECAN", etc)
                             else if (tipo == typeof(DateTime))
                             {
-                                if (DateTime.TryParse(valor, CultureInfo.GetCultureInfo("pt-BR"), DateTimeStyles.None, out var dt))
+                                if (DateTime.TryParse(valor, CultureInfo.GetCultureInfo("pt-BR"), DateTimeStyles.None,
+                                        out var dt))
                                 {
                                     valorConvertido = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
                                 }
@@ -235,9 +255,10 @@ public class SpreadsheetService
                 }
             }
         }
+
         return model;
     }
-    
+
     // ================= MÉTODOS AUXILIARES SEGUROS =================
 
     private string? SafeText(string colName, string[] row, Dictionary<string, int> columns)
@@ -281,5 +302,34 @@ public class SpreadsheetService
         if (string.IsNullOrWhiteSpace(text) || text.Length == 0) return null;
         return text[0]; // Retorna 'X' por exemplo
     }
-    
+
+    /// <summary>
+    /// Lê as colunas extras que não estão mapeadas com [SheetColumn] e atira-as para o JSONB
+    /// </summary>
+    public void PreencherDetalhesTecnicos(EquipmentModel equipamento, string[] row, Dictionary<string, int> columns)
+    {
+        // 1. Descobrir quais são os nomes das colunas mapeadas de forma estática
+        var colunasMapeadas = typeof(EquipmentModel).GetProperties()
+            .Select(p => p.GetCustomAttribute<SheetColumnAttribute>()?.NomeDaColuna.ToUpperInvariant())
+            .Where(nome => nome != null)
+            .ToHashSet();
+
+        // 2. Percorrer todas as colunas que vieram do Excel
+        foreach (var col in columns)
+        {
+            string nomeColuna = col.Key.ToUpperInvariant();
+            int idx = col.Value;
+
+            // 3. Se a coluna NÃO ESTÁ no modelo fixo e tem valor, vai para o JSON!
+            if (!colunasMapeadas.Contains(nomeColuna) && idx < row.Length)
+            {
+                string valor = row[idx].Trim();
+                if (!string.IsNullOrWhiteSpace(valor))
+                {
+                    // Guarda a chave com o nome original do cabeçalho do Excel
+                    equipamento.DetalhesTecnicos[col.Key] = valor;
+                }
+            }
+        }
+    }
 }

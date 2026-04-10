@@ -11,6 +11,7 @@ using app_pm_back.Services.PetroServices;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using teste_catboost_cs;
 
 // apagar depois essa gambiarra aqui
@@ -51,8 +52,19 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// criar o construtor da fonte de dados do PostgreSQL
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+
+// dar permissão para JSON dinâmico
+dataSourceBuilder.EnableDynamicJson();
+
+// criar a fonte de dados
+var dataSource = dataSourceBuilder.Build();
+
+// adicionar o contexto do PostgreSQL
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(dataSource));
 
 builder.Services.AddScoped<ConvertService>();
 builder.Services.AddScoped<SpreadsheetService>();
@@ -61,6 +73,7 @@ builder.Services.AddScoped<OrderPetroService>();
 builder.Services.AddScoped<NoteCongasService>();
 builder.Services.AddScoped<OrderCongasService>();
 builder.Services.AddScoped<ItemNoteCongasService>();
+builder.Services.AddScoped<EquipmentService>();
 builder.Services.AddScoped<ClassificationService<NoteCongasModel>>();
 builder.Services.AddScoped<ClassificationService<NotaPetroModel>>();
 builder.Services.AddScoped<ClassificationService<OrderCongasModel>>();
@@ -84,6 +97,8 @@ else
 {
     Console.WriteLine("Aviso: Ficheiros do CatBoost não encontrados. O modelo IA não será carregado.");
 }
+
+
 
 builder.Services.AddAutoMapper(typeof(Program));
 

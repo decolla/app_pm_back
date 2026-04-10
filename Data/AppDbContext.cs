@@ -51,4 +51,6 @@ public class AppDbContext : DbContext
     /// Tabela de Itens de Nota Congas
     /// </summary>
     public DbSet<ItemNotaCongasModel> ItemNotaCongas { get; set; }
+    
+    public DbSet<EquipmentModel> Equipamentos { get; set; }
 }

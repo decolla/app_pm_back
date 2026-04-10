@@ -30,7 +30,8 @@ public static class SpreadsheetEndpoints
             NoteCongasService noteCongasService,
             OrderCongasService orderCongasService,
             OrderPetroService orderPetroService,
-            ItemNoteCongasService itemNoteCongasService) =>
+            ItemNoteCongasService itemNoteCongasService,
+            EquipmentService equipmentService) =>
         {
             try
             {
@@ -44,7 +45,7 @@ public static class SpreadsheetEndpoints
 
                 // DECISÃO DE ROTA BASEADA NA IDENTIFICAÇÃO
                 if (resultadoPlanilha.TipoIdentificado == "NOTA_PETRO")
-                {
+                {https://gemini.google.com/app
                     if (!resultadoPlanilha.NotasPetro.Any())
                         return Results.BadRequest(new
                             { message = "Planilha Petro reconhecida, mas sem dados válidos." });
@@ -128,6 +129,20 @@ public static class SpreadsheetEndpoints
 
                     return Results.BadRequest(new
                         { message = "Nenhum item pôde ser vinculado a uma nota existente no banco." });
+                }else if (resultadoPlanilha.TipoIdentificado == "EQUIPAMENTO_SAP")
+                {
+                    if (!resultadoPlanilha.Equipamentos.Any())
+                        return Results.BadRequest(new { message = "Planilha de equipamentos reconhecida, mas sem dados válidos." });
+
+                    // Filtra duplicados da própria planilha
+                    var listaParaSalvar = resultadoPlanilha.Equipamentos.DistinctBy(e => e.IdEquipamento).ToList();
+
+                    // Guarda na base de dados
+                    await equipmentService.CreateEquipamentosEmMassaAsync(listaParaSalvar);
+
+                    int inseridas = listaParaSalvar.Count;
+
+                    return Results.Ok(new { message = $"{inseridas} equipamentos processados e salvos com sucesso!" });
                 }
                 else
                 {

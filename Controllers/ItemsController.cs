@@ -27,7 +27,7 @@ public class ItemsController : ControllerBase
         try
         {
             var item = await _itemNoteCongasService.CreateNotaAsync(novaNota);
-            return Created($"api/notes/congas/{item.IdItem}", item);
+            return Created($"api/items/congas/{item.IdItem}", item);
         }
         catch (Exception e)
         {
@@ -73,7 +73,7 @@ public class ItemsController : ControllerBase
         }
         catch (Exception)
         {
-            return NotFound(new { message = "Erro ao procurar notas Congas." });
+            return NotFound(new { message = "Erro ao procurar items Congas." });
         }
     }
 
@@ -90,7 +90,7 @@ public class ItemsController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao atualizar nota Congas." });
+            return BadRequest(new { message = "Erro ao atualizar item Congas." });
         }
     }
 
@@ -103,7 +103,7 @@ public class ItemsController : ControllerBase
         try
         {
             await _itemNoteCongasService.DeleteNotaAsync(id);
-            return Ok(new { message = "Nota Congas deletada com sucesso" });
+            return Ok(new { message = "Item Congas deletada com sucesso" });
         }
         catch (Exception)
         {
