@@ -31,7 +31,8 @@ public static class SpreadsheetEndpoints
             OrderCongasService orderCongasService,
             OrderPetroService orderPetroService,
             ItemNoteCongasService itemNoteCongasService,
-            EquipmentService equipmentService) =>
+            EquipmentService equipmentService,
+            AcaoNotaComgasService acaoNotaComgasService) =>
         {
             try
             {
@@ -129,7 +130,8 @@ public static class SpreadsheetEndpoints
 
                     return Results.BadRequest(new
                         { message = "Nenhum item pôde ser vinculado a uma nota existente no banco." });
-                }else if (resultadoPlanilha.TipoIdentificado == "EQUIPAMENTO_SAP")
+                }
+                else if (resultadoPlanilha.TipoIdentificado == "EQUIPAMENTO_SAP")
                 {
                     if (!resultadoPlanilha.Equipamentos.Any())
                         return Results.BadRequest(new { message = "Planilha de equipamentos reconhecida, mas sem dados válidos." });
@@ -143,7 +145,20 @@ public static class SpreadsheetEndpoints
                     int inseridas = listaParaSalvar.Count;
 
                     return Results.Ok(new { message = $"{inseridas} equipamentos processados e salvos com sucesso!" });
+                }// Adicione este bloco no seu if/else das rotas
+                else if (resultadoPlanilha.TipoIdentificado == "ACAO_NOTA_CONGAS")
+                {
+                    if (!resultadoPlanilha.AcoesCongas.Any())
+                        return Results.BadRequest(new { message = "Planilha de Ações reconhecida, mas sem dados válidos." });
+
+                    // Grava as ações no banco
+                    await acaoNotaComgasService.CreateAcoesEmMassaAsync(resultadoPlanilha.AcoesCongas);
+                    
+                    int inseridas = resultadoPlanilha.AcoesCongas.Count;
+
+                    return Results.Ok(new { message = $"{inseridas} ações de Notas da CONGAS processadas com sucesso!" });
                 }
+                
                 else
                 {
                     return Results.BadRequest(new

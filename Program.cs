@@ -74,6 +74,7 @@ builder.Services.AddScoped<NoteCongasService>();
 builder.Services.AddScoped<OrderCongasService>();
 builder.Services.AddScoped<ItemNoteCongasService>();
 builder.Services.AddScoped<EquipmentService>();
+builder.Services.AddScoped<AcaoNotaComgasService>();
 builder.Services.AddScoped<ClassificationService<NoteCongasModel>>();
 builder.Services.AddScoped<ClassificationService<NotaPetroModel>>();
 builder.Services.AddScoped<ClassificationService<OrderCongasModel>>();

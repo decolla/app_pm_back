@@ -52,5 +52,13 @@ public class AppDbContext : DbContext
     /// </summary>
     public DbSet<ItemNotaCongasModel> ItemNotaCongas { get; set; }
     
+    /// <summary>
+    /// Tabela de Ação de Nota Congas
+    /// </summary>
+    public DbSet<AcaoNotaCongasModel> AcaoNotaCongas{ get; set;}
+    
+    /// <summary>
+    /// Tabela de Equipamentos
+    /// </summary>
     public DbSet<EquipmentModel> Equipamentos { get; set; }
 }

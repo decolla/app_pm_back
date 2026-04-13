@@ -27,6 +27,7 @@ public class SpreadsheetService
         public List<OrderCongasModel> OrdensCongas { get; set; } = new();
         public List<ItemNotaCongasModel> ItensCongas { get; set; } = new();
         public List<EquipmentModel> Equipamentos { get; set; } = new();
+        public List<AcaoNotaCongasModel> AcoesCongas { get; set; } = new();
     }
 
     public async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(IFormFile spreadSheet)
@@ -90,7 +91,9 @@ public class SpreadsheetService
                 columns.ContainsKey("Nota") ||
                 columns.ContainsKey("Ordem") ||
                 columns.ContainsKey("Item") ||
-                columns.ContainsKey("Objeto"))
+                columns.ContainsKey("Objeto") ||
+                columns.ContainsKey("Área operacion.")
+               )
             {
                 break;
             }
@@ -99,8 +102,9 @@ public class SpreadsheetService
         if (columns.Count == 0) return resultado;
 
         // DETETIVE
+        Console.WriteLine("-----CABEÇALHOS DETECTADOS-----");
         Console.WriteLine(string.Join(" | ", columns.Keys));
-        Console.WriteLine("------------------------------\n");
+        Console.WriteLine("-------------------------------\n");
 
         // A MÁGICA DA IDENTIFICAÇÃO
         bool isNotaPetro = columns.ContainsKey("Campo seleção") || columns.ContainsKey("Campo selecao");
@@ -108,11 +112,16 @@ public class SpreadsheetService
         bool isOrdemCongas = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve");
         bool isItemCongas = columns.ContainsKey("Item") && columns.ContainsKey("Causa") &&
                             columns.ContainsKey("Texto da causa");
+        bool isAcaoNotaCongas = columns.ContainsKey("Classe defeitos") && columns.ContainsKey("Ordem cliente");
         bool isEquipamento = columns.ContainsKey("Objeto") && columns.ContainsKey("GRID");
 
         if (isOrdemCongas)
         {
             resultado.TipoIdentificado = "ORDEM_CONGAS";
+        }
+        else if (isAcaoNotaCongas)
+        {
+            resultado.TipoIdentificado = "ACAO_NOTA_CONGAS";
         }
         else if (isItemCongas)
         {
@@ -147,21 +156,23 @@ public class SpreadsheetService
             }
             else if (resultado.TipoIdentificado == "NOTA_CONGAS")
             {
-                // NOVO MAPEAMENTO DA CONGAS 
                 var notaCongas = ReadLineForModel<NoteCongasModel>(row, columns);
                 resultado.NotasCongas.Add(notaCongas);
             }
             else if (resultado.TipoIdentificado == "ORDEM_CONGAS")
             {
-                // NOVO MAPEAMENTO DA CONGAS 
                 var orderCongas = ReadLineForModel<OrderCongasModel>(row, columns);
                 resultado.OrdensCongas.Add(orderCongas);
             }
             else if (resultado.TipoIdentificado == "ITEM_CONGAS")
             {
-                // NOVO MAPEAMENTO DA CONGAS 
                 var orderCongas = ReadLineForModel<ItemNotaCongasModel>(row, columns);
                 resultado.ItensCongas.Add(orderCongas);
+            }
+            else if (resultado.TipoIdentificado == "ACAO_NOTA_CONGAS")
+            {
+                var acaoCongas = ReadLineForModel<AcaoNotaCongasModel>(row, columns);
+                resultado.AcoesCongas.Add(acaoCongas);
             }
             else if (resultado.TipoIdentificado == "EQUIPAMENTO_SAP")
             {
