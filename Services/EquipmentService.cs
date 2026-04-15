@@ -22,7 +22,7 @@ public class EquipmentService : BaseCrudService<EquipmentModel>
 
         if (novosEquipamentos.Any())
         {
-            await _context.AddRangeAsync(equipamentos);
+            await _context.AddRangeAsync(novosEquipamentos);
             await _context.SaveChangesAsync();
         }
     }

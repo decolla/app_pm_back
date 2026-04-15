@@ -61,4 +61,9 @@ public class AppDbContext : DbContext
     /// Tabela de Equipamentos
     /// </summary>
     public DbSet<EquipmentModel> Equipamentos { get; set; }
+    
+    /// <summary>
+    /// Tabela de planos de manutenção 
+    /// </summary>
+    public DbSet<MaintancePlanComgasModel> PlanosManutencao { get; set; }
 }

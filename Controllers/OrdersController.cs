@@ -9,55 +9,50 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
 
+// =========================================================================
+// ENDPOINTS DA PETRO (Rotas: api/orders/...)
+// =========================================================================
+
 /// <summary>
 /// Controller para ordens
 /// </summary>
 [ApiController]
-[Route("api/orders")]
-public class OrdersController : ControllerBase
+[Route("api/V1/Petrobras/orders")]
+public class PetroOrdersController : ControllerBase
 {
     private readonly OrderPetroService _petroService;
-    private readonly OrderCongasService _congasService;
     private readonly ClassificationService<OrdemPetroModel> _classificationServicePetro;
-    private readonly ClassificationService<OrderCongasModel> _classificationServiceCongas;
     private readonly IMapper _mapper;
 
     /// <summary>
     /// Construtor
     /// </summary>
     /// <param name="petroService"></param>
-    /// <param name="congasService"></param>
+    /// <param name="classificationServicePetro"></param>
     /// <param name="mapper"></param>
-    public OrdersController(
-        OrderPetroService petroService, 
-        OrderCongasService congasService,
+    public PetroOrdersController(
+        OrderPetroService petroService,
         ClassificationService<OrdemPetroModel> classificationServicePetro,
-        ClassificationService<OrderCongasModel> classificationServiceCongas,
         IMapper mapper
-        )
+    )
     {
         _petroService = petroService;
-        _congasService = congasService;  
         _classificationServicePetro = classificationServicePetro;
-        _classificationServiceCongas = classificationServiceCongas;
         _mapper = mapper;
     }
 
-   // =========================================================================
-    // ENDPOINTS DA PETRO (Rotas: api/orders/petro/...)
-    // =========================================================================
 
     /// <summary>
     /// Cadastra uma ordem Petro pelo Dto
     /// </summary>
-    [HttpPost("petro")]
+    [HttpPost]
     public async Task<IActionResult> CriarOrdemPetro([FromBody] CreateOrdemPetroDto dto)
     {
         try
         {
             var novaNota = _mapper.Map<OrdemPetroModel>(dto);
-            var notaCriada = await _petroService.CreateNotaAsync(novaNota);
-            return Created($"api/orders/petro/{notaCriada.IdNota}", notaCriada);
+            var notaCriada = await _petroService.CreateAsync(novaNota);
+            return Created($"api/V1/Petro/{notaCriada.IdNota}", notaCriada);
         }
         catch (Exception e)
         {
@@ -68,7 +63,7 @@ public class OrdersController : ControllerBase
     /// <summary>
     /// Retorna uma lista todas as ordens Petro com sistema de páginas
     /// </summary>
-    [HttpGet("petro")]
+    [HttpGet]
     public async Task<IActionResult> ListarNotasPetro([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
@@ -84,7 +79,7 @@ public class OrdersController : ControllerBase
             var todasNotas = await _petroService.GetAllNotasAsync();
             return Ok(todasNotas);
         }
-        catch (Exception )
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao processar ordens Petro." });
         }
@@ -93,7 +88,7 @@ public class OrdersController : ControllerBase
     /// <summary>
     /// Conta o número total de ordens Petro salvas no banco
     /// </summary>
-    [HttpGet("petro/count")]
+    [HttpGet("count")]
     public async Task<IActionResult> ContarNotasPetro()
     {
         try
@@ -101,7 +96,7 @@ public class OrdersController : ControllerBase
             var notas = await _petroService.CountNotasAsync();
             return Ok(new { count = notas });
         }
-        catch (Exception )
+        catch (Exception)
         {
             return NotFound(new { message = "Erro ao procurar notas Petro." });
         }
@@ -110,7 +105,7 @@ public class OrdersController : ControllerBase
     /// <summary>
     /// Retorna as Fichas de uma nota Petro e suas ocorrências de mesmo tipo
     /// </summary>
-    [HttpGet("petro/ativo/{dnsIoT}")]
+    [HttpGet("ativo/{dnsIoT}")]
     public async Task<IActionResult> ListarOrdensPorAtivoPetro(string dnsIoT, [FromQuery] string? type)
     {
         try
@@ -119,7 +114,7 @@ public class OrdersController : ControllerBase
             var resultado = await _petroService.GetFichasPorAtivoAsync(dnsIoT, type);
             return Ok(resultado);
         }
-        catch (Exception )
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao buscar fichas do ativo Petro." });
         }
@@ -128,7 +123,7 @@ public class OrdersController : ControllerBase
     /// <summary>
     /// Atualiza uma nota Petro de mesmo Id
     /// </summary>
-    [HttpPut("petro")]
+    [HttpPut]
     public async Task<IActionResult> AtualizarOrdemPetro([FromBody] OrdemPetroModel ordem)
     {
         try
@@ -136,7 +131,7 @@ public class OrdersController : ControllerBase
             var result = await _petroService.UpdateNotaAsync(ordem);
             return Ok(new { message = "Nota Petro atualizada com sucesso: " + result.IdNota });
         }
-        catch (Exception )
+        catch (Exception)
         {
             return BadRequest(new { message = "Erro ao atualizar nota Petro." });
         }
@@ -145,12 +140,14 @@ public class OrdersController : ControllerBase
     /// <summary>
     /// Delete uma nota Petro de mesmo Id
     /// </summary>
-    [HttpDelete("petro/{id:int}")]
-    public async Task<IActionResult> DeletarOrdemPetro(int id)
+    [HttpDelete("{id:long}")]
+    public async Task<IActionResult> DeletarOrdemPetro(long id)
     {
         try
         {
-           await _petroService.DeleteNotaAsync(id);
+            var deleted = await _petroService.DeleteNotaAsync(id);
+            if (!deleted) return NotFound(new { message = "Ordem Petro não encontrada." });
+
             return Ok(new { message = "Nota Petro deletada com sucesso" });
         }
         catch (Exception)
@@ -158,7 +155,7 @@ public class OrdersController : ControllerBase
             return BadRequest(new { message = "Erro ao deletar nota Petro." });
         }
     }
-    
+
     /// <summary>
     /// Classifica uma ordem Petro com base na classificação humana atribuida a uma nota específica
     /// </summary>
@@ -166,12 +163,17 @@ public class OrdersController : ControllerBase
     /// <param name="classificacao"> Classificação a ser atribuída</param>
     /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
     /// <returns>Nota atualizada</returns>
-    [HttpPut("petro/classificacao/{id:long}")]
+    [HttpPut("classificacao/{id:long}")]
     public async Task<IActionResult> ClassificacaoHumanaOrdemPetro(long id, string classificacao, string idUsuario)
     {
         try
         {
             var result = await _classificationServicePetro.HumanClassification(id, classificacao, idUsuario);
+            if (result == null)
+            {
+                return NotFound(new { message = "Ordem não encontrada para classificação." });
+            }
+
             if (result.MetodoClassificacao == "MANUAL")
             {
                 return Ok(result);
@@ -183,20 +185,20 @@ public class OrdersController : ControllerBase
         {
             return BadRequest(new { message = $"Erro ao classificar esta nota: {e.Message}" });
         }
-    } 
+    }
 
     /// <summary>
     /// Cria uma regra de classificação por palavras
     /// </summary>
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
-    [HttpPost("petro/classificacao/regra")]
+    [HttpPost("classificacao/regra")]
     public async Task<IActionResult> CriarRegraPetro(RuleClassificationModel regra)
     {
         try
         {
             var result = await _classificationServicePetro.CreateRule(regra);
-            return Ok(new {message = $"Regra criada com sucesso: {result}"});
+            return Ok(new { message = $"Regra criada com sucesso: {result}" });
         }
         catch (Exception e)
         {
@@ -208,7 +210,7 @@ public class OrdersController : ControllerBase
     /// Classifica uma nota com base uma lista de palavras armazenadas no banco
     /// </summary>
     /// <returns>Lista de ordem atualizadas</returns>
-    [HttpPost("petro/classificacao/filtro")]
+    [HttpPost("classificacao/filtro")]
     public async Task<IActionResult> ClassificacaoPalavrasOrdemPetro()
     {
         try
@@ -234,7 +236,7 @@ public class OrdersController : ControllerBase
     /// para notas/ordens corretivas e preventivas 
     /// </summary>
     /// <returns></returns>
-    [HttpPost("petro/classificacao/catboost")]
+    [HttpPost("classificacao/catboost")]
     public async Task<IActionResult> ClassificacaoCatboostPetro()
     {
         try
@@ -246,35 +248,59 @@ public class OrdersController : ControllerBase
         {
             return BadRequest(new { message = $"Erro ao classificar ordens: {e.Message}" });
         }
-        
     }
+}
 
+// =========================================================================
+// ENDPOINTS DA CONGAS (Rotas: api/orders/...)
+// =========================================================================
 
-    // =========================================================================
-    // ENDPOINTS DA CONGAS (Rotas: api/orders/congas/...)
-    // =========================================================================
+[ApiController]
+[Route("api/V1/Comgas/orders")]
+public class ComgasOrdersController : ControllerBase
+{
+    private readonly OrderCongasService _congasService;
+    private readonly ClassificationService<OrderCongasModel> _classificationServiceCongas;
+    private readonly IMapper _mapper;
+
+    /// <summary>
+    /// Construtor
+    /// </summary>
+    /// <param name="congasService"></param>
+    /// <param name="classificationServiceCongas"></param>
+    /// <param name="mapper"></param>
+    public ComgasOrdersController(
+        OrderCongasService congasService,
+        ClassificationService<OrderCongasModel> classificationServiceCongas,
+        IMapper mapper
+    )
+    {
+        _congasService = congasService;
+        _classificationServiceCongas = classificationServiceCongas;
+        _mapper = mapper;
+    }
 
     /// <summary>
     /// Cadastra uma nota Congas
     /// </summary>
-    [HttpPost("congas")]
+    [HttpPost]
     public async Task<IActionResult> CriarOrdemCongas([FromBody] OrderCongasModel ordem)
     {
         try
         {
-            var notaCriada = await _congasService.CreateNotaAsync(ordem);
-            return Created($"api/orders/congas/{notaCriada.NumeroNotaOrigem}", notaCriada);
+            var notaCriada = await _congasService.CreateAsync(ordem);
+            return Created($"api/V1/Comgas/orders/{notaCriada.NumeroNotaOrigem}", notaCriada);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao criar a ordem Congas: {e.Message}." });
+            return BadRequest(new { message = $"Erro ao criar a ordem Comgas: {e.Message}." });
         }
     }
 
     /// <summary>
     /// Retorna uma lista todas as notas Congas com sistema de páginas
     /// </summary>
-    [HttpGet("congas")]
+    [HttpGet]
     public async Task<IActionResult> ListarOrdensCongas([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
@@ -292,14 +318,14 @@ public class OrdersController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao processar ordens Congas." });
+            return BadRequest(new { message = "Erro ao processar ordens Comgas." });
         }
     }
 
     /// <summary>
     /// Conta o número total de notas Congas salvas no banco
     /// </summary>
-    [HttpGet("congas/count")]
+    [HttpGet("count")]
     public async Task<IActionResult> ContarNotasCongas()
     {
         try
@@ -309,14 +335,14 @@ public class OrdersController : ControllerBase
         }
         catch (Exception)
         {
-            return NotFound(new { message = "Erro ao procurar ordens Congas." });
+            return NotFound(new { message = "Erro ao procurar ordens Comgas." });
         }
     }
 
     /// <summary>
     /// Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
     /// </summary>
-    [HttpGet("congas/ativo/{dnsIoT}")]
+    [HttpGet("ativo/{dnsIoT}")]
     public async Task<IActionResult> ListarFichasPorAtivoCongas(string dnsIoT, [FromQuery] string? type)
     {
         try
@@ -326,44 +352,46 @@ public class OrdersController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao buscar ordens do ativo Congas." });
+            return BadRequest(new { message = "Erro ao buscar ordens do ativo Comgas." });
         }
     }
 
     /// <summary>
     /// Atualiza uma nota Congas de mesmo Id
     /// </summary>
-    [HttpPut("congas")]
+    [HttpPut]
     public async Task<IActionResult> AtualizarNotaCongas([FromBody] OrderCongasModel ordem)
     {
         try
         {
             var result = await _congasService.UpdateNotaAsync(ordem);
-            return Ok(new { message = "Ordem Congas atualizada com sucesso: " + result.NumeroNotaOrigem });
+            return Ok(new { message = "Ordem Comgas atualizada com sucesso: " + result.NumeroNotaOrigem });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao atualizar ordem Congas." });
+            return BadRequest(new { message = "Erro ao atualizar ordem Comgas." });
         }
     }
 
     /// <summary>
     /// Delete uma nota Congas de mesmo Id
     /// </summary>
-    [HttpDelete("congas/{id:int}")]
-    public async Task<IActionResult> DeletarNotaCongas(int id)
+    [HttpDelete("{id:long}")]
+    public async Task<IActionResult> DeletarNotaCongas(long id)
     {
         try
         {
-            await _congasService.DeleteNotaAsync(id);
-            return Ok(new { message = "Ordem Congas deletada com sucesso" });
+            var deleted = await _congasService.DeleteNotaAsync(id);
+            if (!deleted) return NotFound(new { message = "Ordem Comgas não encontrada." });
+
+            return Ok(new { message = "Ordem Comgas deletada com sucesso" });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao deletar ordem Congas." });
+            return BadRequest(new { message = "Erro ao deletar ordem Comgas." });
         }
     }
-    
+
     /// <summary>
     /// Classifica uma ordem Congas com base na classificação humana atribuida a uma nota específica
     /// </summary>
@@ -371,12 +399,17 @@ public class OrdersController : ControllerBase
     /// <param name="classificacao"> Classificação a ser atribuída</param>
     /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
     /// <returns>Nota atualizada</returns>
-    [HttpPut("congas/classificacao/{id:long}")]
+    [HttpPut("classificacao/{id:long}")]
     public async Task<IActionResult> ClassificacaoHumanaNotaCongas(long id, string classificacao, string idUsuario)
     {
         try
         {
             var result = await _classificationServiceCongas.HumanClassification(id, classificacao, idUsuario);
+            if (result == null)
+            {
+                return NotFound(new { message = "Ordem não encontrada para classificação." });
+            }
+
             if (result.MetodoClassificacao == "MANUAL")
             {
                 return Ok(result);
@@ -388,20 +421,20 @@ public class OrdersController : ControllerBase
         {
             return BadRequest(new { message = $"Erro ao classificar esta ordem: {e.Message}" });
         }
-    } 
+    }
 
     /// <summary>
     /// Cria uma regra de classificação por palavras
     /// </summary>
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
-    [HttpPost("congas/classificacao/regra")]
+    [HttpPost("classificacao/regra")]
     public async Task<IActionResult> CriarRegraCongas(RuleClassificationModel regra)
     {
         try
         {
             var result = await _classificationServiceCongas.CreateRule(regra);
-            return Ok(new {message = $"Regra criada com sucesso: {result}"});
+            return Ok(new { message = $"Regra criada com sucesso: {result}" });
         }
         catch (Exception e)
         {
@@ -413,7 +446,7 @@ public class OrdersController : ControllerBase
     /// Classifica uma ordem com base uma lista de palavras armazenadas no banco
     /// </summary>
     /// <returns>Lista de ordem atualizadas</returns>
-    [HttpPost("congas/classificacao/filtro")]
+    [HttpPost("classificacao/filtro")]
     public async Task<IActionResult> ClassificacaoPalavrasNotaCongas()
     {
         try
@@ -439,7 +472,7 @@ public class OrdersController : ControllerBase
     /// para ordem/ordems corretivas e preventivas 
     /// </summary>
     /// <returns></returns>
-    [HttpPost("congas/classificacao/catboost")]
+    [HttpPost("classificacao/catboost")]
     public async Task<IActionResult> ClassificacaoCatboostCongas()
     {
         try
@@ -451,6 +484,5 @@ public class OrdersController : ControllerBase
         {
             return BadRequest(new { message = $"Erro ao classificar ordens: {e.Message}" });
         }
-        
     }
 }

@@ -8,7 +8,7 @@ namespace app_pm_back.Controllers;
 /// Controller para itens de notas e ordens 
 /// </summary>
 [ApiController]
-[Route("api/items")]
+[Route("api/V1/Comgas/items")]
 public class ItemsController : ControllerBase
 {
     private readonly ItemNoteCongasService _itemNoteCongasService;
@@ -21,24 +21,24 @@ public class ItemsController : ControllerBase
     /// <summary>
     /// Cadastra um item de nota Congas
     /// </summary>
-    [HttpPost("congas")]
+    [HttpPost]
     public async Task<IActionResult> CriarItemCongas([FromBody] ItemNotaCongasModel novaNota)
     {
         try
         {
-            var item = await _itemNoteCongasService.CreateNotaAsync(novaNota);
-            return Created($"api/items/congas/{item.IdItem}", item);
+            var item = await _itemNoteCongasService.CreateAsync(novaNota);
+            return Created($"api/V1/Comgas/items/{item.IdItem}", item);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao criar o item de nota Congas: {e.Message}." });
+            return BadRequest(new { message = $"Erro ao criar o item de nota Comgas: {e.Message}." });
         }
     }
 
     /// <summary>
     /// Retorna uma lista todos os itens da Congas com sistema de páginas
     /// </summary>
-    [HttpGet("congas")]
+    [HttpGet]
     public async Task<IActionResult> ListarItensCongas([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
@@ -56,14 +56,14 @@ public class ItemsController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao processar itens de notas Congas: {e.Message}" });
+            return BadRequest(new { message = $"Erro ao processar itens de notas Comgas: {e.Message}" });
         }
     }
 
     /// <summary>
     /// Conta o número total de itens Congas salvas no banco
     /// </summary>
-    [HttpGet("congas/count")]
+    [HttpGet("count")]
     public async Task<IActionResult> ContarItensCongas()
     {
         try
@@ -73,41 +73,43 @@ public class ItemsController : ControllerBase
         }
         catch (Exception)
         {
-            return NotFound(new { message = "Erro ao procurar items Congas." });
+            return NotFound(new { message = "Erro ao procurar items Comgas." });
         }
     }
 
     /// <summary>
     /// Atualiza uma nota Congas de mesmo Id
     /// </summary>
-    [HttpPut("congas")]
+    [HttpPut]
     public async Task<IActionResult> AtualizarNotaCongas([FromBody] ItemNotaCongasModel item)
     {
         try
         {
             var result = await _itemNoteCongasService.UpdateNotaAsync(item);
-            return Ok(new { message = "Nota Congas atualizada com sucesso: " + result.IdItem });
+            return Ok(new { message = "Nota Comgas atualizada com sucesso: " + result.IdItem });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao atualizar item Congas." });
+            return BadRequest(new { message = "Erro ao atualizar item Comgas." });
         }
     }
 
     /// <summary>
     /// Delete uma nota Congas de mesmo Id
     /// </summary>
-    [HttpDelete("congas/{id:int}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeletarNotaCongas(int id)
     {
         try
         {
-            await _itemNoteCongasService.DeleteNotaAsync(id);
-            return Ok(new { message = "Item Congas deletada com sucesso" });
+            var deleted = await _itemNoteCongasService.DeleteNotaAsync(id);
+            if (!deleted) return NotFound(new { message = "Item Comgas não encontrado." });
+
+            return Ok(new { message = "Item Comgas deletada com sucesso" });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao deletar nota Congas." });
+            return BadRequest(new { message = "Erro ao deletar item Comgas." });
         }
     }
 }

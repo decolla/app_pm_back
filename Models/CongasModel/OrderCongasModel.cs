@@ -503,7 +503,7 @@ public class OrderCongasModel : IClassifiable
     /// </summary>
     /// <example>36467</example>
     [SheetColumn("Item manut.")]
-    public string? ItemManut { get; set; }
+    public long? ItemManut { get; set; }
 
     /// <summary>
     /// Número da lista de objetos
@@ -632,7 +632,7 @@ public class OrderCongasModel : IClassifiable
     /// </summary>
     /// <example>10419</example>
     [SheetColumn("Plano manut.")]
-    public string? PlanoManut { get; set; }
+    public long? PlanoManut { get; set; }
 
     /// <summary>
     /// Prioridade

@@ -8,7 +8,7 @@ namespace app_pm_back.Controllers;
 /// Controller para Ações de Notas 
 /// </summary>
 [ApiController]
-[Route("api/actions-notes")]
+[Route("api/V1/Comgas/actions-notes")]
 public class ActionsNotesController : ControllerBase
 {
     private readonly AcaoNotaComgasService _acaoNotaService;
@@ -32,8 +32,8 @@ public class ActionsNotesController : ControllerBase
     {
         try
         {
-            var novaAcao = await _acaoNotaService.CreateNotaAsync(acao);
-            return Created($"api/action-notes/{novaAcao.IdAcao}", novaAcao);
+            var novaAcao = await _acaoNotaService.CreateAsync(acao);
+            return Created($"api/V1/Comgas/actions-notes/{novaAcao.IdAcao}", novaAcao);
         }
         catch (Exception e)
         {
@@ -116,7 +116,9 @@ public class ActionsNotesController : ControllerBase
     {
         try
         {
-            await _acaoNotaService.DeleteNotaAsync(id);
+            var deleted = await _acaoNotaService.DeleteNotaAsync(id);
+            if (!deleted) return NotFound(new { message = "Ação não encontrada." });
+
             return Ok(new { message = "Ação deletada com sucesso" });
         }
         catch (Exception)

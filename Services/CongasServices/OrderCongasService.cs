@@ -21,7 +21,12 @@ public class OrderCongasService : BaseCrudService<OrderCongasModel>
     {
         var query = _dbSet.AsQueryable(); // usa o _dbSet da Superclasse
         
-        query = query.Where(n => n.LocInstalacao == ativo || n.ItemManut == ativo || n.Local == ativo);
+        bool isNumero = long.TryParse(ativo, out long ativoId);
+
+        query = query.Where(n => 
+            n.LocInstalacao == ativo || 
+            n.Local == ativo || 
+            (isNumero && n.ItemManut == ativoId));
         
         if (!string.IsNullOrWhiteSpace(tipoOrdem))
         {

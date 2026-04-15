@@ -8,18 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
 
-/// <summary>
-/// Controller para notas
-/// </summary>
+// =========================================================================
+// ENDPOINTS DA PETRO (Rotas: api/notes/petro/...)
+// =========================================================================
+
 [ApiController]
-[Route("api/notes")]
-public class NotesController : ControllerBase
+[Route("api/V1/Petrobras/notes")]
+public class NotasPetroController : ControllerBase
 {
     private readonly NotesPetroService _petroService;
-    private readonly NoteCongasService _congasService;
-    private readonly ItemNoteCongasService _itemNoteCongasService;
     private readonly ClassificationService<NotaPetroModel> _classificationServicePetro;
-    private readonly ClassificationService<NoteCongasModel> _classificationServiceCongas;
     private readonly IMapper _mapper;
 
     /// <summary>
@@ -27,38 +25,31 @@ public class NotesController : ControllerBase
     /// </summary>
     /// <param name="petroService"></param>
     /// <param name="congasService"></param>
+    /// <param name="itemNoteCongasService"></param>
+    /// <param name="classificationServicePetro"></param>
+    /// <param name="classificationServiceCongas"></param>
     /// <param name="mapper"></param>
-    public NotesController(
+    public NotasPetroController(
         NotesPetroService petroService,
-        NoteCongasService congasService,
-        ItemNoteCongasService itemNoteCongasService,
         ClassificationService<NotaPetroModel> classificationServicePetro,
-        ClassificationService<NoteCongasModel> classificationServiceCongas,
         IMapper mapper)
     {
         _petroService = petroService;
-        _congasService = congasService;
-        _itemNoteCongasService = itemNoteCongasService;
         _classificationServicePetro = classificationServicePetro;
-        _classificationServiceCongas = classificationServiceCongas;
         _mapper = mapper;
     }
-
-    // =========================================================================
-    // ENDPOINTS DA PETRO (Rotas: api/notes/petro/...)
-    // =========================================================================
 
     /// <summary>
     /// Cadastra uma nota Petro pelo Dto
     /// </summary>
-    [HttpPost("petro")]
+    [HttpPost]
     public async Task<IActionResult> CriarNotaPetro([FromBody] CreateNotaPetroDto dto)
     {
         try
         {
             var novaNota = _mapper.Map<NotaPetroModel>(dto);
-            var notaCriada = await _petroService.CreateNotaAsync(novaNota);
-            return Created($"api/notes/petro/{notaCriada.IdNota}", notaCriada);
+            var notaCriada = await _petroService.CreateAsync(novaNota);
+            return Created($"api/V1/petro/notes{notaCriada.IdNota}", notaCriada);
         }
         catch (Exception e)
         {
@@ -69,7 +60,7 @@ public class NotesController : ControllerBase
     /// <summary>
     /// Retorna uma lista todas as notas Petro com sistema de páginas
     /// </summary>
-    [HttpGet("petro")]
+    [HttpGet]
     public async Task<IActionResult> ListarNotasPetro([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
@@ -94,7 +85,7 @@ public class NotesController : ControllerBase
     /// <summary>
     /// Conta o número total de notas Petro salvas no banco
     /// </summary>
-    [HttpGet("petro/count")]
+    [HttpGet("count")]
     public async Task<IActionResult> ContarNotasPetro()
     {
         try
@@ -111,7 +102,7 @@ public class NotesController : ControllerBase
     /// <summary>
     /// Retorna as Fichas de uma nota Petro e suas ocorrências de mesmo tipo
     /// </summary>
-    [HttpGet("petro/ativo/{dnsIoT}")]
+    [HttpGet("ativo/{dnsIoT}")]
     public async Task<IActionResult> ListarFichasPorAtivoPetro(string dnsIoT, [FromQuery] string? type)
     {
         try
@@ -128,7 +119,7 @@ public class NotesController : ControllerBase
     /// <summary>
     /// Atualiza uma nota Petro de mesmo Id
     /// </summary>
-    [HttpPut("petro")]
+    [HttpPut]
     public async Task<IActionResult> AtualizarNotaPetro([FromBody] NotaPetroModel nota)
     {
         try
@@ -145,12 +136,14 @@ public class NotesController : ControllerBase
     /// <summary>
     /// Deleta uma nota Petro de mesmo Id
     /// </summary>
-    [HttpDelete("petro/{id:int}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeletarNotaPetro(int id)
     {
         try
         {
-            await _petroService.DeleteNotaAsync(id);
+            var deleted = await _petroService.DeleteNotaAsync(id);
+            if (!deleted) return NotFound(new { message = "Nota Petro não encontrada." });
+
             return Ok(new { message = "Nota Petro deletada com sucesso" });
         }
         catch (Exception)
@@ -166,12 +159,17 @@ public class NotesController : ControllerBase
     /// <param name="classificacao"> Classificação a ser atribuída</param>
     /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
     /// <returns>Nota atualizada</returns>
-    [HttpPut("petro/classificacao/{id:long}")]
+    [HttpPut("{id:long}")]
     public async Task<IActionResult> ClassificacaoHumanaNotaPetro(long id, string classificacao, string idUsuario)
     {
         try
         {
             var result = await _classificationServicePetro.HumanClassification(id, classificacao, idUsuario);
+            if (result == null)
+            {
+                return NotFound(new { message = "Nota não encontrada para classificação." });
+            }
+
             if (result.MetodoClassificacao == "MANUAL")
             {
                 return Ok(result);
@@ -183,20 +181,20 @@ public class NotesController : ControllerBase
         {
             return BadRequest(new { message = $"Erro ao classificar esta nota: {e.Message}" });
         }
-    } 
+    }
 
     /// <summary>
     /// Cria uma regra de classificação por palavras
     /// </summary>
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
-    [HttpPost("petro/classificacao/regra")]
+    [HttpPost("classificacao/regra")]
     public async Task<IActionResult> CriarRegraPetro(RuleClassificationModel regra)
     {
         try
         {
             var result = await _classificationServicePetro.CreateRule(regra);
-            return Ok(new {message = $"Regra criada com sucesso: {result}"});
+            return Ok(new { message = $"Regra criada com sucesso: {result}" });
         }
         catch (Exception e)
         {
@@ -208,7 +206,7 @@ public class NotesController : ControllerBase
     /// Classifica uma nota com base uma lista de palavras armazenadas no banco
     /// </summary>
     /// <returns>Lista de notas atualizadas</returns>
-    [HttpPost("petro/classificacao/filtro")]
+    [HttpPost("classificacao/filtro")]
     public async Task<IActionResult> ClassificacaoPalavrasNotaPetro()
     {
         try
@@ -234,7 +232,7 @@ public class NotesController : ControllerBase
     /// para notas/ordems corretivas e preventivas 
     /// </summary>
     /// <returns></returns>
-    [HttpPost("petro/classificacao/catboost")]
+    [HttpPost("classificacao/catboost")]
     public async Task<IActionResult> ClassificacaoCatboostPetro()
     {
         try
@@ -246,34 +244,62 @@ public class NotesController : ControllerBase
         {
             return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
         }
-        
     }
+}
 
-    // =========================================================================
-    // ENDPOINTS DA CONGAS (Rotas: api/notes/congas/...)
-    // =========================================================================
+// =========================================================================
+// ENDPOINTS DA CONGAS (Rotas: api/notes/congas/...)
+// =========================================================================
+
+[ApiController]
+[Route("api/V1/Comgas/notes")]
+public class CongasNotesController : ControllerBase
+{
+    private readonly NoteCongasService _congasService;
+    private readonly ItemNoteCongasService _itemNoteCongasService;
+    private readonly ClassificationService<NoteCongasModel> _classificationServiceCongas;
+    private readonly IMapper _mapper;
+
+    /// <summary>
+    /// Construtor
+    /// </summary>
+    /// <param name="congasService"></param>
+    /// <param name="itemNoteCongasService"></param>
+    /// <param name="classificationServiceCongas"></param>
+    /// <param name="mapper"></param>
+    public CongasNotesController(
+        NoteCongasService congasService,
+        ItemNoteCongasService itemNoteCongasService,
+        ClassificationService<NoteCongasModel> classificationServiceCongas,
+        IMapper mapper)
+    {
+        _congasService = congasService;
+        _itemNoteCongasService = itemNoteCongasService;
+        _classificationServiceCongas = classificationServiceCongas;
+        _mapper = mapper;
+    }
 
     /// <summary>
     /// Cadastra uma nota Congas
     /// </summary>
-    [HttpPost("congas")]
+    [HttpPost]
     public async Task<IActionResult> CriarNotaCongas([FromBody] NoteCongasModel novaNota)
     {
         try
         {
-            var notaCriada = await _congasService.CreateNotaAsync(novaNota);
-            return Created($"api/notes/congas/{notaCriada.IdNota}", notaCriada);
+            var notaCriada = await _congasService.CreateAsync(novaNota);
+            return Created($"api/V1/Comgas/notes/{notaCriada.IdNota}", notaCriada);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao criar a nota Congas: {e.Message}." });
+            return BadRequest(new { message = $"Erro ao criar a nota Comgas: {e.Message}." });
         }
     }
 
     /// <summary>
     /// Retorna uma lista todas as notas Congas com sistema de páginas
     /// </summary>
-    [HttpGet("congas")]
+    [HttpGet]
     public async Task<IActionResult> ListarNotasCongas([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
@@ -291,14 +317,14 @@ public class NotesController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao processar notas Congas." });
+            return BadRequest(new { message = "Erro ao processar notas Comgas." });
         }
     }
 
     /// <summary>
     /// Conta o número total de notas Congas salvas no banco
     /// </summary>
-    [HttpGet("congas/count")]
+    [HttpGet("count")]
     public async Task<IActionResult> ContarNotasCongas()
     {
         try
@@ -308,14 +334,14 @@ public class NotesController : ControllerBase
         }
         catch (Exception)
         {
-            return NotFound(new { message = "Erro ao procurar notas Congas." });
+            return NotFound(new { message = "Erro ao procurar notas Comgas." });
         }
     }
 
     /// <summary>
     /// Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
     /// </summary>
-    [HttpGet("congas/ativo/{dnsIoT}")]
+    [HttpGet("ativo/{dnsIoT}")]
     public async Task<IActionResult> ListarFichasPorAtivoCongas(string dnsIoT, [FromQuery] string? type)
     {
         try
@@ -325,41 +351,43 @@ public class NotesController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao buscar fichas do ativo Congas." });
+            return BadRequest(new { message = "Erro ao buscar fichas do ativo Comgas." });
         }
     }
 
     /// <summary>
     /// Atualiza uma nota Congas de mesmo Id
     /// </summary>
-    [HttpPut("congas")]
+    [HttpPut]
     public async Task<IActionResult> AtualizarNotaCongas([FromBody] NoteCongasModel nota)
     {
         try
         {
             var result = await _congasService.UpdateNotaAsync(nota);
-            return Ok(new { message = "Nota Congas atualizada com sucesso: " + result.IdNota });
+            return Ok(new { message = "Nota Comgas atualizada com sucesso: " + result.IdNota });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao atualizar nota Congas." });
+            return BadRequest(new { message = "Erro ao atualizar nota Comgas." });
         }
     }
 
     /// <summary>
     /// Delete uma nota Congas de mesmo Id
     /// </summary>
-    [HttpDelete("congas/{id:int}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeletarNotaCongas(int id)
     {
         try
         {
-            await _congasService.DeleteNotaAsync(id);
-            return Ok(new { message = "Nota Congas deletada com sucesso" });
+            var deleted = await _congasService.DeleteNotaAsync(id);
+            if (!deleted) return NotFound(new { message = "Nota Comgas não encontrada." });
+
+            return Ok(new { message = "Nota Comgas deletada com sucesso" });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao deletar nota Congas." });
+            return BadRequest(new { message = "Erro ao deletar nota Comgas." });
         }
     }
 
@@ -367,7 +395,7 @@ public class NotesController : ControllerBase
     /// Retorna os itens de uma nota Congas
     /// </summary>
     /// <param name="notaId">Id da nota a ser realizado a busca</param>
-    [HttpGet("congas/{notaId:long}/items")]
+    [HttpGet("{notaId:long}/items")]
     public async Task<IActionResult> BuscarItensNota(long notaId)
     {
         try
@@ -377,12 +405,11 @@ public class NotesController : ControllerBase
         }
         catch (Exception e)
         {
-
             return BadRequest(new { message = $"Erro ao buscar itens da nota: {e.Message}" });
         }
     }
-    
-    
+
+
     /// <summary>
     /// Classifica uma nota Congas com base na classificação humana atribuida a uma nota específica
     /// </summary>
@@ -390,12 +417,17 @@ public class NotesController : ControllerBase
     /// <param name="classificacao"> Classificação a ser atribuída</param>
     /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
     /// <returns>Nota atualizada</returns>
-    [HttpPut("congas/classificacao/{id:long}")]
+    [HttpPut("classificacao/{id:long}")]
     public async Task<IActionResult> ClassificacaoHumanaNotaCongas(long id, string classificacao, string idUsuario)
     {
         try
         {
             var result = await _classificationServiceCongas.HumanClassification(id, classificacao, idUsuario);
+            if (result == null)
+            {
+                return NotFound(new { message = "Nota não encontrada para classificação." });
+            }
+
             if (result.MetodoClassificacao == "MANUAL")
             {
                 return Ok(result);
@@ -407,20 +439,20 @@ public class NotesController : ControllerBase
         {
             return BadRequest(new { message = $"Erro ao classificar esta nota: {e.Message}" });
         }
-    } 
+    }
 
     /// <summary>
     /// Cria uma regra de classificação por palavras
     /// </summary>
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
-    [HttpPost("congas/classificacao/regra")]
+    [HttpPost("classificacao/regra")]
     public async Task<IActionResult> CriarRegraCongas(RuleClassificationModel regra)
     {
         try
         {
             var result = await _classificationServiceCongas.CreateRule(regra);
-            return Ok(new {message = $"Regra criada com sucesso: {result}"});
+            return Ok(new { message = $"Regra criada com sucesso: {result}" });
         }
         catch (Exception e)
         {
@@ -432,7 +464,7 @@ public class NotesController : ControllerBase
     /// Classifica uma nota com base uma lista de palavras armazenadas no banco
     /// </summary>
     /// <returns>Lista de notas atualizadas</returns>
-    [HttpPost("congas/classificacao/filtro")]
+    [HttpPost("classificacao/filtro")]
     public async Task<IActionResult> ClassificacaoPalavrasNotaCongas()
     {
         try
@@ -458,7 +490,7 @@ public class NotesController : ControllerBase
     /// para notas/ordems corretivas e preventivas 
     /// </summary>
     /// <returns></returns>
-    [HttpPost("congas/classificacao/catboost")]
+    [HttpPost("classificacao/catboost")]
     public async Task<IActionResult> ClassificacaoCatboostCongas()
     {
         try
@@ -470,6 +502,5 @@ public class NotesController : ControllerBase
         {
             return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
         }
-        
     }
 }

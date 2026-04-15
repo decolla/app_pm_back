@@ -19,7 +19,7 @@ public static class SpreadsheetEndpoints
     public static void MapSpreadsheetEndpoints(this IEndpointRouteBuilder app)
     {
         // agrupa as rotas de planilha 
-        var group = app.MapGroup("/planilhas");
+        var group = app.MapGroup("api/V1/planilhas");
 
         // o endpoint recebe o arquivo, o serviço de leitura e o serviço de banco de dados
         group.MapPost("/upload", async (
@@ -46,7 +46,7 @@ public static class SpreadsheetEndpoints
 
                 // DECISÃO DE ROTA BASEADA NA IDENTIFICAÇÃO
                 if (resultadoPlanilha.TipoIdentificado == "NOTA_PETRO")
-                {https://gemini.google.com/app
+                {
                     if (!resultadoPlanilha.NotasPetro.Any())
                         return Results.BadRequest(new
                             { message = "Planilha Petro reconhecida, mas sem dados válidos." });
@@ -63,9 +63,11 @@ public static class SpreadsheetEndpoints
                         return Results.BadRequest(new
                             { message = "Planilha Congas reconhecida, mas sem dados válidos." });
 
-                    await noteCongasService.CreateNotasEmMassaAsync(resultadoPlanilha.NotasCongas
-                        .DistinctBy(o => o.NumeroNota).ToList());
-                    var inseridas = resultadoPlanilha.NotasCongas.Count;
+                    var notasDeduplicadas = resultadoPlanilha.NotasCongas
+                        .DistinctBy(o => o.NumeroNota).ToList();
+
+                    await noteCongasService.CreateNotasEmMassaAsync(notasDeduplicadas);
+                    var inseridas = notasDeduplicadas.Count;
 
                     return Results.Ok(new { message = $"{inseridas} notas da CONGAS processadas com sucesso!" });
                 }
@@ -75,10 +77,11 @@ public static class SpreadsheetEndpoints
                         return Results.BadRequest(new
                             { message = "Planilha de ordens Congas reconhecida, mas sem dados válidos." });
 
+                    var ordensDeduplicadas = resultadoPlanilha.OrdensCongas
+                        .DistinctBy(o => o.IdOrdem).ToList();
 
-                    await orderCongasService.CreateNotasEmMassaAsync(resultadoPlanilha.OrdensCongas
-                        .DistinctBy(o => o.IdOrdem).ToList());
-                    var inseridas = resultadoPlanilha.OrdensCongas.Count;
+                    await orderCongasService.CreateNotasEmMassaAsync(ordensDeduplicadas);
+                    var inseridas = ordensDeduplicadas.Count;
 
                     return Results.Ok(new { message = $"{inseridas} ordens da CONGAS processadas com sucesso!" });
                 }
@@ -88,10 +91,11 @@ public static class SpreadsheetEndpoints
                         return Results.BadRequest(new
                             { message = "Planilha de ordens PETRO reconhecida, mas sem dados válidos." });
 
+                    var ordensDeduplicadas = resultadoPlanilha.OrdensPetro
+                        .DistinctBy(o => o.IdOrdem).ToList();
 
-                    await orderPetroService.CreateNotasEmMassaAsync(resultadoPlanilha.OrdensPetro
-                        .DistinctBy(o => o.IdOrdem).ToList());
-                    var inseridas = resultadoPlanilha.OrdensPetro.Count;
+                    await orderPetroService.CreateNotasEmMassaAsync(ordensDeduplicadas);
+                    var inseridas = ordensDeduplicadas.Count;
 
                     return Results.Ok(new { message = $"{inseridas} ordens da PETRO processadas com sucesso!" });
                 }

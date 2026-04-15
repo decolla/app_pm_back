@@ -8,7 +8,7 @@ namespace app_pm_back.Controllers;
 /// Controller para equipamentos
 /// </summary>
 [ApiController]
-[Route("api/equipments")]
+[Route("api/V1/Comgas/equipments")]
 public class EquipmentsController : ControllerBase
 {
     private readonly EquipmentService _equipmentService;
@@ -31,8 +31,8 @@ public class EquipmentsController : ControllerBase
     {
         try
         {
-            var equipamento = await _equipmentService.CreateNotaAsync(novoEquipamento);
-            return Created($"api/equipments/{equipamento.IdEquipamento}", equipamento);
+            var equipamento = await _equipmentService.CreateAsync(novoEquipamento);
+            return Created($"api/V1/Comgas/equipments/{equipamento.IdEquipamento}", equipamento);
         }
         catch (Exception e)
         {
@@ -113,7 +113,9 @@ public class EquipmentsController : ControllerBase
     {
         try
         {
-            await _equipmentService.DeleteNotaAsync(id);
+            var deleted = await _equipmentService.DeleteNotaAsync(id);
+            if (!deleted) return NotFound(new { message = "Equipamento não encontrado." });
+
             return Ok(new { message = "Equipamento deletado com sucesso" });
         }
         catch (Exception)

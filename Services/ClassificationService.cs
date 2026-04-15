@@ -24,10 +24,10 @@ public class ClassificationService<T> where T : class, IClassifiable
     protected readonly DbSet<T> _dbSet;
 
     // varáveis para catboost 
-    protected readonly Cbm _cbm;
-    protected readonly ModelMeta _meta;
+    protected readonly Cbm? _cbm;
+    protected readonly ModelMeta? _meta;
 
-    public ClassificationService(AppDbContext context, Cbm modeloCatboost, ModelMeta meta)
+    public ClassificationService(AppDbContext context, Cbm? modeloCatboost = null, ModelMeta? meta = null)
     {
         _context = context;
         _classificationModel = context.Set<RuleClassificationModel>();
@@ -55,7 +55,7 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// <param name="classificacao">Classificação dada a nota/ordem</param>
     /// <param name="usuario">Id do usuário que está realizando a classificação</param>
     /// <returns>Nota atualizada</returns>
-    public async Task<T> HumanClassification(long id, string classificacao, string usuario)
+    public async Task<T?> HumanClassification(long id, string classificacao, string usuario)
     {
         var nota = await _dbSet.FindAsync(id);
         if (nota == null) return null;
@@ -82,7 +82,7 @@ public class ClassificationService<T> where T : class, IClassifiable
         // busco todas as notas/ordems sem classificação
         // remover comentário caso deve reavaliar regras já avaladas
         var notasSemClassificacao =
-            _dbSet.Where(n => n.Classificacao == null /* || n.ClassificadoPor == null*/).ToList();
+            await _dbSet.Where(n => n.Classificacao == null /* || n.ClassificadoPor == null*/).ToListAsync();
 
         // leio o campo alvo da regra e busco a palavra chave 
         List<RuleClassificationModel> regras = await _classificationModel.OrderBy(r => r.OrdemPrioridade).ToListAsync();
@@ -133,7 +133,7 @@ public class ClassificationService<T> where T : class, IClassifiable
         await _context.SaveChangesAsync();
 
         // retorna as notas/ordens atualizadas
-        return notasSemClassificacao.Concat(notasComClassificacao).ToList();
+        return notasSemClassificacao.Concat(notasComClassificacao ?? []).ToList();
     }
 
     /// <summary>
@@ -144,6 +144,9 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// <returns>Notas/ordens atualizadas com base no cáculo de probabilidades do modelo catboost</returns>
     public async Task<List<T>> CatboostClassification()
     {
+        if (_cbm == null || _meta == null)
+            throw new InvalidOperationException("Modelo CatBoost não carregado. Verifique os arquivos do modelo e reinicie a aplicação.");
+
         var notasAtualizadas = new List<T>();
         int tamanhoLote = 500; // processa 500 por vez
 

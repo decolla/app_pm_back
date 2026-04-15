@@ -583,7 +583,7 @@ public class NoteCongasModel : IClassifiable
     /// Item de manutenção
     /// </summary>
     [SheetColumn("Item manut.")]
-    public string? ItemManut { get; set; }
+    public long? ItemManut { get; set; }
 
     /// <summary>
     /// Localização
@@ -673,11 +673,11 @@ public class NoteCongasModel : IClassifiable
     /// Plano de manutenção
     /// </summary>
     [SheetColumn("Plano manut.")]
-    public string? PlanoManut { get; set; }
+    public long? PlanoManut { get; set; }
 
     /// <summary>
     /// Prioridade
-    /// </summary>
+    /// </summary>C
     [SheetColumn("Prioridade")]
     public string? Prioridade { get; set; }
 

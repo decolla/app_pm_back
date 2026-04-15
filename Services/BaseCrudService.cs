@@ -15,12 +15,24 @@ public abstract class BaseCrudService<T> where T : class
         _dbSet = context.Set<T>(); // descobre automaticamente qual é a tabela
     }
 
+    private object BuildPrimaryKeyValue(long id)
+    {
+        var entityType = _context.Model.FindEntityType(typeof(T));
+        var primaryKey = entityType?.FindPrimaryKey();
+
+        if (primaryKey == null || primaryKey.Properties.Count != 1)
+            throw new InvalidOperationException($"A entidade {typeof(T).Name} deve possuir chave primária simples para operações por id.");
+
+        var keyType = primaryKey.Properties[0].ClrType;
+        return Convert.ChangeType(id, keyType);
+    }
+
     /// <summary>
     /// Cria uma nota 
     /// </summary>
     /// <param name="nota"></param>
     /// <returns></returns>
-    public async Task<T> CreateNotaAsync(T nota)
+    public async Task<T> CreateAsync(T nota)
     {
         _dbSet.Add(nota);
         await _context.SaveChangesAsync();
@@ -66,8 +78,15 @@ public abstract class BaseCrudService<T> where T : class
     /// <returns></returns>
     public async Task<List<T>> GetNotasPaginadasAsync(int pagina, int tamanho)
     {
-        // O EF.Property permite ordernar dinamicamente sabendo que ambas as tabelas têm a coluna "IdNota"
+        var entityType = _context.Model.FindEntityType(typeof(T));
+        var primaryKey = entityType?.FindPrimaryKey();
+        if (primaryKey == null || primaryKey.Properties.Count != 1)
+            throw new InvalidOperationException($"A entidade {typeof(T).Name} deve possuir chave primária simples para paginação.");
+
+        var keyName = primaryKey.Properties[0].Name;
+
         return await _dbSet
+            .OrderBy(e => EF.Property<object>(e, keyName))
             .Skip((pagina - 1) * tamanho)
             .Take(tamanho)
             .ToListAsync();
@@ -78,9 +97,10 @@ public abstract class BaseCrudService<T> where T : class
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public async Task<T?> GetNotaByIdAsync(int id)
+    public async Task<T?> GetNotaByIdAsync(long id)
     {
-        return await _dbSet.FindAsync(id);
+        var keyValue = BuildPrimaryKeyValue(id);
+        return await _dbSet.FindAsync(keyValue);
     }
 
     /// <summary>
@@ -88,9 +108,10 @@ public abstract class BaseCrudService<T> where T : class
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public async Task<bool> DeleteNotaAsync(int id)
+    public async Task<bool> DeleteNotaAsync(long id)
     {
-        var nota = await _dbSet.FindAsync(id);
+        var keyValue = BuildPrimaryKeyValue(id);
+        var nota = await _dbSet.FindAsync(keyValue);
         if (nota == null) return false;
 
         _dbSet.Remove(nota);

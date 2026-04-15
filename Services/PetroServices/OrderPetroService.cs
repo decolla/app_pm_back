@@ -1,5 +1,6 @@
 using app_pm_back.Data;
 using app_pm_back.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.PetroServices;
 
@@ -17,29 +18,31 @@ public class OrderPetroService : BaseCrudService<OrdemPetroModel>
     /// <returns></returns>
     public async Task<object> GetFichasPorAtivoAsync(string ativo, string? tipoOrdem)
     {
-        var query = _dbSet.AsQueryable(); // usa o _dbSet da Superclasse
-        
-        /*
-        query = query.Where(n => n.LocInstalacao == ativo || n.Campo == ativo || n.Localizacao == ativo);
-        
-        if (!string.IsNullOrWhiteSpace(tipoNota))
+        var query = _dbSet
+            .Include(o => o.NotaOrigem)
+            .Where(o => o.NotaOrigem != null)
+            .Where(o => o.NotaOrigem!.LocInstalacao == ativo ||
+                        o.NotaOrigem.Campo == ativo ||
+                        o.NotaOrigem.Localizacao == ativo)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(tipoOrdem))
         {
-            query = query.Where(n => n.TipoNota == tipoNota);
+            query = query.Where(o => o.Status == tipoOrdem);
         }
-        
-        var fichas = await query.Select(n => new
+
+        var fichas = await query.Select(o => new
         {
-            NumerFicha = n.IdNota,
-            Data = n.DataNota,
-            Tipo = n.TipoNota
+            NumerFicha = o.IdOrdem,
+            Data = o.DataCriacao,
+            Tipo = o.Status
         }).ToListAsync();
-        */
         
         return new
         {
             Ativo = ativo,
-            Quantidade = 0,
-            Fichas = 0
+            Quantidade = fichas.Count,
+            Fichas = fichas
         };
     }
 }

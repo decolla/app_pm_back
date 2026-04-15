@@ -7,7 +7,7 @@ namespace app_pm_back.Controllers;
 /// Controller para anexos
 /// </summary>
 [ApiController]
-[Route("api/annex")]
+[Route("api/V1/annex")]
 public class AnnexController : ControllerBase
 {
     private readonly AnnexService _annexService;

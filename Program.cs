@@ -19,7 +19,6 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -75,6 +74,7 @@ builder.Services.AddScoped<OrderCongasService>();
 builder.Services.AddScoped<ItemNoteCongasService>();
 builder.Services.AddScoped<EquipmentService>();
 builder.Services.AddScoped<AcaoNotaComgasService>();
+builder.Services.AddScoped<MaintancePlanComgasService>();
 builder.Services.AddScoped<ClassificationService<NoteCongasModel>>();
 builder.Services.AddScoped<ClassificationService<NotaPetroModel>>();
 builder.Services.AddScoped<ClassificationService<OrderCongasModel>>();
@@ -89,7 +89,10 @@ if (File.Exists(metaPath) && File.Exists(modelPath))
 {
     var metaJson = File.ReadAllText(metaPath);
     var modelMeta = JsonSerializer.Deserialize<ModelMeta>(metaJson);
-    builder.Services.AddSingleton(modelMeta);
+    if (modelMeta != null)
+    {
+        builder.Services.AddSingleton(modelMeta);
+    }
 
     var catboostModel = new Cbm(modelPath);
     builder.Services.AddSingleton(catboostModel);
@@ -98,8 +101,6 @@ else
 {
     Console.WriteLine("Aviso: Ficheiros do CatBoost não encontrados. O modelo IA não será carregado.");
 }
-
-
 
 builder.Services.AddAutoMapper(typeof(Program));
 
