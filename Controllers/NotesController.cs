@@ -14,7 +14,7 @@ namespace app_pm_back.Controllers;
 
 [ApiController]
 [Route("api/V1/Petrobras/notes")]
-public class NotasPetroController : ControllerBase
+public class PetroNotesController : ControllerBase
 {
     private readonly NotesPetroService _petroService;
     private readonly ClassificationService<NotaPetroModel> _classificationServicePetro;
@@ -29,7 +29,7 @@ public class NotasPetroController : ControllerBase
     /// <param name="classificationServicePetro"></param>
     /// <param name="classificationServiceCongas"></param>
     /// <param name="mapper"></param>
-    public NotasPetroController(
+    public PetroNotesController(
         NotesPetroService petroService,
         ClassificationService<NotaPetroModel> classificationServicePetro,
         IMapper mapper)
@@ -253,7 +253,7 @@ public class NotasPetroController : ControllerBase
 
 [ApiController]
 [Route("api/V1/Comgas/notes")]
-public class CongasNotesController : ControllerBase
+public class ComgasNotesController : ControllerBase
 {
     private readonly NoteCongasService _congasService;
     private readonly ItemNoteCongasService _itemNoteCongasService;
@@ -267,7 +267,7 @@ public class CongasNotesController : ControllerBase
     /// <param name="itemNoteCongasService"></param>
     /// <param name="classificationServiceCongas"></param>
     /// <param name="mapper"></param>
-    public CongasNotesController(
+    public ComgasNotesController(
         NoteCongasService congasService,
         ItemNoteCongasService itemNoteCongasService,
         ClassificationService<NoteCongasModel> classificationServiceCongas,
