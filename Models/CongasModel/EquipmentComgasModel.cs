@@ -8,7 +8,7 @@ namespace app_pm_back.Models;
 /// <summary>
 /// Classe de equipamentos, 
 /// </summary>
-public class EquipmentModel
+public class EquipmentComgasModel
 {
     /// <summary>
     /// Identificação do equipamento

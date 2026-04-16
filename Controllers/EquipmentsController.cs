@@ -27,7 +27,7 @@ public class EquipmentsController : ControllerBase
     /// </summary>
     /// <param name="novoEquipamento">Equipamento a ser criado</param>
     [HttpPost]
-    public async Task<IActionResult> CriarEquipamentoCongas([FromBody] EquipmentModel novoEquipamento)
+    public async Task<IActionResult> CriarEquipamentoCongas([FromBody] EquipmentComgasModel novoEquipamento)
     {
         try
         {
@@ -91,7 +91,7 @@ public class EquipmentsController : ControllerBase
     /// <param name="equipamento">Equipamento a ser atualizado</param>
     /// <returns>Equipamento atualizado</returns>
     [HttpPut]
-    public async Task<IActionResult> AtualizarEquipamento([FromBody] EquipmentModel equipamento)
+    public async Task<IActionResult> AtualizarEquipamento([FromBody] EquipmentComgasModel equipamento)
     {
         try
         {

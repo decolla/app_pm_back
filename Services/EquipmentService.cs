@@ -4,13 +4,13 @@ using app_pm_back.Models.CongasModel;
 
 namespace app_pm_back.Services;
 
-public class EquipmentService : BaseCrudService<EquipmentModel>
+public class EquipmentService : BaseCrudService<EquipmentComgasModel>
 {
     public EquipmentService(AppDbContext context) : base(context)
     {
     }
 
-    public async Task CreateEquipamentosEmMassaAsync(List<EquipmentModel> equipamentos)
+    public async Task CreateEquipamentosEmMassaAsync(List<EquipmentComgasModel> equipamentos)
     {
         var idsExistentes = _context.Equipamentos
             .Select(e => e.IdEquipamento)

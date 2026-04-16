@@ -29,7 +29,8 @@ public class NoteCongasModel : IClassifiable
     /// </summary>
     /// <example>MC</example>
     [SheetColumn("Tipo de nota")]
-    [Range(1, 2, ErrorMessage = "O tipo de nota deve estar entre 1 e 2")]
+    // [Range(1, 2, ErrorMessage = "O tipo de nota deve estar entre 1 e 2")]
+    [StringLength(4, ErrorMessage = "O tipo de nota deve ter ate 4 caracteres.")]
     public string? TipoNota { get; set; }
     
     /// <summary>
@@ -73,7 +74,8 @@ public class NoteCongasModel : IClassifiable
     /// </summary>
     /// <example> MSEN </example>
     [SheetColumn("Status sistema")]
-    [Range(1,4, ErrorMessage = "O status deve estar entre 1 e 4")]
+    // [Range(1,4, ErrorMessage = "O status deve estar entre 1 e 4")]
+    [StringLength(10, ErrorMessage = "O status do sistema deve ter ate 10 caracteres.")]
     public string? StatusSistema { get; set; }
     
     /// <summary>
@@ -81,7 +83,8 @@ public class NoteCongasModel : IClassifiable
     /// </summary>
     /// <example> APRV </example>
     [SheetColumn("Status usuário")]
-    [Range(1,4, ErrorMessage = "O status deve estar entre 1 e 4")]
+    // [Range(1,4, ErrorMessage = "O status deve estar entre 1 e 4")]
+    [StringLength(10, ErrorMessage = "O status do usuario deve ter ate 10 caracteres.")]
     public string? StatusUsuario { get; set; }
     
     /// <summary>
@@ -317,6 +320,7 @@ public class NoteCongasModel : IClassifiable
 
     /// <summary>
     /// ID da ordem gerada por esta nota 
+    /// </summary>
     /// <example>200000083031</example>
     [SheetColumn("Ordem")]
     public long? IdOrdem { get; set; }
@@ -677,7 +681,7 @@ public class NoteCongasModel : IClassifiable
 
     /// <summary>
     /// Prioridade
-    /// </summary>C
+    /// </summary>
     [SheetColumn("Prioridade")]
     public string? Prioridade { get; set; }
 

@@ -80,7 +80,6 @@
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back/obj/Debug/net8.0/ref/app_pm_back.dll
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back/bin/Debug/net8.0/AutoMapper.dll
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back/bin/Debug/net8.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
-/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/appsettings.Development.json
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/appsettings.json
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/global.json
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/app_pm_back

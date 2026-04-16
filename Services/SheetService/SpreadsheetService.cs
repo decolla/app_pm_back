@@ -26,7 +26,7 @@ public class SpreadsheetService
         public List<OrdemPetroModel> OrdensPetro { get; set; } = new();
         public List<OrderCongasModel> OrdensCongas { get; set; } = new();
         public List<ItemNotaCongasModel> ItensCongas { get; set; } = new();
-        public List<EquipmentModel> Equipamentos { get; set; } = new();
+        public List<EquipmentComgasModel> Equipamentos { get; set; } = new();
         public List<AcaoNotaCongasModel> AcoesCongas { get; set; } = new();
     }
 
@@ -176,7 +176,7 @@ public class SpreadsheetService
             }
             else if (resultado.TipoIdentificado == "EQUIPAMENTO_SAP")
             {
-                var equipamento = ReadLineForModel<EquipmentModel>(row, columns);
+                var equipamento = ReadLineForModel<EquipmentComgasModel>(row, columns);
 
                 PreencherDetalhesTecnicos(equipamento, row, columns);
 
@@ -317,10 +317,10 @@ public class SpreadsheetService
     /// <summary>
     /// Lê as colunas extras que não estão mapeadas com [SheetColumn] e atira-as para o JSONB
     /// </summary>
-    public void PreencherDetalhesTecnicos(EquipmentModel equipamento, string[] row, Dictionary<string, int> columns)
+    public void PreencherDetalhesTecnicos(EquipmentComgasModel equipamento, string[] row, Dictionary<string, int> columns)
     {
         // 1. Descobrir quais são os nomes das colunas mapeadas de forma estática
-        var colunasMapeadas = typeof(EquipmentModel).GetProperties()
+        var colunasMapeadas = typeof(EquipmentComgasModel).GetProperties()
             .Select(p => p.GetCustomAttribute<SheetColumnAttribute>()?.NomeDaColuna.ToUpperInvariant())
             .Where(nome => nome != null)
             .ToHashSet();
