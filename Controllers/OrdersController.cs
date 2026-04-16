@@ -1,6 +1,7 @@
 using app_pm_back.DTO;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
 using app_pm_back.Services.PetroServices;
@@ -260,7 +261,7 @@ public class PetroOrdersController : ControllerBase
 public class ComgasOrdersController : ControllerBase
 {
     private readonly OrderCongasService _congasService;
-    private readonly ClassificationService<OrderCongasModel> _classificationServiceCongas;
+    private readonly ClassificationService<OrdemManutencaoModel> _classificationServiceCongas;
     private readonly IMapper _mapper;
 
     /// <summary>
@@ -271,7 +272,7 @@ public class ComgasOrdersController : ControllerBase
     /// <param name="mapper"></param>
     public ComgasOrdersController(
         OrderCongasService congasService,
-        ClassificationService<OrderCongasModel> classificationServiceCongas,
+        ClassificationService<OrdemManutencaoModel> classificationServiceCongas,
         IMapper mapper
     )
     {
@@ -284,12 +285,12 @@ public class ComgasOrdersController : ControllerBase
     /// Cadastra uma nota Congas
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> CriarOrdemCongas([FromBody] OrderCongasModel ordem)
+    public async Task<IActionResult> CriarOrdemCongas([FromBody] OrdemManutencaoModel ordem)
     {
         try
         {
             var notaCriada = await _congasService.CreateAsync(ordem);
-            return Created($"api/V1/Comgas/orders/{notaCriada.NumeroNotaOrigem}", notaCriada);
+            return Created($"api/V1/Comgas/orders/{notaCriada.NotaRelacionadaId}", notaCriada);
         }
         catch (Exception e)
         {
@@ -360,12 +361,12 @@ public class ComgasOrdersController : ControllerBase
     /// Atualiza uma nota Congas de mesmo Id
     /// </summary>
     [HttpPut]
-    public async Task<IActionResult> AtualizarNotaCongas([FromBody] OrderCongasModel ordem)
+    public async Task<IActionResult> AtualizarNotaCongas([FromBody] OrdemManutencaoModel ordem)
     {
         try
         {
             var result = await _congasService.UpdateNotaAsync(ordem);
-            return Ok(new { message = "Ordem Comgas atualizada com sucesso: " + result.NumeroNotaOrigem });
+            return Ok(new { message = "Ordem Comgas atualizada com sucesso: " + result.NotaRelacionadaId });
         }
         catch (Exception)
         {

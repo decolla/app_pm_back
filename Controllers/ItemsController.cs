@@ -1,4 +1,5 @@
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services.CongasServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,12 +23,12 @@ public class ItemsController : ControllerBase
     /// Cadastra um item de nota Congas
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> CriarItemCongas([FromBody] ItemNotaCongasModel novaNota)
+    public async Task<IActionResult> CriarItemCongas([FromBody] ItemNotaManutencaoModel novaNota)
     {
         try
         {
             var item = await _itemNoteCongasService.CreateAsync(novaNota);
-            return Created($"api/V1/Comgas/items/{item.IdItem}", item);
+            return Created($"api/V1/Comgas/items/{item.IdItemNota}", item);
         }
         catch (Exception e)
         {
@@ -81,12 +82,12 @@ public class ItemsController : ControllerBase
     /// Atualiza uma nota Congas de mesmo Id
     /// </summary>
     [HttpPut]
-    public async Task<IActionResult> AtualizarNotaCongas([FromBody] ItemNotaCongasModel item)
+    public async Task<IActionResult> AtualizarNotaCongas([FromBody] ItemNotaManutencaoModel item)
     {
         try
         {
             var result = await _itemNoteCongasService.UpdateNotaAsync(item);
-            return Ok(new { message = "Nota Comgas atualizada com sucesso: " + result.IdItem });
+            return Ok(new { message = "Nota Comgas atualizada com sucesso: " + result.IdItemNota });
         }
         catch (Exception)
         {

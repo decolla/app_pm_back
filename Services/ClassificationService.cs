@@ -5,6 +5,7 @@ using app_pm_back.Data;
 using app_pm_back.Interfaces;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using teste_catboost_cs;
 
@@ -151,7 +152,7 @@ public class ClassificationService<T> where T : class, IClassifiable
         int tamanhoLote = 500; // processa 500 por vez
 
         // descobre se é a classificação de notas ou ordens 
-        bool isNota = typeof(T) == typeof(NoteCongasModel);
+        bool isNota = typeof(T) == typeof(NotaManutencaoModel);
 
         // mapeamento de nomes para o modelo catboost
         Dictionary<string, string> tradutor = new Dictionary<string, string>();
@@ -166,7 +167,7 @@ public class ClassificationService<T> where T : class, IClassifiable
                 { "Descrição", "Descricao" },
                 { "Tipo prioridade", "TipoPrioridade" },
                 { "Txt.code codif.", "TxtCodeCodif" },
-                { "Equipamento", "Equipamento" },
+                { "Equipamento", "EquipamentoTag" },
                 { "Codificação", "CodificacaoX" },
                 { "Conseqüência", "Consequencia" },
                 { "Grupo de codes", "GrupoDeCodesX" },
@@ -203,7 +204,7 @@ public class ClassificationService<T> where T : class, IClassifiable
             if (propNota != null) cachePropsNotas[kvp.Key] = propNota;
             else if (isNota) // só procura no item se for nota
             {
-                var propItem = typeof(ItemNotaCongasModel).GetProperty(kvp.Value);
+                var propItem = typeof(ItemNotaManutencaoModel).GetProperty(kvp.Value);
                 if (propItem != null) cachePropsItens[kvp.Key] = propItem;
             }
         }

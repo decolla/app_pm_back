@@ -112,7 +112,7 @@
             </summary>
             <param name="equipmentService"></param>
         </member>
-        <member name="M:app_pm_back.Controllers.EquipmentsController.CriarEquipamentoCongas(app_pm_back.Models.EquipmentComgasModel)">
+        <member name="M:app_pm_back.Controllers.EquipmentsController.CriarEquipamentoCongas(app_pm_back.Models.Domain.EquipamentoAtivoModel)">
             <summary>
             Cadastra um equipamento
             </summary>
@@ -131,7 +131,7 @@
             </summary>
             <returns>Quantidade de equipamentos cadastrados</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.EquipmentsController.AtualizarEquipamento(app_pm_back.Models.EquipmentComgasModel)">
+        <member name="M:app_pm_back.Controllers.EquipmentsController.AtualizarEquipamento(app_pm_back.Models.Domain.EquipamentoAtivoModel)">
             <summary>
             Atualiza um equipamento
             </summary>
@@ -172,7 +172,7 @@
             Controller para itens de notas e ordens 
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ItemsController.CriarItemCongas(app_pm_back.Models.CongasModel.ItemNotaCongasModel)">
+        <member name="M:app_pm_back.Controllers.ItemsController.CriarItemCongas(app_pm_back.Models.Domain.ItemNotaManutencaoModel)">
             <summary>
             Cadastra um item de nota Congas
             </summary>
@@ -187,7 +187,7 @@
             Conta o número total de itens Congas salvas no banco
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ItemsController.AtualizarNotaCongas(app_pm_back.Models.CongasModel.ItemNotaCongasModel)">
+        <member name="M:app_pm_back.Controllers.ItemsController.AtualizarNotaCongas(app_pm_back.Models.Domain.ItemNotaManutencaoModel)">
             <summary>
             Atualiza uma nota Congas de mesmo Id
             </summary>
@@ -197,7 +197,7 @@
             Delete uma nota Congas de mesmo Id
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.MaintancePlanController.Criar(app_pm_back.Models.CongasModel.MaintancePlanComgasModel)">
+        <member name="M:app_pm_back.Controllers.MaintancePlanController.Criar(app_pm_back.Models.Domain.PlanoManutencaoModel)">
             <summary>
             Cria um objeto do modelo
             </summary>
@@ -217,7 +217,7 @@
             </summary>
             <returns>Quantidade de elementos cadastrados no banco</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.MaintancePlanController.Atualizar(app_pm_back.Models.CongasModel.MaintancePlanComgasModel)">
+        <member name="M:app_pm_back.Controllers.MaintancePlanController.Atualizar(app_pm_back.Models.Domain.PlanoManutencaoModel)">
             <summary>
             Atualiza um objeto do modelo
             </summary>
@@ -308,7 +308,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.#ctor(app_pm_back.Services.CongasServices.NoteCongasService,app_pm_back.Services.CongasServices.ItemNoteCongasService,app_pm_back.Services.ClassificationService{app_pm_back.Models.CongasModel.NoteCongasModel},AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.ComgasNotesController.#ctor(app_pm_back.Services.CongasServices.NotaManutencaoService,app_pm_back.Services.CongasServices.ItemNoteCongasService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.NotaManutencaoModel},AutoMapper.IMapper)">
             <summary>
             Construtor
             </summary>
@@ -317,7 +317,7 @@
             <param name="classificationServiceCongas"></param>
             <param name="mapper"></param>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.CriarNotaCongas(app_pm_back.Models.CongasModel.NoteCongasModel)">
+        <member name="M:app_pm_back.Controllers.ComgasNotesController.CriarNotaCongas(app_pm_back.Models.Domain.NotaManutencaoModel)">
             <summary>
             Cadastra uma nota Congas
             </summary>
@@ -337,7 +337,7 @@
             Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.AtualizarNotaCongas(app_pm_back.Models.CongasModel.NoteCongasModel)">
+        <member name="M:app_pm_back.Controllers.ComgasNotesController.AtualizarNotaCongas(app_pm_back.Models.Domain.NotaManutencaoModel)">
             <summary>
             Atualiza uma nota Congas de mesmo Id
             </summary>
@@ -456,7 +456,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasOrdersController.#ctor(app_pm_back.Services.CongasServices.OrderCongasService,app_pm_back.Services.ClassificationService{app_pm_back.Models.CongasModel.OrderCongasModel},AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.#ctor(app_pm_back.Services.CongasServices.OrderCongasService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.OrdemManutencaoModel},AutoMapper.IMapper)">
             <summary>
             Construtor
             </summary>
@@ -464,7 +464,7 @@
             <param name="classificationServiceCongas"></param>
             <param name="mapper"></param>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasOrdersController.CriarOrdemCongas(app_pm_back.Models.CongasModel.OrderCongasModel)">
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.CriarOrdemCongas(app_pm_back.Models.Domain.OrdemManutencaoModel)">
             <summary>
             Cadastra uma nota Congas
             </summary>
@@ -484,7 +484,7 @@
             Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasOrdersController.AtualizarNotaCongas(app_pm_back.Models.CongasModel.OrderCongasModel)">
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.AtualizarNotaCongas(app_pm_back.Models.Domain.OrdemManutencaoModel)">
             <summary>
             Atualiza uma nota Congas de mesmo Id
             </summary>
@@ -551,16 +551,6 @@
             Tabela de ordens Petro.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.NotasCongas">
-            <summary>
-            Tabela de notas Congas.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Data.AppDbContext.OrdensCongas">
-            <summary>
-            Tabela de ordens Congas.
-            </summary>
-        </member>
         <member name="P:app_pm_back.Data.AppDbContext.Anexos">
             <summary>
             Tabela de anexos.
@@ -571,24 +561,9 @@
             Tabela de regras para classificacao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.ItemNotaCongas">
-            <summary>
-            Tabela de itens de nota Congas.
-            </summary>
-        </member>
         <member name="P:app_pm_back.Data.AppDbContext.AcaoNotaCongas">
             <summary>
             Tabela de acoes de nota Congas.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Data.AppDbContext.Equipamentos">
-            <summary>
-            Tabela de equipamentos legados da Congas.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Data.AppDbContext.PlanosManutencao">
-            <summary>
-            Tabela de planos de manutencao legados da Congas.
             </summary>
         </member>
         <member name="P:app_pm_back.Data.AppDbContext.UsuariosSap">
@@ -856,18 +831,6 @@
             <inheritdoc />
         </member>
         <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.NormalizeMaintenanceDomain">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.NormalizeMaintenanceDomain.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.NormalizeMaintenanceDomain.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.NormalizeMaintenanceDomain.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Models.AnnexModel">
@@ -1530,2233 +1493,54 @@
             Versão
             </summary>
         </member>
-        <member name="T:app_pm_back.Models.CongasModel.CicloComgasModel">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.IdTipoEstrategia">
             <summary>
-            Ciclo legado da estrategia de manutencao COMGAS.
+            Id do item da estratégia.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.CicloComgasModel.IdCiclo">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.NomeTipo">
             <summary>
-            Identificador interno do ciclo.
+            Nome do tipo da estratégia 
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.CicloComgasModel.ValorCiclo">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.Descricao">
             <summary>
-            Valor numerico do ciclo.
+            Descrição para o tipo 
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.CicloComgasModel.Unidade">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.Meses">
             <summary>
-            Unidade do ciclo (DIA, MES, ANO).
+            Número de meses que ocorrerá a manutenção do tipo especificado
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.CicloComgasModel.NivelManutencao">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.ToleranciaPositiva">
             <summary>
-            Nível de manutencao do ciclo (A, B ou C).
+            Tolerância positiva para a manutenção do tipo especificado
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.CicloComgasModel.Offset">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.UnidadeToleranciaPositiva">
             <summary>
-            Offset de execucao do ciclo.
+            Unidade de medida para a tolerancia positiva
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.CicloComgasModel.IdEstrategia">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.ToleranciaNegativa">
             <summary>
-            FK da estrategia dona do ciclo.
+            Tolerância negativa para a manutenção do tipo especificado
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.CicloComgasModel.Estrategia">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.UnidadeToleranciaNegativa">
             <summary>
-            Estrategia vinculada a este ciclo.
+            Unidade de medida para a tolerancia negativa
             </summary>
         </member>
-        <member name="T:app_pm_back.Models.CongasModel.EstrategiaComgasModel">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.EstrategiaId">
             <summary>
-            Estrategia de manutencao aplicada aos planos COMGAS.
+            FK da estrategia associada.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.EstrategiaComgasModel.IdEstrategia">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.Estrategia">
             <summary>
-            Id da estratégia
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.EstrategiaComgasModel.NomeEstrategia">
-            <summary>
-            Nome da estratégia 
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.EstrategiaComgasModel.Denominacao">
-            <summary>
-            Denominação da estratégia 
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.EstrategiaComgasModel.UnidadeEstrategica">
-            <summary>
-            Unidade estratégica da estratégia
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.EstrategiaComgasModel.HorizonteAbertura">
-            <summary>
-            Horizonte de abertura da estratégia, ou seja, quantos ciclos futuros a estratégia deve considerar para abertura de ordens de manutenção
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.EstrategiaComgasModel.FatorDeslocamentoAtraso">
-            <summary>
-            Fator de deslocamento para atraso, ou seja, quantos ciclos de atraso a estratégia deve considerar para abertura de ordens de manutenção
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.CongasModel.ItemManutencaoComgasModel">
-            <summary>
-            Item de manutencao associado a um plano no contexto COMGAS.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemManutencaoComgasModel.IdItem">
-            <summary>
-            Identificador interno do item.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemManutencaoComgasModel.ItemManut">
-            <summary>
-            Item de manutenção
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemManutencaoComgasModel.LocInstalacao">
-            <summary>
-            Local de instalação do ativo
-            </summary>
-            <example>CG_05_CON_IND_CRM00073</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemManutencaoComgasModel.Equipamento">
-            <summary>
-            Equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemManutencaoComgasModel.PlanoId">
-            <summary>
-            Chave estrangeira para plano de manutenção
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemManutencaoComgasModel.PlanoRelacionado">
-            <summary>
-            Plano de manutencao relacionado ao item.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.IdItem">
-            <summary>
-            Id do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.NoteCongasIdNota">
-            <summary>
-            Id da nota de congas associada ao item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.NoteCongas">
-            <summary>
-            Nota de congas relacionada ao item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.AreaOperac">
-            <summary>
-            Area operacional do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Bairro">
-            <summary>
-            Bairro do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CanalDistrib">
-            <summary>
-            Canal de distribuição do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Causa">
-            <summary>
-            Causa da avaria do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CentroCusto">
-            <summary>
-            Centro de custo do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CenLocaliz">
-            <summary>
-            Centro de localização do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CenPCenTrab">
-            <summary>
-            Centro por centro de trabalho do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CentroPlanej">
-            <summary>
-            Centro de planejamento do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CenTrabRespon">
-            <summary>
-            Centro de trabalho responsável do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Pais">
-            <summary>
-            País do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.ClasseDefeitos">
-            <summary>
-            Classe de defeitos do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Cliente">
-            <summary>
-            Cliente do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Codificacao">
-            <summary>
-            Codificação do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CodeParteObj">
-            <summary>
-            Código da parte do objeto do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CodigoABC">
-            <summary>
-            Código ABC do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CodCausa">
-            <summary>
-            Código da causa do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CodigoDoDano">
-            <summary>
-            Código do dano do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CodigoPostal">
-            <summary>
-            Código postal do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.ConclDesejada">
-            <summary>
-            Conclusão desejada do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CondInstAntAvar">
-            <summary>
-            Condição da instalação antes da avaria do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CondInstDepAvar">
-            <summary>
-            Condição da instalação depois da avaria do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CondInstAposMed">
-            <summary>
-            Condição da instalação após medição do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Conjunto">
-            <summary>
-            Conjunto do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Consequencia">
-            <summary>
-            Consequência do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.ControlTecnEm">
-            <summary>
-            Controle técnico em do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.ContrTecnDe">
-            <summary>
-            Controle técnico de do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CriadoAs">
-            <summary>
-            Criado às do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.CriadoPor">
-            <summary>
-            Criado por do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DataDaNota">
-            <summary>
-            Data da nota do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DtCriacao">
-            <summary>
-            Data de criação do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DtReferencia">
-            <summary>
-            Data de referência do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DataPedido">
-            <summary>
-            Data do pedido do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DdsDispositivo">
-            <summary>
-            DDS dispositivo do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DenomConjunto">
-            <summary>
-            Denominação do conjunto do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Denominacao1">
-            <summary>
-            Denominação do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Denominacao2">
-            <summary>
-            Denominação do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Denominacao3">
-            <summary>
-            Denominação do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Descricao">
-            <summary>
-            Descrição do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DispAntesAvaria">
-            <summary>
-            Dispositivo antes da avaria do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DispAposMed">
-            <summary>
-            Dispositivo após medição do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DispDepoisAvar">
-            <summary>
-            Dispositivo depois da avaria do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Divisao">
-            <summary>
-            Divisão do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DocVendas">
-            <summary>
-            Documento de vendas do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DuracParada">
-            <summary>
-            Duração da parada do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Empresa">
-            <summary>
-            Empresa do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.DataEncermto">
-            <summary>
-            Data de encerramento do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Equipamento">
-            <summary>
-            Equipamento do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.EquipamAfetado">
-            <summary>
-            Equipamento afetado do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.FimAvaria">
-            <summary>
-            Fim da avaria do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.GrpCodigos1">
-            <summary>
-            Grupo de códigos do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.GrpCodigos2">
-            <summary>
-            Grupo de códigos do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.GrpPlnjPM">
-            <summary>
-            Grupo de planejamento PM do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.GrupoDeCodes">
-            <summary>
-            Grupo de códigos do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.HoraDaNota">
-            <summary>
-            Hora da nota do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.HoraEncermto">
-            <summary>
-            Hora de encerramento do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.HoraInicDes">
-            <summary>
-            Hora de início desejado do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.ModificadoAs">
-            <summary>
-            Modificado às do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.HoraReferencia">
-            <summary>
-            Hora de referência do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.HoraFimAvaria">
-            <summary>
-            Hora fim da avaria do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.HFinalDesej">
-            <summary>
-            Hora final desejada do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.HoraInicioAvar">
-            <summary>
-            Hora de início da avaria do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Imobilizado">
-            <summary>
-            Imobilizado do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.InicioAvar">
-            <summary>
-            Início da avaria do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.InicioDesejado">
-            <summary>
-            Início desejado do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Item1">
-            <summary>
-            Item do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Item2">
-            <summary>
-            Item do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Local">
-            <summary>
-            Local do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.LocInstalacao">
-            <summary>
-            Local de instalação do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.LocInstAfetad">
-            <summary>
-            Local de instalação afetado do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Localizacao">
-            <summary>
-            Localização do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.LocalClasContb">
-            <summary>
-            Local/Classe contábil do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Material">
-            <summary>
-            Material do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.ModificadoEm">
-            <summary>
-            Modificado em do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.ModificadoPor">
-            <summary>
-            Modificado por do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Moeda">
-            <summary>
-            Moeda do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.NDeOrdenacao1">
-            <summary>
-            Número de ordenação do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.NDeOrdenacao2">
-            <summary>
-            Número de ordenação do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.NDeSerie">
-            <summary>
-            Número de série do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.NDoPedido">
-            <summary>
-            Número do pedido do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.NomeLista">
-            <summary>
-            Nome da lista do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.NumeroNotaOrigem">
-            <summary>
-            Nota do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Notificador">
-            <summary>
-            Notificador do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Ordem">
-            <summary>
-            Ordem do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.OrdemCliente">
-            <summary>
-            Ordem do cliente do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.OrgVendas">
-            <summary>
-            Organização de vendas do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Parada">
-            <summary>
-            Parada do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.GrpCodigos3">
-            <summary>
-            Grupo de códigos do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.PerfCatalogo">
-            <summary>
-            Perfil de catálogo do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Prioridade1">
-            <summary>
-            Prioridade do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Regiao">
-            <summary>
-            Região do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Rua">
-            <summary>
-            Rua do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.SetorAtividade">
-            <summary>
-            Setor de atividade do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.StatusSistema">
-            <summary>
-            Status do sistema do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.StatusUsuario">
-            <summary>
-            Status do usuário do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.SubN">
-            <summary>
-            Subnúmero do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Telefone">
-            <summary>
-            Telefone do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Denominacao4">
-            <summary>
-            Denominação do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TxtCodeCausa">
-            <summary>
-            Texto do código da causa do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TxtCodeCodif">
-            <summary>
-            Texto do código de codificação do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TxtCodPartOb">
-            <summary>
-            Texto do código da parte do objeto do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TextoDaCausa">
-            <summary>
-            Texto da causa do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TxtCodeProb">
-            <summary>
-            Texto do código de problema do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TextoGrpCausa">
-            <summary>
-            Texto do grupo da causa do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TxtGrpCodPr">
-            <summary>
-            Texto do grupo do código de problema do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TxtGrpCodPartOb">
-            <summary>
-            Texto do grupo do código da parte do objeto do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TxtGrpCodific">
-            <summary>
-            Texto do grupo de codificação do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TxtDescritivo">
-            <summary>
-            Texto descritivo do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Texto">
-            <summary>
-            Texto do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Prioridade2">
-            <summary>
-            Prioridade do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TipoDeNota">
-            <summary>
-            Tipo de nota do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.TipoPrioridade">
-            <summary>
-            Tipo de prioridade do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Unidade">
-            <summary>
-            Unidade do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Versao1">
-            <summary>
-            Versão do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Versao2">
-            <summary>
-            Versão do item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.ItemNotaCongasModel.Versao3">
-            <summary>
-            Versão do item
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.CongasModel.MaintancePlanComgasModel">
-            <summary>
-            Plano de manutencao legado COMGAS.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.MaintancePlanComgasModel.IdPlano">
-            <summary>
-            Id do plano de manutenção
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.MaintancePlanComgasModel.PlanoManut">
-            <summary>
-            Plano de manutenção
-            </summary>
-            <example>49643</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.MaintancePlanComgasModel.DataPM">
-            <summary>
-            Data de emissão do plano
-            </summary>
-            <example>DD/MM/AAAA</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.MaintancePlanComgasModel.IdEstrategia">
-            <summary>
-            Chave estrangeira para estratégia 
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.MaintancePlanComgasModel.Estrategia">
-            <summary>
-            Estrategia associada ao plano de manutencao.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.MaintancePlanComgasModel.Ciclo">
-            <summary>
-            Ciclos
-            </summary>
-            <example>12</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.MaintancePlanComgasModel.Unidade">
-            <summary>
-            Unidade de medida dos ciclos
-            </summary>
-            <example>MES</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.MaintancePlanComgasModel.TxtCicloManut">
-            <summary>
-            Campo de texto para ciclo de manutenção
-            </summary>
-            <example>NIVEL - B</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.MaintancePlanComgasModel.Offset">
-            <summary>
-            Offset dos ciclos
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.MaintancePlanComgasModel.ItensManutencao">
-            <summary>
-            Itens de manutencao vinculados ao plano.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.CongasModel.NoteCongasModel">
-            <summary>
-            Modelo para NotaCongasModel
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.IdNota">
-            <summary>
-            Id da Nota
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.NumeroNota">
-            <summary>
-            Número da nota vindo do SAP/Planilha
-            </summary>
-            <example>4088673</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.TipoNota">
-            <summary>
-            Tipo de nota gerada
-            </summary>
-            <example>MC</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.AreaOperac">
-            <summary>
-            Area operacional da nota 
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Classificacao">
-            <summary>
-            O resultado do tipo da nota
-            </summary>
-            <example>CORRETIVA ou PREVENTIVA</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.MetodoClassificacao">
-            <summary>
-            Quem/o que tomou a decisão da classificação da nota
-            </summary>
-            <example>"MANUAL", "FILTRO_POR_PALAVRAS", "IA_CATBOOST"</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.ClassificadoPor">
-            <summary>
-            Identificador de quem classificou a nota. No caso nulo, foi classificado pelo sistema
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DataClassificacao">
-            <summary>
-            Data de quando a classificacao ocorreu
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.LocInstalacao">
-            <summary>
-            Local de instalação do campo de seleção
-            </summary>
-            <example>CG_05_CON_IND_CRM00087</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.StatusSistema">
-            <summary>
-            Status do estado do ativo relatado na nota
-            </summary>
-            <example> MSEN </example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.StatusUsuario">
-            <summary>
-            Descrição do estado do ativo relatado na nota
-            </summary>
-            <example> APRV </example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Descricao">
-            <summary>
-            Descrição do estado do ativo relatado na nota
-            </summary>
-            <example>UAR 2014 - SVVA TROCA DA VALVULA ALIVIO</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Rua">
-            <summary>
-            Rua da localização
-            </summary>
-            <example>R PASCAL 000000</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Bairro">
-            <summary>
-            Bairro da localização
-            </summary>
-            <example>CAMPO BELO</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Local">
-            <summary>
-            Local da instalação
-            </summary>
-            <example>SAO PAULO</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DataNota">
-            <summary>
-            Data de emissão da nota 
-            </summary>
-            <example>DD/MM/AAAA</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.ModificadoEm">
-            <summary>
-            Data de modificação da nota 
-            </summary>
-            <example>DD/MM/AAAA</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.ModificadoPor">
-            <summary>
-            Identificação de quem modificou a nota
-            </summary>
-            <example>CS123456</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.ModificadoAs">
-            <summary>
-            Horário de modificação da nota
-            </summary>
-            <example>hh:mm:ss</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.TipoPrioridade">
-            <summary>
-            Tipo de prioridade da nota (PM ou EM)
-            </summary>
-            <example>PM</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.InicioAvar">
-            <summary>
-            Data de início da avaria
-            </summary>
-            <example>DD/MM/AAAA</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.FimAvaria">
-            <summary>
-            Data de fim da avaria
-            </summary>
-            <example>DD/MM/AAAA</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.HoraInicioAvaria">
-            <summary>
-            Hora de início da avaria
-            </summary>
-            <example>hh:mm:ss</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.HoraFimAvaria">
-            <summary>
-            Hora do fim da avaria
-            </summary>
-            <example>hh:mm:ss</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DtReferencia">
-            <summary>
-            Data de referência
-            </summary>
-            <example>DD/MM/AAAA</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.HoraReferencia">
-            <summary>
-            Hora de referência
-            </summary>
-            <example>hh:mm:ss</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Parada">
-            <summary>
-            Indicador de se terá parada
-            </summary>
-            <example>X</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DuracParada">
-            <summary>
-            Duração da parada
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DtCriacao">
-            <summary>
-            Data de criação da nota
-            </summary>
-            <example>DD/MM/AAAA</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CriadoPor">
-            <summary>
-            Usuário que criou a nota
-            </summary>
-            <example>CS123456</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CriadoAs">
-            <summary>
-            Hora em que a nota foi criada
-            </summary>
-            <example>hh:mm:ss</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Notificador">
-            <summary>
-            Código do notificador
-            </summary>
-            <example>OOOM1</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.PerfCatalogo">
-            <summary>
-            Perfil do catálogo
-            </summary>
-            <example>PM_COR_02</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CenTrabRespon">
-            <summary>
-            Centro de trabalho responsável
-            </summary>
-            <example>CGP0101</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.TxtCodeCodif">
-            <summary>
-            Texto do code de codificação
-            </summary>
-            <example>ERD</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.TxtGrpCodific">
-            <summary>
-            Texto do grupo de codificação
-            </summary>
-            <example>NOTA DE MANUTENÇÃO</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.LocInstAfetado">
-            <summary>
-            Local de instalação afetado
-            </summary>
-            <example>CG_08_EST_ECP_ECP00066</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Equipamento">
-            <summary>
-            Equipamento envolvido na nota
-            </summary>
-            <example>123456789</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Denominacao">
-            <summary>
-            Denominação do ativo
-            </summary>
-            <example>ERP123</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.GrpPlnjPM">
-            <summary>
-            Grupo de planejamento PM
-            </summary>
-            <example>100</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.AreaOperacion">
-            <summary>
-            Área operacional
-            </summary>
-            <example>019</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Codificacao">
-            <summary>
-            Codificação do problema
-            </summary>
-            <example>N1</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Consequencia">
-            <summary>
-            Nível de consequência do problema, de 1 a 4
-            </summary>
-            <example>2</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.GrupoCodes">
-            <summary>
-            Grupo de codes
-            </summary>
-            <example>01-NOTA</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.IdOrdem">
-            <summary>
-            ID da ordem gerada por esta nota 
-            </summary>
-            <example>200000083031</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.AreaContCsts">
-            <summary>
-            Área de controle de custos
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CampoOrdenacao">
-            <summary>
-            Campo de ordenação
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CanalDistrib">
-            <summary>
-            Canal de distribuição
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CentroCusto">
-            <summary>
-            Centro de custo
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CenLocaliz">
-            <summary>
-            Centro de localização
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CentroParaCenTrb">
-            <summary>
-            Centro para centro de trabalho
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CenParaCenTrab">
-            <summary>
-            Centro para centro de trabalho
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CentroPlanej">
-            <summary>
-            Centro de planejamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Pais">
-            <summary>
-            País
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Cliente">
-            <summary>
-            Cliente
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CodigoABC">
-            <summary>
-            Código ABC
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CodigoPostal">
-            <summary>
-            Código postal
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.ConclDesejada">
-            <summary>
-            Data de conclusão desejada
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CondInstAntAvar">
-            <summary>
-            Condição de instalação antes da avaria
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CondInstDepAvar">
-            <summary>
-            Condição de instalação depois da avaria
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.CondInstAposMed">
-            <summary>
-            Condição de instalação após medição
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Conjunto">
-            <summary>
-            Conjunto
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.ControlTecnEm">
-            <summary>
-            Controle técnico em
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.ContrTecnDe">
-            <summary>
-            Controle técnico de
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DdsDispositivo">
-            <summary>
-            Dados do dispositivo
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DenomConjunto">
-            <summary>
-            Denominação do conjunto
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DenomExecutor">
-            <summary>
-            Denominação do executor
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DispAntesAvaria">
-            <summary>
-            Dispositivo antes da avaria
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DispAposMed">
-            <summary>
-            Dispositivo após medição
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DispDepoisAvar">
-            <summary>
-            Dispositivo depois da avaria
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Divisao">
-            <summary>
-            Divisão
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DocVendas">
-            <summary>
-            Documento de vendas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.EmGarantia">
-            <summary>
-            Indica se está em garantia
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Empresa">
-            <summary>
-            Empresa
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DataEncermto">
-            <summary>
-            Data de encerramento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.EquipamAfetado">
-            <summary>
-            Equipamento afetado
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.EquipeVendas">
-            <summary>
-            Equipe de vendas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.EscritVendas">
-            <summary>
-            Escritório de vendas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.ExecutadoPor">
-            <summary>
-            Executado por
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.HoraDaNota">
-            <summary>
-            Hora da nota
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.HoraEncermto">
-            <summary>
-            Hora de encerramento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.HoraInicDes">
-            <summary>
-            Hora de início desejado
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.HFinalDesej">
-            <summary>
-            Hora final desejada
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.InicioDesejado">
-            <summary>
-            Início desejado
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.IDRamal">
-            <summary>
-            ID de ramal
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Imobilizado">
-            <summary>
-            Imobilizado
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Instalacao">
-            <summary>
-            Instalação
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Item">
-            <summary>
-            Item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.ItemManut">
-            <summary>
-            Item de manutenção
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Localizacao">
-            <summary>
-            Localização
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.LocalClasContb">
-            <summary>
-            Local/Classe contábil
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Material">
-            <summary>
-            Material
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Moeda">
-            <summary>
-            Moeda
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.NumeroSerie">
-            <summary>
-            Número de série
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.NumeroCertificado">
-            <summary>
-            Número do certificado
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.NumeroPedido">
-            <summary>
-            Número do pedido
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.DataPedido">
-            <summary>
-            Data do pedido
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.NumeroEndereco">
-            <summary>
-            Número de endereço
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.NomeLista">
-            <summary>
-            Nome da lista
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.NumeroObjeto">
-            <summary>
-            Número do objeto
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.OrdemCliente">
-            <summary>
-            Ordem do cliente
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.OrgVendas">
-            <summary>
-            Organização de vendas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.PEP">
-            <summary>
-            PEP
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.PlanoManut">
-            <summary>
-            Plano de manutenção
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Prioridade">
-            <summary>
-            Prioridade
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Procedencia">
-            <summary>
-            Procedência
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.ReferenciaExterna">
-            <summary>
-            Referência externa
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Regiao">
-            <summary>
-            Região
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Revisao">
-            <summary>
-            Revisão
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Segmento">
-            <summary>
-            Segmento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.SetorAtividade">
-            <summary>
-            Setor de atividade
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.StatusPaging">
-            <summary>
-            Status paging
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Subnumero">
-            <summary>
-            Subnúmero
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Telefone">
-            <summary>
-            Telefone
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.TxtDescritivo">
-            <summary>
-            Texto descritivo
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Unidade">
-            <summary>
-            Unidade
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.ZonaAtendimento">
-            <summary>
-            Zona de atendimento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.NoteCongasModel.Itens">
-            <summary>
-            Propiedade de navegação
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.CongasModel.OrderCongasModel">
-            <summary>
-            Modelo para OrdemCongasModel
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.IdOrdem">
-            <summary>
-            Número da Ordem (Chave Primária)
-            </summary>
-            <example>200000081207</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Classificacao">
-            <summary>
-            O resultado do tipo da nota
-            </summary>
-            <example>CORRETIVA ou PREVENTIVA</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.MetodoClassificacao">
-            <summary>
-            Quem/o que tomou a decisão da classificação da nota
-            </summary>
-            <example>"MANUAL", "FILTRO_POR_PALAVRAS", "IA_CATBOOST"</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.ClassificadoPor">
-            <summary>
-            Identificador de quem classificou a nota. No caso nulo, foi classificado pelo sistema
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DataClassificacao">
-            <summary>
-            Data de quando a classificacao ocorreu
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.LocInstalacao">
-            <summary>
-            Local de instalação do ativo
-            </summary>
-            <example>CG_05_CON_IND_CRM00073</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.AreaContCsts">
-            <summary>
-            Área de controle de custos
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.AreaOperacion">
-            <summary>
-            Área operacional
-            </summary>
-            <example>003</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Bairro">
-            <summary>
-            Bairro
-            </summary>
-            <example>VILA ENDRES</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CampoOrdenacao">
-            <summary>
-            Campo de ordenação
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CanalDistrib">
-            <summary>
-            Canal de distribuição
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CanalDistribVen">
-            <summary>
-            Canal de distribuição - vendas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CategoriaOrdem">
-            <summary>
-            Categoria da ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CenCstRespons">
-            <summary>
-            Centro de custo responsável
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Centro">
-            <summary>
-            Centro
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CentroCusto">
-            <summary>
-            Centro de custo
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CentroDeLucro">
-            <summary>
-            Centro de lucro
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CentroTrabalho">
-            <summary>
-            Centro de trabalho
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CenLocaliz">
-            <summary>
-            Centro de localização
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CentroPlanej">
-            <summary>
-            Centro de planejamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CenTrabRespon">
-            <summary>
-            Centro de trabalho responsável
-            </summary>
-            <example>ENGICRM</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.ChaveSobretaxa">
-            <summary>
-            Chave de sobretaxa
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Pais">
-            <summary>
-            País
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Cliente">
-            <summary>
-            Cliente
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CntrCntrTrab">
-            <summary>
-            Contador do centro de trabalho
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CodigoABC">
-            <summary>
-            Código ABC
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CodigoPostal">
-            <summary>
-            Código postal
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CodPlanOrdem">
-            <summary>
-            Código do plano da ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CondInstal">
-            <summary>
-            Condição de instalação
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Conjunto">
-            <summary>
-            Conjunto
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CriadoPor">
-            <summary>
-            Usuário criador da ordem
-            </summary>
-            <example>IP1020091109</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CriterioParaCalc">
-            <summary>
-            Critério para cálculo
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CustsEstimados">
-            <summary>
-            Custos estimados
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CustosTotPlan">
-            <summary>
-            Custos totais planejados
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.CustTotReais">
-            <summary>
-            Custos totais reais
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.TotLiquidacao">
-            <summary>
-            Total de liquidação
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DataBaseFim">
-            <summary>
-            Data base de fim
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DataBaseInic">
-            <summary>
-            Data base de início
-            </summary>
-            <example>2009-12-15</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DataDeEntrada">
-            <summary>
-            Data de entrada
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.HoraDeInicio">
-            <summary>
-            Hora de início
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DataModif">
-            <summary>
-            Data de modificação da ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DtReferencia">
-            <summary>
-            Data de referência
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DataPedido">
-            <summary>
-            Data do pedido
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DtRealFim">
-            <summary>
-            Data real de fim da ordem
-            </summary>
-            <example>2010-01-24</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.LiberacaoReal">
-            <summary>
-            Data de liberação real
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DdsDispositivo">
-            <summary>
-            Dados do dispositivo
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DenomConjunto">
-            <summary>
-            Denominação do conjunto
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Denominacao">
-            <summary>
-            Denominação do local
-            </summary>
-            <example>HOSPITAL SAO LUIZ</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.ProdServico">
-            <summary>
-            Produto/serviço
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DispDesdeData">
-            <summary>
-            Disponível desde data
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DispDesdeHora">
-            <summary>
-            Disponível desde hora
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DisponivelAte">
-            <summary>
-            Disponível até
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DispAteHora">
-            <summary>
-            Disponível até hora
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Divisao">
-            <summary>
-            Divisão
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DocVendas">
-            <summary>
-            Documento de vendas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.DtaInicioReal">
-            <summary>
-            Data real de início da ordem
-            </summary>
-            <example>2010-01-24</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.ElementoPEP">
-            <summary>
-            Elemento PEP
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.ElemRefPMPS">
-            <summary>
-            Elemento de referência PM/PS
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.EmGarantia">
-            <summary>
-            Em garantia
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Empresa">
-            <summary>
-            Empresa
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Equipamento">
-            <summary>
-            Equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.EquipeVendas">
-            <summary>
-            Equipe de vendas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.EscritVendas">
-            <summary>
-            Escritório de vendas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.EsquemaCalculo">
-            <summary>
-            Esquema de cálculo
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.ExisteTxtDesc">
-            <summary>
-            Existe texto descritivo
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.FimBaseHora">
-            <summary>
-            Fim base (hora)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.FimProgramado">
-            <summary>
-            Fim programado
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.HoraFim">
-            <summary>
-            Hora fim
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.FimRealHora">
-            <summary>
-            Hora real de fim
-            </summary>
-            <example>13:20:00</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.FormaFatmto">
-            <summary>
-            Forma de faturamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.GrpPlnManLTa">
-            <summary>
-            Grupo de planejamento manual de lista de tarefas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.GrpPlnjPM">
-            <summary>
-            Grupo de planejamento PM
-            </summary>
-            <example>101</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.GrpLisTar">
-            <summary>
-            Grupo de lista de tarefas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.HistoricoDesde">
-            <summary>
-            Histórico desde
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.HoraReferencia">
-            <summary>
-            Hora de referência
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.InicRealHr">
-            <summary>
-            Hora real de início
-            </summary>
-            <example>11:00:00</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Imobilizado">
-            <summary>
-            Imobilizado
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.InicioProg">
-            <summary>
-            Início programado
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Item">
-            <summary>
-            Item
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.ItemManut">
-            <summary>
-            Item de manutenção
-            </summary>
-            <example>36467</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.NrListaObj">
-            <summary>
-            Número da lista de objetos
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Local">
-            <summary>
-            Local / Cidade
-            </summary>
-            <example>SAO PAULO</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Localizacao">
-            <summary>
-            Localização
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.MarcPElimin">
-            <summary>
-            Marca para eliminação
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Material">
-            <summary>
-            Material
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Moeda">
-            <summary>
-            Moeda
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.NrDeSerie">
-            <summary>
-            Número de série
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.NrDoPedido">
-            <summary>
-            Número do pedido
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.NrEndereco">
-            <summary>
-            Número de endereço
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.NomeLista">
-            <summary>
-            Nome da lista
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.NrObjeto">
-            <summary>
-            Número do objeto
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.NumeroNotaOrigem">
-            <summary>
-            Nota atrelada à ordem (Chave Estrangeira lógica)
-            </summary>
-            <example>90003663</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.NumdrGrpRot">
-            <summary>
-            Número do grupo de roteiro
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.OperacSuperior">
-            <summary>
-            Operação superior
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Ordem">
-            <summary>
-            Ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.OrdemPrincip">
-            <summary>
-            Ordem principal vinculada
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.OrdemSuperior">
-            <summary>
-            Ordem superior
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.OrgVendas">
-            <summary>
-            Organização de vendas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.OrgVendasVendas">
-            <summary>
-            Organização de vendas - vendas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.PEPCabecOrdem">
-            <summary>
-            PEP cabeçalho da ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.PlanoManut">
-            <summary>
-            Plano de manutenção atrelado
-            </summary>
-            <example>10419</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Prioridade">
-            <summary>
-            Prioridade
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Quantidade">
-            <summary>
-            Quantidade
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.RecTotaisPlan">
-            <summary>
-            Receitas totais planejadas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.RecTotReais">
-            <summary>
-            Receitas totais reais
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.RedeParcialP">
-            <summary>
-            Rede parcial para
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Regiao">
-            <summary>
-            Região
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.ReservaReqComp">
-            <summary>
-            Reserva/Requisição de compra
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Revisao">
-            <summary>
-            Revisão
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Rua">
-            <summary>
-            Rua
-            </summary>
-            <example>AV STO AMARO 000734</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.SetorAtividade">
-            <summary>
-            Setor de atividade
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.SetorAtividadeVe">
-            <summary>
-            Setor de atividade - vendas
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.StatusPaging">
-            <summary>
-            Status de paging
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.StatusSistema">
-            <summary>
-            Status do sistema da ordem
-            </summary>
-            <example>ENTE CONF DMNV MOME NOLQ</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.StatusUsuario">
-            <summary>
-            Status do usuário
-            </summary>
-            <example>APRO</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Subnr">
-            <summary>
-            Subnúmero
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.Telefone">
-            <summary>
-            Telefone
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.TextoBreve">
-            <summary>
-            Texto breve com a descrição da ordem
-            </summary>
-            <example>BAUDUCCO (1)</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.TipoAtividPM">
-            <summary>
-            Tipo de atividade PM
-            </summary>
-            <example>Z02</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.TipoOrdem">
-            <summary>
-            Tipo de ordem PM
-            </summary>
-            <example>ZM03</example>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.TipoPrioridade">
-            <summary>
-            Tipo de prioridade
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.TotalPlanejado">
-            <summary>
-            Total planejado
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.TotalReal">
-            <summary>
-            Total real
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.ModificadoPor">
-            <summary>
-            Usuário que modificou a ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.OrderCongasModel.UMBasica">
-            <summary>
-            Unidade de medida básica
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.EquipmentComgasModel">
-            <summary>
-            Classe de equipamentos, 
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.IdEquipamento">
-            <summary>
-            Identificação do equipamento
-            </summary>
-            <example>CG_05_EST_ECS_ECS00001</example>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Atividade">
-            <summary>
-            Atividade do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.BaseDeAtendiemnto">
-            <summary>
-            Base de atendimento do equipamento
-            </summary>
-            <example>JUNDIAI</example>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Capacidade">
-            <summary>
-            Capacidade do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Classe">
-            <summary>
-            Classe do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.CoordenadasX">
-            <summary>
-            Coordenada X do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.CoordenadasY">
-            <summary>
-            Coordenada Y do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.DataLoggerId">
-            <summary>
-            ID do data logger
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.DDD">
-            <summary>
-            DDD do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Denominacao">
-            <summary>
-            Denominação do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.ElementoPep">
-            <summary>
-            Elemento PEP do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Fabricante">
-            <summary>
-            Fabricante do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.FrequenciaDeManutencao">
-            <summary>
-            Frequência de manutenção do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Grid">
-            <summary>
-            Grid do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.IdGeogas">
-            <summary>
-            ID GeoGas do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Iluminacao">
-            <summary>
-            Iluminação do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Material">
-            <summary>
-            Material do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.NumeroDaEstacaoInterligada">
-            <summary>
-            Número da estação interligada
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.NumeroDeLinhas">
-            <summary>
-            Número de linhas do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.NumeroDoProjeto">
-            <summary>
-            Número do projeto
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.PontoDeReferencia">
-            <summary>
-            Ponto de referência do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Secao">
-            <summary>
-            Seção do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Status">
-            <summary>
-            Status do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Subsistema">
-            <summary>
-            Subsistema do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Tipo">
-            <summary>
-            Tipo do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.TipoDeObjeto">
-            <summary>
-            Tipo de objeto do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.DataDeAssentamento">
-            <summary>
-            Data de assentamento do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.DataDeComissionamento">
-            <summary>
-            Data de comissionamento do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.DataDeFabricacao">
-            <summary>
-            Data de fabricação do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.DataDeInicioDeOper">
-            <summary>
-            Data de início de operação do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.DataDeInstalacao">
-            <summary>
-            Data de instalação do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.DataFimDeOperacao">
-            <summary>
-            Data de fim de operação do equipamento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.DetalhesTecnicos">
-            <summary>
-            Guarda atributos específicos dos equipamentos 
-            </summary>
-            <Example>{"Material": "Aço"}</Example>
-        </member>
-        <member name="P:app_pm_back.Models.EquipmentComgasModel.Notas">
-            <summary>
-            Um equipamento pode ter várias Notas Congas ligadas a ele
+            Estrategia associada ao plano.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.AtividadeNotaModel">
@@ -4049,6 +1833,12 @@
             Local de instalacao onde o equipamento esta instalado.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.EquipamentoAtivoModel.DetalhesTecnicos">
+            <summary>
+            Guarda atributos específicos dos equipamentos 
+            </summary>
+            <Example>{"Material": "Aço"}</Example>
+        </member>
         <member name="P:app_pm_back.Models.Domain.EquipamentoAtivoModel.Notas">
             <summary>
             Notas associadas ao equipamento.
@@ -4079,45 +1869,26 @@
             Denominacao da estrategia.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.CodigoProgramacao">
+        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.Habilitada">
             <summary>
-            Codigo de programacao da estrategia.
+            Se a estratégia está habilitada para uso ou não.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.UnidadeEstrategica">
+        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.Ciclo">
             <summary>
-            Unidade estrategica da estrategia.
+            Duração de meses do ciclo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.HorizonteAbertura">
+        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.NumeroCiclos">
             <summary>
-            Horizonte de abertura de ordens.
+            Quantidade de ciclos de manutencao previstos para o plano.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.FatorDeslocamentoAtrasada">
+        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.TipoAtivoAplicável">
             <summary>
-            Fator de deslocamento na confirmacao atrasada.
+            Tipo de ativo aplicável 
             </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.ToleranciaAtrasadaPercentual">
-            <summary>
-            Tolerancia percentual para confirmacao atrasada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.FatorDeslocamentoAntecipada">
-            <summary>
-            Fator de deslocamento na confirmacao antecipada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.ToleranciaAntecipadaPercentual">
-            <summary>
-            Tolerancia percentual para confirmacao antecipada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.CalendarioFabrica">
-            <summary>
-            Calendario de fabrica utilizado.
-            </summary>
+            <example>Nível A</example>
         </member>
         <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.Planos">
             <summary>
@@ -4292,6 +2063,41 @@
         <member name="P:app_pm_back.Models.Domain.ItemNotaManutencaoModel.TextoCausa">
             <summary>
             Texto explicativo da causa.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaManutencaoModel.NDeOrdenacao1">
+            <summary>
+            Número de ordenação do item
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaManutencaoModel.TxtGrpCodPartOb">
+            <summary>
+            Texto do grupo do código da parte do objeto do item
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaManutencaoModel.TxtCodPartOb">
+            <summary>
+            Texto do código da parte do objeto do item
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaManutencaoModel.TxtCodeProb">
+            <summary>
+            Texto do código de problema do item
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaManutencaoModel.TextoGrpCausa">
+            <summary>
+            Texto do grupo da causa do item
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaManutencaoModel.TxtGrpCodPr">
+            <summary>
+            Texto do grupo do código de problema do item
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaManutencaoModel.TxtCodeCausa">
+            <summary>
+            Texto do código da causa do item
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.ItemNotaManutencaoModel.Nota">
@@ -4594,9 +2400,37 @@
             Identificador da nota.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.NumeroNota">
+            <summary>
+            Número da nota vindo do SAP/Planilha
+            </summary>
+            <example>4088673</example>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.TipoNota">
             <summary>
             Tipo de nota (ex.: MG, M9, VT, OR).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Classificacao">
+            <summary>
+            O resultado do tipo da nota
+            </summary>
+            <example>CORRETIVA ou PREVENTIVA</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.MetodoClassificacao">
+            <summary>
+            Quem/o que tomou a decisão da classificação da nota
+            </summary>
+            <example>"MANUAL", "FILTRO_POR_PALAVRAS", "IA_CATBOOST"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.ClassificadoPor">
+            <summary>
+            Identificador de quem classificou a nota. No caso nulo, foi classificado pelo sistema
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.DataClassificacao">
+            <summary>
+            Data de quando a classificacao ocorreu
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Descricao">
@@ -4647,6 +2481,41 @@
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.CriadoPorUsuarioId">
             <summary>
             Usuario que criou a nota.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.TipoPrioridade">
+            <summary>
+            Tipo de prioridade da nota 
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.TipoDeNota">
+            <summary>
+            Tipo de nota 
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.TxtGrpCodific">
+            <summary>
+            Texto do grupo de codificação da nota
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.TxtCodeCodif">
+            <summary>
+            Texto do código de codificação da nota
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Codificacao">
+            <summary>
+            Codificação do item
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Consequencia">
+            <summary>
+            Consequência do item
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.GrupoDeCodes">
+            <summary>
+            Grupo de códigos do item
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Equipamento">
@@ -4751,7 +2620,30 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.TipoOrdem">
             <summary>
-            Tipo da ordem (ex.: ZM01, ZM02, ZM03).
+            Tipo da ordem.
+            </summary>
+            <example>ZM01, ZM02, ZM03</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.Classificacao">
+            <summary>
+            O resultado do tipo da nota
+            </summary>
+            <example>CORRETIVA ou PREVENTIVA</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.MetodoClassificacao">
+            <summary>
+            Quem/o que tomou a decisão da classificação da nota
+            </summary>
+            <example>"MANUAL", "FILTRO_POR_PALAVRAS", "IA_CATBOOST"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.ClassificadoPor">
+            <summary>
+            Identificador de quem classificou a nota. No caso nulo, foi classificado pelo sistema
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.DataClassificacao">
+            <summary>
+            Data de quando a classificacao ocorreu
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.StatusOrdem">
@@ -4842,6 +2734,11 @@
         <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModel.NumeroSolicitacao">
             <summary>
             Numero da solicitacao relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModel.DataCriacao">
+            <summary>
+            Data de criação do plano.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModel.DataConclusao">
@@ -5273,7 +3170,7 @@
             <param name="id">Id da nota a ser realizada a busca</param>
             <returns>Lista de Itens associadas a essa nota</returns>
         </member>
-        <member name="M:app_pm_back.Services.CongasServices.NoteCongasService.GetFichasPorAtivoAsync(System.String,System.String)">
+        <member name="M:app_pm_back.Services.CongasServices.NotaManutencaoService.GetFichasPorAtivoAsync(System.String,System.String)">
             <summary>
             Regra específica para a API, busca fichas por ativo e tipo de nota
             </summary>
@@ -5305,7 +3202,7 @@
             <param name="tipoOrdem"></param>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Services.SpreadsheetService.PreencherDetalhesTecnicos(app_pm_back.Models.EquipmentComgasModel,System.String[],System.Collections.Generic.Dictionary{System.String,System.Int32})">
+        <member name="M:app_pm_back.Services.SpreadsheetService.PreencherDetalhesTecnicos(app_pm_back.Models.Domain.EquipamentoAtivoModel,System.String[],System.Collections.Generic.Dictionary{System.String,System.Int32})">
             <summary>
             Lê as colunas extras que não estão mapeadas com [SheetColumn] e atira-as para o JSONB
             </summary>

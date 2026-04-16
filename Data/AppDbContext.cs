@@ -26,37 +26,37 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Relacionamentos legados COMGAS.
-        modelBuilder.Entity<MaintancePlanComgasModel>()
-            .HasOne(p => p.Estrategia)
-            .WithMany(e => e.Planos)
-            .HasForeignKey(p => p.IdEstrategia)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<ItemManutencaoComgasModel>()
-            .HasOne(i => i.PlanoRelacionado)
-            .WithMany(p => p.ItensManutencao)
-            .HasForeignKey(i => i.PlanoId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<CicloComgasModel>()
-            .HasOne(c => c.Estrategia)
-            .WithMany(e => e.Ciclos)
-            .HasForeignKey(c => c.IdEstrategia)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<NoteCongasModel>()
-            .HasOne<EquipmentComgasModel>()
-            .WithMany(e => e.Notas)
-            .HasForeignKey(n => n.Equipamento)
-            .HasPrincipalKey(e => e.IdEquipamento)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<ItemNotaCongasModel>()
-            .HasOne(i => i.NoteCongas)
-            .WithMany(n => n.Itens)
-            .HasForeignKey(i => i.NoteCongasIdNota)
-            .OnDelete(DeleteBehavior.Cascade);
+        // // Relacionamentos legados COMGAS.
+        // modelBuilder.Entity<MaintancePlanComgasModel>()
+        //     .HasOne(p => p.Estrategia)
+        //     .WithMany(e => e.Planos)
+        //     .HasForeignKey(p => p.IdEstrategia)
+        //     .OnDelete(DeleteBehavior.SetNull);
+        //
+        // modelBuilder.Entity<ItemManutencaoComgasModel>()
+        //     .HasOne(i => i.PlanoRelacionado)
+        //     .WithMany(p => p.ItensManutencao)
+        //     .HasForeignKey(i => i.PlanoId)
+        //     .OnDelete(DeleteBehavior.SetNull);
+        //
+        // modelBuilder.Entity<CicloComgasModel>()
+        //     .HasOne(c => c.Estrategia)
+        //     .WithMany(e => e.Ciclos)
+        //     .HasForeignKey(c => c.IdEstrategia)
+        //     .OnDelete(DeleteBehavior.SetNull);
+        //
+        // modelBuilder.Entity<NoteCongasModel>()
+        //     .HasOne<EquipmentComgasModel>()
+        //     .WithMany(e => e.Notas)
+        //     .HasForeignKey(n => n.Equipamento)
+        //     .HasPrincipalKey(e => e.IdEquipamento)
+        //     .OnDelete(DeleteBehavior.SetNull);
+        //
+        // modelBuilder.Entity<ItemNotaCongasModel>()
+        //     .HasOne(i => i.NoteCongas)
+        //     .WithMany(n => n.Itens)
+        //     .HasForeignKey(i => i.NoteCongasIdNota)
+        //     .OnDelete(DeleteBehavior.Cascade);
 
         // Dominio normalizado para manutencao.
         modelBuilder.Entity<UsuarioSapModel>()
@@ -258,15 +258,15 @@ public class AppDbContext : DbContext
     /// </summary>
     public DbSet<OrdemPetroModel> OrdensPetro { get; set; }
 
-    /// <summary>
-    /// Tabela de notas Congas.
-    /// </summary>
-    public DbSet<NoteCongasModel> NotasCongas { get; set; }
-
-    /// <summary>
-    /// Tabela de ordens Congas.
-    /// </summary>
-    public DbSet<OrderCongasModel> OrdensCongas { get; set; }
+    // /// <summary>
+    // /// Tabela de notas Congas.
+    // /// </summary>
+    // public DbSet<NoteCongasModel> NotasCongas { get; set; }
+    //
+    // /// <summary>
+    // /// Tabela de ordens Congas.
+    // /// </summary>
+    // public DbSet<OrderCongasModel> OrdensCongas { get; set; }
 
     /// <summary>
     /// Tabela de anexos.
@@ -277,26 +277,26 @@ public class AppDbContext : DbContext
     /// Tabela de regras para classificacao.
     /// </summary>
     public DbSet<RuleClassificationModel> Regras { get; set; }
-
-    /// <summary>
-    /// Tabela de itens de nota Congas.
-    /// </summary>
-    public DbSet<ItemNotaCongasModel> ItemNotaCongas { get; set; }
+    
+    // /// <summary>
+    // /// Tabela de itens de nota Congas.
+    // /// </summary>
+    // public DbSet<ItemNotaCongasModel> ItemNotaCongas { get; set; }
 
     /// <summary>
     /// Tabela de acoes de nota Congas.
     /// </summary>
     public DbSet<AcaoNotaCongasModel> AcaoNotaCongas { get; set; }
 
-    /// <summary>
-    /// Tabela de equipamentos legados da Congas.
-    /// </summary>
-    public DbSet<EquipmentComgasModel> Equipamentos { get; set; }
-
-    /// <summary>
-    /// Tabela de planos de manutencao legados da Congas.
-    /// </summary>
-    public DbSet<MaintancePlanComgasModel> PlanosManutencao { get; set; }
+    // /// <summary>
+    // /// Tabela de equipamentos legados da Congas.
+    // /// </summary>
+    // public DbSet<EquipmentComgasModel> Equipamentos { get; set; }
+    //
+    // /// <summary>
+    // /// Tabela de planos de manutencao legados da Congas.
+    // /// </summary>
+    // public DbSet<MaintancePlanComgasModel> PlanosManutencao { get; set; }
 
     /// <summary>
     /// Tabela de usuarios SAP.

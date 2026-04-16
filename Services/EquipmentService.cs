@@ -1,23 +1,24 @@
 using app_pm_back.Data;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.Services;
 
-public class EquipmentService : BaseCrudService<EquipmentComgasModel>
+public class EquipmentService : BaseCrudService<EquipamentoAtivoModel>
 {
     public EquipmentService(AppDbContext context) : base(context)
     {
     }
 
-    public async Task CreateEquipamentosEmMassaAsync(List<EquipmentComgasModel> equipamentos)
+    public async Task CreateEquipamentosEmMassaAsync(List<EquipamentoAtivoModel> equipamentos)
     {
-        var idsExistentes = _context.Equipamentos
-            .Select(e => e.IdEquipamento)
+        var idsExistentes = _context.EquipamentosAtivos
+            .Select(e => e.TagEquipamento)
             .ToHashSet();
 
         var novosEquipamentos = equipamentos
-            .Where(e => !idsExistentes.Contains(e.IdEquipamento))
+            .Where(e => !idsExistentes.Contains(e.TagEquipamento))
             .ToList();
 
         if (novosEquipamentos.Any())

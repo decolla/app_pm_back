@@ -1,4 +1,5 @@
 using app_pm_back.Models;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,12 +28,12 @@ public class EquipmentsController : ControllerBase
     /// </summary>
     /// <param name="novoEquipamento">Equipamento a ser criado</param>
     [HttpPost]
-    public async Task<IActionResult> CriarEquipamentoCongas([FromBody] EquipmentComgasModel novoEquipamento)
+    public async Task<IActionResult> CriarEquipamentoCongas([FromBody] EquipamentoAtivoModel novoEquipamento)
     {
         try
         {
             var equipamento = await _equipmentService.CreateAsync(novoEquipamento);
-            return Created($"api/V1/Comgas/equipments/{equipamento.IdEquipamento}", equipamento);
+            return Created($"api/V1/Comgas/equipments/{equipamento.TagEquipamento}", equipamento);
         }
         catch (Exception e)
         {
@@ -91,12 +92,12 @@ public class EquipmentsController : ControllerBase
     /// <param name="equipamento">Equipamento a ser atualizado</param>
     /// <returns>Equipamento atualizado</returns>
     [HttpPut]
-    public async Task<IActionResult> AtualizarEquipamento([FromBody] EquipmentComgasModel equipamento)
+    public async Task<IActionResult> AtualizarEquipamento([FromBody] EquipamentoAtivoModel equipamento)
     {
         try
         {
             var result = await _equipmentService.UpdateNotaAsync(equipamento);
-            return Ok(new { message = "Equipamento atualizado com sucesso: " + result.IdEquipamento });
+            return Ok(new { message = "Equipamento atualizado com sucesso: " + result.TagEquipamento });
         }
         catch (Exception)
         {

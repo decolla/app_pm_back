@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using app_pm_back.Attributes;
 
 namespace app_pm_back.Models.Domain;
 
@@ -48,6 +49,51 @@ public class ItemNotaManutencaoModel
     /// </summary>
     [MaxLength(500)]
     public string? TextoCausa { get; set; }
+    
+    // CATBOOST
+
+    /// <summary>
+    /// Número de ordenação do item
+    /// </summary>
+    [SheetColumn("Nº de ordenação")]
+    public string? NDeOrdenacao1 { get; set; }
+
+    /// <summary>
+    /// Texto do grupo do código da parte do objeto do item
+    /// </summary>
+    [SheetColumn("TxtGrpCodPartOb")]
+    public string? TxtGrpCodPartOb { get; set; }
+
+    /// <summary>
+    /// Texto do código da parte do objeto do item
+    /// </summary>
+    [SheetColumn("Txt.cod.part.ob")]
+    public string? TxtCodPartOb { get; set; }
+
+
+    /// <summary>
+    /// Texto do código de problema do item
+    /// </summary>
+    [SheetColumn("Txt.code prob.")]
+    public string? TxtCodeProb { get; set; }
+
+    /// <summary>
+    /// Texto do grupo da causa do item
+    /// </summary>
+    [SheetColumn("Texto grp.causa")]
+    public string? TextoGrpCausa { get; set; }
+
+    /// <summary>
+    /// Texto do grupo do código de problema do item
+    /// </summary>
+    [SheetColumn("Txt.grp.cod.pr.")]
+    public string? TxtGrpCodPr { get; set; }
+
+    /// <summary>
+    /// Texto do código da causa do item
+    /// </summary>
+    [SheetColumn("Txt.code causa")]
+    public string? TxtCodeCausa { get; set; }
 
     /// <summary>
     /// Nota associada ao item.

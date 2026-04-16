@@ -23,8 +23,7 @@ public class ItemPlanoManutencaoModel
     /// <summary>
     /// Codigo do plano de manutencao.
     /// </summary>
-    [MaxLength(40)]
-    public required string PlanoManutencaoCodigo { get; set; }
+    public long? PlanoManutencaoCodigo { get; set; }
 
     /// <summary>
     /// TAG do equipamento relacionado.

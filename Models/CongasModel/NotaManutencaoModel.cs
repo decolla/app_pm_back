@@ -1,12 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using app_pm_back.Attributes;
+using app_pm_back.Interfaces;
 
 namespace app_pm_back.Models.Domain;
 
 /// <summary>
 /// Nota de manutencao contendo sintomas, causa e plano de execucao.
 /// </summary>
-public class NotaManutencaoModel
+public class NotaManutencaoModel : IClassifiable
 {
     /// <summary>
     /// Identificador da nota.
@@ -16,16 +18,46 @@ public class NotaManutencaoModel
     public long IdNota { get; set; }
 
     /// <summary>
+    /// Número da nota vindo do SAP/Planilha
+    /// </summary>
+    /// <example>4088673</example>
+    [SheetColumn("Nota")]
+    public long NumeroNota { get; set; }
+
+    /// <summary>
     /// Tipo de nota (ex.: MG, M9, VT, OR).
     /// </summary>
     [MaxLength(10)]
-    public required string TipoNota { get; set; }
+    public string? TipoNota { get; set; }
+
+    /// <summary>
+    /// O resultado do tipo da nota
+    /// </summary>
+    /// <example>CORRETIVA ou PREVENTIVA</example>
+    public string? Classificacao { get; set; }
+
+    /// <summary>
+    /// Quem/o que tomou a decisão da classificação da nota
+    /// </summary>
+    /// <example>"MANUAL", "FILTRO_POR_PALAVRAS", "IA_CATBOOST"</example>
+    public string? MetodoClassificacao { get; set; }
+
+    /// <summary>
+    /// Identificador de quem classificou a nota. No caso nulo, foi classificado pelo sistema
+    /// </summary>
+    public string? ClassificadoPor { get; set; }
+
+    /// <summary>
+    /// Data de quando a classificacao ocorreu
+    /// </summary>
+    public DateTime? DataClassificacao { get; set; }
 
     /// <summary>
     /// Descricao breve da nota.
     /// </summary>
     [MaxLength(250)]
-    public required string Descricao { get; set; }
+    [SheetColumn("Descrição")]
+    public string? Descricao { get; set; }
 
     /// <summary>
     /// Descricao detalhada da nota.
@@ -64,6 +96,7 @@ public class NotaManutencaoModel
     /// TAG do equipamento relacionado.
     /// </summary>
     [MaxLength(60)]
+    [SheetColumn("Equipamento")]
     public string? EquipamentoTag { get; set; }
 
     /// <summary>
@@ -76,6 +109,51 @@ public class NotaManutencaoModel
     /// Usuario que criou a nota.
     /// </summary>
     public int? CriadoPorUsuarioId { get; set; }
+
+     // CATBOOST
+    
+     /// <summary>
+     /// Tipo de prioridade da nota 
+     /// </summary>
+     [SheetColumn("Tipo prioridade")]
+     public string? TipoPrioridade { get; set; }
+
+         /// <summary>
+     /// Tipo de nota 
+     /// </summary>
+     [SheetColumn("Tipo de nota")]
+     public string? TipoDeNota { get; set; }
+
+     /// <summary>
+     /// Texto do grupo de codificação da nota
+     /// </summary>
+     [SheetColumn("Txt.grp.codific")]
+     public string? TxtGrpCodific { get; set; }
+
+     /// <summary>
+     /// Texto do código de codificação da nota
+     /// </summary>
+     [SheetColumn("Txt.code codif.")]
+     public string? TxtCodeCodif { get; set; }
+     
+
+     /// <summary>
+     /// Codificação do item
+     /// </summary>
+     [SheetColumn("Codificação")]
+     public string? Codificacao { get; set; }
+
+     /// <summary>
+     /// Consequência do item
+     /// </summary>
+     [SheetColumn("Conseqüência")]
+     public int? Consequencia { get; set; }
+
+     /// <summary>
+     /// Grupo de códigos do item
+     /// </summary>
+     [SheetColumn("Grupo de codes")]
+     public string? GrupoDeCodes { get; set; }
 
     /// <summary>
     /// Equipamento associado a nota.
@@ -115,4 +193,3 @@ public class NotaManutencaoModel
     /// </summary>
     public virtual ICollection<OrdemManutencaoModel> Ordens { get; set; } = new List<OrdemManutencaoModel>();
 }
-

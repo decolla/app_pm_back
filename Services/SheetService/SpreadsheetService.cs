@@ -5,6 +5,7 @@ using api.Communications.Service.Impl.Data;
 using app_pm_back.Attributes;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 using Microsoft.VisualBasic.FileIO;
 
 namespace app_pm_back.Services;
@@ -22,11 +23,11 @@ public class SpreadsheetService
     {
         public string TipoIdentificado { get; set; } = "DESCONHECIDO";
         public List<NotaPetroModel> NotasPetro { get; set; } = new();
-        public List<NoteCongasModel> NotasCongas { get; set; } = new();
+        public List<NotaManutencaoModel> NotasCongas { get; set; } = new();
         public List<OrdemPetroModel> OrdensPetro { get; set; } = new();
-        public List<OrderCongasModel> OrdensCongas { get; set; } = new();
-        public List<ItemNotaCongasModel> ItensCongas { get; set; } = new();
-        public List<EquipmentComgasModel> Equipamentos { get; set; } = new();
+        public List<OrdemManutencaoModel> OrdensCongas { get; set; } = new();
+        public List<ItemNotaManutencaoModel> ItensCongas { get; set; } = new();
+        public List<EquipamentoAtivoModel> Equipamentos { get; set; } = new();
         public List<AcaoNotaCongasModel> AcoesCongas { get; set; } = new();
     }
 
@@ -156,17 +157,17 @@ public class SpreadsheetService
             }
             else if (resultado.TipoIdentificado == "NOTA_CONGAS")
             {
-                var notaCongas = ReadLineForModel<NoteCongasModel>(row, columns);
+                var notaCongas = ReadLineForModel<NotaManutencaoModel>(row, columns);
                 resultado.NotasCongas.Add(notaCongas);
             }
             else if (resultado.TipoIdentificado == "ORDEM_CONGAS")
             {
-                var orderCongas = ReadLineForModel<OrderCongasModel>(row, columns);
+                var orderCongas = ReadLineForModel<OrdemManutencaoModel>(row, columns);
                 resultado.OrdensCongas.Add(orderCongas);
             }
             else if (resultado.TipoIdentificado == "ITEM_CONGAS")
             {
-                var orderCongas = ReadLineForModel<ItemNotaCongasModel>(row, columns);
+                var orderCongas = ReadLineForModel<ItemNotaManutencaoModel>(row, columns);
                 resultado.ItensCongas.Add(orderCongas);
             }
             else if (resultado.TipoIdentificado == "ACAO_NOTA_CONGAS")
@@ -176,11 +177,11 @@ public class SpreadsheetService
             }
             else if (resultado.TipoIdentificado == "EQUIPAMENTO_SAP")
             {
-                var equipamento = ReadLineForModel<EquipmentComgasModel>(row, columns);
+                var equipamento = ReadLineForModel<EquipamentoAtivoModel>(row, columns);
 
                 PreencherDetalhesTecnicos(equipamento, row, columns);
 
-                if (!string.IsNullOrWhiteSpace(equipamento.IdEquipamento))
+                if (!string.IsNullOrWhiteSpace(equipamento.TagEquipamento))
                 {
                     resultado.Equipamentos.Add(equipamento);
                 }
@@ -317,10 +318,10 @@ public class SpreadsheetService
     /// <summary>
     /// Lê as colunas extras que não estão mapeadas com [SheetColumn] e atira-as para o JSONB
     /// </summary>
-    public void PreencherDetalhesTecnicos(EquipmentComgasModel equipamento, string[] row, Dictionary<string, int> columns)
+    public void PreencherDetalhesTecnicos(EquipamentoAtivoModel equipamento, string[] row, Dictionary<string, int> columns)
     {
         // 1. Descobrir quais são os nomes das colunas mapeadas de forma estática
-        var colunasMapeadas = typeof(EquipmentComgasModel).GetProperties()
+        var colunasMapeadas = typeof(EquipamentoAtivoModel).GetProperties()
             .Select(p => p.GetCustomAttribute<SheetColumnAttribute>()?.NomeDaColuna.ToUpperInvariant())
             .Where(nome => nome != null)
             .ToHashSet();

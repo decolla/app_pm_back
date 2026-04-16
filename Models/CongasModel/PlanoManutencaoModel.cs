@@ -20,6 +20,11 @@ public class PlanoManutencaoModel
     /// </summary>
     [MaxLength(40)]
     public string? NumeroSolicitacao { get; set; }
+    
+    /// <summary>
+    /// Data de criação do plano.
+    /// </summary>
+    public DateTime? DataCriacao { get; set; }
 
     /// <summary>
     /// Data de conclusao do plano.

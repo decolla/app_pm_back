@@ -1,4 +1,5 @@
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services.CongasServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,11 +10,11 @@ namespace app_pm_back.Controllers;
 public class MaintancePlanController : ControllerBase
 {
     private readonly string operador = "plano de mantuenção";
-    private readonly MaintancePlanComgasService _maintancePlanComgasService;
+    private readonly PlanoManutencaoService _planoManutencaoService;
 
-    public MaintancePlanController(MaintancePlanComgasService maintancePlanComgasService)
+    public MaintancePlanController(PlanoManutencaoService planoManutencaoService)
     {
-        _maintancePlanComgasService = maintancePlanComgasService;
+        _planoManutencaoService = planoManutencaoService;
     }
 
     /// <summary>
@@ -21,12 +22,12 @@ public class MaintancePlanController : ControllerBase
     /// </summary>
     /// <param name="obj">Objeto a ser adicionado</param>
     [HttpPost]
-    public async Task<IActionResult> Criar([FromBody] MaintancePlanComgasModel obj)
+    public async Task<IActionResult> Criar([FromBody] PlanoManutencaoModel obj)
     {
         try
         {
-            var novoObj = await _maintancePlanComgasService.CreateAsync(obj);
-            return Created($"api/V1/Comgas/maintance-plan/{novoObj.IdPlano}", novoObj);
+            var novoObj = await _planoManutencaoService.CreateAsync(obj);
+            return Created($"api/V1/Comgas/maintance-plan/{novoObj.CodigoPlano}", novoObj);
         }
         catch (Exception e)
         {
@@ -49,11 +50,11 @@ public class MaintancePlanController : ControllerBase
             {
                 int p = pagina ?? 1;
                 int t = tamanho ?? 20;
-                var acoesPaginadas = await _maintancePlanComgasService.GetNotasPaginadasAsync(p, t);
+                var acoesPaginadas = await _planoManutencaoService.GetNotasPaginadasAsync(p, t);
                 return Ok(acoesPaginadas);
             }
 
-            var acoes = await _maintancePlanComgasService.GetAllNotasAsync();
+            var acoes = await _planoManutencaoService.GetAllNotasAsync();
             return Ok(acoes);
         }
         catch (Exception e)
@@ -71,7 +72,7 @@ public class MaintancePlanController : ControllerBase
     {
         try
         {
-            var notas = await _maintancePlanComgasService.CountNotasAsync();
+            var notas = await _planoManutencaoService.CountNotasAsync();
             return Ok(new { count = notas });
         }
         catch (Exception)
@@ -86,12 +87,12 @@ public class MaintancePlanController : ControllerBase
     /// <param name="obj">Objeto a ser atualizado</param>
     /// <returns>Novo objeto</returns>
     [HttpPut]
-    public async Task<IActionResult> Atualizar([FromBody] MaintancePlanComgasModel obj)
+    public async Task<IActionResult> Atualizar([FromBody] PlanoManutencaoModel obj)
     {
         try
         {
-            var result = await _maintancePlanComgasService.UpdateNotaAsync(obj);
-            return Ok(new { message = $"{operador} atualizada com sucesso: " + result.IdPlano });
+            var result = await _planoManutencaoService.UpdateNotaAsync(obj);
+            return Ok(new { message = $"{operador} atualizada com sucesso: " + result.CodigoPlano });
         }
         catch (Exception)
         {
@@ -108,7 +109,7 @@ public class MaintancePlanController : ControllerBase
     {
         try
         {
-            var deleted = await _maintancePlanComgasService.DeleteNotaAsync(id);
+            var deleted = await _planoManutencaoService.DeleteNotaAsync(id);
             if (!deleted) return NotFound(new { message = $"{operador} não encontrado(a)." });
 
             return Ok(new { message = $"{operador} deletado(a) com sucesso" });
@@ -129,7 +130,7 @@ public class MaintancePlanController : ControllerBase
     {
         try
         {
-            var obj = await _maintancePlanComgasService.AtivoGerald(ativo);
+            var obj = await _planoManutencaoService.AtivoGerald(ativo);
             if (obj == null) return NotFound(new { message = $"Nenhum {operador} encontrado para o ativo informado." });
 
             return Ok(obj);

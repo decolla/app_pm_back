@@ -1,5 +1,6 @@
 using app_pm_back.Data;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
 using app_pm_back.Services.PetroServices;
@@ -27,7 +28,7 @@ public static class SpreadsheetEndpoints
             AppDbContext dbContext,
             SpreadsheetService spreadsheetService,
             NotesPetroService notesPetroService,
-            NoteCongasService noteCongasService,
+            NotaManutencaoService notaManutencaoService,
             OrderCongasService orderCongasService,
             OrderPetroService orderPetroService,
             ItemNoteCongasService itemNoteCongasService,
@@ -66,7 +67,7 @@ public static class SpreadsheetEndpoints
                     var notasDeduplicadas = resultadoPlanilha.NotasCongas
                         .DistinctBy(o => o.NumeroNota).ToList();
 
-                    await noteCongasService.CreateNotasEmMassaAsync(notasDeduplicadas);
+                    await notaManutencaoService.CreateNotasEmMassaAsync(notasDeduplicadas);
                     var inseridas = notasDeduplicadas.Count;
 
                     return Results.Ok(new { message = $"{inseridas} notas da CONGAS processadas com sucesso!" });
@@ -106,21 +107,21 @@ public static class SpreadsheetEndpoints
                             { message = "Planilha de itens CONGAS reconhecida, mas sem dados válidos." });
 
                     //  números SAP dos itens
-                    var sapNumbers = resultadoPlanilha.ItensCongas.Select(i => i.NumeroNotaOrigem).Distinct().ToList();
+                    var sapNumbers = resultadoPlanilha.ItensCongas.Select(i => i.NotaId).Distinct().ToList();
 
                     // busca os IDs das notas no banco de dados
-                    var notasNoBanco = await dbContext.NotasCongas
+                    var notasNoBanco = await dbContext.NotasManutencao
                         .Where(n => sapNumbers.Contains(n.NumeroNota))
                         .Select(n => new { n.IdNota, n.NumeroNota })
                         .ToDictionaryAsync(n => n.NumeroNota, n => n.IdNota);
 
                     // atribui o ID correto antes de salvar
-                    var itensValidos = new List<ItemNotaCongasModel>();
+                    var itensValidos = new List<ItemNotaManutencaoModel>();
                     foreach (var item in resultadoPlanilha.ItensCongas)
                     {
-                        if (notasNoBanco.TryGetValue(item.NumeroNotaOrigem, out int idInterno))
+                        if (notasNoBanco.TryGetValue(item.NotaId, out long idInterno))
                         {
-                            item.NoteCongasIdNota = idInterno;
+                            item.NotaId = idInterno;
                             itensValidos.Add(item);
                         }
                     }
@@ -141,7 +142,7 @@ public static class SpreadsheetEndpoints
                         return Results.BadRequest(new { message = "Planilha de equipamentos reconhecida, mas sem dados válidos." });
 
                     // Filtra duplicados da própria planilha
-                    var listaParaSalvar = resultadoPlanilha.Equipamentos.DistinctBy(e => e.IdEquipamento).ToList();
+                    var listaParaSalvar = resultadoPlanilha.Equipamentos.DistinctBy(e => e.TagEquipamento).ToList();
 
                     // Guarda na base de dados
                     await equipmentService.CreateEquipamentosEmMassaAsync(listaParaSalvar);

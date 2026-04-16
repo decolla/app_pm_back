@@ -1,11 +1,12 @@
 using app_pm_back.Data;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.CongasServices;
 
-public class OrderCongasService : BaseCrudService<OrderCongasModel>
+public class OrderCongasService : BaseCrudService<OrdemManutencaoModel>
 {
     public OrderCongasService(AppDbContext context) : base(context)
     {
@@ -24,9 +25,8 @@ public class OrderCongasService : BaseCrudService<OrderCongasModel>
         bool isNumero = long.TryParse(ativo, out long ativoId);
 
         query = query.Where(n => 
-            n.LocInstalacao == ativo || 
-            n.Local == ativo || 
-            (isNumero && n.ItemManut == ativoId));
+            n.NotaRelacionada.LocalInstalacaoCodigo == ativo || 
+            n.NotaRelacionada.EquipamentoTag == ativo);
         
         if (!string.IsNullOrWhiteSpace(tipoOrdem))
         {
@@ -35,8 +35,8 @@ public class OrderCongasService : BaseCrudService<OrderCongasModel>
         
         var fichas = await query.Select(n => new
         {
-            NumerFicha = n.NumeroNotaOrigem,
-            Data = n.DataModif,
+            NumerFicha = n.NotaRelacionadaId,
+            Data = n.DataEntrada,
             Tipo = n.TipoOrdem
         }).ToListAsync();
         

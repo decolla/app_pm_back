@@ -13,7 +13,7 @@ public class EquipamentoAtivoModel
     /// </summary>
     [Key]
     [MaxLength(60)]
-    public required string TagEquipamento { get; set; }
+    public string TagEquipamento { get; set; }
 
     /// <summary>
     /// Tipo de equipamento.
@@ -25,7 +25,7 @@ public class EquipamentoAtivoModel
     /// Denominacao do equipamento.
     /// </summary>
     [MaxLength(200)]
-    public required string Denominacao { get; set; }
+    public string? Denominacao { get; set; }
 
     /// <summary>
     /// Status atual.
@@ -166,6 +166,17 @@ public class EquipamentoAtivoModel
     /// </summary>
     [ForeignKey(nameof(LocalInstalacaoCodigo))]
     public virtual LocalInstalacaoModel? LocalInstalacao { get; set; }
+    
+    /// <summary>
+     /// Guarda atributos específicos dos equipamentos 
+     /// </summary>
+     /// <Example>{"Material": "Aço"}</Example>
+     [Column(TypeName = "jsonb")]
+     public Dictionary<string, string> DetalhesTecnicos { get; set; } = new Dictionary<string, string>();
+     //var equipamentosAco = await _context.Equipamentos
+     // .Where(e => e.Classe == "ECP/P" && e.DetalhesTecnicos["MATERIAL"] == "ACO")
+     // .ToListAsync();
+     
 
     /// <summary>
     /// Notas associadas ao equipamento.

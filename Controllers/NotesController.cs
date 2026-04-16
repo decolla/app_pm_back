@@ -1,6 +1,7 @@
 using app_pm_back.DTO;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
 using AutoMapper;
@@ -255,9 +256,9 @@ public class PetroNotesController : ControllerBase
 [Route("api/V1/Comgas/notes")]
 public class ComgasNotesController : ControllerBase
 {
-    private readonly NoteCongasService _congasService;
+    private readonly NotaManutencaoService _congasService;
     private readonly ItemNoteCongasService _itemNoteCongasService;
-    private readonly ClassificationService<NoteCongasModel> _classificationServiceCongas;
+    private readonly ClassificationService<NotaManutencaoModel> _classificationServiceCongas;
     private readonly IMapper _mapper;
 
     /// <summary>
@@ -268,9 +269,9 @@ public class ComgasNotesController : ControllerBase
     /// <param name="classificationServiceCongas"></param>
     /// <param name="mapper"></param>
     public ComgasNotesController(
-        NoteCongasService congasService,
+        NotaManutencaoService congasService,
         ItemNoteCongasService itemNoteCongasService,
-        ClassificationService<NoteCongasModel> classificationServiceCongas,
+        ClassificationService<NotaManutencaoModel> classificationServiceCongas,
         IMapper mapper)
     {
         _congasService = congasService;
@@ -283,7 +284,7 @@ public class ComgasNotesController : ControllerBase
     /// Cadastra uma nota Congas
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> CriarNotaCongas([FromBody] NoteCongasModel novaNota)
+    public async Task<IActionResult> CriarNotaCongas([FromBody] NotaManutencaoModel novaNota)
     {
         try
         {
@@ -359,7 +360,7 @@ public class ComgasNotesController : ControllerBase
     /// Atualiza uma nota Congas de mesmo Id
     /// </summary>
     [HttpPut]
-    public async Task<IActionResult> AtualizarNotaCongas([FromBody] NoteCongasModel nota)
+    public async Task<IActionResult> AtualizarNotaCongas([FromBody] NotaManutencaoModel nota)
     {
         try
         {
@@ -400,7 +401,7 @@ public class ComgasNotesController : ControllerBase
     {
         try
         {
-            List<ItemNotaCongasModel> lista = await _itemNoteCongasService.GetItemsByNotaIdAsync(notaId);
+            List<ItemNotaManutencaoModel> lista = await _itemNoteCongasService.GetItemsByNotaIdAsync(notaId);
             return Ok(lista);
         }
         catch (Exception e)

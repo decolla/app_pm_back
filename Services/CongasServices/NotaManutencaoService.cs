@@ -1,12 +1,13 @@
 using app_pm_back.Data;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.CongasServices;
 
-public class NoteCongasService : BaseCrudService<NoteCongasModel>
+public class NotaManutencaoService : BaseCrudService<NotaManutencaoModel>
 {
-    public NoteCongasService(AppDbContext context) : base(context)
+    public NotaManutencaoService(AppDbContext context) : base(context)
     {
     }
 
@@ -20,7 +21,7 @@ public class NoteCongasService : BaseCrudService<NoteCongasModel>
     {
         var query = _dbSet.AsQueryable(); 
         
-        query = query.Where(n => n.LocInstalacao == ativo || n.Denominacao == ativo || n.Local == ativo);
+        query = query.Where(n => n.LocalInstalacaoCodigo == ativo || n.EquipamentoTag == ativo);
         
         if (!string.IsNullOrWhiteSpace(tipoNota))
         {

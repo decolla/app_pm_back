@@ -440,1259 +440,51 @@ namespace app_pm_back.Migrations
                     b.ToTable("AcaoNotaCongas");
                 });
 
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.CicloComgasModel", b =>
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoEstrategiaModel", b =>
                 {
-                    b.Property<int>("IdCiclo")
+                    b.Property<int>("IdTipoEstrategia")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdCiclo"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoEstrategia"));
 
-                    b.Property<int?>("IdEstrategia")
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int?>("EstrategiaId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("NivelManutencao")
-                        .HasMaxLength(5)
-                        .HasColumnType("character varying(5)");
-
-                    b.Property<int?>("Offset")
+                    b.Property<int>("Meses")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Unidade")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<int?>("ValorCiclo")
-                        .HasColumnType("integer");
-
-                    b.HasKey("IdCiclo");
-
-                    b.HasIndex("IdEstrategia");
-
-                    b.ToTable("CicloComgasModel");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.EstrategiaComgasModel", b =>
-                {
-                    b.Property<int>("IdEstrategia")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdEstrategia"));
-
-                    b.Property<string>("Denominacao")
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.Property<decimal?>("FatorDeslocamentoAntecipado")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("FatorDeslocamentoAtraso")
-                        .HasColumnType("numeric");
-
-                    b.Property<int?>("HorizonteAbertura")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("NomeEstrategia")
+                    b.Property<string>("NomeTipo")
+                        .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)");
 
-                    b.Property<decimal?>("ToleranciaAntecipada")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("ToleranciaAtraso")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("UnidadeEstrategica")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.HasKey("IdEstrategia");
-
-                    b.ToTable("EstrategiaComgasModel");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.ItemManutencaoComgasModel", b =>
-                {
-                    b.Property<int>("IdItem")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("ToleranciaNegativa")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdItem"));
+                    b.Property<int>("ToleranciaPositiva")
+                        .HasColumnType("integer");
 
-                    b.Property<string>("Equipamento")
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
-
-                    b.Property<long?>("ItemManut")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("LocInstalacao")
+                    b.Property<string>("UnidadeToleranciaNegativa")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("character varying(60)");
-
-                    b.Property<int?>("PlanoId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("IdItem");
-
-                    b.HasIndex("PlanoId");
-
-                    b.ToTable("ItemManutencaoComgasModel");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.ItemNotaCongasModel", b =>
-                {
-                    b.Property<int>("IdItem")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdItem"));
-
-                    b.Property<int?>("AreaOperac")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Bairro")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CanalDistrib")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("Causa")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("CenLocaliz")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CenPCenTrab")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CenTrabRespon")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CentroCusto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CentroPlanej")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClasseDefeitos")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Cliente")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CodCausa")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CodeParteObj")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Codificacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CodigoABC")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CodigoDoDano")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CodigoPostal")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ConclDesejada")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("CondInstAntAvar")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("CondInstAposMed")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("CondInstDepAvar")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Conjunto")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("Consequencia")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ContrTecnDe")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ControlTecnEm")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("CriadoAs")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("CriadoPor")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("DataDaNota")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataEncermto")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataPedido")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("DdsDispositivo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DenomConjunto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Denominacao1")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Denominacao2")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Denominacao3")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Denominacao4")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Descricao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DispAntesAvaria")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DispAposMed")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DispDepoisAvar")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Divisao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DocVendas")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("DtCriacao")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DtReferencia")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("DuracParada")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Empresa")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EquipamAfetado")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Equipamento")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("FimAvaria")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("GrpCodigos1")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GrpCodigos2")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GrpCodigos3")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GrpPlnjPM")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GrupoDeCodes")
-                        .HasColumnType("text");
-
-                    b.Property<TimeSpan?>("HFinalDesej")
-                        .HasColumnType("interval");
-
-                    b.Property<TimeSpan?>("HoraDaNota")
-                        .HasColumnType("interval");
-
-                    b.Property<TimeSpan?>("HoraEncermto")
-                        .HasColumnType("interval");
-
-                    b.Property<TimeSpan?>("HoraFimAvaria")
-                        .HasColumnType("interval");
-
-                    b.Property<TimeSpan?>("HoraInicDes")
-                        .HasColumnType("interval");
-
-                    b.Property<TimeSpan?>("HoraInicioAvar")
-                        .HasColumnType("interval");
-
-                    b.Property<TimeSpan?>("HoraReferencia")
-                        .HasColumnType("interval");
-
-                    b.Property<string>("Imobilizado")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("InicioAvar")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("InicioDesejado")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Item1")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Item2")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LocInstAfetad")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LocInstalacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Local")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LocalClasContb")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Localizacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Material")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ModificadoAs")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("ModificadoEm")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("ModificadoPor")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Moeda")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NDeOrdenacao1")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NDeOrdenacao2")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NDeSerie")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NDoPedido")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NomeLista")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("NoteCongasIdNota")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Notificador")
-                        .HasColumnType("text");
-
-                    b.Property<long>("NumeroNotaOrigem")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Ordem")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OrdemCliente")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OrgVendas")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Pais")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Parada")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PerfCatalogo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Prioridade1")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Prioridade2")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Regiao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Rua")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SetorAtividade")
-                        .HasColumnType("text");
-
-                    b.Property<string>("StatusSistema")
-                        .HasColumnType("text");
-
-                    b.Property<string>("StatusUsuario")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SubN")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Telefone")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Texto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TextoDaCausa")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TextoGrpCausa")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TipoDeNota")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TipoPrioridade")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TxtCodPartOb")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TxtCodeCausa")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TxtCodeCodif")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TxtCodeProb")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TxtDescritivo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TxtGrpCodPartOb")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TxtGrpCodPr")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TxtGrpCodific")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Unidade")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Versao1")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Versao2")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Versao3")
-                        .HasColumnType("text");
-
-                    b.HasKey("IdItem");
-
-                    b.HasIndex("NoteCongasIdNota");
-
-                    b.ToTable("ItemNotaCongas");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.MaintancePlanComgasModel", b =>
-                {
-                    b.Property<int>("IdPlano")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdPlano"));
-
-                    b.Property<int>("Ciclo")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("DataPM")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("IdEstrategia")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("Offset")
-                        .HasColumnType("integer");
-
-                    b.Property<long?>("PlanoManut")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("TxtCicloManut")
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)");
 
-                    b.Property<string>("Unidade")
+                    b.Property<string>("UnidadeToleranciaPositiva")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
 
-                    b.HasKey("IdPlano");
+                    b.HasKey("IdTipoEstrategia");
 
-                    b.HasIndex("IdEstrategia");
+                    b.HasIndex("EstrategiaId");
 
-                    b.ToTable("PlanosManutencao");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.NoteCongasModel", b =>
-                {
-                    b.Property<int>("IdNota")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdNota"));
-
-                    b.Property<string>("AreaContCsts")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("AreaOperac")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("AreaOperacion")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Bairro")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CampoOrdenacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CanalDistrib")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CenLocaliz")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CenParaCenTrab")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CenTrabRespon")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CentroCusto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CentroParaCenTrb")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CentroPlanej")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Classificacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClassificadoPor")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Cliente")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Codificacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CodigoABC")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CodigoPostal")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ConclDesejada")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("CondInstAntAvar")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CondInstAposMed")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CondInstDepAvar")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Conjunto")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("Consequencia")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ContrTecnDe")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ControlTecnEm")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("CriadoAs")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("CriadoPor")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("DataClassificacao")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataEncermto")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataNota")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataPedido")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("DdsDispositivo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DenomConjunto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DenomExecutor")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Denominacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Descricao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DispAntesAvaria")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DispAposMed")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DispDepoisAvar")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Divisao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DocVendas")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("DtCriacao")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DtReferencia")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<decimal?>("DuracParada")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("EmGarantia")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Empresa")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EquipamAfetado")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Equipamento")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EquipeVendas")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EscritVendas")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ExecutadoPor")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("FimAvaria")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("GrpPlnjPM")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GrupoCodes")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("HFinalDesej")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("HoraDaNota")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("HoraEncermto")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("HoraFimAvaria")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("HoraInicDes")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("HoraInicioAvaria")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("HoraReferencia")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("IDRamal")
-                        .HasColumnType("text");
-
-                    b.Property<long?>("IdOrdem")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Imobilizado")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("InicioAvar")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("InicioDesejado")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Instalacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Item")
-                        .HasColumnType("text");
-
-                    b.Property<long?>("ItemManut")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("LocInstAfetado")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LocInstalacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Local")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LocalClasContb")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Localizacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Material")
-                        .HasColumnType("text");
-
-                    b.Property<string>("MetodoClassificacao")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("ModificadoAs")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("ModificadoEm")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("ModificadoPor")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Moeda")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NomeLista")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Notificador")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NumeroCertificado")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NumeroEndereco")
-                        .HasColumnType("text");
-
-                    b.Property<long>("NumeroNota")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("NumeroObjeto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NumeroPedido")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NumeroSerie")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OrdemCliente")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OrgVendas")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PEP")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Pais")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Parada")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PerfCatalogo")
-                        .HasColumnType("text");
-
-                    b.Property<long?>("PlanoManut")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Prioridade")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Procedencia")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ReferenciaExterna")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Regiao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Revisao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Rua")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Segmento")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SetorAtividade")
-                        .HasColumnType("text");
-
-                    b.Property<string>("StatusPaging")
-                        .HasColumnType("text");
-
-                    b.Property<string>("StatusSistema")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("StatusUsuario")
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)");
-
-                    b.Property<string>("Subnumero")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Telefone")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TipoNota")
-                        .HasMaxLength(4)
-                        .HasColumnType("character varying(4)");
-
-                    b.Property<string>("TipoPrioridade")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TxtCodeCodif")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TxtDescritivo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TxtGrpCodific")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Unidade")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ZonaAtendimento")
-                        .HasColumnType("text");
-
-                    b.HasKey("IdNota");
-
-                    b.HasIndex("Equipamento");
-
-                    b.ToTable("NotasCongas");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.OrderCongasModel", b =>
-                {
-                    b.Property<long>("IdOrdem")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("AreaContCsts")
-                        .HasColumnType("text");
-
-                    b.Property<string>("AreaOperacion")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Bairro")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CampoOrdenacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CanalDistrib")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CanalDistribVen")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CategoriaOrdem")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CenCstRespons")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CenLocaliz")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CenTrabRespon")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Centro")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CentroCusto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CentroDeLucro")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CentroPlanej")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CentroTrabalho")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ChaveSobretaxa")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Classificacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClassificadoPor")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Cliente")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CntrCntrTrab")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CodPlanOrdem")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CodigoABC")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CodigoPostal")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CondInstal")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Conjunto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CriadoPor")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CriterioParaCalc")
-                        .HasColumnType("text");
-
-                    b.Property<decimal?>("CustTotReais")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("CustosTotPlan")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("CustsEstimados")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime?>("DataBaseFim")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataBaseInic")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataClassificacao")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataDeEntrada")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataModif")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataPedido")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("DdsDispositivo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DenomConjunto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Denominacao")
-                        .HasColumnType("text");
-
-                    b.Property<TimeSpan?>("DispAteHora")
-                        .HasColumnType("interval");
-
-                    b.Property<DateTime?>("DispDesdeData")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<TimeSpan?>("DispDesdeHora")
-                        .HasColumnType("interval");
-
-                    b.Property<DateTime?>("DisponivelAte")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Divisao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DocVendas")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("DtRealFim")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DtReferencia")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DtaInicioReal")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("ElemRefPMPS")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ElementoPEP")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EmGarantia")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Empresa")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Equipamento")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EquipeVendas")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EscritVendas")
-                        .HasColumnType("text");
-
-                    b.Property<string>("EsquemaCalculo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ExisteTxtDesc")
-                        .HasColumnType("text");
-
-                    b.Property<TimeSpan?>("FimBaseHora")
-                        .HasColumnType("interval");
-
-                    b.Property<DateTime?>("FimProgramado")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("FimRealHora")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("FormaFatmto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GrpLisTar")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GrpPlnManLTa")
-                        .HasColumnType("text");
-
-                    b.Property<string>("GrpPlnjPM")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("HistoricoDesde")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<TimeSpan?>("HoraDeInicio")
-                        .HasColumnType("interval");
-
-                    b.Property<TimeSpan?>("HoraFim")
-                        .HasColumnType("interval");
-
-                    b.Property<TimeSpan?>("HoraReferencia")
-                        .HasColumnType("interval");
-
-                    b.Property<string>("Imobilizado")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("InicRealHr")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("InicioProg")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Item")
-                        .HasColumnType("text");
-
-                    b.Property<long?>("ItemManut")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("LiberacaoReal")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("LocInstalacao")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Local")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Localizacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("MarcPElimin")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Material")
-                        .HasColumnType("text");
-
-                    b.Property<string>("MetodoClassificacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ModificadoPor")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Moeda")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NomeLista")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NrDeSerie")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NrDoPedido")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NrEndereco")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NrListaObj")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NrObjeto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NumdrGrpRot")
-                        .HasColumnType("text");
-
-                    b.Property<long?>("NumeroNotaOrigem")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("OperacSuperior")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Ordem")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OrdemPrincip")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OrdemSuperior")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OrgVendas")
-                        .HasColumnType("text");
-
-                    b.Property<string>("OrgVendasVendas")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PEPCabecOrdem")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Pais")
-                        .HasColumnType("text");
-
-                    b.Property<long?>("PlanoManut")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Prioridade")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProdServico")
-                        .HasColumnType("text");
-
-                    b.Property<decimal?>("Quantidade")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("RecTotReais")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("RecTotaisPlan")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("RedeParcialP")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Regiao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ReservaReqComp")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Revisao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Rua")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SetorAtividade")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SetorAtividadeVe")
-                        .HasColumnType("text");
-
-                    b.Property<string>("StatusPaging")
-                        .HasColumnType("text");
-
-                    b.Property<string>("StatusSistema")
-                        .HasColumnType("text");
-
-                    b.Property<string>("StatusUsuario")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Subnr")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Telefone")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TextoBreve")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("TipoAtividPM")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TipoOrdem")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("TipoPrioridade")
-                        .HasColumnType("text");
-
-                    b.Property<decimal?>("TotLiquidacao")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("TotalPlanejado")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("TotalReal")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("UMBasica")
-                        .HasColumnType("text");
-
-                    b.HasKey("IdOrdem");
-
-                    b.ToTable("OrdensCongas");
+                    b.ToTable("TipoEstrategiaModel");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AtividadeNotaModel", b =>
@@ -1762,10 +554,9 @@ namespace app_pm_back.Migrations
                     b.Property<int?>("Offset")
                         .HasColumnType("integer");
 
-                    b.Property<string>("PlanoManutencaoCodigo")
-                        .IsRequired()
+                    b.Property<long>("PlanoManutencaoCodigo")
                         .HasMaxLength(40)
-                        .HasColumnType("character varying(40)");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Unidade")
                         .IsRequired()
@@ -1837,9 +628,12 @@ namespace app_pm_back.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Denominacao")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<Dictionary<string, string>>("DetalhesTecnicos")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
 
                     b.Property<int?>("EnderecoId")
                         .HasColumnType("integer");
@@ -1924,41 +718,27 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdEstrategia"));
 
-                    b.Property<string>("CalendarioFabrica")
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
-                    b.Property<string>("CodigoProgramacao")
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)");
+                    b.Property<int>("Ciclo")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Denominacao")
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<decimal?>("FatorDeslocamentoAntecipada")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("FatorDeslocamentoAtrasada")
-                        .HasColumnType("numeric");
-
-                    b.Property<int?>("HorizonteAbertura")
-                        .HasColumnType("integer");
+                    b.Property<bool>("Habilitada")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)");
 
-                    b.Property<decimal?>("ToleranciaAntecipadaPercentual")
-                        .HasColumnType("numeric");
+                    b.Property<int>("NumeroCiclos")
+                        .HasColumnType("integer");
 
-                    b.Property<decimal?>("ToleranciaAtrasadaPercentual")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("UnidadeEstrategica")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                    b.Property<string>("TipoAtivoAplicável")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("IdEstrategia");
 
@@ -2072,6 +852,9 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
+                    b.Property<string>("NDeOrdenacao1")
+                        .HasColumnType("text");
+
                     b.Property<long>("NotaId")
                         .HasColumnType("bigint");
 
@@ -2087,9 +870,27 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.Property<string>("TextoGrpCausa")
+                        .HasColumnType("text");
+
                     b.Property<string>("TextoSintoma")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<string>("TxtCodPartOb")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TxtCodeCausa")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TxtCodeProb")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TxtGrpCodPartOb")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TxtGrpCodPr")
+                        .HasColumnType("text");
 
                     b.HasKey("IdItemNota");
 
@@ -2118,10 +919,8 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
 
-                    b.Property<string>("PlanoManutencaoCodigo")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)");
+                    b.Property<long?>("PlanoManutencaoCodigo")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdItemPlano");
 
@@ -2304,17 +1103,31 @@ namespace app_pm_back.Migrations
                     b.Property<long>("IdNota")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Classificacao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClassificadoPor")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Codificacao")
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("ConclusaoDesejada")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<int?>("Consequencia")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("CriadoPorUsuarioId")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DataClassificacao")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("DataNota")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Descricao")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
@@ -2326,12 +1139,21 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
 
+                    b.Property<string>("GrupoDeCodes")
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("InicioDesejado")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("LocalInstalacaoCodigo")
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
+
+                    b.Property<string>("MetodoClassificacao")
+                        .HasColumnType("text");
+
+                    b.Property<long>("NumeroNota")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Prioridade")
                         .HasColumnType("integer");
@@ -2340,10 +1162,21 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<string>("TipoDeNota")
+                        .HasColumnType("text");
+
                     b.Property<string>("TipoNota")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
+
+                    b.Property<string>("TipoPrioridade")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TxtCodeCodif")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TxtGrpCodific")
+                        .HasColumnType("text");
 
                     b.HasKey("IdNota");
 
@@ -2404,6 +1237,12 @@ namespace app_pm_back.Migrations
                     b.Property<long>("IdOrdem")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Classificacao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClassificadoPor")
+                        .HasColumnType("text");
+
                     b.Property<int?>("CriadaPorUsuarioId")
                         .HasColumnType("integer");
 
@@ -2416,8 +1255,14 @@ namespace app_pm_back.Migrations
                     b.Property<decimal?>("CustoReal")
                         .HasColumnType("numeric");
 
+                    b.Property<DateTime?>("DataClassificacao")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<DateTime?>("DataEntrada")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("MetodoClassificacao")
+                        .HasColumnType("text");
 
                     b.Property<int?>("ModificadaPorUsuarioId")
                         .HasColumnType("integer");
@@ -2425,9 +1270,9 @@ namespace app_pm_back.Migrations
                     b.Property<long?>("NotaRelacionadaId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("PlanoManutencaoCodigo")
+                    b.Property<long?>("PlanoManutencaoCodigo")
                         .HasMaxLength(40)
-                        .HasColumnType("character varying(40)");
+                        .HasColumnType("bigint");
 
                     b.Property<int?>("Prioridade")
                         .HasColumnType("integer");
@@ -2437,7 +1282,6 @@ namespace app_pm_back.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.Property<string>("TipoOrdem")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
 
@@ -2456,11 +1300,17 @@ namespace app_pm_back.Migrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.PlanoManutencaoModel", b =>
                 {
-                    b.Property<string>("CodigoPlano")
+                    b.Property<long>("CodigoPlano")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(40)
-                        .HasColumnType("character varying(40)");
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("CodigoPlano"));
 
                     b.Property<DateTime?>("DataConclusao")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("DataCriacao")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("EstrategiaId")
@@ -2513,113 +1363,6 @@ namespace app_pm_back.Migrations
                         .IsUnique();
 
                     b.ToTable("UsuariosSap");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.EquipmentComgasModel", b =>
-                {
-                    b.Property<string>("IdEquipamento")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Atividade")
-                        .HasColumnType("text");
-
-                    b.Property<string>("BaseDeAtendiemnto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Capacidade")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Classe")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CoordenadasX")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CoordenadasY")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DDD")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DataDeAssentamento")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DataDeComissionamento")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("DataDeFabricacao")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataDeInicioDeOper")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataDeInstalacao")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime?>("DataFimDeOperacao")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("DataLoggerId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Denominacao")
-                        .HasColumnType("text");
-
-                    b.Property<Dictionary<string, string>>("DetalhesTecnicos")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
-                    b.Property<string>("ElementoPep")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Fabricante")
-                        .HasColumnType("text");
-
-                    b.Property<string>("FrequenciaDeManutencao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Grid")
-                        .HasColumnType("text");
-
-                    b.Property<string>("IdGeogas")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Iluminacao")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Material")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NumeroDaEstacaoInterligada")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("NumeroDeLinhas")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("NumeroDoProjeto")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PontoDeReferencia")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Secao")
-                        .HasColumnType("text");
-
-                    b.Property<int?>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Subsistema")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Tipo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("TipoDeObjeto")
-                        .HasColumnType("text");
-
-                    b.HasKey("IdEquipamento");
-
-                    b.ToTable("Equipamentos");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.NotaPetroModel", b =>
@@ -2780,52 +1523,13 @@ namespace app_pm_back.Migrations
                     b.ToTable("Regras");
                 });
 
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.CicloComgasModel", b =>
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoEstrategiaModel", b =>
                 {
-                    b.HasOne("app_pm_back.Models.CongasModel.EstrategiaComgasModel", "Estrategia")
-                        .WithMany("Ciclos")
-                        .HasForeignKey("IdEstrategia")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Estrategia");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.ItemManutencaoComgasModel", b =>
-                {
-                    b.HasOne("app_pm_back.Models.CongasModel.MaintancePlanComgasModel", "PlanoRelacionado")
-                        .WithMany("ItensManutencao")
-                        .HasForeignKey("PlanoId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("PlanoRelacionado");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.ItemNotaCongasModel", b =>
-                {
-                    b.HasOne("app_pm_back.Models.CongasModel.NoteCongasModel", "NoteCongas")
+                    b.HasOne("app_pm_back.Models.Domain.EstrategiaManutencaoModel", "Estrategia")
                         .WithMany("Itens")
-                        .HasForeignKey("NoteCongasIdNota")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("NoteCongas");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.MaintancePlanComgasModel", b =>
-                {
-                    b.HasOne("app_pm_back.Models.CongasModel.EstrategiaComgasModel", "Estrategia")
-                        .WithMany("Planos")
-                        .HasForeignKey("IdEstrategia")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("EstrategiaId");
 
                     b.Navigation("Estrategia");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.NoteCongasModel", b =>
-                {
-                    b.HasOne("app_pm_back.Models.EquipmentComgasModel", null)
-                        .WithMany("Notas")
-                        .HasForeignKey("Equipamento")
-                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AtividadeNotaModel", b =>
@@ -2927,8 +1631,7 @@ namespace app_pm_back.Migrations
                     b.HasOne("app_pm_back.Models.Domain.PlanoManutencaoModel", "PlanoManutencao")
                         .WithMany("Itens")
                         .HasForeignKey("PlanoManutencaoCodigo")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Equipamento");
 
@@ -3089,23 +1792,6 @@ namespace app_pm_back.Migrations
                     b.Navigation("NotaOrigem");
                 });
 
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.EstrategiaComgasModel", b =>
-                {
-                    b.Navigation("Ciclos");
-
-                    b.Navigation("Planos");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.MaintancePlanComgasModel", b =>
-                {
-                    b.Navigation("ItensManutencao");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.CongasModel.NoteCongasModel", b =>
-                {
-                    b.Navigation("Itens");
-                });
-
             modelBuilder.Entity("app_pm_back.Models.Domain.CentroTrabalhoModel", b =>
                 {
                     b.Navigation("Equipamentos");
@@ -3127,6 +1813,8 @@ namespace app_pm_back.Migrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.EstrategiaManutencaoModel", b =>
                 {
+                    b.Navigation("Itens");
+
                     b.Navigation("Planos");
                 });
 
@@ -3199,11 +1887,6 @@ namespace app_pm_back.Migrations
                     b.Navigation("OrdensCriadas");
 
                     b.Navigation("OrdensModificadas");
-                });
-
-            modelBuilder.Entity("app_pm_back.Models.EquipmentComgasModel", b =>
-                {
-                    b.Navigation("Notas");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.NotaPetroModel", b =>

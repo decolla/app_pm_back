@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using app_pm_back.Models.CongasModel;
 
 namespace app_pm_back.Models.Domain;
 
@@ -26,51 +27,63 @@ public class EstrategiaManutencaoModel
     public string? Denominacao { get; set; }
 
     /// <summary>
-    /// Codigo de programacao da estrategia.
+    /// Se a estratégia está habilitada para uso ou não.
     /// </summary>
-    [MaxLength(40)]
-    public string? CodigoProgramacao { get; set; }
+    public bool Habilitada { get; set; } = true;
 
     /// <summary>
-    /// Unidade estrategica da estrategia.
+    /// Duração de meses do ciclo de manutencao.
     /// </summary>
-    [MaxLength(20)]
-    public string? UnidadeEstrategica { get; set; }
-
+    public int Ciclo { get; set; }
+    
     /// <summary>
-    /// Horizonte de abertura de ordens.
+    /// Quantidade de ciclos de manutencao previstos para o plano.
     /// </summary>
-    public int? HorizonteAbertura { get; set; }
-
+    public int NumeroCiclos { get; set; }
+    
     /// <summary>
-    /// Fator de deslocamento na confirmacao atrasada.
+    /// Tipo de ativo aplicável 
     /// </summary>
-    public decimal? FatorDeslocamentoAtrasada { get; set; }
-
-    /// <summary>
-    /// Tolerancia percentual para confirmacao atrasada.
-    /// </summary>
-    public decimal? ToleranciaAtrasadaPercentual { get; set; }
-
-    /// <summary>
-    /// Fator de deslocamento na confirmacao antecipada.
-    /// </summary>
-    public decimal? FatorDeslocamentoAntecipada { get; set; }
-
-    /// <summary>
-    /// Tolerancia percentual para confirmacao antecipada.
-    /// </summary>
-    public decimal? ToleranciaAntecipadaPercentual { get; set; }
-
-    /// <summary>
-    /// Calendario de fabrica utilizado.
-    /// </summary>
-    [MaxLength(30)]
-    public string? CalendarioFabrica { get; set; }
+    /// <example>Nível A</example>
+    public string TipoAtivoAplicável { get; set; }
 
     /// <summary>
     /// Planos que usam esta estrategia.
     /// </summary>
     public virtual ICollection<PlanoManutencaoModel> Planos { get; set; } = new List<PlanoManutencaoModel>();
+    
+    public virtual ICollection<TipoEstrategiaModel> Itens { get; set; } = new List<TipoEstrategiaModel>();
+    
+    
+    // /// <summary>
+    // /// Horizonte de abertura de ordens.
+    // /// </summary>
+    // public int? HorizonteAbertura { get; set; }
+    //
+    // /// <summary>
+    // /// Fator de deslocamento na confirmacao atrasada.
+    // /// </summary>
+    // public decimal? FatorDeslocamentoAtrasada { get; set; }
+    //
+    // /// <summary>
+    // /// Tolerancia percentual para confirmacao atrasada.
+    // /// </summary>
+    // public decimal? ToleranciaAtrasadaPercentual { get; set; }
+    //
+    // /// <summary>
+    // /// Fator de deslocamento na confirmacao antecipada.
+    // /// </summary>
+    // public decimal? FatorDeslocamentoAntecipada { get; set; }
+    //
+    // /// <summary>
+    // /// Tolerancia percentual para confirmacao antecipada.
+    // /// </summary>
+    // public decimal? ToleranciaAntecipadaPercentual { get; set; }
+    //
+    // /// <summary>
+    // /// Calendario de fabrica utilizado.
+    // /// </summary>
+    // [MaxLength(30)]
+    // public string? CalendarioFabrica { get; set; }
 }
 
