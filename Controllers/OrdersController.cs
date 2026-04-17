@@ -199,7 +199,7 @@ public class PetroOrdersController : ControllerBase
         try
         {
             var result = await _classificationServicePetro.CreateRule(regra);
-            return Ok(new { message = $"Regra criada com sucesso: {result}" });
+            return Ok(new { message = $"Regra criada com sucesso com Id: {result.IdRegra}" });
         }
         catch (Exception e)
         {
@@ -435,7 +435,7 @@ public class ComgasOrdersController : ControllerBase
         try
         {
             var result = await _classificationServiceCongas.CreateRule(regra);
-            return Ok(new { message = $"Regra criada com sucesso: {result}" });
+            return Ok(new { message = $"Regra criada com sucesso com Id: {result.IdRegra}" });
         }
         catch (Exception e)
         {

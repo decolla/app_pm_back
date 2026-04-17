@@ -23,11 +23,11 @@ public class TipoEstrategiaModel
     /// </summary>
     [MaxLength(500)]
     public string Descricao { get; set; }
-    
+
     /// <summary>
     /// Número de meses que ocorrerá a manutenção do tipo especificado
     /// </summary>
-    public int Meses { get; set; }
+    public int Meses { get; set; } = 80;
     
     /// <summary>
     /// Tolerância positiva para a manutenção do tipo especificado
@@ -61,4 +61,9 @@ public class TipoEstrategiaModel
     /// </summary>
     [ForeignKey(nameof(EstrategiaId))]
     public virtual EstrategiaManutencaoModel? Estrategia{ get; set; }
+    
+    /// <summary>
+    /// Tipos de manutenção que herdam deste tipo de estratégia.
+    /// </summary>
+    public virtual ICollection<TipoManutencaoModel> TiposManutencao { get; set; } = new List<TipoManutencaoModel>();
 }

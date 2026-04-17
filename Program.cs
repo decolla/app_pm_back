@@ -66,6 +66,8 @@ var dataSource = dataSourceBuilder.Build();
 // adicionar o contexto do PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(dataSource));
 
+
+
 builder.Services.AddScoped<ConvertService>();
 builder.Services.AddScoped<SpreadsheetService>();
 builder.Services.AddScoped<NotesPetroService>();
@@ -76,6 +78,9 @@ builder.Services.AddScoped<ItemNoteCongasService>();
 builder.Services.AddScoped<EquipmentService>();
 builder.Services.AddScoped<AcaoNotaComgasService>();
 builder.Services.AddScoped<PlanoManutencaoService>();
+builder.Services.AddScoped<EstrategiaComgasService>();
+builder.Services.AddScoped<TipoEstrategiaService>();
+builder.Services.AddScoped<TipoManutencaoService>();
 builder.Services.AddScoped<ClassificationService<NotaManutencaoModel>>();
 builder.Services.AddScoped<ClassificationService<NotaPetroModel>>();
 builder.Services.AddScoped<ClassificationService<OrdemManutencaoModel>>();
@@ -107,6 +112,25 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<AppDbContext>();
+        Console.WriteLine("A tentar aplicar as migrations no banco de dados...");
+        dbContext.Database.Migrate();
+        Console.WriteLine("Migrations aplicadas com sucesso!");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[ERRO CRÍTICO NO BANCO]: {ex.Message}");
+        if (ex.InnerException != null)
+        {
+            Console.WriteLine($"[DETALHE]: {ex.InnerException.Message}");
+        }
+    }
+}
 // captura erros
 app.UseExceptionHandler(errorApp =>
 {
@@ -138,5 +162,8 @@ app.UseCors("AllowAll");
 
 app.MapControllers();
 app.MapSpreadsheetEndpoints();
+
+
+
 
 app.Run();

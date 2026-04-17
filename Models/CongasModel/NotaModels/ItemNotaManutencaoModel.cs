@@ -70,7 +70,6 @@ public class ItemNotaManutencaoModel
     [SheetColumn("Txt.cod.part.ob")]
     public string? TxtCodPartOb { get; set; }
 
-
     /// <summary>
     /// Texto do código de problema do item
     /// </summary>

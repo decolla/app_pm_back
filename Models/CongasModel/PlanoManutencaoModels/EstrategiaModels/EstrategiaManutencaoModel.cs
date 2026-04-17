@@ -52,6 +52,9 @@ public class EstrategiaManutencaoModel
     /// </summary>
     public virtual ICollection<PlanoManutencaoModel> Planos { get; set; } = new List<PlanoManutencaoModel>();
     
+    /// <summary>
+    /// Tipos associados a esta estrategia.
+    /// </summary>
     public virtual ICollection<TipoEstrategiaModel> Itens { get; set; } = new List<TipoEstrategiaModel>();
     
     

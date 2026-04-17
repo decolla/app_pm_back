@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.Models.CongasModel;
 
@@ -10,6 +11,13 @@ public class TipoManutencaoModel
     /// </summary>
     [Key]
     public int IdTipoManutencao { get; set; } 
+    
+    /// <summary>
+    /// Tipo do tipo a ser cadastrado.
+    /// </summary>
+    /// <example>Manutencao = 0,
+    /// RenovacaoAtivo = 1</example>
+    public TipoTipo TipoTipo { get; set; }
     
     /// <summary>
     /// Nome do tipo de manutencao.
@@ -31,7 +39,29 @@ public class TipoManutencaoModel
     /// Tipo de ativo.
     /// </summary>
     /// <example>ERP</example>
-    public string TipoAtivo { get; set; } 
+    public string TipoAtivo { get; set; }
+
+    /// <summary>
+    /// FK do tipo de estrategia.
+    /// </summary>
+    public int? TipoEstrategiaId { get; set; }
+    
+    /// <summary>
+    /// FK do plano de manutencao.
+    /// </summary>
+    public long? PlanoManutencaoId { get; set; }
+    
+    /// <summary>
+    /// Tipo de estratégia herdada para este tipo de manutencao.
+    /// </summary>
+    [ForeignKey(nameof(TipoEstrategiaId))]
+    public virtual TipoEstrategiaModel? TipoEstrategia { get; set; }
+    
+    /// <summary>
+    /// Plano de manutencao associado a este tipo de manutencao.
+    /// </summary>
+    [ForeignKey(nameof(PlanoManutencaoId))]
+    public virtual PlanoManutencaoModel? PlanoManutencao { get; set; }
     
     //MUDAR DPS PARA UMA TABELA
     /// <summary>
@@ -39,5 +69,21 @@ public class TipoManutencaoModel
     /// </summary>
     [Column(TypeName = "jsonb")]
     public Dictionary<string, string> Ferramentas { get; set; } = new Dictionary<string, string>();
+    
+    //MUDAR DPS PARA UMA TABELA
+    /// <summary>
+    /// Guarda itens de renovação para o cadastro de tipos de ativo
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public Dictionary<string, string> ItemsRenovacao { get; set; } = new Dictionary<string, string>();
 
+}
+
+/// <summary>
+/// Qual o tipo do tipo cadastrado.
+/// </summary>
+public enum TipoTipo
+{
+    Manutencao = 0,
+    RenovacaoAtivo = 1
 }

@@ -1,33 +1,32 @@
 using app_pm_back.Models.CongasModel;
-using app_pm_back.Models.Domain;
 using app_pm_back.Services.CongasServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
 
+[Route("api/V1/Comgas/tipo-estrategia")]
 [ApiController]
-[Route("api/V1/Comgas/maintance-plan")]
-public class MaintancePlanController : ControllerBase
+public class TipoEstrategiaController: ControllerBase
 {
-    private readonly string operador = "plano de mantuenção";
-    private readonly PlanoManutencaoService _planoManutencaoService;
+    private readonly string operador = "tipo de estratégia";
+    private readonly TipoEstrategiaService _tipoEstrategiaService;
 
-    public MaintancePlanController(PlanoManutencaoService planoManutencaoService)
+    public TipoEstrategiaController(TipoEstrategiaService tipoEstrategiaService)
     {
-        _planoManutencaoService = planoManutencaoService;
+        _tipoEstrategiaService = tipoEstrategiaService;
     }
 
     /// <summary>
-    /// Cria um objeto do modelo
+    /// Cria uma estratégia 
     /// </summary>
     /// <param name="obj">Objeto a ser adicionado</param>
     [HttpPost]
-    public async Task<IActionResult> Criar([FromBody] PlanoManutencaoModel obj)
+    public async Task<IActionResult> Criar([FromBody] TipoEstrategiaModel obj)
     {
         try
         {
-            var novoObj = await _planoManutencaoService.CreateAsync(obj);
-            return Created($"api/V1/Comgas/maintance-plan/{novoObj.CodigoPlano}", novoObj);
+            var novoObj = await _tipoEstrategiaService.CreateAsync(obj);
+            return Created($"api/V1/Comgas/tipo-estrateggia/{novoObj.IdTipoEstrategia}", novoObj);
         }
         catch (Exception e)
         {
@@ -36,7 +35,7 @@ public class MaintancePlanController : ControllerBase
     }
 
     /// <summary>
-    /// Lista objetos do modelo em formato de página 
+    /// Lista as estratégias em formato de página 
     /// </summary>
     /// <param name="pagina">Página a ser exibida</param>
     /// <param name="tamanho">Quantidade de objetos na página</param>
@@ -50,11 +49,11 @@ public class MaintancePlanController : ControllerBase
             {
                 int p = pagina ?? 1;
                 int t = tamanho ?? 20;
-                var acoesPaginadas = await _planoManutencaoService.GetNotasPaginadasAsync(p, t);
+                var acoesPaginadas = await _tipoEstrategiaService.GetNotasPaginadasAsync(p, t);
                 return Ok(acoesPaginadas);
             }
 
-            var acoes = await _planoManutencaoService.GetAllNotasAsync();
+            var acoes = await _tipoEstrategiaService.GetAllNotasAsync();
             return Ok(acoes);
         }
         catch (Exception e)
@@ -72,7 +71,7 @@ public class MaintancePlanController : ControllerBase
     {
         try
         {
-            var notas = await _planoManutencaoService.CountNotasAsync();
+            var notas = await _tipoEstrategiaService.CountNotasAsync();
             return Ok(new { count = notas });
         }
         catch (Exception)
@@ -87,12 +86,12 @@ public class MaintancePlanController : ControllerBase
     /// <param name="obj">Objeto a ser atualizado</param>
     /// <returns>Novo objeto</returns>
     [HttpPut]
-    public async Task<IActionResult> Atualizar([FromBody] PlanoManutencaoModel obj)
+    public async Task<IActionResult> Atualizar([FromBody] TipoEstrategiaModel obj)
     {
         try
         {
-            var result = await _planoManutencaoService.UpdateNotaAsync(obj);
-            return Ok(new { message = $"{operador} atualizada com sucesso: " + result.CodigoPlano });
+            var result = await _tipoEstrategiaService.UpdateNotaAsync(obj);
+            return Ok(new { message = $"{operador} atualizada com sucesso: " + result.IdTipoEstrategia });
         }
         catch (Exception)
         {
@@ -109,7 +108,7 @@ public class MaintancePlanController : ControllerBase
     {
         try
         {
-            var deleted = await _planoManutencaoService.DeleteNotaAsync(id);
+            var deleted = await _tipoEstrategiaService.DeleteNotaAsync(id);
             if (!deleted) return NotFound(new { message = $"{operador} não encontrado(a)." });
 
             return Ok(new { message = $"{operador} deletado(a) com sucesso" });
@@ -119,25 +118,5 @@ public class MaintancePlanController : ControllerBase
             return BadRequest(new { message = $"Erro ao deletar um(a) {operador}." });
         }
     }
-
-    /// <summary>
-    /// Busca um plano de mantuenção associado a um ativo, retorna um objeto com os dados relevantes
-    /// </summary>
-    /// <param name="ativo">Ativo a ser procurado</param>
-    /// <returns>Objeto com informações relevantes</returns>
-    [HttpGet("busca-ativo")]
-    public async Task<IActionResult> BuscaGerald(string ativo)
-    {
-        try
-        {
-            var obj = await _planoManutencaoService.AtivoGerald(ativo);
-            if (obj == null) return NotFound(new { message = $"Nenhum {operador} encontrado para o ativo informado." });
-
-            return Ok(obj);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao buscar {operador}: {e.Message}." });
-        }
-    }
+    
 }
