@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text;
 using api.Communications.Service.Impl.Data;
 using app_pm_back.Attributes;
+using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
 using app_pm_back.Models.Domain;
@@ -157,27 +158,28 @@ public class SpreadsheetService
             }
             else if (resultado.TipoIdentificado == "NOTA_CONGAS")
             {
-                var notaCongas = ReadLineForModel<NotaManutencaoModel>(row, columns);
-                resultado.NotasCongas.Add(notaCongas);
+                var dto = ReadLineForModel<NotaManutencaoComgasDto>(row, columns);
+                resultado.NotasCongas.Add(MapNotaComgasDto(dto));
             }
             else if (resultado.TipoIdentificado == "ORDEM_CONGAS")
             {
-                var orderCongas = ReadLineForModel<OrdemManutencaoModel>(row, columns);
-                resultado.OrdensCongas.Add(orderCongas);
+                var dto = ReadLineForModel<OrdemManutencaoComgasDto>(row, columns);
+                resultado.OrdensCongas.Add(MapOrdemComgasDto(dto));
             }
             else if (resultado.TipoIdentificado == "ITEM_CONGAS")
             {
-                var orderCongas = ReadLineForModel<ItemNotaManutencaoModel>(row, columns);
-                resultado.ItensCongas.Add(orderCongas);
+                var dto = ReadLineForModel<ItemNotaManutencaoComgasDto>(row, columns);
+                resultado.ItensCongas.Add(MapItemNotaComgasDto(dto));
             }
             else if (resultado.TipoIdentificado == "ACAO_NOTA_CONGAS")
             {
-                var acaoCongas = ReadLineForModel<AcaoNotaCongasModel>(row, columns);
-                resultado.AcoesCongas.Add(acaoCongas);
+                var dto = ReadLineForModel<AcaoNotaCongasComgasDto>(row, columns);
+                resultado.AcoesCongas.Add(MapAcaoNotaComgasDto(dto));
             }
             else if (resultado.TipoIdentificado == "EQUIPAMENTO_SAP")
             {
-                var equipamento = ReadLineForModel<EquipamentoAtivoModel>(row, columns);
+                var dto = ReadLineForModel<EquipamentoAtivoComgasDto>(row, columns);
+                var equipamento = MapEquipamentoComgasDto(dto);
 
                 PreencherDetalhesTecnicos(equipamento, row, columns);
 
@@ -269,6 +271,143 @@ public class SpreadsheetService
         }
 
         return model;
+    }
+
+    private static NotaManutencaoModel MapNotaComgasDto(NotaManutencaoComgasDto dto)
+    {
+        return new NotaManutencaoModel
+        {
+            IdNota = dto.IdNota != 0 ? dto.IdNota : dto.NumeroNota,
+            NumeroNota = dto.NumeroNota,
+            TipoNota = dto.TipoNota,
+            Classificacao = dto.Classificacao,
+            MetodoClassificacao = dto.MetodoClassificacao,
+            ClassificadoPor = dto.ClassificadoPor,
+            DataClassificacao = dto.DataClassificacao,
+            Descricao = dto.Descricao,
+            DescricaoDetalhada = dto.DescricaoDetalhada,
+            StatusNota = dto.StatusNota,
+            DataNota = dto.DataNota,
+            Prioridade = dto.Prioridade,
+            InicioDesejado = dto.InicioDesejado,
+            ConclusaoDesejada = dto.ConclusaoDesejada,
+            EquipamentoTag = dto.EquipamentoTag,
+            LocalInstalacaoCodigo = dto.LocalInstalacaoCodigo,
+            CriadoPorUsuarioId = dto.CriadoPorUsuarioId,
+            TipoPrioridade = dto.TipoPrioridade,
+            TipoDeNota = dto.TipoDeNota,
+            TxtGrpCodific = dto.TxtGrpCodific,
+            TxtCodeCodif = dto.TxtCodeCodif,
+            Codificacao = dto.Codificacao,
+            Consequencia = dto.Consequencia,
+            GrupoDeCodes = dto.GrupoDeCodes
+        };
+    }
+
+    private static OrdemManutencaoModel MapOrdemComgasDto(OrdemManutencaoComgasDto dto)
+    {
+        return new OrdemManutencaoModel
+        {
+            IdOrdem = dto.IdOrdem,
+            TipoOrdem = dto.TipoOrdem,
+            Classificacao = dto.Classificacao,
+            MetodoClassificacao = dto.MetodoClassificacao,
+            ClassificadoPor = dto.ClassificadoPor,
+            DataClassificacao = dto.DataClassificacao,
+            StatusOrdem = dto.StatusOrdem,
+            NotaRelacionadaId = dto.NotaRelacionadaId,
+            PlanoManutencaoCodigo = dto.PlanoManutencaoCodigo,
+            Prioridade = dto.Prioridade,
+            DataEntrada = dto.DataEntrada,
+            CriadaPorUsuarioId = dto.CriadaPorUsuarioId,
+            ModificadaPorUsuarioId = dto.ModificadaPorUsuarioId,
+            CustoEstimado = dto.CustoEstimado,
+            CustoPlanejado = dto.CustoPlanejado,
+            CustoReal = dto.CustoReal
+        };
+    }
+
+    private static ItemNotaManutencaoModel MapItemNotaComgasDto(ItemNotaManutencaoComgasDto dto)
+    {
+        return new ItemNotaManutencaoModel
+        {
+            IdItemNota = dto.IdItemNota,
+            NotaId = dto.NotaId,
+            ParteObjeto = dto.ParteObjeto,
+            Sintoma = dto.Sintoma,
+            TextoSintoma = dto.TextoSintoma,
+            Causa = dto.Causa,
+            TextoCausa = dto.TextoCausa,
+            NDeOrdenacao1 = dto.NDeOrdenacao1,
+            TxtGrpCodPartOb = dto.TxtGrpCodPartOb,
+            TxtCodPartOb = dto.TxtCodPartOb,
+            TxtCodeProb = dto.TxtCodeProb,
+            TextoGrpCausa = dto.TextoGrpCausa,
+            TxtGrpCodPr = dto.TxtGrpCodPr,
+            TxtCodeCausa = dto.TxtCodeCausa
+        };
+    }
+
+    private static AcaoNotaCongasModel MapAcaoNotaComgasDto(AcaoNotaCongasComgasDto dto)
+    {
+        return new AcaoNotaCongasModel
+        {
+            AreaOperac = dto.AreaOperac,
+            Atividade = dto.Atividade,
+            TpCatalogo = dto.TpCatalogo,
+            Bairro = dto.Bairro,
+            CanalDistrib = dto.CanalDistrib,
+            CentroCusto = dto.CentroCusto,
+            CenLocaliz = dto.CenLocaliz,
+            CenPCenTrab = dto.CenPCenTrab,
+            CentroPlanej = dto.CentroPlanej,
+            CenTrabRespon = dto.CenTrabRespon,
+            Pais = dto.Pais,
+            ClasseDefeitos = dto.ClasseDefeitos,
+            Cliente = dto.Cliente,
+            Codificacao = dto.Codificacao,
+            CodeParteObj = dto.CodeParteObj,
+            CodigoDeAcao = dto.CodigoDeAcao,
+            CodigoDoDano = dto.CodigoDoDano,
+            ConclDesejada = dto.ConclDesejada,
+            DataDaNota = dto.DataDaNota,
+            Descricao = dto.Descricao,
+            Equipamento = dto.Equipamento,
+            LocInstalacao = dto.LocInstalacao,
+            Nota = dto.Nota,
+            Ordem = dto.Ordem,
+            Texto = dto.Texto,
+            TipoDeNota = dto.TipoDeNota,
+            TipoPrioridade = dto.TipoPrioridade
+        };
+    }
+
+    private static EquipamentoAtivoModel MapEquipamentoComgasDto(EquipamentoAtivoComgasDto dto)
+    {
+        return new EquipamentoAtivoModel
+        {
+            TagEquipamento = dto.TagEquipamento ?? string.Empty,
+            Tipo = dto.Tipo,
+            Denominacao = dto.Denominacao,
+            Status = dto.Status,
+            ValidoDesde = dto.ValidoDesde,
+            ValidoAte = dto.ValidoAte,
+            Classe = dto.Classe,
+            TipoObjeto = dto.TipoObjeto,
+            GrupoAutorizacoes = dto.GrupoAutorizacoes,
+            Peso = dto.Peso,
+            NumeroInventario = dto.NumeroInventario,
+            TipoNotaPadrao = dto.TipoNotaPadrao,
+            ValorAquisicao = dto.ValorAquisicao,
+            DataAquisicao = dto.DataAquisicao,
+            FabricanteId = dto.FabricanteId,
+            LocalizacaoId = dto.LocalizacaoId,
+            EnderecoId = dto.EnderecoId,
+            ImobilizadoTag = dto.ImobilizadoTag,
+            GpmId = dto.GpmId,
+            CentroTrabalhoId = dto.CentroTrabalhoId,
+            LocalInstalacaoCodigo = dto.LocalInstalacaoCodigo
+        };
     }
 
     // ================= MÉTODOS AUXILIARES SEGUROS =================

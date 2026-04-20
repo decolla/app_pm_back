@@ -487,6 +487,54 @@ namespace app_pm_back.Migrations
                     b.ToTable("TipoEstrategiaModel");
                 });
 
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoManutencaoModel", b =>
+                {
+                    b.Property<int>("IdTipoManutencao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoManutencao"));
+
+                    b.Property<int>("Confiabilidade")
+                        .HasColumnType("integer");
+
+                    b.Property<Dictionary<string, string>>("Ferramentas")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<bool>("Habilitada")
+                        .HasColumnType("boolean");
+
+                    b.Property<Dictionary<string, string>>("ItemsRenovacao")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("NomeTipoManutencao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("PlanoManutencaoId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TipoAtivo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("TipoEstrategiaId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TipoTipo")
+                        .HasColumnType("integer");
+
+                    b.HasKey("IdTipoManutencao");
+
+                    b.HasIndex("PlanoManutencaoId");
+
+                    b.HasIndex("TipoEstrategiaId");
+
+                    b.ToTable("TipoManutencaoModel");
+                });
+
             modelBuilder.Entity("app_pm_back.Models.Domain.AtividadeNotaModel", b =>
                 {
                     b.Property<int>("IdAtividade")
@@ -718,7 +766,7 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdEstrategia"));
 
-                    b.Property<int>("Ciclo")
+                    b.Property<int>("Ciclos")
                         .HasColumnType("integer");
 
                     b.Property<string>("Denominacao")
@@ -736,7 +784,7 @@ namespace app_pm_back.Migrations
                     b.Property<int>("NumeroCiclos")
                         .HasColumnType("integer");
 
-                    b.Property<string>("TipoAtivoAplicável")
+                    b.Property<string>("TipoAtivoAplicavel")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1307,18 +1355,32 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("CodigoPlano"));
 
+                    b.Property<int>("Antencedencia")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("DataConclusao")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DataCriacao")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.Property<int?>("EstrategiaId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("NumeroSolicitacao")
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)");
+                    b.Property<int?>("GerarAutomaticamente")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NomePlano")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<int?>("Prioridade")
+                        .HasColumnType("integer");
 
                     b.Property<long?>("UltimaOrdem")
                         .HasColumnType("bigint");
@@ -1530,6 +1592,21 @@ namespace app_pm_back.Migrations
                         .HasForeignKey("EstrategiaId");
 
                     b.Navigation("Estrategia");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoManutencaoModel", b =>
+                {
+                    b.HasOne("app_pm_back.Models.Domain.PlanoManutencaoModel", "PlanoManutencao")
+                        .WithMany("TiposManutencao")
+                        .HasForeignKey("PlanoManutencaoId");
+
+                    b.HasOne("app_pm_back.Models.CongasModel.TipoEstrategiaModel", "TipoEstrategia")
+                        .WithMany("TiposManutencao")
+                        .HasForeignKey("TipoEstrategiaId");
+
+                    b.Navigation("PlanoManutencao");
+
+                    b.Navigation("TipoEstrategia");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AtividadeNotaModel", b =>
@@ -1792,6 +1869,11 @@ namespace app_pm_back.Migrations
                     b.Navigation("NotaOrigem");
                 });
 
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoEstrategiaModel", b =>
+                {
+                    b.Navigation("TiposManutencao");
+                });
+
             modelBuilder.Entity("app_pm_back.Models.Domain.CentroTrabalhoModel", b =>
                 {
                     b.Navigation("Equipamentos");
@@ -1878,6 +1960,8 @@ namespace app_pm_back.Migrations
                     b.Navigation("Itens");
 
                     b.Navigation("Ordens");
+
+                    b.Navigation("TiposManutencao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.UsuarioSapModel", b =>

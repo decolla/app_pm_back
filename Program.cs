@@ -132,22 +132,46 @@ using (var scope = app.Services.CreateScope())
     }
 }
 // captura erros
+// No seu Program.cs, atualize o seu UseExceptionHandler:
+
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
     {
+        var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+        
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         context.Response.ContentType = "application/json";
 
-        var error = context.Features.Get<IExceptionHandlerFeature>();
-        if (error != null)
+        string mensagem = "Ocorreu um erro inesperado.";
+        string detalhe = error?.Message ?? "";
+
+        // Se o erro for do Banco de Dados
+        if (error is DbUpdateException dbEx && dbEx.InnerException is PostgresException pgEx)
         {
-            await context.Response.WriteAsJsonAsync(new
+            context.Response.StatusCode = StatusCodes.Status400BadRequest; // Muda para 400 Bad Request
+            
+            if (pgEx.SqlState == "23503")
             {
-                message = "Ocorreu um erro inesperado.",
-                detail = error.Error.Message
-            });
+                mensagem = "Erro de Relacionamento: O registo principal (pai) informado não existe.";
+            }
+            else if (pgEx.SqlState == "23505")
+            {
+                mensagem = "Erro de Duplicidade: Este registo já existe no sistema.";
+            }
+            else
+            {
+                mensagem = "Erro de integridade no banco de dados.";
+            }
+            
+            detalhe = pgEx.MessageText;
         }
+
+        await context.Response.WriteAsJsonAsync(new
+        {
+            message = mensagem,
+            detail = detalhe
+        });
     });
 });
 

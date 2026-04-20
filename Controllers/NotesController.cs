@@ -1,6 +1,5 @@
-using app_pm_back.DTO;
+using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Models;
-using app_pm_back.Models.CongasModel;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
@@ -13,44 +12,44 @@ namespace app_pm_back.Controllers;
 // ENDPOINTS DA PETRO (Rotas: api/notes/petro/...)
 // =========================================================================
 
+/// <summary>
+/// Endpoints de notas da Petrobras.
+/// </summary>
 [ApiController]
 [Route("api/V1/Petrobras/notes")]
 public class PetroNotesController : ControllerBase
 {
     private readonly NotesPetroService _petroService;
     private readonly ClassificationService<NotaPetroModel> _classificationServicePetro;
-    private readonly IMapper _mapper;
 
     /// <summary>
     /// Construtor
     /// </summary>
     /// <param name="petroService"></param>
-    /// <param name="congasService"></param>
-    /// <param name="itemNoteCongasService"></param>
     /// <param name="classificationServicePetro"></param>
-    /// <param name="classificationServiceCongas"></param>
-    /// <param name="mapper"></param>
     public PetroNotesController(
         NotesPetroService petroService,
-        ClassificationService<NotaPetroModel> classificationServicePetro,
-        IMapper mapper)
+        ClassificationService<NotaPetroModel> classificationServicePetro)
     {
         _petroService = petroService;
         _classificationServicePetro = classificationServicePetro;
-        _mapper = mapper;
     }
 
     /// <summary>
-    /// Cadastra uma nota Petro pelo Dto
+    /// Cadastra uma nota Petro.
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> CriarNotaPetro([FromBody] CreateNotaPetroDto dto)
+    public async Task<IActionResult> CriarNotaPetro([FromBody] NotaPetroModel dto)
     {
         try
         {
-            var novaNota = _mapper.Map<NotaPetroModel>(dto);
-            var notaCriada = await _petroService.CreateAsync(novaNota);
-            return Created($"api/V1/petro/notes{notaCriada.IdNota}", notaCriada);
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var notaCriada = await _petroService.CreateAsync(dto);
+            return Created($"api/V1/Petrobras/notes/{notaCriada.IdNota}", notaCriada);
         }
         catch (Exception e)
         {
@@ -66,6 +65,11 @@ public class PetroNotesController : ControllerBase
     {
         try
         {
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
             if (pagina.HasValue || tamanho.HasValue)
             {
                 int p = pagina ?? 1;
@@ -104,10 +108,15 @@ public class PetroNotesController : ControllerBase
     /// Retorna as Fichas de uma nota Petro e suas ocorrências de mesmo tipo
     /// </summary>
     [HttpGet("ativo/{dnsIoT}")]
-    public async Task<IActionResult> ListarFichasPorAtivoPetro(string dnsIoT, [FromQuery] string? type)
+    public async Task<IActionResult> ListarFichasPorAtivoPetro([FromRoute] string dnsIoT, [FromQuery] string? type)
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(dnsIoT))
+            {
+                return BadRequest(new { message = "Parametro dnsIoT invalido." });
+            }
+
             var resultado = await _petroService.GetFichasPorAtivoAsync(dnsIoT, type);
             return Ok(resultado);
         }
@@ -161,10 +170,18 @@ public class PetroNotesController : ControllerBase
     /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
     /// <returns>Nota atualizada</returns>
     [HttpPut("{id:long}")]
-    public async Task<IActionResult> ClassificacaoHumanaNotaPetro(long id, string classificacao, string idUsuario)
+    public async Task<IActionResult> ClassificacaoHumanaNotaPetro(
+        [FromRoute] long id,
+        [FromQuery] string classificacao,
+        [FromQuery] string idUsuario)
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(classificacao) || string.IsNullOrWhiteSpace(idUsuario))
+            {
+                return BadRequest(new { message = "Parametros classificacao e idUsuario sao obrigatorios." });
+            }
+
             var result = await _classificationServicePetro.HumanClassification(id, classificacao, idUsuario);
             if (result == null)
             {
@@ -190,7 +207,7 @@ public class PetroNotesController : ControllerBase
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
     [HttpPost("classificacao/regra")]
-    public async Task<IActionResult> CriarRegraPetro(RuleClassificationModel regra)
+    public async Task<IActionResult> CriarRegraPetro([FromBody] RuleClassificationModel regra)
     {
         try
         {
@@ -246,12 +263,23 @@ public class PetroNotesController : ControllerBase
             return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
         }
     }
+
+    /// <summary>
+    /// Valida pagina e tamanho para evitar consultas inconsistentes.
+    /// </summary>
+    private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
+    {
+        return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
+    }
 }
 
 // =========================================================================
 // ENDPOINTS DA CONGAS (Rotas: api/notes/congas/...)
 // =========================================================================
 
+/// <summary>
+/// Endpoints de notas da Comgas.
+/// </summary>
 [ApiController]
 [Route("api/V1/Comgas/notes")]
 public class ComgasNotesController : ControllerBase
@@ -281,13 +309,24 @@ public class ComgasNotesController : ControllerBase
     }
 
     /// <summary>
-    /// Cadastra uma nota Congas
+    /// Cadastra uma nota Comgas a partir de DTO.
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> CriarNotaCongas([FromBody] NotaManutencaoModel novaNota)
+    public async Task<IActionResult> CriarNotaCongas([FromBody] NotaManutencaoComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var novaNota = _mapper.Map<NotaManutencaoModel>(dto);
+            if (novaNota.IdNota <= 0)
+            {
+                return BadRequest(new { message = "Id da nota invalido. Envie IdNota ou NumeroNota maior que zero." });
+            }
+
             var notaCriada = await _congasService.CreateAsync(novaNota);
             return Created($"api/V1/Comgas/notes/{notaCriada.IdNota}", notaCriada);
         }
@@ -298,13 +337,18 @@ public class ComgasNotesController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna uma lista todas as notas Congas com sistema de páginas
+    /// Retorna todas as notas Comgas, com paginacao opcional.
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> ListarNotasCongas([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
         {
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
             if (pagina.HasValue || tamanho.HasValue)
             {
                 int p = pagina ?? 1;
@@ -343,10 +387,15 @@ public class ComgasNotesController : ControllerBase
     /// Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
     /// </summary>
     [HttpGet("ativo/{dnsIoT}")]
-    public async Task<IActionResult> ListarFichasPorAtivoCongas(string dnsIoT, [FromQuery] string? type)
+    public async Task<IActionResult> ListarFichasPorAtivoCongas([FromRoute] string dnsIoT, [FromQuery] string? type)
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(dnsIoT))
+            {
+                return BadRequest(new { message = "Parametro dnsIoT invalido." });
+            }
+
             var resultado = await _congasService.GetFichasPorAtivoAsync(dnsIoT, type);
             return Ok(resultado);
         }
@@ -357,13 +406,24 @@ public class ComgasNotesController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza uma nota Congas de mesmo Id
+    /// Atualiza uma nota Comgas pelo DTO.
     /// </summary>
     [HttpPut]
-    public async Task<IActionResult> AtualizarNotaCongas([FromBody] NotaManutencaoModel nota)
+    public async Task<IActionResult> AtualizarNotaCongas([FromBody] NotaManutencaoComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var nota = _mapper.Map<NotaManutencaoModel>(dto);
+            if (nota.IdNota <= 0)
+            {
+                return BadRequest(new { message = "Id da nota invalido. Envie IdNota ou NumeroNota maior que zero." });
+            }
+
             var result = await _congasService.UpdateNotaAsync(nota);
             return Ok(new { message = "Nota Comgas atualizada com sucesso: " + result.IdNota });
         }
@@ -419,10 +479,18 @@ public class ComgasNotesController : ControllerBase
     /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
     /// <returns>Nota atualizada</returns>
     [HttpPut("classificacao/{id:long}")]
-    public async Task<IActionResult> ClassificacaoHumanaNotaCongas(long id, string classificacao, string idUsuario)
+    public async Task<IActionResult> ClassificacaoHumanaNotaCongas(
+        [FromRoute] long id,
+        [FromQuery] string classificacao,
+        [FromQuery] string idUsuario)
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(classificacao) || string.IsNullOrWhiteSpace(idUsuario))
+            {
+                return BadRequest(new { message = "Parametros classificacao e idUsuario sao obrigatorios." });
+            }
+
             var result = await _classificationServiceCongas.HumanClassification(id, classificacao, idUsuario);
             if (result == null)
             {
@@ -448,7 +516,7 @@ public class ComgasNotesController : ControllerBase
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
     [HttpPost("classificacao/regra")]
-    public async Task<IActionResult> CriarRegraCongas(RuleClassificationModel regra)
+    public async Task<IActionResult> CriarRegraCongas([FromBody] RuleClassificationModel regra)
     {
         try
         {
@@ -503,5 +571,13 @@ public class ComgasNotesController : ControllerBase
         {
             return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
         }
+    }
+
+    /// <summary>
+    /// Valida pagina e tamanho para evitar consultas inconsistentes.
+    /// </summary>
+    private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
+    {
+        return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
     }
 }

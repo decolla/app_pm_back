@@ -1,3 +1,4 @@
+using app_pm_back.DTO;
 using app_pm_back.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,16 +25,23 @@ public class AnnexController : ControllerBase
     /// <summary>
     /// Upload de um arquivo em IFormFile 
     /// </summary>
-    /// <param name="arquivo">Arquivo a ser passado</param>
-    /// <param name="referenciaId">Id de referência</param>
-    /// <param name="tipoReferencia">Tipo de referência a ser usada</param>
+    /// <param name="request">Dados de upload do anexo.</param>
     /// <returns></returns>
     [HttpPost("upload")]
-    public async Task<IActionResult> UploadArquivo(IFormFile arquivo, [FromForm] long referenciaId,
-        [FromForm] string tipoReferencia)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadArquivo([FromForm] UploadAnnexRequestDto request)
     {
-        var result = await _annexService.UploadAnexo(arquivo, referenciaId, tipoReferencia);
-        if (result == null) return BadRequest(new { message = "Erro ao enviar arquivo" });
+        if (request.Arquivo == null || request.Arquivo.Length == 0)
+        {
+            return BadRequest(new { message = "Arquivo invalido para upload." });
+        }
+
+        if (request.ReferenciaId <= 0 || string.IsNullOrWhiteSpace(request.TipoReferencia))
+        {
+            return BadRequest(new { message = "ReferenciaId e tipoReferencia sao obrigatorios." });
+        }
+
+        var result = await _annexService.UploadAnexo(request.Arquivo, request.ReferenciaId, request.TipoReferencia);
         return Ok(new { message = $"Arquivo enviado com sucesso {result.IdAnexo}" });
     }
 
@@ -43,10 +51,15 @@ public class AnnexController : ControllerBase
     /// <param name="id">Id regsitrado no arquivo</param>
     /// <returns></returns>
     [HttpGet("{id:long}")]
-    public async Task<IActionResult> DownloadArquivo(long id)
+    public async Task<IActionResult> DownloadArquivo([FromRoute] long id)
     {
+        if (id <= 0)
+        {
+            return BadRequest(new { message = "Id do anexo invalido." });
+        }
+
         var anexo = await _annexService.DownloadAnexo(id);
-        if (anexo == null || anexo.Dados == null) return NotFound();
+        if (anexo == null) return NotFound();
 
         return File(anexo.Dados, anexo.MimeType, anexo.NomeAnexo);
     }
@@ -58,11 +71,14 @@ public class AnnexController : ControllerBase
     /// <param name="tipoReferencia">Tipo da referência de busca</param>
     /// <returns></returns>
     [HttpGet("referencia/{referenciaId:long}/{tipoReferencia}")]
-    public async Task<IActionResult> BuscarArquivo(long referenciaId, string tipoReferencia)
+    public async Task<IActionResult> BuscarArquivo([FromRoute] long referenciaId, [FromRoute] string tipoReferencia)
     {
+        if (referenciaId <= 0 || string.IsNullOrWhiteSpace(tipoReferencia))
+        {
+            return BadRequest(new { message = "ReferenciaId e tipoReferencia sao obrigatorios." });
+        }
+
         var list = await _annexService.BuscarAnexo(referenciaId, tipoReferencia);
-        
-        if (list == null) return NotFound();
         return Ok(list);
     }
 }

@@ -1,40 +1,57 @@
+using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Models.CongasModel;
 using app_pm_back.Services.CongasServices;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace app_pm_back.Controllers;
+namespace app_pm_back.Controllers.ControllerPlanoManutencao;
 
+/// <summary>
+/// Endpoints de tipo de manutencao da Comgas.
+/// </summary>
 [ApiController]
 [Route("api/V1/Comgas/tipo-manutencao")]
 public class TipoManutencaoController : ControllerBase
 {
-    private readonly string operador = "tipo de mantuenção";
+    private readonly string _operador = "tipo de mantuenção";
     private readonly TipoManutencaoService _tipoManutencaoService;
+    private readonly IMapper _mapper;
 
-    public TipoManutencaoController(TipoManutencaoService tipoManutencaoService)
+    /// <summary>
+    /// Construtor.
+    /// </summary>
+    /// <param name="tipoManutencaoService"></param>
+    /// <param name="mapper"></param>
+    public TipoManutencaoController(TipoManutencaoService tipoManutencaoService, IMapper mapper)
     {
         _tipoManutencaoService = tipoManutencaoService;
+        _mapper = mapper;
     }
 
     /// <summary>
     /// Cria um tipo de manutenção respeitando a hierarquia da Estratégia
     /// </summary>
-    /// <param name="obj">Objeto a ser adicionado</param>
+    /// <param name="dto">Objeto a ser adicionado</param>
     /// <param name="context">Contexto injetado para validação</param>
     [HttpPost]
     public async Task<IActionResult> Criar(
-        [FromBody] TipoManutencaoModel obj,
-        [FromServices] app_pm_back.Data.AppDbContext context) 
+        [FromBody] TipoManutencaoComgasDto dto,
+        [FromServices] app_pm_back.Data.AppDbContext context)
     {
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
+
         // validação da arquitetura da hierarquia
-        if (obj.PlanoManutencaoId.HasValue && obj.TipoEstrategiaId.HasValue)
+        if (dto.PlanoManutencaoId.HasValue && dto.TipoEstrategiaId.HasValue)
         {
             // busca o plano com a estratégia associada
             var plano = await context.PlanosManutencaoNormalizados
                 .Include(p => p.Estrategia)
-                .ThenInclude(e => e.Itens) // Itens é a coleção de TipoEstrategiaModel no seu modelo
-                .FirstOrDefaultAsync(p => p.CodigoPlano == obj.PlanoManutencaoId);
+                .ThenInclude(e => e!.Itens) // Itens é a coleção de TipoEstrategiaModel no seu modelo
+                .FirstOrDefaultAsync(p => p.CodigoPlano == dto.PlanoManutencaoId);
 
             if (plano == null)
                 return NotFound(new { message = "O Plano de Manutenção informado não existe." });
@@ -44,7 +61,7 @@ public class TipoManutencaoController : ControllerBase
 
             // valida se o TipoEstrategiaId enviado pertence à Estratégia do Plano
             var tipoEstrategiaValido = plano.Estrategia.Itens
-                .Any(te => te.IdTipoEstrategia == obj.TipoEstrategiaId);
+                .Any(te => te.IdTipoEstrategia == dto.TipoEstrategiaId);
 
             if (!tipoEstrategiaValido)
             {
@@ -59,13 +76,14 @@ public class TipoManutencaoController : ControllerBase
         // CRIAÇÃO DE FATO
         try
         {
+            var obj = _mapper.Map<TipoManutencaoModel>(dto);
             var novoObj = await _tipoManutencaoService.CreateAsync(obj);
             // URL corrigida
             return Created($"api/V1/Comgas/tipo-manutencao/{novoObj.IdTipoManutencao}", novoObj);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao criar {operador}: {e.Message}." });
+            return BadRequest(new { message = $"Erro ao criar {_operador}: {e.Message}." });
         }
     }
 
@@ -80,6 +98,11 @@ public class TipoManutencaoController : ControllerBase
     {
         try
         {
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
             if (pagina.HasValue || tamanho.HasValue)
             {
                 int p = pagina ?? 1;
@@ -93,7 +116,7 @@ public class TipoManutencaoController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao processar {operador}: {e.Message}" });
+            return BadRequest(new { message = $"Erro ao processar {_operador}: {e.Message}" });
         }
     }
 
@@ -111,26 +134,37 @@ public class TipoManutencaoController : ControllerBase
         }
         catch (Exception)
         {
-            return NotFound(new { message = $"Erro ao procurar {operador}." });
+            return NotFound(new { message = $"Erro ao procurar {_operador}." });
         }
     }
 
     /// <summary>
     /// Atualiza um objeto do modelo
     /// </summary>
-    /// <param name="obj">Objeto a ser atualizado</param>
+    /// <param name="dto">Objeto a ser atualizado</param>
     /// <returns>Novo objeto</returns>
     [HttpPut]
-    public async Task<IActionResult> Atualizar([FromBody] TipoManutencaoModel obj)
+    public async Task<IActionResult> Atualizar([FromBody] TipoManutencaoComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var obj = _mapper.Map<TipoManutencaoModel>(dto);
+            if (obj.IdTipoManutencao <= 0)
+            {
+                return BadRequest(new { message = "IdTipoManutencao invalido. Envie IdTipoManutencao maior que zero." });
+            }
+
             var result = await _tipoManutencaoService.UpdateNotaAsync(obj);
-            return Ok(new { message = $"{operador} atualizada com sucesso: " + result.IdTipoManutencao });
+            return Ok(new { message = $"{_operador} atualizada com sucesso: " + result.IdTipoManutencao });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = $"Erro ao atualizar {operador}." });
+            return BadRequest(new { message = $"Erro ao atualizar {_operador}." });
         }
     }
 
@@ -144,13 +178,21 @@ public class TipoManutencaoController : ControllerBase
         try
         {
             var deleted = await _tipoManutencaoService.DeleteNotaAsync(id);
-            if (!deleted) return NotFound(new { message = $"{operador} não encontrado(a)." });
+            if (!deleted) return NotFound(new { message = $"{_operador} não encontrado(a)." });
 
-            return Ok(new { message = $"{operador} deletado(a) com sucesso" });
+            return Ok(new { message = $"{_operador} deletado(a) com sucesso" });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = $"Erro ao deletar um(a) {operador}." });
+            return BadRequest(new { message = $"Erro ao deletar um(a) {_operador}." });
         }
+    }
+
+    /// <summary>
+    /// Valida pagina e tamanho para evitar consultas inconsistentes.
+    /// </summary>
+    private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
+    {
+        return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
     }
 }

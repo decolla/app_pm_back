@@ -1,6 +1,7 @@
-using app_pm_back.Models;
+using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
@@ -13,25 +14,39 @@ namespace app_pm_back.Controllers;
 public class EquipmentsController : ControllerBase
 {
     private readonly EquipmentService _equipmentService;
+    private readonly IMapper _mapper;
 
     /// <summary>
     /// Construtor
     /// </summary>
     /// <param name="equipmentService"></param>
-    public EquipmentsController(EquipmentService equipmentService)
+    /// <param name="mapper"></param>
+    public EquipmentsController(EquipmentService equipmentService, IMapper mapper)
     {
         _equipmentService = equipmentService;
+        _mapper = mapper;
     }
 
     /// <summary>
     /// Cadastra um equipamento
     /// </summary>
-    /// <param name="novoEquipamento">Equipamento a ser criado</param>
+    /// <param name="dto">Equipamento a ser criado</param>
     [HttpPost]
-    public async Task<IActionResult> CriarEquipamentoCongas([FromBody] EquipamentoAtivoModel novoEquipamento)
+    public async Task<IActionResult> CriarEquipamentoCongas([FromBody] EquipamentoAtivoComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var novoEquipamento = _mapper.Map<EquipamentoAtivoModel>(dto);
+            if (string.IsNullOrWhiteSpace(novoEquipamento.TagEquipamento))
+            {
+                return BadRequest(new { message = "Tag do equipamento invalida." });
+            }
+
             var equipamento = await _equipmentService.CreateAsync(novoEquipamento);
             return Created($"api/V1/Comgas/equipments/{equipamento.TagEquipamento}", equipamento);
         }
@@ -51,6 +66,11 @@ public class EquipmentsController : ControllerBase
     {
         try
         {
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
             if (pagina.HasValue || tamanho.HasValue)
             {
                 int p = pagina ?? 1;
@@ -89,13 +109,24 @@ public class EquipmentsController : ControllerBase
     /// <summary>
     /// Atualiza um equipamento
     /// </summary>
-    /// <param name="equipamento">Equipamento a ser atualizado</param>
+    /// <param name="dto">Equipamento a ser atualizado</param>
     /// <returns>Equipamento atualizado</returns>
     [HttpPut]
-    public async Task<IActionResult> AtualizarEquipamento([FromBody] EquipamentoAtivoModel equipamento)
+    public async Task<IActionResult> AtualizarEquipamento([FromBody] EquipamentoAtivoComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var equipamento = _mapper.Map<EquipamentoAtivoModel>(dto);
+            if (string.IsNullOrWhiteSpace(equipamento.TagEquipamento))
+            {
+                return BadRequest(new { message = "Tag do equipamento invalida." });
+            }
+
             var result = await _equipmentService.UpdateNotaAsync(equipamento);
             return Ok(new { message = "Equipamento atualizado com sucesso: " + result.TagEquipamento });
         }
@@ -108,13 +139,18 @@ public class EquipmentsController : ControllerBase
     /// <summary>
     /// Deleta um equipamento
     /// </summary>
-    /// <param name="id">Id do equipamento</param>
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeletarNotaCongas(int id)
+    /// <param name="tag">Tag do equipamento</param>
+    [HttpDelete("{tag}")]
+    public async Task<IActionResult> DeletarNotaCongas([FromRoute] string tag)
     {
         try
         {
-            var deleted = await _equipmentService.DeleteNotaAsync(id);
+            if (string.IsNullOrWhiteSpace(tag))
+            {
+                return BadRequest(new { message = "Tag do equipamento invalida." });
+            }
+
+            var deleted = await _equipmentService.DeleteByTagAsync(tag);
             if (!deleted) return NotFound(new { message = "Equipamento não encontrado." });
 
             return Ok(new { message = "Equipamento deletado com sucesso" });
@@ -123,5 +159,13 @@ public class EquipmentsController : ControllerBase
         {
             return BadRequest(new { message = "Erro ao deletar equipamento." });
         }
+    }
+
+    /// <summary>
+    /// Valida pagina e tamanho para evitar consultas inconsistentes.
+    /// </summary>
+    private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
+    {
+        return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
     }
 }

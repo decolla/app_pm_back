@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using app_pm_back.Models.Domain;
 
 namespace app_pm_back.Models.CongasModel;
@@ -60,10 +61,12 @@ public class TipoEstrategiaModel
     /// Estrategia associada ao plano.
     /// </summary>
     [ForeignKey(nameof(EstrategiaId))]
+    [JsonIgnore]
     public virtual EstrategiaManutencaoModel? Estrategia{ get; set; }
     
     /// <summary>
     /// Tipos de manutenção que herdam deste tipo de estratégia.
     /// </summary>
+    [JsonIgnore]
     public virtual ICollection<TipoManutencaoModel> TiposManutencao { get; set; } = new List<TipoManutencaoModel>();
 }

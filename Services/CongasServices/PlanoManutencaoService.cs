@@ -57,7 +57,7 @@ public class PlanoManutencaoService : BaseCrudService<PlanoManutencaoModel>
         {
             DataCriacao = ultimoPlano.DataCriacao,
             Estrategia = ultimoPlano.Estrategia,
-            Ciclo = ultimoPlano.Estrategia.Ciclo,
+            Ciclo = ultimoPlano.Estrategia.Ciclos,
             Plano = ultimoPlano
         };
     }

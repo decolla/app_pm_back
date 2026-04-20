@@ -1,36 +1,59 @@
+using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services.CongasServices;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
-namespace app_pm_back.Controllers;
+namespace app_pm_back.Controllers.ControllersEstrategia;
 
+/// <summary>
+/// Endpoints de estrategia de manutencao da Comgas.
+/// </summary>
 [ApiController]
 [Route("api/V1/Comgas/estrategia")]
 public class EstrategiaController : ControllerBase
 {
-    private readonly string operador = "estratégia de mantuenção";
+    private readonly string _operador = "estratégia de mantuenção";
     private readonly EstrategiaComgasService _estrategiaComgasService;
+    private readonly IMapper _mapper;
 
-    public EstrategiaController (EstrategiaComgasService estrategiaComgasService)
+    /// <summary>
+    /// Construtor.
+    /// </summary>
+    /// <param name="estrategiaComgasService"></param>
+    /// <param name="mapper"></param>
+    public EstrategiaController(EstrategiaComgasService estrategiaComgasService, IMapper mapper)
     {
         _estrategiaComgasService = estrategiaComgasService;
+        _mapper = mapper;
     }
 
     /// <summary>
     /// Cria uma estratégia 
     /// </summary>
-    /// <param name="obj">Objeto a ser adicionado</param>
+    /// <param name="dto">Objeto a ser adicionado</param>
     [HttpPost]
-    public async Task<IActionResult> Criar([FromBody] EstrategiaManutencaoModel obj)
+    public async Task<IActionResult> Criar([FromBody] EstrategiaManutencaoComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var obj = _mapper.Map<EstrategiaManutencaoModel>(dto);
+            if (string.IsNullOrWhiteSpace(obj.Nome))
+            {
+                return BadRequest(new { message = "Nome da estrategia obrigatorio." });
+            }
+
             var novoObj = await _estrategiaComgasService.CreateAsync(obj);
             return Created($"api/V1/Comgas/estrategia/{novoObj.IdEstrategia}", novoObj);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao criar {operador}: {e.Message}." });
+            return BadRequest(new { message = $"Erro ao criar {_operador}: {e.Message}." });
         }
     }
 
@@ -45,6 +68,11 @@ public class EstrategiaController : ControllerBase
     {
         try
         {
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
             if (pagina.HasValue || tamanho.HasValue)
             {
                 int p = pagina ?? 1;
@@ -58,7 +86,7 @@ public class EstrategiaController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao processar {operador}: {e.Message}" });
+            return BadRequest(new { message = $"Erro ao processar {_operador}: {e.Message}" });
         }
     }
 
@@ -76,26 +104,37 @@ public class EstrategiaController : ControllerBase
         }
         catch (Exception)
         {
-            return NotFound(new { message = $"Erro ao procurar {operador}." });
+            return NotFound(new { message = $"Erro ao procurar {_operador}." });
         }
     }
 
     /// <summary>
     /// Atualiza um objeto do modelo
     /// </summary>
-    /// <param name="obj">Objeto a ser atualizado</param>
+    /// <param name="dto">Objeto a ser atualizado</param>
     /// <returns>Novo objeto</returns>
     [HttpPut]
-    public async Task<IActionResult> Atualizar([FromBody] EstrategiaManutencaoModel obj)
+    public async Task<IActionResult> Atualizar([FromBody] EstrategiaManutencaoComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var obj = _mapper.Map<EstrategiaManutencaoModel>(dto);
+            if (obj.IdEstrategia <= 0)
+            {
+                return BadRequest(new { message = "IdEstrategia invalido. Envie IdEstrategia maior que zero." });
+            }
+
             var result = await _estrategiaComgasService.UpdateNotaAsync(obj);
-            return Ok(new { message = $"{operador} atualizada com sucesso: " + result.IdEstrategia });
+            return Ok(new { message = $"{_operador} atualizada com sucesso: " + result.IdEstrategia });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = $"Erro ao atualizar {operador}." });
+            return BadRequest(new { message = $"Erro ao atualizar {_operador}." });
         }
     }
 
@@ -109,14 +148,21 @@ public class EstrategiaController : ControllerBase
         try
         {
             var deleted = await _estrategiaComgasService.DeleteNotaAsync(id);
-            if (!deleted) return NotFound(new { message = $"{operador} não encontrado(a)." });
+            if (!deleted) return NotFound(new { message = $"{_operador} não encontrado(a)." });
 
-            return Ok(new { message = $"{operador} deletado(a) com sucesso" });
+            return Ok(new { message = $"{_operador} deletado(a) com sucesso" });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = $"Erro ao deletar um(a) {operador}." });
+            return BadRequest(new { message = $"Erro ao deletar um(a) {_operador}." });
         }
     }
-    
+
+    /// <summary>
+    /// Valida pagina e tamanho para evitar consultas inconsistentes.
+    /// </summary>
+    private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
+    {
+        return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
+    }
 }

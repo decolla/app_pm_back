@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using app_pm_back.Models.CongasModel;
 
 namespace app_pm_back.Models.Domain;
@@ -34,7 +35,7 @@ public class EstrategiaManutencaoModel
     /// <summary>
     /// Duração de meses do ciclo de manutencao.
     /// </summary>
-    public int Ciclo { get; set; }
+    public int Ciclos { get; set; }
     
     /// <summary>
     /// Quantidade de ciclos de manutencao previstos para o plano.
@@ -45,16 +46,18 @@ public class EstrategiaManutencaoModel
     /// Tipo de ativo aplicável 
     /// </summary>
     /// <example>Nível A</example>
-    public string TipoAtivoAplicável { get; set; }
+    public string TipoAtivoAplicavel { get; set; }
 
     /// <summary>
     /// Planos que usam esta estrategia.
     /// </summary>
+    [JsonIgnore]
     public virtual ICollection<PlanoManutencaoModel> Planos { get; set; } = new List<PlanoManutencaoModel>();
     
     /// <summary>
     /// Tipos associados a esta estrategia.
     /// </summary>
+    [JsonIgnore]
     public virtual ICollection<TipoEstrategiaModel> Itens { get; set; } = new List<TipoEstrategiaModel>();
     
     

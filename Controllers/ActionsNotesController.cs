@@ -1,5 +1,7 @@
+using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Models.CongasModel;
 using app_pm_back.Services.CongasServices;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
@@ -12,26 +14,35 @@ namespace app_pm_back.Controllers;
 public class ActionsNotesController : ControllerBase
 {
     private readonly AcaoNotaComgasService _acaoNotaService;
+    private readonly IMapper _mapper;
 
     /// <summary>
     /// Construtor
     /// </summary>
     /// <param name="acaoNotaService"></param>
-    public ActionsNotesController(AcaoNotaComgasService acaoNotaService)
+    /// <param name="mapper"></param>
+    public ActionsNotesController(AcaoNotaComgasService acaoNotaService, IMapper mapper)
     {
         _acaoNotaService = acaoNotaService;
+        _mapper = mapper;
     }
     
     /// <summary>
     /// Cria uma ação de nota 
     /// </summary>
-    /// <param name="acao">Ação a ser criada</param>
+    /// <param name="dto">Ação a ser criada</param>
     /// <returns></returns>
     [HttpPost]
-    public async Task<IActionResult> CriarAcaoNota ([FromBody] AcaoNotaCongasModel acao)
+    public async Task<IActionResult> CriarAcaoNota([FromBody] AcaoNotaCongasComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var acao = _mapper.Map<AcaoNotaCongasModel>(dto);
             var novaAcao = await _acaoNotaService.CreateAsync(acao);
             return Created($"api/V1/Comgas/actions-notes/{novaAcao.IdAcao}", novaAcao);
         }
@@ -52,6 +63,11 @@ public class ActionsNotesController : ControllerBase
     {
         try
         {
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
             if (pagina.HasValue || tamanho.HasValue)
             {
                 int p = pagina ?? 1;
@@ -90,13 +106,24 @@ public class ActionsNotesController : ControllerBase
     /// <summary>
     /// Atualiza uma ação de nota
     /// </summary>
-    /// <param name="acao">Ação a ser atualizada</param>
+    /// <param name="dto">Ação a ser atualizada</param>
     /// <returns>Ação atualizada</returns>
    [HttpPut]
-    public async Task<IActionResult> AtualizarAcao([FromBody] AcaoNotaCongasModel acao)
+    public async Task<IActionResult> AtualizarAcao([FromBody] AcaoNotaCongasComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var acao = _mapper.Map<AcaoNotaCongasModel>(dto);
+            if (acao.IdAcao <= 0)
+            {
+                return BadRequest(new { message = "Id da acao invalido. Envie IdAcao maior que zero." });
+            }
+
             var result = await _acaoNotaService.UpdateNotaAsync(acao);
             return Ok(new { message = "Ação atualizada com sucesso: " + result.IdAcao });
         }
@@ -125,5 +152,13 @@ public class ActionsNotesController : ControllerBase
         {
             return BadRequest(new { message = "Erro ao deletar uma ação de nota." });
         }
+    }
+
+    /// <summary>
+    /// Valida pagina e tamanho para evitar consultas inconsistentes.
+    /// </summary>
+    private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
+    {
+        return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
     }
 }

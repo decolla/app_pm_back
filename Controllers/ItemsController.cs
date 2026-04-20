@@ -1,6 +1,7 @@
-using app_pm_back.Models.CongasModel;
+using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services.CongasServices;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
@@ -13,20 +14,38 @@ namespace app_pm_back.Controllers;
 public class ItemsController : ControllerBase
 {
     private readonly ItemNoteCongasService _itemNoteCongasService;
+    private readonly IMapper _mapper;
 
-    public ItemsController(ItemNoteCongasService itemNoteCongasService)
+    /// <summary>
+    /// Construtor.
+    /// </summary>
+    /// <param name="itemNoteCongasService"></param>
+    /// <param name="mapper"></param>
+    public ItemsController(ItemNoteCongasService itemNoteCongasService, IMapper mapper)
     {
         _itemNoteCongasService = itemNoteCongasService;
+        _mapper = mapper;
     }
 
     /// <summary>
     /// Cadastra um item de nota Congas
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> CriarItemCongas([FromBody] ItemNotaManutencaoModel novaNota)
+    public async Task<IActionResult> CriarItemCongas([FromBody] ItemNotaManutencaoComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var novaNota = _mapper.Map<ItemNotaManutencaoModel>(dto);
+            if (novaNota.NotaId <= 0)
+            {
+                return BadRequest(new { message = "NotaId invalido. Envie NotaId maior que zero." });
+            }
+
             var item = await _itemNoteCongasService.CreateAsync(novaNota);
             return Created($"api/V1/Comgas/items/{item.IdItemNota}", item);
         }
@@ -44,6 +63,11 @@ public class ItemsController : ControllerBase
     {
         try
         {
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
             if (pagina.HasValue || tamanho.HasValue)
             {
                 int p = pagina ?? 1;
@@ -82,10 +106,21 @@ public class ItemsController : ControllerBase
     /// Atualiza uma nota Congas de mesmo Id
     /// </summary>
     [HttpPut]
-    public async Task<IActionResult> AtualizarNotaCongas([FromBody] ItemNotaManutencaoModel item)
+    public async Task<IActionResult> AtualizarNotaCongas([FromBody] ItemNotaManutencaoComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var item = _mapper.Map<ItemNotaManutencaoModel>(dto);
+            if (item.IdItemNota <= 0)
+            {
+                return BadRequest(new { message = "Id do item invalido. Envie IdItemNota maior que zero." });
+            }
+
             var result = await _itemNoteCongasService.UpdateNotaAsync(item);
             return Ok(new { message = "Nota Comgas atualizada com sucesso: " + result.IdItemNota });
         }
@@ -112,5 +147,13 @@ public class ItemsController : ControllerBase
         {
             return BadRequest(new { message = "Erro ao deletar item Comgas." });
         }
+    }
+
+    /// <summary>
+    /// Valida pagina e tamanho para evitar consultas inconsistentes.
+    /// </summary>
+    private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
+    {
+        return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
     }
 }

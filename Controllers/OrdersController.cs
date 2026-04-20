@@ -1,6 +1,5 @@
-using app_pm_back.DTO;
+using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Models;
-using app_pm_back.Models.CongasModel;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
@@ -15,7 +14,7 @@ namespace app_pm_back.Controllers;
 // =========================================================================
 
 /// <summary>
-/// Controller para ordens
+/// Endpoints de ordens da Petrobras.
 /// </summary>
 [ApiController]
 [Route("api/V1/Petrobras/orders")]
@@ -23,37 +22,37 @@ public class PetroOrdersController : ControllerBase
 {
     private readonly OrderPetroService _petroService;
     private readonly ClassificationService<OrdemPetroModel> _classificationServicePetro;
-    private readonly IMapper _mapper;
 
     /// <summary>
     /// Construtor
     /// </summary>
     /// <param name="petroService"></param>
     /// <param name="classificationServicePetro"></param>
-    /// <param name="mapper"></param>
     public PetroOrdersController(
         OrderPetroService petroService,
-        ClassificationService<OrdemPetroModel> classificationServicePetro,
-        IMapper mapper
+        ClassificationService<OrdemPetroModel> classificationServicePetro
     )
     {
         _petroService = petroService;
         _classificationServicePetro = classificationServicePetro;
-        _mapper = mapper;
     }
 
 
     /// <summary>
-    /// Cadastra uma ordem Petro pelo Dto
+    /// Cadastra uma ordem Petro.
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> CriarOrdemPetro([FromBody] CreateOrdemPetroDto dto)
+    public async Task<IActionResult> CriarOrdemPetro([FromBody] OrdemPetroModel dto)
     {
         try
         {
-            var novaNota = _mapper.Map<OrdemPetroModel>(dto);
-            var notaCriada = await _petroService.CreateAsync(novaNota);
-            return Created($"api/V1/Petro/{notaCriada.IdNota}", notaCriada);
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var notaCriada = await _petroService.CreateAsync(dto);
+            return Created($"api/V1/Petrobras/orders/{notaCriada.IdNota}", notaCriada);
         }
         catch (Exception e)
         {
@@ -69,6 +68,11 @@ public class PetroOrdersController : ControllerBase
     {
         try
         {
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
             if (pagina.HasValue || tamanho.HasValue)
             {
                 int p = pagina ?? 1;
@@ -107,10 +111,15 @@ public class PetroOrdersController : ControllerBase
     /// Retorna as Fichas de uma nota Petro e suas ocorrências de mesmo tipo
     /// </summary>
     [HttpGet("ativo/{dnsIoT}")]
-    public async Task<IActionResult> ListarOrdensPorAtivoPetro(string dnsIoT, [FromQuery] string? type)
+    public async Task<IActionResult> ListarOrdensPorAtivoPetro([FromRoute] string dnsIoT, [FromQuery] string? type)
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(dnsIoT))
+            {
+                return BadRequest(new { message = "Parametro dnsIoT invalido." });
+            }
+
             // FALTA IMPLEMENTAÇÃO. FAZER: após correção das classes 
             var resultado = await _petroService.GetFichasPorAtivoAsync(dnsIoT, type);
             return Ok(resultado);
@@ -165,10 +174,18 @@ public class PetroOrdersController : ControllerBase
     /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
     /// <returns>Nota atualizada</returns>
     [HttpPut("classificacao/{id:long}")]
-    public async Task<IActionResult> ClassificacaoHumanaOrdemPetro(long id, string classificacao, string idUsuario)
+    public async Task<IActionResult> ClassificacaoHumanaOrdemPetro(
+        [FromRoute] long id,
+        [FromQuery] string classificacao,
+        [FromQuery] string idUsuario)
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(classificacao) || string.IsNullOrWhiteSpace(idUsuario))
+            {
+                return BadRequest(new { message = "Parametros classificacao e idUsuario sao obrigatorios." });
+            }
+
             var result = await _classificationServicePetro.HumanClassification(id, classificacao, idUsuario);
             if (result == null)
             {
@@ -194,7 +211,7 @@ public class PetroOrdersController : ControllerBase
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
     [HttpPost("classificacao/regra")]
-    public async Task<IActionResult> CriarRegraPetro(RuleClassificationModel regra)
+    public async Task<IActionResult> CriarRegraPetro([FromBody] RuleClassificationModel regra)
     {
         try
         {
@@ -250,12 +267,23 @@ public class PetroOrdersController : ControllerBase
             return BadRequest(new { message = $"Erro ao classificar ordens: {e.Message}" });
         }
     }
+
+    /// <summary>
+    /// Valida pagina e tamanho para evitar consultas inconsistentes.
+    /// </summary>
+    private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
+    {
+        return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
+    }
 }
 
 // =========================================================================
 // ENDPOINTS DA CONGAS (Rotas: api/orders/...)
 // =========================================================================
 
+/// <summary>
+/// Endpoints de ordens da Comgas.
+/// </summary>
 [ApiController]
 [Route("api/V1/Comgas/orders")]
 public class ComgasOrdersController : ControllerBase
@@ -282,15 +310,26 @@ public class ComgasOrdersController : ControllerBase
     }
 
     /// <summary>
-    /// Cadastra uma nota Congas
+    /// Cadastra uma ordem Comgas a partir de DTO.
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> CriarOrdemCongas([FromBody] OrdemManutencaoModel ordem)
+    public async Task<IActionResult> CriarOrdemCongas([FromBody] OrdemManutencaoComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var ordem = _mapper.Map<OrdemManutencaoModel>(dto);
+            if (ordem.IdOrdem <= 0)
+            {
+                return BadRequest(new { message = "Id da ordem invalido. Envie IdOrdem maior que zero." });
+            }
+
             var notaCriada = await _congasService.CreateAsync(ordem);
-            return Created($"api/V1/Comgas/orders/{notaCriada.NotaRelacionadaId}", notaCriada);
+            return Created($"api/V1/Comgas/orders/{notaCriada.IdOrdem}", notaCriada);
         }
         catch (Exception e)
         {
@@ -299,13 +338,18 @@ public class ComgasOrdersController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna uma lista todas as notas Congas com sistema de páginas
+    /// Retorna todas as ordens Comgas, com paginacao opcional.
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> ListarOrdensCongas([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
         {
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
             if (pagina.HasValue || tamanho.HasValue)
             {
                 int p = pagina ?? 1;
@@ -344,10 +388,15 @@ public class ComgasOrdersController : ControllerBase
     /// Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
     /// </summary>
     [HttpGet("ativo/{dnsIoT}")]
-    public async Task<IActionResult> ListarFichasPorAtivoCongas(string dnsIoT, [FromQuery] string? type)
+    public async Task<IActionResult> ListarFichasPorAtivoCongas([FromRoute] string dnsIoT, [FromQuery] string? type)
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(dnsIoT))
+            {
+                return BadRequest(new { message = "Parametro dnsIoT invalido." });
+            }
+
             var resultado = await _congasService.GetFichasPorAtivoAsync(dnsIoT, type);
             return Ok(resultado);
         }
@@ -358,15 +407,26 @@ public class ComgasOrdersController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza uma nota Congas de mesmo Id
+    /// Atualiza uma ordem Comgas pelo DTO.
     /// </summary>
     [HttpPut]
-    public async Task<IActionResult> AtualizarNotaCongas([FromBody] OrdemManutencaoModel ordem)
+    public async Task<IActionResult> AtualizarNotaCongas([FromBody] OrdemManutencaoComgasDto dto)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var ordem = _mapper.Map<OrdemManutencaoModel>(dto);
+            if (ordem.IdOrdem <= 0)
+            {
+                return BadRequest(new { message = "Id da ordem invalido. Envie IdOrdem maior que zero." });
+            }
+
             var result = await _congasService.UpdateNotaAsync(ordem);
-            return Ok(new { message = "Ordem Comgas atualizada com sucesso: " + result.NotaRelacionadaId });
+            return Ok(new { message = "Ordem Comgas atualizada com sucesso: " + result.IdOrdem });
         }
         catch (Exception)
         {
@@ -401,10 +461,18 @@ public class ComgasOrdersController : ControllerBase
     /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
     /// <returns>Nota atualizada</returns>
     [HttpPut("classificacao/{id:long}")]
-    public async Task<IActionResult> ClassificacaoHumanaNotaCongas(long id, string classificacao, string idUsuario)
+    public async Task<IActionResult> ClassificacaoHumanaNotaCongas(
+        [FromRoute] long id,
+        [FromQuery] string classificacao,
+        [FromQuery] string idUsuario)
     {
         try
         {
+            if (string.IsNullOrWhiteSpace(classificacao) || string.IsNullOrWhiteSpace(idUsuario))
+            {
+                return BadRequest(new { message = "Parametros classificacao e idUsuario sao obrigatorios." });
+            }
+
             var result = await _classificationServiceCongas.HumanClassification(id, classificacao, idUsuario);
             if (result == null)
             {
@@ -430,7 +498,7 @@ public class ComgasOrdersController : ControllerBase
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
     [HttpPost("classificacao/regra")]
-    public async Task<IActionResult> CriarRegraCongas(RuleClassificationModel regra)
+    public async Task<IActionResult> CriarRegraCongas([FromBody] RuleClassificationModel regra)
     {
         try
         {
@@ -485,5 +553,13 @@ public class ComgasOrdersController : ControllerBase
         {
             return BadRequest(new { message = $"Erro ao classificar ordens: {e.Message}" });
         }
+    }
+
+    /// <summary>
+    /// Valida pagina e tamanho para evitar consultas inconsistentes.
+    /// </summary>
+    private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
+    {
+        return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
     }
 }

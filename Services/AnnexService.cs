@@ -1,63 +1,79 @@
 using app_pm_back.Data;
 using app_pm_back.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services;
 
+/// <summary>
+/// Servico de persistencia e recuperacao de anexos.
+/// </summary>
 public class AnnexService
 {
-    protected readonly AppDbContext _context;
-    protected readonly DbSet<AnnexModel> _annexModels;
+    /// <summary>
+    /// Contexto de banco de dados.
+    /// </summary>
+    private readonly AppDbContext _context;
 
+    /// <summary>
+    /// Conjunto de anexos.
+    /// </summary>
+    private readonly DbSet<AnnexModel> _annexModels;
+
+    /// <summary>
+    /// Inicializa uma nova instancia de <see cref="AnnexService"/>.
+    /// </summary>
+    /// <param name="context">Contexto da aplicacao.</param>
     public AnnexService(AppDbContext context)
     {
         _context = context;
         _annexModels = context.Set<AnnexModel>();
     }
 
+    /// <summary>
+    /// Faz upload e salva um anexo no banco.
+    /// </summary>
+    /// <param name="file">Arquivo enviado.</param>
+    /// <param name="referenciaId">Id da entidade referenciada.</param>
+    /// <param name="tipoReferencia">Tipo da referencia.</param>
+    /// <returns>Anexo salvo.</returns>
     public async Task<AnnexModel> UploadAnexo(IFormFile file, long referenciaId, string tipoReferencia)
     {
-        if (file != null && file.Length > 0)
+        await using var stream = new MemoryStream();
+        await file.CopyToAsync(stream);
+
+        AnnexModel annexModel = new AnnexModel
         {
-            byte[] fileBytes = null;
+            NomeAnexo = file.FileName,
+            MimeType = file.ContentType,
+            Dados = stream.ToArray(),
+            ReferenciaId = referenciaId,
+            TipoReferencia = tipoReferencia,
+            DataUpload = DateTime.Now
+        };
 
-            using (var stream = new MemoryStream())
-            {
-                await file.CopyToAsync(stream);
+        _annexModels.Add(annexModel);
+        await _context.SaveChangesAsync();
 
-                stream.Position = 0;
-
-                fileBytes = stream.ToArray();
-            }
-
-            if (fileBytes == null) return null;
-
-            AnnexModel annexModel = new AnnexModel
-            {
-                NomeAnexo = file.FileName,
-                MimeType = file.ContentType,
-                Dados = fileBytes,
-                ReferenciaId = referenciaId,
-                TipoReferencia = tipoReferencia,
-                DataUpload = DateTime.Now
-            };
-
-            _annexModels.Add(annexModel);
-            await _context.SaveChangesAsync();
-
-            return annexModel;
-        }
-
-        return null;
+        return annexModel;
     }
 
-    public async Task<AnnexModel> DownloadAnexo(long id)
+    /// <summary>
+    /// Busca um anexo por id.
+    /// </summary>
+    /// <param name="id">Id do anexo.</param>
+    /// <returns>Anexo encontrado ou nulo.</returns>
+    public async Task<AnnexModel?> DownloadAnexo(long id)
     {
         var annexModel = await _annexModels.FindAsync(id);
         return annexModel;
     }
 
+    /// <summary>
+    /// Lista anexos por referencia e tipo.
+    /// </summary>
+    /// <param name="referenciaId">Id da referencia.</param>
+    /// <param name="tipoReferencia">Tipo da referencia.</param>
+    /// <returns>Lista de pares id/nome do anexo.</returns>
     public async Task<List<(long, string)>> BuscarAnexo(long referenciaId, string tipoReferencia)
     {
         List<(long, string)> list = new List<(long, string)>();
