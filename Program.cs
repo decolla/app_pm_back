@@ -30,21 +30,15 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors(option => option.AddPolicy("AllowAll", policy =>
 {
     // policy.WithOrigins("http://localhost:4200", "http://localhost");
-    
+
     policy.SetIsOriginAllowed(_ => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 }));
 
 // aumenta o limite de ficheiros multipart para 200 MB
-builder.Services.Configure<FormOptions>(options =>
-{
-    options.MultipartBodyLengthLimit = 209715200;
-});
+builder.Services.Configure<FormOptions>(options => { options.MultipartBodyLengthLimit = 209715200; });
 
 // aumenta o limite do servidor para 200 MB
-builder.WebHost.ConfigureKestrel(serverOptions =>
-{
-    serverOptions.Limits.MaxRequestBodySize = 209715200;
-});
+builder.WebHost.ConfigureKestrel(serverOptions => { serverOptions.Limits.MaxRequestBodySize = 209715200; });
 
 // ignora ciclos no json, impedindo de erros de retorno MUDAR DPS
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -65,7 +59,6 @@ var dataSource = dataSourceBuilder.Build();
 
 // adicionar o contexto do PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(dataSource));
-
 
 
 builder.Services.AddScoped<ConvertService>();
@@ -139,7 +132,7 @@ app.UseExceptionHandler(errorApp =>
     errorApp.Run(async context =>
     {
         var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-        
+
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
         context.Response.ContentType = "application/json";
 
@@ -150,7 +143,7 @@ app.UseExceptionHandler(errorApp =>
         if (error is DbUpdateException dbEx && dbEx.InnerException is PostgresException pgEx)
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest; // Muda para 400 Bad Request
-            
+
             if (pgEx.SqlState == "23503")
             {
                 mensagem = "Erro de Relacionamento: O registo principal (pai) informado não existe.";
@@ -163,10 +156,10 @@ app.UseExceptionHandler(errorApp =>
             {
                 mensagem = "Erro de integridade no banco de dados.";
             }
-            
+
             detalhe = pgEx.MessageText;
         }
-//oi 
+
         await context.Response.WriteAsJsonAsync(new
         {
             message = mensagem,
@@ -186,8 +179,6 @@ app.UseCors("AllowAll");
 
 app.MapControllers();
 app.MapSpreadsheetEndpoints();
-
-
 
 
 app.Run();
