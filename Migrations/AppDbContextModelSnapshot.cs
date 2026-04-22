@@ -440,6 +440,68 @@ namespace app_pm_back.Migrations
                     b.ToTable("AcaoNotaCongas");
                 });
 
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel", b =>
+                {
+                    b.Property<int>("IdFerramenta")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdFerramenta"));
+
+                    b.Property<bool>("Checkbox")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Descricao")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("QuantidadeDisp")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TipoManutencaoId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("IdFerramenta");
+
+                    b.HasIndex("TipoManutencaoId");
+
+                    b.ToTable("FerramentasTipoModel");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel", b =>
+                {
+                    b.Property<int>("IdItemRenovacaoTipo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdItemRenovacaoTipo"));
+
+                    b.Property<string>("CodigoItem")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Observacoes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Template1")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Template2")
+                        .HasColumnType("text");
+
+                    b.Property<int>("TipoManutencaoId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("IdItemRenovacaoTipo");
+
+                    b.HasIndex("TipoManutencaoId");
+
+                    b.ToTable("ItemRenovacaoTipoModel");
+                });
+
             modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoEstrategiaModel", b =>
                 {
                     b.Property<int>("IdTipoEstrategia")
@@ -498,16 +560,8 @@ namespace app_pm_back.Migrations
                     b.Property<int>("Confiabilidade")
                         .HasColumnType("integer");
 
-                    b.Property<Dictionary<string, string>>("FerramentasTipoModel")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
-
                     b.Property<bool>("Habilitada")
                         .HasColumnType("boolean");
-
-                    b.Property<Dictionary<string, string>>("ItemsRenovacao")
-                        .IsRequired()
-                        .HasColumnType("jsonb");
 
                     b.Property<string>("NomeTipoManutencao")
                         .IsRequired()
@@ -1585,6 +1639,28 @@ namespace app_pm_back.Migrations
                     b.ToTable("Regras");
                 });
 
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel", b =>
+                {
+                    b.HasOne("app_pm_back.Models.CongasModel.TipoManutencaoModel", "TipoManutencao")
+                        .WithMany("Ferramentas")
+                        .HasForeignKey("TipoManutencaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TipoManutencao");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel", b =>
+                {
+                    b.HasOne("app_pm_back.Models.CongasModel.TipoManutencaoModel", "TipoManutencao")
+                        .WithMany("ItensRenovacao")
+                        .HasForeignKey("TipoManutencaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TipoManutencao");
+                });
+
             modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoEstrategiaModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.EstrategiaManutencaoModel", "Estrategia")
@@ -1872,6 +1948,13 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoEstrategiaModel", b =>
                 {
                     b.Navigation("TiposManutencao");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoManutencaoModel", b =>
+                {
+                    b.Navigation("Ferramentas");
+
+                    b.Navigation("ItensRenovacao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.CentroTrabalhoModel", b =>

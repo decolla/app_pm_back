@@ -205,6 +205,13 @@
             <param name="id">Id a ser buscado</param>
             <returns>Objeto completo</returns>
         </member>
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.ListarPorTipo(System.Int32)">
+            <summary>
+            Lista todos os tipos com base em um tipo específico
+            </summary>
+            <param name="tipo">Tipo do tipo a ser criado, 0 = manutenção, 1 = renovação</param>
+            <returns>Lista de tipos</returns>
+        </member>
         <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Atualizar(System.Int32,app_pm_back.DTO.ComgasDTO.TipoManutencaoComgasDto)">
             <summary>
             Atualiza um tipo de manutenção.
@@ -1092,18 +1099,6 @@
             <inheritdoc />
         </member>
         <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.MigrationsDTO">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.MigrationsDTO.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.MigrationsDTO.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.MigrationsDTO.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Models.AnnexModel">
