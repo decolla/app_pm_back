@@ -49,7 +49,7 @@ public class EstrategiaController : ControllerBase
             }
 
             var novoObj = await _estrategiaComgasService.CreateAsync(obj);
-            return Created($"api/V1/Comgas/estrategia/{novoObj.IdEstrategia}", novoObj);
+            return new ObjectResult(novoObj);
         }
         catch (Exception e)
         {

@@ -54,7 +54,7 @@ public class TipoEstrategiaController: ControllerBase
             }
 
             var novoObj = await _tipoEstrategiaService.CreateAsync(obj);
-            return Created($"api/V1/Comgas/tipo-estrategia/{novoObj.IdTipoEstrategia}", novoObj);
+            return new ObjectResult(novoObj);
     }
 
     /// <summary>

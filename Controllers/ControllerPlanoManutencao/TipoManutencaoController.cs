@@ -105,7 +105,7 @@ public class TipoManutencaoController : ControllerBase
             var obj = _mapper.Map<TipoManutencaoModel>(dto);
             var novoObj = await _tipoManutencaoService.CreateAsync(obj);
 
-            return Created($"api/V1/Comgas/tipo-manutencao/{tipo}/{novoObj.IdTipoManutencao}", novoObj);
+            return new ObjectResult(novoObj);
         }
         catch (Exception e)
         {

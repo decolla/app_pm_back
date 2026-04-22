@@ -49,7 +49,7 @@ public class PlanoManutencaoController : ControllerBase
             }
 
             var novoObj = await _planoManutencaoService.CreateAsync(obj);
-            return Created($"api/V1/Comgas/maintance-plan/{novoObj.CodigoPlano}", novoObj);
+            return new ObjectResult(novoObj);
         }
         catch (Exception e)
         {

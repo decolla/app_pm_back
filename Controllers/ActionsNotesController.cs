@@ -44,7 +44,7 @@ public class ActionsNotesController : ControllerBase
 
             var acao = _mapper.Map<AcaoNotaCongasModel>(dto);
             var novaAcao = await _acaoNotaService.CreateAsync(acao);
-            return Created($"api/V1/Comgas/actions-notes/{novaAcao.IdAcao}", novaAcao);
+            return new ObjectResult(novaAcao);
         }
         catch (Exception e)
         {

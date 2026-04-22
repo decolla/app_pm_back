@@ -52,7 +52,7 @@ public class PetroOrdersController : ControllerBase
             }
 
             var notaCriada = await _petroService.CreateAsync(dto);
-            return Created($"api/V1/Petrobras/orders/{notaCriada.IdNota}", notaCriada);
+            return new ObjectResult(notaCriada);
         }
         catch (Exception e)
         {

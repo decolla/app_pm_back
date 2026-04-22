@@ -48,7 +48,7 @@ public class EquipmentsController : ControllerBase
             }
 
             var equipamento = await _equipmentService.CreateAsync(novoEquipamento);
-            return Created($"api/V1/Comgas/equipments/{equipamento.TagEquipamento}", equipamento);
+            return new ObjectResult(equipamento);
         }
         catch (Exception e)
         {

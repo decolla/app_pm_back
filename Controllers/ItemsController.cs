@@ -49,7 +49,7 @@ public class ItemsController : ControllerBase
             }
 
             var item = await _itemNoteCongasService.CreateAsync(novaNota);
-            return Created($"api/V1/Comgas/items/{item.IdItemNota}", item);
+            return new ObjectResult(item);
         }
         catch (Exception e)
         {
