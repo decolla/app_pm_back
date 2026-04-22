@@ -184,6 +184,31 @@ public class TipoManutencaoController : ControllerBase
             return BadRequest(new { message = $"Erro ao procurar {_operador}." });
         }
     }
+    
+    /// <summary>
+    /// Lista todos os tipos com base em um tipo específico
+    /// </summary>
+    /// <param name="tipo">Tipo do tipo a ser criado, 0 = manutenção, 1 = renovação</param>
+    /// <returns>Lista de tipos</returns>
+    [HttpGet("tipado/{tipo:int}")]
+    public async Task<IActionResult> ListarPorTipo([FromRoute] int tipo)
+    {
+        try
+        {
+            if (tipo != 0 && tipo != 1)
+            {
+                return BadRequest(new
+                    { message = "Rota inválida. Use /tipo-manutencao/tipado/0 ou /tipo-manutencao/tipado/1" });
+            }
+            TipoTipo tipagem = (TipoTipo)tipo;
+            var acoes = await _tipoManutencaoService.GetTodosByTipo(tipagem);
+            return Ok(acoes);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao processar {_operador}: {e.Message}" });
+        }
+    }
 
     /// <summary>
     /// Atualiza um tipo de manutenção.
