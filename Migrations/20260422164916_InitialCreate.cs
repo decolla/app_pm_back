@@ -7,6 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace app_pm_back.Migrations
 {
+    // oi eu sou pedicola
     /// <inheritdoc />
     public partial class InitialCreate : Migration
     {

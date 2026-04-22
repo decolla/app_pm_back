@@ -166,7 +166,7 @@ app.UseExceptionHandler(errorApp =>
             
             detalhe = pgEx.MessageText;
         }
-
+//oi 
         await context.Response.WriteAsJsonAsync(new
         {
             message = mensagem,
