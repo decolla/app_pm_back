@@ -9,6 +9,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:5234
+      ASPNETCORE_HTTPS_PORT: 5235
       ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=app_pm_back;Username=postgres;Password=postgres
     depends_on:
       postgres:
