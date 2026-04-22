@@ -133,11 +133,34 @@ public class PetroOrdersController : ControllerBase
     /// <summary>
     /// Atualiza uma nota Petro de mesmo Id
     /// </summary>
-    [HttpPut]
-    public async Task<IActionResult> AtualizarOrdemPetro([FromBody] OrdemPetroModel ordem)
+    /// <param name="id">Id da ordem na rota</param>
+    /// <param name="ordem">Dados da ordem a ser atualizada</param>
+    // [HttpPut]
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> AtualizarOrdemPetro([FromRoute] int id, [FromBody] OrdemPetroModel ordem)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id da ordem invalido na rota. Envie id maior que zero." });
+            }
+
+            if (ordem.IdNota <= 0)
+            {
+                ordem.IdNota = id;
+            }
+
+            if (ordem.IdNota != id)
+            {
+                return BadRequest(new { message = "Id da rota e IdNota do corpo da requisição devem ser iguais." });
+            }
+
             var result = await _petroService.UpdateNotaAsync(ordem);
             return Ok(new { message = "Nota Petro atualizada com sucesso: " + result.IdNota });
         }
@@ -409,14 +432,32 @@ public class ComgasOrdersController : ControllerBase
     /// <summary>
     /// Atualiza uma ordem Comgas pelo DTO.
     /// </summary>
-    [HttpPut]
-    public async Task<IActionResult> AtualizarNotaCongas([FromBody] OrdemManutencaoComgasDto dto)
+    /// <param name="id">Id da ordem na rota</param>
+    /// <param name="dto">Dados da ordem a ser atualizada</param>
+    // [HttpPut]
+    [HttpPut("{id:long}")]
+    public async Task<IActionResult> AtualizarNotaCongas([FromRoute] long id, [FromBody] OrdemManutencaoComgasDto dto)
     {
         try
         {
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id da ordem invalido na rota. Envie id maior que zero." });
+            }
+
+            if (dto.IdOrdem <= 0)
+            {
+                dto.IdOrdem = id;
+            }
+
+            if (dto.IdOrdem != id)
+            {
+                return BadRequest(new { message = "Id da rota e IdOrdem do corpo da requisição devem ser iguais." });
             }
 
             var ordem = _mapper.Map<OrdemManutencaoModel>(dto);

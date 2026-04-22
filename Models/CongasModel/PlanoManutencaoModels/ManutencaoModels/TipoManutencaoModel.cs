@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 using app_pm_back.Models.Domain;
 
 namespace app_pm_back.Models.CongasModel;
@@ -62,20 +63,17 @@ public class TipoManutencaoModel
     /// </summary>
     [ForeignKey(nameof(PlanoManutencaoId))]
     public virtual PlanoManutencaoModel? PlanoManutencao { get; set; }
-    
-    //MUDAR DPS PARA UMA TABELA
+
     /// <summary>
     /// Guarda ferramentas e kits específicos dos equipamentos 
     /// </summary>
-    [Column(TypeName = "jsonb")]
-    public Dictionary<string, string> Ferramentas { get; set; } = new Dictionary<string, string>();
+    public virtual ICollection<FerramentasTipoModel>? Ferramentas { get; set; } = new List<FerramentasTipoModel>();
     
     //MUDAR DPS PARA UMA TABELA
     /// <summary>
     /// Guarda itens de renovação para o cadastro de tipos de ativo
     /// </summary>
-    [Column(TypeName = "jsonb")]
-    public Dictionary<string, string> ItemsRenovacao { get; set; } = new Dictionary<string, string>();
+    public virtual ICollection<ItemRenovacaoTipoModel>? ItensRenovacao { get; set; } = new List<ItemRenovacaoTipoModel>();
 
 }
 

@@ -1,4 +1,5 @@
 using app_pm_back.DTO.ComgasDTO;
+using app_pm_back.Data;
 using app_pm_back.Models.CongasModel;
 using app_pm_back.Services.CongasServices;
 using AutoMapper;
@@ -34,14 +35,34 @@ public class TipoManutencaoController : ControllerBase
     /// </summary>
     /// <param name="dto">Objeto a ser adicionado</param>
     /// <param name="context">Contexto injetado para validação</param>
-    [HttpPost]
+    /// <param name="tipo">Tipo do tipo a ser criado, 0 = manutenção, 1 = renovação </param>
+    [HttpPost("{tipo:int}")]
     public async Task<IActionResult> Criar(
+        [FromRoute] int tipo,
         [FromBody] TipoManutencaoComgasDto dto,
-        [FromServices] app_pm_back.Data.AppDbContext context)
+        [FromServices] AppDbContext context)
     {
         if (!ModelState.IsValid)
         {
             return ValidationProblem(ModelState);
+        }
+        
+        dto.TipoTipo = tipo;
+
+        if (dto.TipoTipo == 0 && (dto.ItensRenovacao?.Any() ?? false))
+        {
+            return BadRequest(new { message = "Erro: Um cadastro de MANUTENÇÃO não pode conter Itens de Renovação." });
+        }
+
+        if (dto.TipoTipo == 1 && (dto.Ferramentas?.Any() ?? false))
+        {
+            return BadRequest(new { message = "Erro: Um cadastro de RENOVAÇÃO não pode conter Ferramentas." });
+        }
+        
+        if (tipo != 0 && tipo != 1)
+        {
+            return BadRequest(new
+                { message = "Rota inválida. Use /tipo-manutencao/0 ou /tipo-manutencao/1" });
         }
 
         // validação da arquitetura da hierarquia
@@ -73,13 +94,18 @@ public class TipoManutencaoController : ControllerBase
             }
         }
 
-        // CRIAÇÃO DE FATO
+        if (dto.TipoTipo == 0 && (dto.ItensRenovacao?.Any() ?? false)) // 0 = Manutenção
+            return BadRequest(new { message = "Um tipo de Manutenção não pode conter itens de renovação." });
+
+        if (dto.TipoTipo == 1 && (dto.Ferramentas?.Any() ?? false)) // 1 = Renovação
+            return BadRequest(new { message = "Um tipo de Renovação não pode conter ferramentas." });
+
         try
         {
             var obj = _mapper.Map<TipoManutencaoModel>(dto);
             var novoObj = await _tipoManutencaoService.CreateAsync(obj);
-            // URL corrigida
-            return Created($"api/V1/Comgas/tipo-manutencao/{novoObj.IdTipoManutencao}", novoObj);
+
+            return Created($"api/V1/Comgas/tipo-manutencao/{tipo}/{novoObj.IdTipoManutencao}", novoObj);
         }
         catch (Exception e)
         {
@@ -139,12 +165,34 @@ public class TipoManutencaoController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza um objeto do modelo
+    /// Realiza uma busca por Id e retorna o objeto completo, com as listas filhas carregadas.
     /// </summary>
-    /// <param name="dto">Objeto a ser atualizado</param>
-    /// <returns>Novo objeto</returns>
-    [HttpPut]
-    public async Task<IActionResult> Atualizar([FromBody] TipoManutencaoComgasDto dto)
+    /// <param name="id">Id a ser buscado</param>
+    /// <returns>Objeto completo</returns>
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> BuscarPorId(int id)
+    {
+        try
+        {
+            var obj = await _tipoManutencaoService.GetCompletoByIdAsync(id);
+            if (obj == null) return NotFound(new { message = $"{_operador} não encontrado(a)." });
+
+            return Ok(obj);
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = $"Erro ao procurar {_operador}." });
+        }
+    }
+
+    /// <summary>
+    /// Atualiza um tipo de manutenção.
+    /// </summary>
+    /// <param name="id">Id do DTO a ser atualizado</param>
+    /// <param name="dto">DTO do tipo a ser atualizado</param>
+    /// <returns></returns>
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TipoManutencaoComgasDto dto)
     {
         try
         {
@@ -153,13 +201,28 @@ public class TipoManutencaoController : ControllerBase
                 return ValidationProblem(ModelState);
             }
 
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "IdTipoManutencao invalido na rota. Envie id maior que zero." });
+            }
+
+            if (dto.IdTipoManutencao <= 0)
+            {
+                dto.IdTipoManutencao = id;
+            }
+            
+            if (id != dto.IdTipoManutencao)            {
+                return BadRequest(new { message = "Id da rota e Id do objeto no corpo da requisição devem ser iguais, ou o do dto = 0." });
+            }
+
             var obj = _mapper.Map<TipoManutencaoModel>(dto);
             if (obj.IdTipoManutencao <= 0)
             {
-                return BadRequest(new { message = "IdTipoManutencao invalido. Envie IdTipoManutencao maior que zero." });
+                return BadRequest(new
+                    { message = "IdTipoManutencao invalido. Envie IdTipoManutencao maior que zero." });
             }
 
-            var result = await _tipoManutencaoService.UpdateNotaAsync(obj);
+            var result = await _tipoManutencaoService.UpdateComListasAsync(obj);
             return Ok(new { message = $"{_operador} atualizada com sucesso: " + result.IdTipoManutencao });
         }
         catch (Exception)

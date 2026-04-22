@@ -11,6 +11,8 @@ namespace app_pm_back.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/V1/Comgas/items")]
+// /// <param name="id">Id do item na rota</param>
+// /// <param name="dto">Dados do item a ser atualizado</param>
 public class ItemsController : ControllerBase
 {
     private readonly ItemNoteCongasService _itemNoteCongasService;
@@ -105,14 +107,32 @@ public class ItemsController : ControllerBase
     /// <summary>
     /// Atualiza uma nota Congas de mesmo Id
     /// </summary>
-    [HttpPut]
-    public async Task<IActionResult> AtualizarNotaCongas([FromBody] ItemNotaManutencaoComgasDto dto)
+    /// <param name="id">Id do item na rota</param>
+    /// <param name="dto">Dados do item a ser atualizado</param>
+    // [HttpPut]
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> AtualizarNotaCongas([FromRoute] int id, [FromBody] ItemNotaManutencaoComgasDto dto)
     {
         try
         {
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id do item invalido na rota. Envie id maior que zero." });
+            }
+
+            if (dto.IdItemNota <= 0)
+            {
+                dto.IdItemNota = id;
+            }
+
+            if (dto.IdItemNota != id)
+            {
+                return BadRequest(new { message = "Id da rota e IdItemNota do corpo da requisição devem ser iguais." });
             }
 
             var item = _mapper.Map<ItemNotaManutencaoModel>(dto);

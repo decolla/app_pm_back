@@ -111,16 +111,33 @@ public class EstrategiaController : ControllerBase
     /// <summary>
     /// Atualiza um objeto do modelo
     /// </summary>
+    /// <param name="id">Id da estrategia na rota</param>
     /// <param name="dto">Objeto a ser atualizado</param>
     /// <returns>Novo objeto</returns>
-    [HttpPut]
-    public async Task<IActionResult> Atualizar([FromBody] EstrategiaManutencaoComgasDto dto)
+    // [HttpPut]
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] EstrategiaManutencaoComgasDto dto)
     {
         try
         {
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "IdEstrategia invalido na rota. Envie id maior que zero." });
+            }
+
+            if (dto.IdEstrategia <= 0)
+            {
+                dto.IdEstrategia = id;
+            }
+
+            if (dto.IdEstrategia != id)
+            {
+                return BadRequest(new { message = "Id da rota e IdEstrategia do corpo da requisição devem ser iguais." });
             }
 
             var obj = _mapper.Map<EstrategiaManutencaoModel>(dto);

@@ -129,11 +129,34 @@ public class PetroNotesController : ControllerBase
     /// <summary>
     /// Atualiza uma nota Petro de mesmo Id
     /// </summary>
-    [HttpPut]
-    public async Task<IActionResult> AtualizarNotaPetro([FromBody] NotaPetroModel nota)
+    /// <param name="id">Id da nota na rota</param>
+    /// <param name="nota">Dados da nota a ser atualizada</param>
+    // [HttpPut]
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> AtualizarNotaPetro([FromRoute] int id, [FromBody] NotaPetroModel nota)
     {
         try
         {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id da nota invalido na rota. Envie id maior que zero." });
+            }
+
+            if (nota.IdNota <= 0)
+            {
+                nota.IdNota = id;
+            }
+
+            if (nota.IdNota != id)
+            {
+                return BadRequest(new { message = "Id da rota e IdNota do corpo da requisição devem ser iguais." });
+            }
+
             var result = await _petroService.UpdateNotaAsync(nota);
             return Ok(new { message = "Nota Petro atualizada com sucesso: " + result.IdNota });
         }
@@ -169,7 +192,8 @@ public class PetroNotesController : ControllerBase
     /// <param name="classificacao"> Classificação a ser atribuída</param>
     /// <param name="idUsuario">Id do usuário que realizou a classificação</param>
     /// <returns>Nota atualizada</returns>
-    [HttpPut("{id:long}")]
+    // [HttpPut("{id:long}")]
+    [HttpPut("classificacao/{id:long}")]
     public async Task<IActionResult> ClassificacaoHumanaNotaPetro(
         [FromRoute] long id,
         [FromQuery] string classificacao,
@@ -408,14 +432,32 @@ public class ComgasNotesController : ControllerBase
     /// <summary>
     /// Atualiza uma nota Comgas pelo DTO.
     /// </summary>
-    [HttpPut]
-    public async Task<IActionResult> AtualizarNotaCongas([FromBody] NotaManutencaoComgasDto dto)
+    /// <param name="id">Id da nota na rota</param>
+    /// <param name="dto">Dados da nota a ser atualizada</param>
+    // [HttpPut]
+    [HttpPut("{id:long}")]
+    public async Task<IActionResult> AtualizarNotaCongas([FromRoute] long id, [FromBody] NotaManutencaoComgasDto dto)
     {
         try
         {
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id da nota invalido na rota. Envie id maior que zero." });
+            }
+
+            if (dto.IdNota <= 0)
+            {
+                dto.IdNota = id;
+            }
+
+            if (dto.IdNota != id)
+            {
+                return BadRequest(new { message = "Id da rota e IdNota do corpo da requisição devem ser iguais." });
             }
 
             var nota = _mapper.Map<NotaManutencaoModel>(dto);

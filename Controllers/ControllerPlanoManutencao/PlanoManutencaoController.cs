@@ -111,16 +111,33 @@ public class PlanoManutencaoController : ControllerBase
     /// <summary>
     /// Atualiza um objeto do modelo
     /// </summary>
+    /// <param name="id">Id do plano na rota</param>
     /// <param name="dto">Objeto a ser atualizado</param>
     /// <returns>Novo objeto</returns>
-    [HttpPut]
-    public async Task<IActionResult> Atualizar([FromBody] PlanoManutencaoComgasDto dto)
+    // [HttpPut]
+    [HttpPut("{id:long}")]
+    public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] PlanoManutencaoComgasDto dto)
     {
         try
         {
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "CodigoPlano invalido na rota. Envie id maior que zero." });
+            }
+
+            if (dto.CodigoPlano <= 0)
+            {
+                dto.CodigoPlano = id;
+            }
+
+            if (dto.CodigoPlano != id)
+            {
+                return BadRequest(new { message = "Id da rota e CodigoPlano do corpo da requisição devem ser iguais." });
             }
 
             var obj = _mapper.Map<PlanoManutencaoModel>(dto);

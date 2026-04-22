@@ -109,10 +109,12 @@ public class EquipmentsController : ControllerBase
     /// <summary>
     /// Atualiza um equipamento
     /// </summary>
+    /// <param name="tag">Tag do equipamento na rota</param>
     /// <param name="dto">Equipamento a ser atualizado</param>
     /// <returns>Equipamento atualizado</returns>
-    [HttpPut]
-    public async Task<IActionResult> AtualizarEquipamento([FromBody] EquipamentoAtivoComgasDto dto)
+    // [HttpPut]
+    [HttpPut("{tag}")]
+    public async Task<IActionResult> AtualizarEquipamento([FromRoute] string tag, [FromBody] EquipamentoAtivoComgasDto dto)
     {
         try
         {
@@ -120,6 +122,23 @@ public class EquipmentsController : ControllerBase
             {
                 return ValidationProblem(ModelState);
             }
+
+            if (string.IsNullOrWhiteSpace(tag))
+            {
+                return BadRequest(new { message = "Tag do equipamento invalida na rota." });
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.TagEquipamento))
+            {
+                dto.TagEquipamento = tag;
+            }
+
+            if (!string.Equals(dto.TagEquipamento, tag, StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new { message = "Tag da rota e TagEquipamento do corpo da requisição devem ser iguais." });
+            }
+
+            dto.TagEquipamento = tag;
 
             var equipamento = _mapper.Map<EquipamentoAtivoModel>(dto);
             if (string.IsNullOrWhiteSpace(equipamento.TagEquipamento))

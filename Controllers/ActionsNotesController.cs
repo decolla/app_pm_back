@@ -106,16 +106,33 @@ public class ActionsNotesController : ControllerBase
     /// <summary>
     /// Atualiza uma ação de nota
     /// </summary>
+    /// <param name="id">Id da acao a ser atualizada</param>
     /// <param name="dto">Ação a ser atualizada</param>
     /// <returns>Ação atualizada</returns>
-   [HttpPut]
-    public async Task<IActionResult> AtualizarAcao([FromBody] AcaoNotaCongasComgasDto dto)
+   // [HttpPut]
+   [HttpPut("{id:int}")]
+    public async Task<IActionResult> AtualizarAcao([FromRoute] int id, [FromBody] AcaoNotaCongasComgasDto dto)
     {
         try
         {
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id da acao invalido na rota. Envie id maior que zero." });
+            }
+
+            if (dto.IdAcao <= 0)
+            {
+                dto.IdAcao = id;
+            }
+
+            if (dto.IdAcao != id)
+            {
+                return BadRequest(new { message = "Id da rota e IdAcao do corpo da requisição devem ser iguais." });
             }
 
             var acao = _mapper.Map<AcaoNotaCongasModel>(dto);

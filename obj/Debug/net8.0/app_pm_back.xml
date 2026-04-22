@@ -53,10 +53,11 @@
             </summary>
             <returns>Quantidade de ações cadastradas</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ActionsNotesController.AtualizarAcao(app_pm_back.DTO.ComgasDTO.AcaoNotaCongasComgasDto)">
+        <member name="M:app_pm_back.Controllers.ActionsNotesController.AtualizarAcao(System.Int32,app_pm_back.DTO.ComgasDTO.AcaoNotaCongasComgasDto)">
             <summary>
             Atualiza uma ação de nota
             </summary>
+            <param name="id">Id da acao a ser atualizada</param>
             <param name="dto">Ação a ser atualizada</param>
             <returns>Ação atualizada</returns>
         </member>
@@ -137,10 +138,11 @@
             </summary>
             <returns>Quantidade de elementos cadastrados no banco</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.Atualizar(app_pm_back.DTO.ComgasDTO.PlanoManutencaoComgasDto)">
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.Atualizar(System.Int64,app_pm_back.DTO.ComgasDTO.PlanoManutencaoComgasDto)">
             <summary>
             Atualiza um objeto do modelo
             </summary>
+            <param name="id">Id do plano na rota</param>
             <param name="dto">Objeto a ser atualizado</param>
             <returns>Novo objeto</returns>
         </member>
@@ -174,12 +176,13 @@
             <param name="tipoManutencaoService"></param>
             <param name="mapper"></param>
         </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Criar(app_pm_back.DTO.ComgasDTO.TipoManutencaoComgasDto,app_pm_back.Data.AppDbContext)">
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Criar(System.Int32,app_pm_back.DTO.ComgasDTO.TipoManutencaoComgasDto,app_pm_back.Data.AppDbContext)">
             <summary>
             Cria um tipo de manutenção respeitando a hierarquia da Estratégia
             </summary>
             <param name="dto">Objeto a ser adicionado</param>
             <param name="context">Contexto injetado para validação</param>
+            <param name="tipo">Tipo do tipo a ser criado, 0 = manutenção, 1 = renovação </param>
         </member>
         <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
@@ -195,12 +198,20 @@
             </summary>
             <returns>Quantidade de elementos cadastrados no banco</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Atualizar(app_pm_back.DTO.ComgasDTO.TipoManutencaoComgasDto)">
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.BuscarPorId(System.Int32)">
             <summary>
-            Atualiza um objeto do modelo
+            Realiza uma busca por Id e retorna o objeto completo, com as listas filhas carregadas.
             </summary>
-            <param name="dto">Objeto a ser atualizado</param>
-            <returns>Novo objeto</returns>
+            <param name="id">Id a ser buscado</param>
+            <returns>Objeto completo</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Atualizar(System.Int32,app_pm_back.DTO.ComgasDTO.TipoManutencaoComgasDto)">
+            <summary>
+            Atualiza um tipo de manutenção.
+            </summary>
+            <param name="id">Id do DTO a ser atualizado</param>
+            <param name="dto">DTO do tipo a ser atualizado</param>
+            <returns></returns>
         </member>
         <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Deletar(System.Int32)">
             <summary>
@@ -245,10 +256,11 @@
             </summary>
             <returns>Quantidade de elementos cadastrados no banco</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.Atualizar(app_pm_back.DTO.ComgasDTO.EstrategiaManutencaoComgasDto)">
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.Atualizar(System.Int32,app_pm_back.DTO.ComgasDTO.EstrategiaManutencaoComgasDto)">
             <summary>
             Atualiza um objeto do modelo
             </summary>
+            <param name="id">Id da estrategia na rota</param>
             <param name="dto">Objeto a ser atualizado</param>
             <returns>Novo objeto</returns>
         </member>
@@ -295,10 +307,11 @@
             </summary>
             <returns>Quantidade de elementos cadastrados no banco</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ControllersEstrategia.TipoEstrategiaController.Atualizar(app_pm_back.DTO.ComgasDTO.TipoEstrategiaComgasDto)">
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.TipoEstrategiaController.Atualizar(System.Int32,app_pm_back.DTO.ComgasDTO.TipoEstrategiaComgasDto)">
             <summary>
             Atualiza um objeto do modelo
             </summary>
+            <param name="id">Id do tipo de estrategia na rota</param>
             <param name="dto">Objeto a ser atualizado</param>
             <returns>Novo objeto</returns>
         </member>
@@ -344,10 +357,11 @@
             </summary>
             <returns>Quantidade de equipamentos cadastrados</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.EquipmentsController.AtualizarEquipamento(app_pm_back.DTO.ComgasDTO.EquipamentoAtivoComgasDto)">
+        <member name="M:app_pm_back.Controllers.EquipmentsController.AtualizarEquipamento(System.String,app_pm_back.DTO.ComgasDTO.EquipamentoAtivoComgasDto)">
             <summary>
             Atualiza um equipamento
             </summary>
+            <param name="tag">Tag do equipamento na rota</param>
             <param name="dto">Equipamento a ser atualizado</param>
             <returns>Equipamento atualizado</returns>
         </member>
@@ -412,10 +426,12 @@
             Conta o número total de itens Congas salvas no banco
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ItemsController.AtualizarNotaCongas(app_pm_back.DTO.ComgasDTO.ItemNotaManutencaoComgasDto)">
+        <member name="M:app_pm_back.Controllers.ItemsController.AtualizarNotaCongas(System.Int32,app_pm_back.DTO.ComgasDTO.ItemNotaManutencaoComgasDto)">
             <summary>
             Atualiza uma nota Congas de mesmo Id
             </summary>
+            <param name="id">Id do item na rota</param>
+            <param name="dto">Dados do item a ser atualizado</param>
         </member>
         <member name="M:app_pm_back.Controllers.ItemsController.DeletarNotaCongas(System.Int32)">
             <summary>
@@ -459,10 +475,12 @@
             Retorna as Fichas de uma nota Petro e suas ocorrências de mesmo tipo
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.PetroNotesController.AtualizarNotaPetro(app_pm_back.Models.NotaPetroModel)">
+        <member name="M:app_pm_back.Controllers.PetroNotesController.AtualizarNotaPetro(System.Int32,app_pm_back.Models.NotaPetroModel)">
             <summary>
             Atualiza uma nota Petro de mesmo Id
             </summary>
+            <param name="id">Id da nota na rota</param>
+            <param name="nota">Dados da nota a ser atualizada</param>
         </member>
         <member name="M:app_pm_back.Controllers.PetroNotesController.DeletarNotaPetro(System.Int32)">
             <summary>
@@ -538,10 +556,12 @@
             Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.AtualizarNotaCongas(app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto)">
+        <member name="M:app_pm_back.Controllers.ComgasNotesController.AtualizarNotaCongas(System.Int64,app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto)">
             <summary>
             Atualiza uma nota Comgas pelo DTO.
             </summary>
+            <param name="id">Id da nota na rota</param>
+            <param name="dto">Dados da nota a ser atualizada</param>
         </member>
         <member name="M:app_pm_back.Controllers.ComgasNotesController.DeletarNotaCongas(System.Int32)">
             <summary>
@@ -621,10 +641,12 @@
             Retorna as Fichas de uma nota Petro e suas ocorrências de mesmo tipo
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.PetroOrdersController.AtualizarOrdemPetro(app_pm_back.Models.OrdemPetroModel)">
+        <member name="M:app_pm_back.Controllers.PetroOrdersController.AtualizarOrdemPetro(System.Int32,app_pm_back.Models.OrdemPetroModel)">
             <summary>
             Atualiza uma nota Petro de mesmo Id
             </summary>
+            <param name="id">Id da ordem na rota</param>
+            <param name="ordem">Dados da ordem a ser atualizada</param>
         </member>
         <member name="M:app_pm_back.Controllers.PetroOrdersController.DeletarOrdemPetro(System.Int64)">
             <summary>
@@ -699,10 +721,12 @@
             Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasOrdersController.AtualizarNotaCongas(app_pm_back.DTO.ComgasDTO.OrdemManutencaoComgasDto)">
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.AtualizarNotaCongas(System.Int64,app_pm_back.DTO.ComgasDTO.OrdemManutencaoComgasDto)">
             <summary>
             Atualiza uma ordem Comgas pelo DTO.
             </summary>
+            <param name="id">Id da ordem na rota</param>
+            <param name="dto">Dados da ordem a ser atualizada</param>
         </member>
         <member name="M:app_pm_back.Controllers.ComgasOrdersController.DeletarNotaCongas(System.Int64)">
             <summary>
@@ -3125,6 +3149,66 @@
             Tipos de manutenção que herdam deste tipo de estratégia.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.IdFerramenta">
+            <summary>
+            Id da ferramenta
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.Checkbox">
+            <summary>
+            Checkbox para selecionar a ferramenta
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.Nome">
+            <summary>
+            Nome de identificação da ferramenta
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.Descricao">
+            <summary>
+            Descrição da ferramenta
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.QuantidadeDisp">
+            <summary>
+            Quantidade disponível da ferramenta
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.TipoManutencaoId">
+            <summary>
+            Chave estrangeira para TipoManutencao
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.IdItemRenovacaoTipo">
+            <summary>
+            Id do item de renovacao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.CodigoItem">
+            <summary>
+            Codigo do item de renovacao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.Observacoes">
+            <summary>
+            Observações do item de renovacao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.Template1">
+            <summary>
+            Template1 do item de renovacao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.Template2">
+            <summary>
+            Template2 do item de renovacao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.TipoManutencaoId">
+            <summary>
+            FK do tipo de manutencao.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.IdTipoManutencao">
             <summary>
             Id do tipo de manutencao.
@@ -3183,7 +3267,7 @@
             Guarda ferramentas e kits específicos dos equipamentos 
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.ItemsRenovacao">
+        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.ItensRenovacao">
             <summary>
             Guarda itens de renovação para o cadastro de tipos de ativo
             </summary>

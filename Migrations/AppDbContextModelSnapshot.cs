@@ -498,7 +498,7 @@ namespace app_pm_back.Migrations
                     b.Property<int>("Confiabilidade")
                         .HasColumnType("integer");
 
-                    b.Property<Dictionary<string, string>>("Ferramentas")
+                    b.Property<Dictionary<string, string>>("FerramentasTipoModel")
                         .IsRequired()
                         .HasColumnType("jsonb");
 
