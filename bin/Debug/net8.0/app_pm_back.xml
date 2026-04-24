@@ -912,6 +912,17 @@
             Tabela de operacoes de ordens.
             </summary>
         </member>
+        <member name="T:app_pm_back.Data.DbInitializer">
+            <summary>
+            Classe para inicializar o banco de dados.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Data.DbInitializer.SeedAsync(Microsoft.AspNetCore.Builder.WebApplication)">
+            <summary>
+            Inicializa o banco de dados.
+            </summary>
+            <param name="app"></param>
+        </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.AcaoNotaCongasComgasDto">
             <summary>
             DTO de importacao de acoes de nota da Comgas.

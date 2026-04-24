@@ -25,7 +25,7 @@ public class OrderCongasService : BaseCrudService<OrdemManutencaoModel>
         bool isNumero = long.TryParse(ativo, out long ativoId);
 
         query = query.Where(n => 
-            n.NotaRelacionada.LocalInstalacaoCodigo == ativo || 
+            n.NotaRelacionada.LocalInstalacaoCodigo.ToString() == ativo || 
             n.NotaRelacionada.EquipamentoTag == ativo);
         
         if (!string.IsNullOrWhiteSpace(tipoOrdem))

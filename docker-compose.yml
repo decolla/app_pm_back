@@ -5,11 +5,11 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "60006:60006"
+      - "60135:60135"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:60006
-      ASPNETCORE_HTTPS_PORT: 60006
+      ASPNETCORE_URLS: http://+:60135
+      ASPNETCORE_HTTPS_PORT: 60135
       ConnectionStrings__DefaultConnection: ${PHYSIS_POSTGRESQL}
 #    depends_on:
 #      postgres:

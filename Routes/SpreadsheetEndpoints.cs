@@ -67,7 +67,7 @@ public static class SpreadsheetEndpoints
                     var notasDeduplicadas = resultadoPlanilha.NotasCongas
                         .DistinctBy(o => o.NumeroNota).ToList();
 
-                    await notaManutencaoService.CreateNotasEmMassaAsync(notasDeduplicadas);
+                    await notaManutencaoService.ImportarNotasEmLoteSeguroAsync(notasDeduplicadas);
                     var inseridas = notasDeduplicadas.Count;
 
                     return Results.Ok(new { message = $"{inseridas} notas da CONGAS processadas com sucesso!" });

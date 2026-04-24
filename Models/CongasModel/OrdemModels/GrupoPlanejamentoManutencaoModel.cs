@@ -12,6 +12,11 @@ public class GrupoPlanejamentoManutencaoModel
     /// </summary>
     [Key]
     public int IdGpm { get; set; }
+    
+    /// <summary>
+    /// Nome do grupo.
+    /// </summary>
+    public string Nome { get; set; }
 
     /// <summary>
     /// Codigo do grupo no SAP.
