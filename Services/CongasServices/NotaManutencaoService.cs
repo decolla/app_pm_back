@@ -33,17 +33,19 @@ public class NotaManutencaoService : BaseCrudService<NotaManutencaoModel>
             .ToList();
 
         // consulta o Banco de Dados 
-        var locaisExistentes = _context.LocaisInstalacao
-            .Where(l => codigosLocaisExcel.Contains(l.CodigoLocalInstalacao)) 
-            .Select(l => l.CodigoLocalInstalacao)
-            .ToHashSet();
+        var locaisExistentes = (await _context.LocaisInstalacao
+                .Where(l => codigosLocaisExcel.Contains(l.CodigoLocalInstalacao)) 
+                .Select(l => l.CodigoLocalInstalacao)
+                .ToListAsync())
+                .ToHashSet();
 
-        var equipamentosExistentes = _context.EquipamentosAtivos
-            .Where(e => tagsEquipamentosExcel.Contains(e.TagEquipamento))
-            .Select(e => e.TagEquipamento)
-            .ToHashSet();
+        var equipamentosExistentes = (await _context.EquipamentosAtivos
+                .Where(e => tagsEquipamentosExcel.Contains(e.TagEquipamento))
+                .Select(e => e.TagEquipamento)
+                .ToListAsync())
+                .ToHashSet();
 
-        // limpeza dos "Fantasmas"
+        // limpeza
         foreach (var nota in notas)
         {
             // se a nota apontar para um Local que NÃO está no banco, anulamos o campo

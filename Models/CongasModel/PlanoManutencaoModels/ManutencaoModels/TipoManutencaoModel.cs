@@ -69,12 +69,15 @@ public class TipoManutencaoModel
     /// </summary>
     public virtual ICollection<FerramentasTipoModel>? Ferramentas { get; set; } = new List<FerramentasTipoModel>();
     
-    //MUDAR DPS PARA UMA TABELA
     /// <summary>
     /// Guarda itens de renovação para o cadastro de tipos de ativo
     /// </summary>
     public virtual ICollection<ItemRenovacaoTipoModel>? ItensRenovacao { get; set; } = new List<ItemRenovacaoTipoModel>();
 
+    /// <summary>
+    /// Tarefas relacionadas a este tipo de manutencao
+    /// </summary>
+    public virtual ICollection<TarefaModel>? ListaTarefa { get; set; } = new List<TarefaModel>();
 }
 
 /// <summary>

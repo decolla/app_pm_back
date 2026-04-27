@@ -174,6 +174,74 @@ public class EstrategiaController : ControllerBase
             return BadRequest(new { message = $"Erro ao deletar um(a) {_operador}." });
         }
     }
+    
+    /// <summary>
+    /// Pesquisa estrategias com filtros da tela (nome, id, tipo de ativo e visao).
+    /// </summary>
+    /// <param name="nome">Nome da estrategia (parcial).</param>
+    /// <param name="id">Id exato da estrategia.</param>
+    /// <param name="tipoAtivo">Tipo de ativo aplicavel (parcial).</param>
+    /// <param name="visao">Visao/denominacao (parcial).</param>
+    /// <param name="pagina">Pagina para retorno paginado (opcional).</param>
+    /// <param name="tamanho">Quantidade por pagina (opcional).</param>
+    [HttpGet("pesquisa")]
+    public async Task<IActionResult> Pesquisar(
+        [FromQuery] string? nome,
+        [FromQuery] int? id,
+        [FromQuery] string? tipoAtivo,
+        [FromQuery] string? visao,
+        [FromQuery] int? pagina,
+        [FromQuery] int? tamanho)
+    {
+        try
+        {
+            if (id.HasValue && id <= 0)
+            {
+                return BadRequest(new { message = "Parametro id deve ser maior que zero." });
+            }
+
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
+            var resultados = await _estrategiaComgasService.BuscarAsync(id, nome, tipoAtivo, visao, pagina, tamanho);
+            return Ok(resultados);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao pesquisar {_operador}: {e.Message}." });
+        }
+    }
+
+    /// <summary>
+    /// Busca por id a estratégia 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> BuscarPorId(int id)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "IdEstrategia invalido na rota. Envie id maior que zero." });
+            }
+
+            var obj = await _estrategiaComgasService.GetNotaByIdAsync(id);
+            if (obj == null)
+            {
+                return NotFound(new { message = $"{_operador} não encontrado(a)." });
+            }
+
+            return Ok(obj);
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = $"Erro ao procurar {_operador}." });
+        }
+    }
 
     /// <summary>
     /// Valida pagina e tamanho para evitar consultas inconsistentes.

@@ -16,16 +16,21 @@ public class EstrategiaManutencaoModel
     public int IdEstrategia { get; set; }
 
     /// <summary>
-    /// Nome da estrategia.
+    /// Nome da estratégia.
     /// </summary>
     [MaxLength(80)]
     public required string Nome { get; set; }
 
     /// <summary>
-    /// Denominacao da estrategia.
+    /// Duração de meses do ciclo de manutencao.
     /// </summary>
-    [MaxLength(150)]
-    public string? Denominacao { get; set; }
+    public int Ciclos { get; set; }
+    
+    /// <summary>
+    /// Unidade de tempo do ciclo de manutencao.
+    /// </summary>
+    /// <example> Ano = 0, Mes = 1, Dia = 2</example>
+    public UnidadeCiclo UnidadeCiclo { get; set; }
 
     /// <summary>
     /// Se a estratégia está habilitada para uso ou não.
@@ -33,10 +38,11 @@ public class EstrategiaManutencaoModel
     public bool Habilitada { get; set; } = true;
 
     /// <summary>
-    /// Duração de meses do ciclo de manutencao.
+    /// Denominacao da estratégia.
     /// </summary>
-    public int Ciclos { get; set; }
-    
+    [MaxLength(150)]
+    public string? Denominacao { get; set; }
+
     /// <summary>
     /// Quantidade de ciclos de manutencao previstos para o plano.
     /// </summary>
@@ -91,5 +97,12 @@ public class EstrategiaManutencaoModel
     // /// </summary>
     // [MaxLength(30)]
     // public string? CalendarioFabrica { get; set; }
+}
+
+public enum UnidadeCiclo
+{
+    Ano = 0,
+    Mes = 1,
+    Dia = 2
 }
 

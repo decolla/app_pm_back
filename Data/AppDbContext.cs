@@ -1,5 +1,6 @@
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -246,6 +247,34 @@ public class AppDbContext : DbContext
             .WithMany(o => o.Operacoes)
             .HasForeignKey(o => o.OrdemId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<FerramentasTipoModel>()
+            .HasOne(f => f.TipoManutencao)
+            .WithMany(t => t.Ferramentas)
+            .HasForeignKey(f => f.TipoManutencaoId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ItemRenovacaoTipoModel>()
+            .HasOne(i => i.TipoManutencao)
+            .WithMany(t => t.ItensRenovacao)
+            .HasForeignKey(i => i.TipoManutencaoId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TarefaModel>()
+            .HasOne(t => t.TipoManutencao)
+            .WithMany(m => m.ListaTarefa)
+            .HasForeignKey(t => t.TipoManutencaoId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TipoManutencaoCepModel>()
+            .HasOne(c => c.PlanoManutencao)
+            .WithMany()
+            .HasForeignKey(c => c.PlanoManutencaoCodigo)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<TipoManutencaoCepModel>()
+            .HasIndex(c => new { c.NomeTipo, c.TipoAtivo })
+            .IsUnique();
     }
 
     /// <summary>
@@ -392,7 +421,24 @@ public class AppDbContext : DbContext
     /// Tabela de operacoes de ordens.
     /// </summary>
     public DbSet<OperacaoOrdemModel> OperacoesOrdem { get; set; }
+
+    /// <summary>
+    /// Tabela de ferramentas por tipo de manutencao.
+    /// </summary>
+    public DbSet<FerramentasTipoModel> FerramentasTipo { get; set; }
+
+    /// <summary>
+    /// Tabela de itens de renovacao por tipo de manutencao.
+    /// </summary>
+    public DbSet<ItemRenovacaoTipoModel> ItensRenovacaoTipo { get; set; }
+
+    /// <summary>
+    /// Tabela de tarefas por tipo de manutencao.
+    /// </summary>
+    public DbSet<TarefaModel> TarefasTipoManutencao { get; set; }
+
+    /// <summary>
+    /// Tabela de tipos de manutencao CEP.
+    /// </summary>
+    public DbSet<TipoManutencaoCepModel> TiposManutencaoCep { get; set; }
 }
-
-
-

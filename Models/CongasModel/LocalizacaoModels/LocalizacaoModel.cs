@@ -15,6 +15,13 @@ public class LocalizacaoModel
     public int IdLocalizacao { get; set; }
 
     /// <summary>
+    /// Nome amigavel da localizacao.
+    /// </summary>
+    [MaxLength(150)]
+    public required string Nome { get; set; }
+    
+
+    /// <summary>
     /// Cenario de localizacao no SAP.
     /// </summary>
     [MaxLength(50)]
@@ -25,12 +32,6 @@ public class LocalizacaoModel
     /// </summary>
     [MaxLength(60)]
     public required string CodigoLocalizacao { get; set; }
-
-    /// <summary>
-    /// Nome amigavel da localizacao.
-    /// </summary>
-    [MaxLength(150)]
-    public required string Nome { get; set; }
 
     /// <summary>
     /// Indica se o local esta coberto por garantia.

@@ -1,5 +1,6 @@
 using app_pm_back.Data;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.CongasServices;
@@ -17,6 +18,7 @@ public class TipoManutencaoService : BaseCrudService<TipoManutencaoModel>
         return await _context.Set<TipoManutencaoModel>()
             .Include(t => t.Ferramentas)
             .Include(t => t.ItensRenovacao)
+            .Include(t => t.ListaTarefa)
             .FirstOrDefaultAsync(t => t.IdTipoManutencao == id);
     }
     
@@ -37,12 +39,16 @@ public class TipoManutencaoService : BaseCrudService<TipoManutencaoModel>
         _context.Entry(existente).CurrentValues.SetValues(atualizado);
 
         // Atualiza Ferramentas (Substitui a lista)
-        existente.Ferramentas.Clear();
-        foreach (var f in atualizado.Ferramentas) existente.Ferramentas.Add(f);
+        existente.Ferramentas!.Clear();
+        foreach (var f in atualizado.Ferramentas ?? new List<FerramentasTipoModel>()) existente.Ferramentas.Add(f);
 
         // Atualiza Itens Renovação (Substitui a lista)
-        existente.ItensRenovacao.Clear();
-        foreach (var i in atualizado.ItensRenovacao) existente.ItensRenovacao.Add(i);
+        existente.ItensRenovacao!.Clear();
+        foreach (var i in atualizado.ItensRenovacao ?? new List<ItemRenovacaoTipoModel>()) existente.ItensRenovacao.Add(i);
+
+        // Atualiza Tarefas (Substitui a lista)
+        existente.ListaTarefa!.Clear();
+        foreach (var t in atualizado.ListaTarefa ?? new List<TarefaModel>()) existente.ListaTarefa.Add(t);
 
         await _context.SaveChangesAsync();
         return existente;

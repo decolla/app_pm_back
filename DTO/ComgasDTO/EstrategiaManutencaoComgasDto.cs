@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO.ComgasDTO;
 
@@ -16,11 +17,14 @@ public class EstrategiaManutencaoComgasDto
     [SheetColumn("Denominação")]
     public string? Denominacao { get; set; }
 
-    [SheetColumn("Habilitada")]
-    public bool Habilitada { get; set; }
-
     [SheetColumn("Ciclos")]
     public int Ciclos { get; set; }
+
+    [SheetColumn("UnidadeCiclos")]
+    public UnidadeCiclo UnidadeCiclo { get; set; }
+
+    [SheetColumn("Habilitada")]
+    public bool Habilitada { get; set; }
 
     [SheetColumn("Número ciclos")]
     public int NumeroCiclos { get; set; }

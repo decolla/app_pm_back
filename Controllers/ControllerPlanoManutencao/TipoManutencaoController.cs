@@ -53,6 +53,11 @@ public class TipoManutencaoController : ControllerBase
         {
             return BadRequest(new { message = "Erro: Um cadastro de MANUTENÇÃO não pode conter Itens de Renovação." });
         }
+        
+        if (dto.TipoTipo == 1 && (dto.ListaTarefas?.Any() ?? false))
+        {
+            return BadRequest(new { message = "Erro: Um cadastro de RENOVAÇÃO não pode conter uma lista de tarefas." });
+        }
 
         if (dto.TipoTipo == 1 && (dto.Ferramentas?.Any() ?? false))
         {
@@ -93,13 +98,7 @@ public class TipoManutencaoController : ControllerBase
                 });
             }
         }
-
-        if (dto.TipoTipo == 0 && (dto.ItensRenovacao?.Any() ?? false)) // 0 = Manutenção
-            return BadRequest(new { message = "Um tipo de Manutenção não pode conter itens de renovação." });
-
-        if (dto.TipoTipo == 1 && (dto.Ferramentas?.Any() ?? false)) // 1 = Renovação
-            return BadRequest(new { message = "Um tipo de Renovação não pode conter ferramentas." });
-
+        
         try
         {
             var obj = _mapper.Map<TipoManutencaoModel>(dto);

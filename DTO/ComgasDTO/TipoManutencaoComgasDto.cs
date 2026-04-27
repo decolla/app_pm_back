@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 
 namespace app_pm_back.DTO.ComgasDTO;
 
@@ -35,6 +36,8 @@ public class TipoManutencaoComgasDto
     
     public List<FerramentaTipoDto> Ferramentas { get; set; } = new();
     public List<ItemRenovacaoTipoDto> ItensRenovacao { get; set; } = new();
+
+    public List<TarefaComgasDto> ListaTarefas { get; set; } = new();
 }
 
 public class FerramentaTipoDto

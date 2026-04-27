@@ -106,6 +106,16 @@
             <param name="tipoReferencia">Tipo da referência de busca</param>
             <returns></returns>
         </member>
+        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.FerramentaTipoController">
+            <summary>
+            Endpoints de ferramentas de tipo de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.ItemRenovacaoTipoController">
+            <summary>
+            Endpoints de itens de renovacao por tipo de manutencao.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController">
             <summary>
             Endpoints de plano de manutencao da Comgas.
@@ -162,6 +172,16 @@
         <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Valida pagina e tamanho para evitar consultas inconsistentes.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.TarefaController">
+            <summary>
+            Endpoints de tarefas por tipo de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoCepController">
+            <summary>
+            Endpoints de cadastro de tipo de manutencao CEP.
             </summary>
         </member>
         <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController">
@@ -276,6 +296,24 @@
             Deleta um objeto do modelo
             </summary>
             <param name="id">Id do objeto a ser deletado</param>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.Pesquisar(System.String,System.Nullable{System.Int32},System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Pesquisa estrategias com filtros da tela (nome, id, tipo de ativo e visao).
+            </summary>
+            <param name="nome">Nome da estrategia (parcial).</param>
+            <param name="id">Id exato da estrategia.</param>
+            <param name="tipoAtivo">Tipo de ativo aplicavel (parcial).</param>
+            <param name="visao">Visao/denominacao (parcial).</param>
+            <param name="pagina">Pagina para retorno paginado (opcional).</param>
+            <param name="tamanho">Quantidade por pagina (opcional).</param>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.BuscarPorId(System.Int32)">
+            <summary>
+            Busca por id a estratégia 
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
         </member>
         <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
@@ -912,6 +950,26 @@
             Tabela de operacoes de ordens.
             </summary>
         </member>
+        <member name="P:app_pm_back.Data.AppDbContext.FerramentasTipo">
+            <summary>
+            Tabela de ferramentas por tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Data.AppDbContext.ItensRenovacaoTipo">
+            <summary>
+            Tabela de itens de renovacao por tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Data.AppDbContext.TarefasTipoManutencao">
+            <summary>
+            Tabela de tarefas por tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Data.AppDbContext.TiposManutencaoCep">
+            <summary>
+            Tabela de tipos de manutencao CEP.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Data.DbInitializer">
             <summary>
             Classe para inicializar o banco de dados.
@@ -963,6 +1021,11 @@
             DTO de fabricante da Comgas.
             </summary>
         </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.FerramentaTipoComgasDto">
+            <summary>
+            DTO de ferramenta vinculada ao tipo de manutencao.
+            </summary>
+        </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.GrupoPlanejamentoManutencaoComgasDto">
             <summary>
             DTO de grupo de planejamento de manutencao.
@@ -981,6 +1044,11 @@
         <member name="T:app_pm_back.DTO.ComgasDTO.ItemPlanoManutencaoComgasDto">
             <summary>
             DTO de item do plano de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.ItemRenovacaoTipoComgasDto">
+            <summary>
+            DTO de item de renovacao vinculado ao tipo de manutencao.
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.LocalInstalacaoComgasDto">
@@ -1018,9 +1086,19 @@
             DTO de plano de manutencao Comgas.
             </summary>
         </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.TarefaComgasDto">
+            <summary>
+            DTO de tarefa vinculada ao tipo de manutencao.
+            </summary>
+        </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.TipoEstrategiaComgasDto">
             <summary>
             DTO de tipo de estrategia de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.TipoManutencaoCepComgasDto">
+            <summary>
+            DTO do cadastro de tipo de manutencao CEP.
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.TipoManutencaoComgasDto">
@@ -1653,6 +1731,11 @@
             Identificador interno da localizacao.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.LocalizacaoModel.Nome">
+            <summary>
+            Nome amigavel da localizacao.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.LocalizacaoModel.CenLocalizacao">
             <summary>
             Cenario de localizacao no SAP.
@@ -1661,11 +1744,6 @@
         <member name="P:app_pm_back.Models.Domain.LocalizacaoModel.CodigoLocalizacao">
             <summary>
             Codigo da localizacao.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.LocalizacaoModel.Nome">
-            <summary>
-            Nome amigavel da localizacao.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.LocalizacaoModel.EmGarantia">
@@ -2011,6 +2089,11 @@
             Identificador interno do grupo.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.GrupoPlanejamentoManutencaoModel.Nome">
+            <summary>
+            Nome do grupo.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.GrupoPlanejamentoManutencaoModel.Codigo">
             <summary>
             Codigo do grupo no SAP.
@@ -2211,22 +2294,28 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.Nome">
             <summary>
-            Nome da estrategia.
+            Nome da estratégia.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.Denominacao">
+        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.Ciclos">
             <summary>
-            Denominacao da estrategia.
+            Duração de meses do ciclo de manutencao.
             </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.UnidadeCiclo">
+            <summary>
+            Unidade de tempo do ciclo de manutencao.
+            </summary>
+            <example> Ano = 0, Mes = 1, Dia = 2</example>
         </member>
         <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.Habilitada">
             <summary>
             Se a estratégia está habilitada para uso ou não.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.Ciclos">
+        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.Denominacao">
             <summary>
-            Duração de meses do ciclo de manutencao.
+            Denominacao da estratégia.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.NumeroCiclos">
@@ -3215,6 +3304,77 @@
             FK do tipo de manutencao.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TarefaModel.IdTarefa">
+            <summary>
+            Id da tarefa
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TarefaModel.Nome">
+            <summary>
+            Nome da tarefa
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TarefaModel.Descricao">
+            <summary>
+            Descricao da tarefa
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TarefaModel.Duracao">
+            <summary>
+            Duracao da tarefa em horas.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TarefaModel.TipoManutencaoId">
+            <summary>
+            FK do tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.IdTipoManutencaoCep">
+            <summary>
+            Id do tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.NomeTipo">
+            <summary>
+            Nome do tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.TipoAtivo">
+            <summary>
+            Tipo de ativo a ser aplicado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.Confiabilidade">
+            <summary>
+            Confiabilidade em porcentagem para o tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.Habilitada">
+            <summary>
+            Se o tipo de manutencao esta habilitado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.Niveis">
+            <summary>
+            Selecao de niveis e descricoes.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.AcoesFalha">
+            <summary>
+            Acoes selecionadas em caso de falha.
+            </summary>
+            <example>AbrirNota = 0, AbrirOrdem = 1, OpcaoTemplate = 2, Nada = 3</example>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.PlanoManutencaoCodigo">
+            <summary>
+            FK do plano de manutencao associado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.PlanoManutencao">
+            <summary>
+            Plano de manutencao associado ao tipo.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.IdTipoManutencao">
             <summary>
             Id do tipo de manutencao.
@@ -3276,6 +3436,11 @@
         <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.ItensRenovacao">
             <summary>
             Guarda itens de renovação para o cadastro de tipos de ativo
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.ListaTarefa">
+            <summary>
+            Tarefas relacionadas a este tipo de manutencao
             </summary>
         </member>
         <member name="T:app_pm_back.Models.CongasModel.TipoTipo">
@@ -3675,6 +3840,42 @@
             <param name="columnName">Nome da coluna para tratamento especial de valores nulos.</param>
             <returns>String normalizada.</returns>
         </member>
+        <member name="T:app_pm_back.Services.CongasServices.EstrategiaComgasService">
+            <summary>
+            Servico de regras e consultas de estrategia de manutencao.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.EstrategiaComgasService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa o servico de estrategia.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.EstrategiaComgasService.BuscarAsync(System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Busca estrategias por filtros opcionais da tela de pesquisa.
+            </summary>
+            <param name="id">Id da estratégia.</param>
+            <param name="nome">Nome (busca parcial).</param>
+            <param name="tipoAtivo">Tipo de ativo aplicavel (busca parcial).</param>
+            <param name="visao">Visao/denominacao (busca parcial).</param>
+            <param name="pagina">Pagina desejada (opcional).</param>
+            <param name="tamanho">Quantidade por pagina (opcional).</param>
+        </member>
+        <member name="T:app_pm_back.Services.CongasServices.FerramentaTipoService">
+            <summary>
+            Servico de ferramentas por tipo de manutencao.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.FerramentaTipoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa o servico.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.FerramentaTipoService.BuscarPorTipoManutencaoAsync(System.Int32)">
+            <summary>
+            Lista ferramentas por tipo de manutencao.
+            </summary>
+        </member>
         <member name="M:app_pm_back.Services.CongasServices.ItemNoteCongasService.GetItemsByNotaIdAsync(System.Int64)">
             <summary>
             Retorna os itens de uma nota pelo ID
@@ -3682,12 +3883,33 @@
             <param name="id">Id da nota a ser realizada a busca</param>
             <returns>Lista de Itens associadas a essa nota</returns>
         </member>
+        <member name="T:app_pm_back.Services.CongasServices.ItemRenovacaoTipoService">
+            <summary>
+            Servico de itens de renovacao por tipo de manutencao.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.ItemRenovacaoTipoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa o servico.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.ItemRenovacaoTipoService.BuscarPorTipoManutencaoAsync(System.Int32)">
+            <summary>
+            Lista itens por tipo de manutencao.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.NotaManutencaoService.ImportarNotasEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaManutencaoModel})">
+            <summary>
+            Importa notas em lote, validando e ignorando Chaves Estrangeiras que não existem no banco.
+            </summary>
+            <param name="notas">Notas a serem cadastradas</param>
+        </member>
         <member name="M:app_pm_back.Services.CongasServices.NotaManutencaoService.GetFichasPorAtivoAsync(System.String,System.String)">
             <summary>
             Regra específica para a API, busca fichas por ativo e tipo de nota
             </summary>
-            <param name="ativo"></param>
-            <param name="tipoNota"></param>
+            <param name="ativo">Nome do ativo a ser buscado como referência</param>
+            <param name="tipoNota">Tipo da nota (corretiva ou preventiva)</param>
             <returns></returns>
         </member>
         <member name="M:app_pm_back.Services.CongasServices.OrderCongasService.GetFichasPorAtivoAsync(System.String,System.String)">
@@ -3697,6 +3919,36 @@
             <param name="ativo"></param>
             <param name="tipoOrdem"></param>
             <returns></returns>
+        </member>
+        <member name="T:app_pm_back.Services.CongasServices.TarefaService">
+            <summary>
+            Servico de tarefas por tipo de manutencao.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.TarefaService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa o servico.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.TarefaService.BuscarPorTipoManutencaoAsync(System.Int32)">
+            <summary>
+            Lista tarefas por tipo de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.CongasServices.TipoManutencaoCepService">
+            <summary>
+            Servico de tipo de manutencao CEP.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.TipoManutencaoCepService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa o servico.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.TipoManutencaoCepService.BuscarPorTipoAtivoAsync(System.String)">
+            <summary>
+            Busca tipos CEP por tipo de ativo.
+            </summary>
         </member>
         <member name="T:app_pm_back.Services.EquipmentService">
             <summary>

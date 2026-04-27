@@ -12,14 +12,14 @@ public class LocalizacaoComgasDto
     [SheetColumn("Id Localização")]
     public int IdLocalizacao { get; set; }
 
+    [SheetColumn("Denominação")]
+    public string? Nome { get; set; }
+
     [SheetColumn("Cen.localiz.")]
     public string? CenLocalizacao { get; set; }
 
     [SheetColumn("Localização")]
     public string? CodigoLocalizacao { get; set; }
-
-    [SheetColumn("Denominação")]
-    public string? Nome { get; set; }
 
     [SheetColumn("Em Garantia")]
     public bool? EmGarantia { get; set; }
