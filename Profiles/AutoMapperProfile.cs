@@ -36,7 +36,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.ModificadaPorUsuario, opt => opt.Ignore())
             .ForMember(dest => dest.Operacoes, opt => opt.Ignore());
 
-        CreateMap<AcaoNotaCongasComgasDto, AcaoNotaCongasModel>();
+        // CreateMap<AcaoNotaCongasComgasDto, AcaoNotaCongasModel>();
 
         CreateMap<ItemNotaManutencaoComgasDto, ItemNotaManutencaoModel>()
             .ForMember(dest => dest.Nota, opt => opt.Ignore());

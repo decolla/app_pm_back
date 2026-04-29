@@ -39,12 +39,14 @@ public class TipoManutencaoCepModel
     /// <summary>
     /// Selecao de niveis e descricoes.
     /// </summary>
+    [Column(TypeName = "jsonb")]
     public Dictionary<string, string>? Niveis { get; set; }
 
     /// <summary>
     /// Acoes selecionadas em caso de falha.
     /// </summary>
     /// <example>AbrirNota = 0, AbrirOrdem = 1, OpcaoTemplate = 2, Nada = 3</example>
+    [Column(TypeName = "jsonb")]
     public List<AcoesFalha> AcoesFalha { get; set; } = [Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.AcoesFalha.Nada];
 
     /// <summary>

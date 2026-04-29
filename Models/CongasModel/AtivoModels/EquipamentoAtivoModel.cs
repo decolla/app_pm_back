@@ -22,6 +22,30 @@ public class EquipamentoAtivoModel
     public string? Tipo { get; set; }
 
     /// <summary>
+    /// Número de série do equipamento.
+    /// </summary>
+    [MaxLength(80)]
+    public string? NumeroSerie { get; set; }
+
+    /// <summary>
+    /// Número do modelo do equipamento.
+    /// </summary>
+    [MaxLength(80)]
+    public string? NumeroModelo { get; set; }
+
+    /// <summary>
+    /// Denominação do tipo do equipamento.
+    /// </summary>
+    [MaxLength(150)]
+    public string? DenominacaoTipo { get; set; }
+
+    /// <summary>
+    /// Ano e mês de fabricação do equipamento.
+    /// </summary>
+    [MaxLength(20)]
+    public string? AnoMesFabricacao { get; set; }
+
+    /// <summary>
     /// Denominacao do equipamento.
     /// </summary>
     [MaxLength(200)]
@@ -187,5 +211,14 @@ public class EquipamentoAtivoModel
     /// Itens de plano vinculados ao equipamento.
     /// </summary>
     public virtual ICollection<ItemPlanoManutencaoModel> ItensPlano { get; set; } = new List<ItemPlanoManutencaoModel>();
-}
 
+    /// <summary>
+    /// Ordens vinculadas a este equipamento.
+    /// </summary>
+    public virtual ICollection<OrdemManutencaoModel> Ordens { get; set; } = new List<OrdemManutencaoModel>();
+
+    /// <summary>
+    /// Componentes vinculados a este equipamento.
+    /// </summary>
+    public virtual ICollection<ComponenteEquipamentoModel> Componentes { get; set; } = new List<ComponenteEquipamentoModel>();
+}

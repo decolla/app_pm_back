@@ -48,14 +48,14 @@ public class PlanoManutencaoService : BaseCrudService<PlanoManutencaoModel>
         
         // encontra o último plano criado 
         PlanoManutencaoModel? ultimoPlano = planosManut
-            .OrderByDescending(p => p.DataCriacao)
+            .OrderByDescending(p => p.DataInicio)
             .FirstOrDefault();
 
         if(ultimoPlano == null) return null;
 
         return new
         {
-            DataCriacao = ultimoPlano.DataCriacao,
+            DataCriacao = ultimoPlano.DataInicio,
             Estrategia = ultimoPlano.Estrategia,
             Ciclo = ultimoPlano.Estrategia.Ciclos,
             Plano = ultimoPlano

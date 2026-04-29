@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 
 namespace app_pm_back.Models.Domain;
 
@@ -26,12 +27,6 @@ public class OperacaoOrdemModel
     public required string NomeOperacao { get; set; }
 
     /// <summary>
-    /// Tipo de atividade da operacao.
-    /// </summary>
-    [MaxLength(30)]
-    public string? TipoAtividade { get; set; }
-
-    /// <summary>
     /// Duracao planejada em horas.
     /// </summary>
     public decimal? DuracaoHoras { get; set; }
@@ -42,12 +37,6 @@ public class OperacaoOrdemModel
     public int? NumeroProfissionais { get; set; }
 
     /// <summary>
-    /// Texto breve da operacao.
-    /// </summary>
-    [MaxLength(300)]
-    public string? TextoBreve { get; set; }
-
-    /// <summary>
     /// Data e hora de inicio.
     /// </summary>
     public DateTime? DataInicio { get; set; }
@@ -56,6 +45,23 @@ public class OperacaoOrdemModel
     /// Data e hora de fim.
     /// </summary>
     public DateTime? DataFim { get; set; }
+
+    /// <summary>
+    /// Tipo de atividade da operacao.
+    /// </summary>
+    [MaxLength(30)]
+    public string? TipoAtividade { get; set; }
+
+    /// <summary>
+    /// Texto breve da operacao.
+    /// </summary>
+    [MaxLength(300)]
+    public string? TextoBreve { get; set; }
+
+    /// <summary>
+    /// Ferramentas e kits necessarios para a operação.
+    /// </summary>
+    public virtual ICollection<FerramentasTipoModel> FerramentasNecessarias { get; set; } = new List<FerramentasTipoModel>();
 
     /// <summary>
     /// Ordem associada.

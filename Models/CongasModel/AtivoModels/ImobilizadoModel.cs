@@ -21,10 +21,22 @@ public class ImobilizadoModel
     public string? Denominacao { get; set; }
 
     /// <summary>
+    /// Nome do imobilizado.
+    /// </summary>
+    [MaxLength(150)]
+    public string? NomeImobilizado { get; set; }
+
+    /// <summary>
     /// Descricao detalhada.
     /// </summary>
     [MaxLength(500)]
     public string? Descricao { get; set; }
+
+    /// <summary>
+    /// Informacao adicional do imobilizado.
+    /// </summary>
+    [MaxLength(500)]
+    public string? InformacaoAdicional { get; set; }
 
     /// <summary>
     /// Numero de serie.
@@ -78,4 +90,3 @@ public class ImobilizadoModel
     /// </summary>
     public virtual ICollection<EquipamentoAtivoModel> Equipamentos { get; set; } = new List<EquipamentoAtivoModel>();
 }
-

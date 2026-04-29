@@ -41,6 +41,9 @@ public class NotaManutencaoComgasDto
 
     [SheetColumn("Data da nota")]
     public DateTime DataNota { get; set; }
+    
+    [SheetColumn("Data fim")]
+    public DateTime? DataFim { get; set; }
 
     [SheetColumn("Prioridade")]
     public int Prioridade { get; set; }
@@ -49,7 +52,7 @@ public class NotaManutencaoComgasDto
     public DateTime? InicioDesejado { get; set; }
 
     [SheetColumn("Concl.desejada")]
-    public DateTime? ConclusaoDesejada { get; set; }
+    public DateTime? DateTime { get; set; }
 
     [SheetColumn("Equipamento")]
     public string? EquipamentoTag { get; set; }
@@ -80,6 +83,9 @@ public class NotaManutencaoComgasDto
 
     [SheetColumn("Grupo de codes")]
     public string? GrupoDeCodes { get; set; }
+    
+    [SheetColumn("Finalidade")]
+    public string Finalidade { get; set; }
 }
 
 #pragma warning restore CS1591

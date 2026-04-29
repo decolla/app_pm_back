@@ -69,7 +69,7 @@ builder.Services.AddScoped<NotaManutencaoService>();
 builder.Services.AddScoped<OrderCongasService>();
 builder.Services.AddScoped<ItemNoteCongasService>();
 builder.Services.AddScoped<EquipmentService>();
-builder.Services.AddScoped<AcaoNotaComgasService>();
+// builder.Services.AddScoped<AcaoNotaComgasService>();
 builder.Services.AddScoped<PlanoManutencaoService>();
 builder.Services.AddScoped<EstrategiaComgasService>();
 builder.Services.AddScoped<TipoEstrategiaService>();

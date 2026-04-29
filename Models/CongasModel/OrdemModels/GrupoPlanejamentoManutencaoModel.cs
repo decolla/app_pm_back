@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.Domain;
 
@@ -17,18 +18,28 @@ public class GrupoPlanejamentoManutencaoModel
     /// Nome do grupo.
     /// </summary>
     public string Nome { get; set; }
-
+    
     /// <summary>
-    /// Codigo do grupo no SAP.
+    /// Centro de planejamento associado ao grupo.
     /// </summary>
-    [MaxLength(30)]
-    public required string Codigo { get; set; }
+    public int? IdCpm { get; set; }
+    
+    /// <summary>
+    /// Status do grupo.
+    /// </summary>
+    public string? Status { get; set; }
 
     /// <summary>
     /// Descricao do grupo.
     /// </summary>
     [MaxLength(150)]
     public string? Descricao { get; set; }
+    
+    /// <summary>
+    /// Centro de planejamento associado ao grupo.
+    /// </summary>
+    [ForeignKey(nameof(IdCpm))]
+    public virtual CentroPlanejamentoManutencaoModel? CentroPlanejamentoManutencao { get; set; } = null!;
 
     /// <summary>
     /// Locais de instalacao vinculados ao grupo.
@@ -40,4 +51,3 @@ public class GrupoPlanejamentoManutencaoModel
     /// </summary>
     public virtual ICollection<EquipamentoAtivoModel> Equipamentos { get; set; } = new List<EquipamentoAtivoModel>();
 }
-

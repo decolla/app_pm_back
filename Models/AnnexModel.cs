@@ -35,6 +35,8 @@ public class AnnexModel
     /// </summary>
     public long ReferenciaId { get; set; }
     
+    // identificar a qual entidade o anexo está associado (NOTA, ORDEM...)
+    
     /// <summary>
     /// Qual o tipo de referência o anexo é associado (NOTA_CONGAS, ORDEM_CONGAS...)
     /// </summary>

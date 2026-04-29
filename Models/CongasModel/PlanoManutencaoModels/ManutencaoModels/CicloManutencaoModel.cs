@@ -39,7 +39,6 @@ public class CicloManutencaoModel
     /// <summary>
     /// Codigo do plano de manutencao.
     /// </summary>
-    [MaxLength(40)]
     public required long PlanoManutencaoCodigo { get; set; }
 
     /// <summary>

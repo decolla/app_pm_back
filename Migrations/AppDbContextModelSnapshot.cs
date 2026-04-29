@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using app_pm_back.Data;
+using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 
 #nullable disable
 
@@ -22,6 +23,21 @@ namespace app_pm_back.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("OperacaoOrdemFerramenta", b =>
+                {
+                    b.Property<int>("OperacaoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FerramentaId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("OperacaoId", "FerramentaId");
+
+                    b.HasIndex("FerramentaId");
+
+                    b.ToTable("OperacaoOrdemFerramenta");
+                });
 
             modelBuilder.Entity("app_pm_back.Models.AnnexModel", b =>
                 {
@@ -448,27 +464,67 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdFerramenta"));
 
+                    b.Property<int?>("CentroTrabalhoId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("Checkbox")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Descricao")
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<decimal?>("Dimensao")
+                        .HasColumnType("numeric");
+
+                    b.Property<int?>("FabricanteId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("GarantiaAte")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LocalInstalacaoCodigo")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<decimal?>("PesoBruto")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("PesoLiquido")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("QuantidadeDisp")
                         .HasColumnType("integer");
 
+                    b.Property<string>("TipoFerramenta")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
                     b.Property<int>("TipoManutencaoId")
                         .HasColumnType("integer");
 
+                    b.Property<decimal?>("Valor")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("Volume")
+                        .HasColumnType("numeric");
+
                     b.HasKey("IdFerramenta");
+
+                    b.HasIndex("CentroTrabalhoId");
+
+                    b.HasIndex("FabricanteId");
+
+                    b.HasIndex("LocalInstalacaoCodigo");
 
                     b.HasIndex("TipoManutencaoId");
 
-                    b.ToTable("FerramentasTipoModel");
+                    b.ToTable("FerramentasTipo");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel", b =>
@@ -499,7 +555,80 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("TipoManutencaoId");
 
-                    b.ToTable("ItemRenovacaoTipoModel");
+                    b.ToTable("ItensRenovacaoTipo");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TarefaModel", b =>
+                {
+                    b.Property<int>("IdTarefa")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTarefa"));
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Duracao")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("TipoManutencaoId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("IdTarefa");
+
+                    b.HasIndex("TipoManutencaoId");
+
+                    b.ToTable("TarefasTipoManutencao");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel", b =>
+                {
+                    b.Property<int>("IdTipoManutencaoCep")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoManutencaoCep"));
+
+                    b.Property<List<AcoesFalha>>("AcoesFalha")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<int>("Confiabilidade")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Habilitada")
+                        .HasColumnType("boolean");
+
+                    b.Property<Dictionary<string, string>>("Niveis")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("NomeTipo")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<long?>("PlanoManutencaoCodigo")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TipoAtivo")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.HasKey("IdTipoManutencaoCep");
+
+                    b.HasIndex("PlanoManutencaoCodigo");
+
+                    b.HasIndex("NomeTipo", "TipoAtivo")
+                        .IsUnique();
+
+                    b.ToTable("TiposManutencaoCep");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoEstrategiaModel", b =>
@@ -565,14 +694,16 @@ namespace app_pm_back.Migrations
 
                     b.Property<string>("NomeTipoManutencao")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<long?>("PlanoManutencaoId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("TipoAtivo")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
 
                     b.Property<int?>("TipoEstrategiaId")
                         .HasColumnType("integer");
@@ -657,7 +788,6 @@ namespace app_pm_back.Migrations
                         .HasColumnType("integer");
 
                     b.Property<long>("PlanoManutencaoCodigo")
-                        .HasMaxLength(40)
                         .HasColumnType("bigint");
 
                     b.Property<string>("Unidade")
@@ -683,6 +813,10 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdEndereco"));
 
+                    b.Property<string>("Bairro")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
                     b.Property<string>("Cep")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
@@ -691,9 +825,17 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)");
 
+                    b.Property<string>("Complemento")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
                     b.Property<string>("Estado")
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)");
+
+                    b.Property<string>("Numero")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Pais")
                         .HasMaxLength(80)
@@ -719,6 +861,10 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
 
+                    b.Property<string>("AnoMesFabricacao")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
                     b.Property<int?>("CentroTrabalhoId")
                         .HasColumnType("integer");
 
@@ -732,6 +878,10 @@ namespace app_pm_back.Migrations
                     b.Property<string>("Denominacao")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<string>("DenominacaoTipo")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<Dictionary<string, string>>("DetalhesTecnicos")
                         .IsRequired()
@@ -762,6 +912,14 @@ namespace app_pm_back.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("NumeroInventario")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("NumeroModelo")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("NumeroSerie")
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)");
 
@@ -820,15 +978,32 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdEstrategia"));
 
+                    b.Property<string>("CalendarioFabrica")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
                     b.Property<int>("Ciclos")
                         .HasColumnType("integer");
+
+                    b.Property<string>("CodigoProgramacao")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
 
                     b.Property<string>("Denominacao")
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<decimal?>("FatorDeslocamentoConfirmacaoAntecipada")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("FatorDeslocamentoConfirmacaoAtrasada")
+                        .HasColumnType("numeric");
+
                     b.Property<bool>("Habilitada")
                         .HasColumnType("boolean");
+
+                    b.Property<int?>("HorizonteAbertura")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -840,7 +1015,21 @@ namespace app_pm_back.Migrations
 
                     b.Property<string>("TipoAtivoAplicavel")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<decimal?>("ToleranciaConfirmacaoAntecipadaPercentual")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("ToleranciaConfirmacaoAtrasadaPercentual")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("UnidadeCiclo")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UnidadeEstrategica")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
 
                     b.HasKey("IdEstrategia");
 
@@ -888,6 +1077,10 @@ namespace app_pm_back.Migrations
                     b.Property<string>("Descricao")
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("IdGpm");
 
@@ -1143,7 +1336,7 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<string>("CenLocalizacao")
+                    b.Property<string>("CenManutencao")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
@@ -1205,6 +1398,13 @@ namespace app_pm_back.Migrations
                     b.Property<long>("IdNota")
                         .HasColumnType("bigint");
 
+                    b.Property<bool?>("AnaliseRiscoOperacionalNecessario")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("AnomaliaObservada")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
                     b.Property<string>("Classificacao")
                         .HasColumnType("text");
 
@@ -1214,8 +1414,9 @@ namespace app_pm_back.Migrations
                     b.Property<string>("Codificacao")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("ConclusaoDesejada")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<string>("Complemento")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
                     b.Property<int?>("Consequencia")
                         .HasColumnType("integer");
@@ -1223,7 +1424,13 @@ namespace app_pm_back.Migrations
                     b.Property<int?>("CriadoPorUsuarioId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("DataAvaria")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<DateTime?>("DataClassificacao")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("DataFim")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("DataNota")
@@ -1237,12 +1444,26 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("character varying(4000)");
 
+                    b.Property<bool?>("EquipamentoDisponivel")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("EquipamentoTag")
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
 
+                    b.Property<string>("Finalidade")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("Fluido")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
                     b.Property<string>("GrupoDeCodes")
                         .HasColumnType("text");
+
+                    b.Property<TimeSpan?>("HoraAvaria")
+                        .HasColumnType("interval");
 
                     b.Property<DateTime?>("InicioDesejado")
                         .HasColumnType("timestamp without time zone");
@@ -1251,11 +1472,34 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)");
 
+                    b.Property<string>("MatrizLibra")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
                     b.Property<string>("MetodoClassificacao")
                         .HasColumnType("text");
 
                     b.Property<long>("NumeroNota")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("ObservacoesComplementares")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<string>("OutraFinalidade")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("Plaqueta")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("PontoReferencia")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<decimal?>("Pressao")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("Prioridade")
                         .HasColumnType("integer");
@@ -1263,6 +1507,12 @@ namespace app_pm_back.Migrations
                     b.Property<string>("StatusNota")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
+
+                    b.Property<decimal?>("Temperatura")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("Tensao")
+                        .HasColumnType("numeric");
 
                     b.Property<string>("TipoDeNota")
                         .HasColumnType("text");
@@ -1299,6 +1549,10 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdOperacao"));
 
+                    b.Property<string>("CodigoOperacao")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
                     b.Property<DateTime?>("DataFim")
                         .HasColumnType("timestamp without time zone");
 
@@ -1307,6 +1561,10 @@ namespace app_pm_back.Migrations
 
                     b.Property<decimal?>("DuracaoHoras")
                         .HasColumnType("numeric");
+
+                    b.Property<string>("NivelManutencao")
+                        .HasMaxLength(1)
+                        .HasColumnType("character varying(1)");
 
                     b.Property<string>("NomeOperacao")
                         .IsRequired()
@@ -1345,6 +1603,10 @@ namespace app_pm_back.Migrations
                     b.Property<string>("ClassificadoPor")
                         .HasColumnType("text");
 
+                    b.Property<string>("CodigoTrabalho")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
                     b.Property<int?>("CriadaPorUsuarioId")
                         .HasColumnType("integer");
 
@@ -1357,11 +1619,40 @@ namespace app_pm_back.Migrations
                     b.Property<decimal?>("CustoReal")
                         .HasColumnType("numeric");
 
+                    b.Property<string>("DadosAdicionaisDispositivo")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
                     b.Property<DateTime?>("DataClassificacao")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DataEntrada")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("EquipamentoTag")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<DateTime?>("FimReal")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("InicioPlanejado")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("InicioReal")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LocalInstalacaoCodigo")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
+
+                    b.Property<string>("Material")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
 
                     b.Property<string>("MetodoClassificacao")
                         .HasColumnType("text");
@@ -1372,12 +1663,28 @@ namespace app_pm_back.Migrations
                     b.Property<long?>("NotaRelacionadaId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("NumeroSerie")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("Periodo")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
                     b.Property<long?>("PlanoManutencaoCodigo")
                         .HasMaxLength(40)
                         .HasColumnType("bigint");
 
                     b.Property<int?>("Prioridade")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Situacao")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<string>("SituacaoPlanejamento")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
 
                     b.Property<string>("StatusOrdem")
                         .HasMaxLength(20)
@@ -1390,6 +1697,10 @@ namespace app_pm_back.Migrations
                     b.HasKey("IdOrdem");
 
                     b.HasIndex("CriadaPorUsuarioId");
+
+                    b.HasIndex("EquipamentoTag");
+
+                    b.HasIndex("LocalInstalacaoCodigo");
 
                     b.HasIndex("ModificadaPorUsuarioId");
 
@@ -1404,7 +1715,6 @@ namespace app_pm_back.Migrations
                 {
                     b.Property<long>("CodigoPlano")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(40)
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("CodigoPlano"));
@@ -1415,7 +1725,7 @@ namespace app_pm_back.Migrations
                     b.Property<DateTime?>("DataConclusao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime?>("DataCriacao")
+                    b.Property<DateTime?>("DataInicio")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Descricao")
@@ -1428,10 +1738,19 @@ namespace app_pm_back.Migrations
                     b.Property<int?>("GerarAutomaticamente")
                         .HasColumnType("integer");
 
+                    b.Property<string>("NomeAtivo")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
                     b.Property<string>("NomePlano")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
+
+                    b.Property<string>("NumeroSolicitacao")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)");
 
                     b.Property<int?>("Prioridade")
                         .HasColumnType("integer");
@@ -1639,13 +1958,49 @@ namespace app_pm_back.Migrations
                     b.ToTable("Regras");
                 });
 
+            modelBuilder.Entity("OperacaoOrdemFerramenta", b =>
+                {
+                    b.HasOne("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel", null)
+                        .WithMany()
+                        .HasForeignKey("FerramentaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("app_pm_back.Models.Domain.OperacaoOrdemModel", null)
+                        .WithMany()
+                        .HasForeignKey("OperacaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel", b =>
                 {
+                    b.HasOne("app_pm_back.Models.Domain.CentroTrabalhoModel", "CentroTrabalho")
+                        .WithMany()
+                        .HasForeignKey("CentroTrabalhoId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("app_pm_back.Models.Domain.FabricanteModel", "Fabricante")
+                        .WithMany()
+                        .HasForeignKey("FabricanteId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("app_pm_back.Models.Domain.LocalInstalacaoModel", "LocalInstalacao")
+                        .WithMany()
+                        .HasForeignKey("LocalInstalacaoCodigo")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("app_pm_back.Models.CongasModel.TipoManutencaoModel", "TipoManutencao")
                         .WithMany("Ferramentas")
                         .HasForeignKey("TipoManutencaoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CentroTrabalho");
+
+                    b.Navigation("Fabricante");
+
+                    b.Navigation("LocalInstalacao");
 
                     b.Navigation("TipoManutencao");
                 });
@@ -1659,6 +2014,27 @@ namespace app_pm_back.Migrations
                         .IsRequired();
 
                     b.Navigation("TipoManutencao");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TarefaModel", b =>
+                {
+                    b.HasOne("app_pm_back.Models.CongasModel.TipoManutencaoModel", "TipoManutencao")
+                        .WithMany("ListaTarefa")
+                        .HasForeignKey("TipoManutencaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TipoManutencao");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel", b =>
+                {
+                    b.HasOne("app_pm_back.Models.Domain.PlanoManutencaoModel", "PlanoManutencao")
+                        .WithMany()
+                        .HasForeignKey("PlanoManutencaoCodigo")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("PlanoManutencao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoEstrategiaModel", b =>
@@ -1900,6 +2276,16 @@ namespace app_pm_back.Migrations
                         .HasForeignKey("CriadaPorUsuarioId")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("app_pm_back.Models.Domain.EquipamentoAtivoModel", "Equipamento")
+                        .WithMany("Ordens")
+                        .HasForeignKey("EquipamentoTag")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("app_pm_back.Models.Domain.LocalInstalacaoModel", "LocalInstalacao")
+                        .WithMany("Ordens")
+                        .HasForeignKey("LocalInstalacaoCodigo")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("app_pm_back.Models.Domain.UsuarioSapModel", "ModificadaPorUsuario")
                         .WithMany("OrdensModificadas")
                         .HasForeignKey("ModificadaPorUsuarioId")
@@ -1916,6 +2302,10 @@ namespace app_pm_back.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("CriadaPorUsuario");
+
+                    b.Navigation("Equipamento");
+
+                    b.Navigation("LocalInstalacao");
 
                     b.Navigation("ModificadaPorUsuario");
 
@@ -1955,6 +2345,8 @@ namespace app_pm_back.Migrations
                     b.Navigation("Ferramentas");
 
                     b.Navigation("ItensRenovacao");
+
+                    b.Navigation("ListaTarefa");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.CentroTrabalhoModel", b =>
@@ -1974,6 +2366,8 @@ namespace app_pm_back.Migrations
                     b.Navigation("ItensPlano");
 
                     b.Navigation("Notas");
+
+                    b.Navigation("Ordens");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.EstrategiaManutencaoModel", b =>
@@ -2011,6 +2405,8 @@ namespace app_pm_back.Migrations
                     b.Navigation("ItensPlano");
 
                     b.Navigation("Notas");
+
+                    b.Navigation("Ordens");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.LocalizacaoModel", b =>

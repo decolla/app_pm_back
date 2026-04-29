@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using app_pm_back.Attributes;
+using System.Text.Json.Serialization;
 
 namespace app_pm_back.Models.Domain;
 
@@ -98,6 +99,7 @@ public class ItemNotaManutencaoModel
     /// Nota associada ao item.
     /// </summary>
     [ForeignKey(nameof(NotaId))]
+    [JsonIgnore]
     public virtual NotaManutencaoModel Nota { get; set; } = null!;
 }
 

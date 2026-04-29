@@ -32,6 +32,24 @@ public class EnderecoModel
     public string? Cidade { get; set; }
 
     /// <summary>
+    /// Bairro do endereco.
+    /// </summary>
+    [MaxLength(80)]
+    public string? Bairro { get; set; }
+
+    /// <summary>
+    /// Numero do endereco.
+    /// </summary>
+    [MaxLength(20)]
+    public string? Numero { get; set; }
+
+    /// <summary>
+    /// Complemento do endereco.
+    /// </summary>
+    [MaxLength(120)]
+    public string? Complemento { get; set; }
+
+    /// <summary>
     /// Estado do endereco.
     /// </summary>
     [MaxLength(80)]

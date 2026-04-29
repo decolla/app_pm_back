@@ -14,6 +14,9 @@ public class PlanoManutencaoComgasDto
 
     [SheetColumn("Nome plano")]
     public string? NomePlano { get; set; }
+    
+    [SheetColumn("Ativo")]
+    public string? NomeAtivo { get; set; }
 
     [SheetColumn("Descrição")]
     public string? Descricao { get; set; }
@@ -24,8 +27,8 @@ public class PlanoManutencaoComgasDto
     [SheetColumn("Gerar automaticamente")]
     public int? GerarAutomaticamente { get; set; }
 
-    [SheetColumn("Dt.criação")]
-    public DateTime? DataCriacao { get; set; }
+    [SheetColumn("Dt.inicio")]
+    public DateTime? DataInicio { get; set; }
 
     [SheetColumn("Data conclusão")]
     public DateTime? DataConclusao { get; set; }

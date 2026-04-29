@@ -69,11 +69,11 @@ public class AppDbContext : DbContext
             .IsUnique();
 
         modelBuilder.Entity<LocalizacaoModel>()
-            .HasIndex(l => l.CodigoLocalizacao)
+            .HasIndex(l => l.IdLocalizacao)
             .IsUnique();
 
         modelBuilder.Entity<GrupoPlanejamentoManutencaoModel>()
-            .HasIndex(g => g.Codigo)
+            .HasIndex(g => g.IdGpm)
             .IsUnique();
 
         modelBuilder.Entity<CentroTrabalhoModel>()
@@ -183,6 +183,10 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<NotaManutencaoModel>()
+            .HasIndex(n => n.NumeroNota)
+            .IsUnique();
+
+        modelBuilder.Entity<NotaManutencaoModel>()
             .HasOne(n => n.Equipamento)
             .WithMany(e => e.Notas)
             .HasForeignKey(n => n.EquipamentoTag)
@@ -231,6 +235,18 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<OrdemManutencaoModel>()
+            .HasOne(o => o.Equipamento)
+            .WithMany(e => e.Ordens)
+            .HasForeignKey(o => o.EquipamentoTag)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<OrdemManutencaoModel>()
+            .HasOne(o => o.LocalInstalacao)
+            .WithMany(l => l.Ordens)
+            .HasForeignKey(o => o.LocalInstalacaoCodigo)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<OrdemManutencaoModel>()
             .HasOne(o => o.CriadaPorUsuario)
             .WithMany(u => u.OrdensCriadas)
             .HasForeignKey(o => o.CriadaPorUsuarioId)
@@ -247,6 +263,42 @@ public class AppDbContext : DbContext
             .WithMany(o => o.Operacoes)
             .HasForeignKey(o => o.OrdemId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<OperacaoOrdemModel>()
+            .HasMany(o => o.FerramentasNecessarias)
+            .WithMany(f => f.Operacoes)
+            .UsingEntity<Dictionary<string, object>>(
+                "OperacaoOrdemFerramenta",
+                j => j.HasOne<FerramentasTipoModel>()
+                    .WithMany()
+                    .HasForeignKey("FerramentaId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<OperacaoOrdemModel>()
+                    .WithMany()
+                    .HasForeignKey("OperacaoId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("OperacaoId", "FerramentaId");
+                });
+
+        modelBuilder.Entity<FerramentasTipoModel>()
+            .HasOne(f => f.CentroTrabalho)
+            .WithMany()
+            .HasForeignKey(f => f.CentroTrabalhoId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<FerramentasTipoModel>()
+            .HasOne(f => f.LocalInstalacao)
+            .WithMany()
+            .HasForeignKey(f => f.LocalInstalacaoCodigo)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<FerramentasTipoModel>()
+            .HasOne(f => f.Fabricante)
+            .WithMany()
+            .HasForeignKey(f => f.FabricanteId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<FerramentasTipoModel>()
             .HasOne(f => f.TipoManutencao)
@@ -275,6 +327,106 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<TipoManutencaoCepModel>()
             .HasIndex(c => new { c.NomeTipo, c.TipoAtivo })
             .IsUnique();
+
+        modelBuilder.Entity<CentroTrabalhoModel>()
+            .HasOne(c => c.CentroPlanejamentoManutencao)
+            .WithMany(cpm => cpm.CentrosTrabalho)
+            .HasForeignKey(c => c.CpmId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<CentroPlanejamentoManutencaoModel>()
+            .HasOne(cpm => cpm.LocalizacaoReferencia)
+            .WithMany()
+            .HasForeignKey(cpm => cpm.LocalizacaoId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<GrupoPlanejamentoManutencaoModel>()
+            .HasOne(g => g.CentroPlanejamentoManutencao)
+            .WithMany(cpm => cpm.GruposPlanejamento)
+            .HasForeignKey(g => g.IdCpm)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<FuncionarioModel>()
+            .HasIndex(f => f.Cpf)
+            .IsUnique();
+
+        modelBuilder.Entity<CentroTrabalhoModel>()
+            .HasMany(c => c.Funcionarios)
+            .WithMany(f => f.CentrosTrabalho)
+            .UsingEntity<Dictionary<string, object>>(
+                "CentroTrabalhoFuncionario",
+                j => j.HasOne<FuncionarioModel>()
+                    .WithMany()
+                    .HasForeignKey("FuncionarioId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<CentroTrabalhoModel>()
+                    .WithMany()
+                    .HasForeignKey("CentroTrabalhoId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("CentroTrabalhoId", "FuncionarioId");
+                });
+
+        modelBuilder.Entity<SetorVendasModel>()
+            .HasMany(s => s.Funcionarios)
+            .WithMany(f => f.SetoresVendas)
+            .UsingEntity<Dictionary<string, object>>(
+                "SetorVendasFuncionario",
+                j => j.HasOne<FuncionarioModel>()
+                    .WithMany()
+                    .HasForeignKey("FuncionarioId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<SetorVendasModel>()
+                    .WithMany()
+                    .HasForeignKey("SetorVendasId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("SetorVendasId", "FuncionarioId");
+                });
+
+        modelBuilder.Entity<AlmoxarifadoModel>()
+            .HasMany(a => a.Funcionarios)
+            .WithMany(f => f.Almoxarifados)
+            .UsingEntity<Dictionary<string, object>>(
+                "AlmoxarifadoFuncionario",
+                j => j.HasOne<FuncionarioModel>()
+                    .WithMany()
+                    .HasForeignKey("FuncionarioId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<AlmoxarifadoModel>()
+                    .WithMany()
+                    .HasForeignKey("AlmoxarifadoId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("AlmoxarifadoId", "FuncionarioId");
+                });
+
+        modelBuilder.Entity<AlmoxarifadoModel>()
+            .HasMany(a => a.Ferramentas)
+            .WithMany(f => f.Almoxarifados)
+            .UsingEntity<Dictionary<string, object>>(
+                "AlmoxarifadoFerramenta",
+                j => j.HasOne<FerramentasTipoModel>()
+                    .WithMany()
+                    .HasForeignKey("FerramentaId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<AlmoxarifadoModel>()
+                    .WithMany()
+                    .HasForeignKey("AlmoxarifadoId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("AlmoxarifadoId", "FerramentaId");
+                });
+
+        modelBuilder.Entity<ComponenteEquipamentoModel>()
+            .HasOne(c => c.Equipamento)
+            .WithMany(e => e.Componentes)
+            .HasForeignKey(c => c.EquipamentoTag)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     /// <summary>
@@ -315,7 +467,7 @@ public class AppDbContext : DbContext
     /// <summary>
     /// Tabela de acoes de nota Congas.
     /// </summary>
-    public DbSet<AcaoNotaCongasModel> AcaoNotaCongas { get; set; }
+    // public DbSet<AcaoNotaCongasModel> AcaoNotaCongas { get; set; }
 
     // /// <summary>
     // /// Tabela de equipamentos legados da Congas.
@@ -416,6 +568,26 @@ public class AppDbContext : DbContext
     /// Tabela de ordens de manutencao normalizadas.
     /// </summary>
     public DbSet<OrdemManutencaoModel> OrdensManutencao { get; set; }
+
+    /// <summary>
+    /// Tabela de analises de risco (AR).
+    /// </summary>
+    public DbSet<AnaliseRiscoModel> AnalisesRisco { get; set; }
+
+    /// <summary>
+    /// Tabela de analises de risco operacional (ARO).
+    /// </summary>
+    public DbSet<AnaliseRiscoOperacionalModel> AnalisesRiscoOperacional { get; set; }
+
+    /// <summary>
+    /// Tabela de permissoes de trabalho (PT).
+    /// </summary>
+    public DbSet<PermissaoTrabalhoModel> PermissoesTrabalho { get; set; }
+
+    /// <summary>
+    /// Tabela de matrizes LIBRA.
+    /// </summary>
+    public DbSet<MatrizLibraModel> MatrizesLibra { get; set; }
 
     /// <summary>
     /// Tabela de operacoes de ordens.

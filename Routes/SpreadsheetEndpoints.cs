@@ -32,8 +32,9 @@ public static class SpreadsheetEndpoints
             OrderCongasService orderCongasService,
             OrderPetroService orderPetroService,
             ItemNoteCongasService itemNoteCongasService,
-            EquipmentService equipmentService,
-            AcaoNotaComgasService acaoNotaComgasService) =>
+            EquipmentService equipmentService
+            // AcaoNotaComgasService acaoNotaComgasService
+            ) =>
         {
             try
             {
@@ -151,18 +152,18 @@ public static class SpreadsheetEndpoints
 
                     return Results.Ok(new { message = $"{inseridas} equipamentos processados e salvos com sucesso!" });
                 }// Adicione este bloco no seu if/else das rotas
-                else if (resultadoPlanilha.TipoIdentificado == "ACAO_NOTA_CONGAS")
-                {
-                    if (!resultadoPlanilha.AcoesCongas.Any())
-                        return Results.BadRequest(new { message = "Planilha de Ações reconhecida, mas sem dados válidos." });
-
-                    // Grava as ações no banco
-                    await acaoNotaComgasService.CreateAcoesEmMassaAsync(resultadoPlanilha.AcoesCongas);
-                    
-                    int inseridas = resultadoPlanilha.AcoesCongas.Count;
-
-                    return Results.Ok(new { message = $"{inseridas} ações de Notas da CONGAS processadas com sucesso!" });
-                }
+                // else if (resultadoPlanilha.TipoIdentificado == "ACAO_NOTA_CONGAS")
+                // {
+                //     if (!resultadoPlanilha.AcoesCongas.Any())
+                //         return Results.BadRequest(new { message = "Planilha de Ações reconhecida, mas sem dados válidos." });
+                //
+                //     // Grava as ações no banco
+                //     await acaoNotaComgasService.CreateAcoesEmMassaAsync(resultadoPlanilha.AcoesCongas);
+                //     
+                //     int inseridas = resultadoPlanilha.AcoesCongas.Count;
+                //
+                //     return Results.Ok(new { message = $"{inseridas} ações de Notas da CONGAS processadas com sucesso!" });
+                // }
                 
                 else
                 {

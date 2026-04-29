@@ -19,20 +19,13 @@ public class LocalizacaoModel
     /// </summary>
     [MaxLength(150)]
     public required string Nome { get; set; }
-    
 
     /// <summary>
     /// Cenario de localizacao no SAP.
     /// </summary>
     [MaxLength(50)]
-    public string? CenLocalizacao { get; set; }
-
-    /// <summary>
-    /// Codigo da localizacao.
-    /// </summary>
-    [MaxLength(60)]
-    public required string CodigoLocalizacao { get; set; }
-
+    public string? CenManutencao { get; set; }
+    
     /// <summary>
     /// Indica se o local esta coberto por garantia.
     /// </summary>
@@ -43,6 +36,23 @@ public class LocalizacaoModel
     /// </summary>
     [MaxLength(80)]
     public string? AreaOperacional { get; set; }
+
+    /// <summary>
+    /// Organizacao vinculada a localizacao.
+    /// </summary>
+    [MaxLength(80)]
+    public string? Organizacao { get; set; }
+
+    /// <summary>
+    /// Centro de manutencao associado.
+    /// </summary>
+    [MaxLength(80)]
+    public string? CentroManutencao { get; set; }
+
+    /// <summary>
+    /// CEP da localizacao.
+    /// </summary>
+    public string? CEP { get; set; }
 
     /// <summary>
     /// Codigo ABC para classificacao.
@@ -66,7 +76,52 @@ public class LocalizacaoModel
     /// </summary>
     [ForeignKey(nameof(EnderecoId))]
     public virtual EnderecoModel? Endereco { get; set; }
+    
+    /// <summary>
+    /// Estado da localizacao.
+    /// </summary>
+    public string? Estado { get; set; }
 
+    /// <summary>
+    /// Cidade da localizacao.
+    /// </summary>
+    public string? Cidade { get; set; }
+    
+    /// <summary>
+    /// Bairro da localizacao.
+    /// </summary>
+    public string? Bairro { get; set; }
+    
+    /// <summary>
+    /// Rua da localizacao.
+    /// </summary>
+    public string? Rua { get; set; }
+    
+    /// <summary>
+    /// Numero da localizacao.
+    /// </summary>
+    public string? Numero { get; set; }
+    
+    /// <summary>
+    /// Complemento da localizacao.
+    /// </summary>
+    public string? Complemento { get; set; }
+    
+    /// <summary>
+    /// Telefone de contato principal da localizacao.
+    /// </summary>
+    public string? Telefone { get; set; }
+    
+    /// <summary>
+    /// Denominacao da localizacao.
+    /// </summary>
+    public string? Denominacao { get; set; }
+    
+    /// <summary>
+    /// Descricao da denominação.
+    /// </summary>
+    public string? DescricaoDenominacao { get; set; }
+    
     /// <summary>
     /// Locais de instalacao vinculados a esta localizacao.
     /// </summary>
@@ -77,4 +132,3 @@ public class LocalizacaoModel
     /// </summary>
     public virtual ICollection<EquipamentoAtivoModel> Equipamentos { get; set; } = new List<EquipamentoAtivoModel>();
 }
-

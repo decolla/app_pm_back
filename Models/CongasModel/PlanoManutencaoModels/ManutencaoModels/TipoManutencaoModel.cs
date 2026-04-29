@@ -23,7 +23,8 @@ public class TipoManutencaoModel
     /// <summary>
     /// Nome do tipo de manutencao.
     /// </summary>
-    public string NomeTipoManutencao { get; set; }
+    [MaxLength(150)]
+    public required string NomeTipoManutencao { get; set; }
     
     /// <summary>
     /// Se o tipo está habilitado.
@@ -40,10 +41,11 @@ public class TipoManutencaoModel
     /// Tipo de ativo.
     /// </summary>
     /// <example>ERP</example>
-    public string TipoAtivo { get; set; }
+    [MaxLength(80)]
+    public required string TipoAtivo { get; set; }
 
     /// <summary>
-    /// FK do tipo de estrategia.
+    /// FK do tipo de estratégia.
     /// </summary>
     public int? TipoEstrategiaId { get; set; }
     

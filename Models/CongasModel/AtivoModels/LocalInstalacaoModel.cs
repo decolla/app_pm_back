@@ -171,5 +171,10 @@ public class LocalInstalacaoModel
     /// Itens de manutencao associados ao local.
     /// </summary>
     public virtual ICollection<ItemPlanoManutencaoModel> ItensPlano { get; set; } = new List<ItemPlanoManutencaoModel>();
+
+    /// <summary>
+    /// Ordens vinculadas a este local de instalação.
+    /// </summary>
+    public virtual ICollection<OrdemManutencaoModel> Ordens { get; set; } = new List<OrdemManutencaoModel>();
 }
 

@@ -23,50 +23,10 @@ public class PlanoManutencaoModel
     public string NomePlano { get; set; }
     
     /// <summary>
-    /// Descricao do plano de manutencao.
+    /// Nome do ativo associado. ISSO DEVE VIR DO APM
     /// </summary>
-    [MaxLength(500)]
-    public string? Descricao { get; set; }
-    
-    /// <summary>
-    /// Nível de prioridade do plano.
-    /// </summary>
-    /// <example> Baixa = 1,
-    /// BaixaMedia = 2,
-    /// Media = 3,
-    /// MediaAlta = 4,
-    /// Alta = 5 </example>
-    public Prioridade? Prioridade{ get; set; }
-    
-    /// <summary>
-    /// Gerar automaticamente nota, ordem ou ambos.
-    /// </summary>
-    /// <example> Nenhum = 0,
-    /// Nota = 1,
-    /// Ordem = 2,
-    /// Ambos = 3
-    /// </example>
-    public GerarAutomaticamente? GerarAutomaticamente { get; set; }
-    
-    /// <summary>
-    /// Data de criação do plano.
-    /// </summary>
-    public DateTime? DataCriacao { get; set; }
-
-    /// <summary>
-    /// Data de conclusao do plano.
-    /// </summary>
-    public DateTime? DataConclusao { get; set; }
-    
-    /// <summary>
-    /// Antencedencia do plano em dias.
-    /// </summary>
-    public int Antencedencia { get; set; }
-
-    /// <summary>
-    /// Ultima ordem gerada por este plano.
-    /// </summary>
-    public long? UltimaOrdem { get; set; }
+    [MaxLength(150)]
+    public string NomeAtivo { get; set; }
 
     /// <summary>
     /// FK da estrategia associada.
@@ -78,7 +38,53 @@ public class PlanoManutencaoModel
     /// </summary>
     [ForeignKey(nameof(EstrategiaId))]
     public virtual EstrategiaManutencaoModel? Estrategia { get; set; }
-    
+
+    /// <summary>
+    /// Nível de prioridade do plano.
+    /// </summary>
+    /// <example> Baixa = 1,
+    /// BaixaMedia = 2,
+    /// Media = 3,
+    /// MediaAlta = 4,
+    /// Alta = 5 </example>
+    public Prioridade? Prioridade{ get; set; }
+
+    /// <summary>
+    /// Data de criação do plano.
+    /// </summary>
+    public DateTime? DataInicio { get; set; }
+
+    /// <summary>
+    /// Gerar automaticamente nota, ordem ou ambos.
+    /// </summary>
+    /// <example> Nenhum = 0,
+    /// Nota = 1,
+    /// Ordem = 2,
+    /// Ambos = 3
+    /// </example>
+    public GerarAutomaticamente? GerarAutomaticamente { get; set; }
+
+    /// <summary>
+    /// Antencedencia do plano em dias.
+    /// </summary>
+    public int Antencedencia { get; set; }
+
+    /// <summary>
+    /// Descricao do plano de manutencao.
+    /// </summary>
+    [MaxLength(500)]
+    public string? Descricao { get; set; }
+
+    /// <summary>
+    /// Data de conclusao do plano.
+    /// </summary>
+    public DateTime? DataConclusao { get; set; }
+
+    /// <summary>
+    /// Ultima ordem gerada por este plano.
+    /// </summary>
+    public long? UltimaOrdem { get; set; }
+
     /// <summary>
     /// Tipos de manutencao deste plano.
     /// </summary>
