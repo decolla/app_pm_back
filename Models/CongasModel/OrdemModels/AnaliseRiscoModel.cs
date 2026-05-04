@@ -49,7 +49,7 @@ public class AnaliseRiscoModel
     public virtual OrdemManutencaoModel? Ordem { get; set; }
 
     /// <summary>
-    /// Anexos associados a analise.
+    /// PM_Anexos associados a analise.
     /// </summary>
     public virtual ICollection<AnnexModel> Anexos { get; set; } = new List<AnnexModel>();
 }

@@ -111,7 +111,7 @@ public static class SpreadsheetEndpoints
                     var sapNumbers = resultadoPlanilha.ItensCongas.Select(i => i.NotaId).Distinct().ToList();
 
                     // busca os IDs das notas no banco de dados
-                    var notasNoBanco = await dbContext.NotasManutencao
+                    var notasNoBanco = await dbContext.PM_NotasManutencao
                         .Where(n => sapNumbers.Contains(n.NumeroNota))
                         .Select(n => new { n.IdNota, n.NumeroNota })
                         .ToDictionaryAsync(n => n.NumeroNota, n => n.IdNota);

@@ -71,7 +71,7 @@ namespace app_pm_back.Migrations
 
                     b.HasKey("IdAnexo");
 
-                    b.ToTable("Anexos");
+                    b.ToTable("PM_Anexos");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.CongasModel.AcaoNotaCongasModel", b =>
@@ -524,7 +524,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("TipoManutencaoId");
 
-                    b.ToTable("FerramentasTipo");
+                    b.ToTable("PM_FerramentasTipo");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel", b =>
@@ -555,7 +555,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("TipoManutencaoId");
 
-                    b.ToTable("ItensRenovacaoTipo");
+                    b.ToTable("PM_ItensRenovacaoTipo");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TarefaModel", b =>
@@ -584,7 +584,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("TipoManutencaoId");
 
-                    b.ToTable("TarefasTipoManutencao");
+                    b.ToTable("PM_TarefasTipoManutencao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel", b =>
@@ -628,7 +628,7 @@ namespace app_pm_back.Migrations
                     b.HasIndex("NomeTipo", "TipoAtivo")
                         .IsUnique();
 
-                    b.ToTable("TiposManutencaoCep");
+                    b.ToTable("PM_TiposManutencaoCep");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoEstrategiaModel", b =>
@@ -740,7 +740,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("NotaId");
 
-                    b.ToTable("AtividadesNota");
+                    b.ToTable("PM_AtividadesNota");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.CentroTrabalhoModel", b =>
@@ -769,7 +769,7 @@ namespace app_pm_back.Migrations
                     b.HasIndex("Codigo")
                         .IsUnique();
 
-                    b.ToTable("CentrosTrabalho");
+                    b.ToTable("PM_CentrosTrabalho");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.CicloManutencaoModel", b =>
@@ -802,7 +802,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("PlanoManutencaoCodigo");
 
-                    b.ToTable("CiclosManutencao");
+                    b.ToTable("PM_CiclosManutencao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.EnderecoModel", b =>
@@ -852,7 +852,7 @@ namespace app_pm_back.Migrations
 
                     b.HasKey("IdEndereco");
 
-                    b.ToTable("Enderecos");
+                    b.ToTable("PM_Enderecos");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.EquipamentoAtivoModel", b =>
@@ -967,7 +967,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("LocalizacaoId");
 
-                    b.ToTable("EquipamentosAtivos");
+                    b.ToTable("PM_EquipamentosAtivos");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.EstrategiaManutencaoModel", b =>
@@ -1033,7 +1033,7 @@ namespace app_pm_back.Migrations
 
                     b.HasKey("IdEstrategia");
 
-                    b.ToTable("EstrategiasManutencao");
+                    b.ToTable("PM_EstrategiasManutencao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.FabricanteModel", b =>
@@ -1058,7 +1058,7 @@ namespace app_pm_back.Migrations
                     b.HasIndex("Nome")
                         .IsUnique();
 
-                    b.ToTable("Fabricantes");
+                    b.ToTable("PM_Fabricantes");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.GrupoPlanejamentoManutencaoModel", b =>
@@ -1087,7 +1087,7 @@ namespace app_pm_back.Migrations
                     b.HasIndex("Codigo")
                         .IsUnique();
 
-                    b.ToTable("GruposPlanejamentoManutencao");
+                    b.ToTable("PM_GruposPlanejamentoManutencao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.ImobilizadoModel", b =>
@@ -1132,7 +1132,7 @@ namespace app_pm_back.Migrations
 
                     b.HasKey("TagImobilizado");
 
-                    b.ToTable("Imobilizados");
+                    b.ToTable("PM_Imobilizados");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.ItemNotaManutencaoModel", b =>
@@ -1191,7 +1191,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("NotaId");
 
-                    b.ToTable("ItensNotaManutencao");
+                    b.ToTable("PM_ItensNotaManutencao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.ItemPlanoManutencaoModel", b =>
@@ -1225,7 +1225,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("PlanoManutencaoCodigo");
 
-                    b.ToTable("ItensPlanoManutencao");
+                    b.ToTable("PM_ItensPlanoManutencao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.LocalInstalacaoModel", b =>
@@ -1317,7 +1317,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("LocalizacaoId");
 
-                    b.ToTable("LocaisInstalacao");
+                    b.ToTable("PM_LocaisInstalacao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.LocalizacaoModel", b =>
@@ -1367,7 +1367,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("EnderecoId");
 
-                    b.ToTable("Localizacoes");
+                    b.ToTable("PM_Localizacoes");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.MedidaNotaModel", b =>
@@ -1390,7 +1390,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("NotaId");
 
-                    b.ToTable("MedidasNota");
+                    b.ToTable("PM_MedidasNota");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.NotaManutencaoModel", b =>
@@ -1538,7 +1538,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("LocalInstalacaoCodigo");
 
-                    b.ToTable("NotasManutencao");
+                    b.ToTable("PM_NotasManutencao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.OperacaoOrdemModel", b =>
@@ -1589,7 +1589,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("OrdemId");
 
-                    b.ToTable("OperacoesOrdem");
+                    b.ToTable("PM_OperacoesOrdem");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemManutencaoModel", b =>
@@ -1708,7 +1708,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("PlanoManutencaoCodigo");
 
-                    b.ToTable("OrdensManutencao");
+                    b.ToTable("PM_OrdensManutencao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.PlanoManutencaoModel", b =>
@@ -1762,7 +1762,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("EstrategiaId");
 
-                    b.ToTable("PlanosManutencaoNormalizados");
+                    b.ToTable("PM_PlanosManutencaoNormalizados");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.UsuarioSapModel", b =>
@@ -1797,7 +1797,7 @@ namespace app_pm_back.Migrations
                     b.HasIndex("Nome", "Mandante")
                         .IsUnique();
 
-                    b.ToTable("UsuariosSap");
+                    b.ToTable("PM_UsuariosSap");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.NotaPetroModel", b =>
@@ -1955,7 +1955,7 @@ namespace app_pm_back.Migrations
 
                     b.HasKey("IdRegra");
 
-                    b.ToTable("Regras");
+                    b.ToTable("PM_Regras");
                 });
 
             modelBuilder.Entity("OperacaoOrdemFerramenta", b =>
@@ -2172,7 +2172,7 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.Domain.LocalInstalacaoModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.CentroTrabalhoModel", "CentroTrabalho")
-                        .WithMany("LocaisInstalacao")
+                        .WithMany("PM_LocaisInstalacao")
                         .HasForeignKey("CentroTrabalhoId")
                         .OnDelete(DeleteBehavior.SetNull);
 
@@ -2182,22 +2182,22 @@ namespace app_pm_back.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("app_pm_back.Models.Domain.FabricanteModel", "Fabricante")
-                        .WithMany("LocaisInstalacao")
+                        .WithMany("PM_LocaisInstalacao")
                         .HasForeignKey("FabricanteId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("app_pm_back.Models.Domain.GrupoPlanejamentoManutencaoModel", "Gpm")
-                        .WithMany("LocaisInstalacao")
+                        .WithMany("PM_LocaisInstalacao")
                         .HasForeignKey("GpmId")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("app_pm_back.Models.Domain.ImobilizadoModel", "Imobilizado")
-                        .WithMany("LocaisInstalacao")
+                        .WithMany("PM_LocaisInstalacao")
                         .HasForeignKey("ImobilizadoTag")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("app_pm_back.Models.Domain.LocalizacaoModel", "Localizacao")
-                        .WithMany("LocaisInstalacao")
+                        .WithMany("PM_LocaisInstalacao")
                         .HasForeignKey("LocalizacaoId")
                         .OnDelete(DeleteBehavior.SetNull);
 
@@ -2217,7 +2217,7 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.Domain.LocalizacaoModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.EnderecoModel", "Endereco")
-                        .WithMany("Localizacoes")
+                        .WithMany("PM_Localizacoes")
                         .HasForeignKey("EnderecoId");
 
                     b.Navigation("Endereco");
@@ -2353,12 +2353,12 @@ namespace app_pm_back.Migrations
                 {
                     b.Navigation("Equipamentos");
 
-                    b.Navigation("LocaisInstalacao");
+                    b.Navigation("PM_LocaisInstalacao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.EnderecoModel", b =>
                 {
-                    b.Navigation("Localizacoes");
+                    b.Navigation("PM_Localizacoes");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.EquipamentoAtivoModel", b =>
@@ -2381,21 +2381,21 @@ namespace app_pm_back.Migrations
                 {
                     b.Navigation("Equipamentos");
 
-                    b.Navigation("LocaisInstalacao");
+                    b.Navigation("PM_LocaisInstalacao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.GrupoPlanejamentoManutencaoModel", b =>
                 {
                     b.Navigation("Equipamentos");
 
-                    b.Navigation("LocaisInstalacao");
+                    b.Navigation("PM_LocaisInstalacao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.ImobilizadoModel", b =>
                 {
                     b.Navigation("Equipamentos");
 
-                    b.Navigation("LocaisInstalacao");
+                    b.Navigation("PM_LocaisInstalacao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.LocalInstalacaoModel", b =>
@@ -2413,7 +2413,7 @@ namespace app_pm_back.Migrations
                 {
                     b.Navigation("Equipamentos");
 
-                    b.Navigation("LocaisInstalacao");
+                    b.Navigation("PM_LocaisInstalacao");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.NotaManutencaoModel", b =>

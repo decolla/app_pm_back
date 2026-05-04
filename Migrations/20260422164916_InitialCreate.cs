@@ -150,7 +150,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Anexos",
+                name: "PM_Anexos",
                 columns: table => new
                 {
                     IdAnexo = table.Column<long>(type: "bigint", nullable: false)
@@ -168,7 +168,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CentrosTrabalho",
+                name: "PM_CentrosTrabalho",
                 columns: table => new
                 {
                     IdCentroTrabalho = table.Column<int>(type: "integer", nullable: false)
@@ -183,7 +183,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Enderecos",
+                name: "PM_Enderecos",
                 columns: table => new
                 {
                     IdEndereco = table.Column<int>(type: "integer", nullable: false)
@@ -201,7 +201,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EstrategiasManutencao",
+                name: "PM_EstrategiasManutencao",
                 columns: table => new
                 {
                     IdEstrategia = table.Column<int>(type: "integer", nullable: false)
@@ -219,7 +219,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Fabricantes",
+                name: "PM_Fabricantes",
                 columns: table => new
                 {
                     IdFabricante = table.Column<int>(type: "integer", nullable: false)
@@ -233,7 +233,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GruposPlanejamentoManutencao",
+                name: "PM_GruposPlanejamentoManutencao",
                 columns: table => new
                 {
                     IdGpm = table.Column<int>(type: "integer", nullable: false)
@@ -247,7 +247,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Imobilizados",
+                name: "PM_Imobilizados",
                 columns: table => new
                 {
                     TagImobilizado = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
@@ -302,7 +302,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Regras",
+                name: "PM_Regras",
                 columns: table => new
                 {
                     IdRegra = table.Column<long>(type: "bigint", nullable: false)
@@ -318,7 +318,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsuariosSap",
+                name: "PM_UsuariosSap",
                 columns: table => new
                 {
                     IdUsuario = table.Column<int>(type: "integer", nullable: false)
@@ -334,7 +334,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Localizacoes",
+                name: "PM_Localizacoes",
                 columns: table => new
                 {
                     IdLocalizacao = table.Column<int>(type: "integer", nullable: false)
@@ -354,12 +354,12 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_Localizacoes_Enderecos_EnderecoId",
                         column: x => x.EnderecoId,
-                        principalTable: "Enderecos",
+                        principalTable: "PM_Enderecos",
                         principalColumn: "IdEndereco");
                 });
 
             migrationBuilder.CreateTable(
-                name: "PlanosManutencaoNormalizados",
+                name: "PM_PlanosManutencaoNormalizados",
                 columns: table => new
                 {
                     CodigoPlano = table.Column<long>(type: "bigint", maxLength: 40, nullable: false)
@@ -380,7 +380,7 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PlanosManutencaoNormalizados_EstrategiasManutencao_Estrateg~",
                         column: x => x.EstrategiaId,
-                        principalTable: "EstrategiasManutencao",
+                        principalTable: "PM_EstrategiasManutencao",
                         principalColumn: "IdEstrategia",
                         onDelete: ReferentialAction.SetNull);
                 });
@@ -406,7 +406,7 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_TipoEstrategiaModel_EstrategiasManutencao_EstrategiaId",
                         column: x => x.EstrategiaId,
-                        principalTable: "EstrategiasManutencao",
+                        principalTable: "PM_EstrategiasManutencao",
                         principalColumn: "IdEstrategia");
                 });
 
@@ -438,7 +438,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LocaisInstalacao",
+                name: "PM_LocaisInstalacao",
                 columns: table => new
                 {
                     CodigoLocalInstalacao = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
@@ -468,43 +468,43 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_LocaisInstalacao_CentrosTrabalho_CentroTrabalhoId",
                         column: x => x.CentroTrabalhoId,
-                        principalTable: "CentrosTrabalho",
+                        principalTable: "PM_CentrosTrabalho",
                         principalColumn: "IdCentroTrabalho",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_LocaisInstalacao_Enderecos_EnderecoId",
                         column: x => x.EnderecoId,
-                        principalTable: "Enderecos",
+                        principalTable: "PM_Enderecos",
                         principalColumn: "IdEndereco",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_LocaisInstalacao_Fabricantes_FabricanteId",
                         column: x => x.FabricanteId,
-                        principalTable: "Fabricantes",
+                        principalTable: "PM_Fabricantes",
                         principalColumn: "IdFabricante",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_LocaisInstalacao_GruposPlanejamentoManutencao_GpmId",
                         column: x => x.GpmId,
-                        principalTable: "GruposPlanejamentoManutencao",
+                        principalTable: "PM_GruposPlanejamentoManutencao",
                         principalColumn: "IdGpm",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_LocaisInstalacao_Imobilizados_ImobilizadoTag",
                         column: x => x.ImobilizadoTag,
-                        principalTable: "Imobilizados",
+                        principalTable: "PM_Imobilizados",
                         principalColumn: "TagImobilizado",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_LocaisInstalacao_Localizacoes_LocalizacaoId",
                         column: x => x.LocalizacaoId,
-                        principalTable: "Localizacoes",
+                        principalTable: "PM_Localizacoes",
                         principalColumn: "IdLocalizacao",
                         onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CiclosManutencao",
+                name: "PM_CiclosManutencao",
                 columns: table => new
                 {
                     IdCiclo = table.Column<int>(type: "integer", nullable: false)
@@ -521,7 +521,7 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_CiclosManutencao_PlanosManutencaoNormalizados_PlanoManutenc~",
                         column: x => x.PlanoManutencaoCodigo,
-                        principalTable: "PlanosManutencaoNormalizados",
+                        principalTable: "PM_PlanosManutencaoNormalizados",
                         principalColumn: "CodigoPlano",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -546,7 +546,7 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_TipoManutencaoModel_PlanosManutencaoNormalizados_PlanoManut~",
                         column: x => x.PlanoManutencaoId,
-                        principalTable: "PlanosManutencaoNormalizados",
+                        principalTable: "PM_PlanosManutencaoNormalizados",
                         principalColumn: "CodigoPlano");
                     table.ForeignKey(
                         name: "FK_TipoManutencaoModel_TipoEstrategiaModel_TipoEstrategiaId",
@@ -556,7 +556,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EquipamentosAtivos",
+                name: "PM_EquipamentosAtivos",
                 columns: table => new
                 {
                     TagEquipamento = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
@@ -588,42 +588,42 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_EquipamentosAtivos_CentrosTrabalho_CentroTrabalhoId",
                         column: x => x.CentroTrabalhoId,
-                        principalTable: "CentrosTrabalho",
+                        principalTable: "PM_CentrosTrabalho",
                         principalColumn: "IdCentroTrabalho",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_EquipamentosAtivos_Enderecos_EnderecoId",
                         column: x => x.EnderecoId,
-                        principalTable: "Enderecos",
+                        principalTable: "PM_Enderecos",
                         principalColumn: "IdEndereco");
                     table.ForeignKey(
                         name: "FK_EquipamentosAtivos_Fabricantes_FabricanteId",
                         column: x => x.FabricanteId,
-                        principalTable: "Fabricantes",
+                        principalTable: "PM_Fabricantes",
                         principalColumn: "IdFabricante",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_EquipamentosAtivos_GruposPlanejamentoManutencao_GpmId",
                         column: x => x.GpmId,
-                        principalTable: "GruposPlanejamentoManutencao",
+                        principalTable: "PM_GruposPlanejamentoManutencao",
                         principalColumn: "IdGpm",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_EquipamentosAtivos_Imobilizados_ImobilizadoTag",
                         column: x => x.ImobilizadoTag,
-                        principalTable: "Imobilizados",
+                        principalTable: "PM_Imobilizados",
                         principalColumn: "TagImobilizado",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_EquipamentosAtivos_LocaisInstalacao_LocalInstalacaoCodigo",
                         column: x => x.LocalInstalacaoCodigo,
-                        principalTable: "LocaisInstalacao",
+                        principalTable: "PM_LocaisInstalacao",
                         principalColumn: "CodigoLocalInstalacao",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_EquipamentosAtivos_Localizacoes_LocalizacaoId",
                         column: x => x.LocalizacaoId,
-                        principalTable: "Localizacoes",
+                        principalTable: "PM_Localizacoes",
                         principalColumn: "IdLocalizacao",
                         onDelete: ReferentialAction.SetNull);
                 });
@@ -675,7 +675,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ItensPlanoManutencao",
+                name: "PM_ItensPlanoManutencao",
                 columns: table => new
                 {
                     IdItemPlano = table.Column<int>(type: "integer", nullable: false)
@@ -691,25 +691,25 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_ItensPlanoManutencao_EquipamentosAtivos_EquipamentoTag",
                         column: x => x.EquipamentoTag,
-                        principalTable: "EquipamentosAtivos",
+                        principalTable: "PM_EquipamentosAtivos",
                         principalColumn: "TagEquipamento",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_ItensPlanoManutencao_LocaisInstalacao_LocalInstalacaoCodigo",
                         column: x => x.LocalInstalacaoCodigo,
-                        principalTable: "LocaisInstalacao",
+                        principalTable: "PM_LocaisInstalacao",
                         principalColumn: "CodigoLocalInstalacao",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_ItensPlanoManutencao_PlanosManutencaoNormalizados_PlanoManu~",
                         column: x => x.PlanoManutencaoCodigo,
-                        principalTable: "PlanosManutencaoNormalizados",
+                        principalTable: "PM_PlanosManutencaoNormalizados",
                         principalColumn: "CodigoPlano",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "NotasManutencao",
+                name: "PM_NotasManutencao",
                 columns: table => new
                 {
                     IdNota = table.Column<long>(type: "bigint", nullable: false),
@@ -743,25 +743,25 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_NotasManutencao_EquipamentosAtivos_EquipamentoTag",
                         column: x => x.EquipamentoTag,
-                        principalTable: "EquipamentosAtivos",
+                        principalTable: "PM_EquipamentosAtivos",
                         principalColumn: "TagEquipamento",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_NotasManutencao_LocaisInstalacao_LocalInstalacaoCodigo",
                         column: x => x.LocalInstalacaoCodigo,
-                        principalTable: "LocaisInstalacao",
+                        principalTable: "PM_LocaisInstalacao",
                         principalColumn: "CodigoLocalInstalacao",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_NotasManutencao_UsuariosSap_CriadoPorUsuarioId",
                         column: x => x.CriadoPorUsuarioId,
-                        principalTable: "UsuariosSap",
+                        principalTable: "PM_UsuariosSap",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AtividadesNota",
+                name: "PM_AtividadesNota",
                 columns: table => new
                 {
                     IdAtividade = table.Column<int>(type: "integer", nullable: false)
@@ -775,13 +775,13 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_AtividadesNota_NotasManutencao_NotaId",
                         column: x => x.NotaId,
-                        principalTable: "NotasManutencao",
+                        principalTable: "PM_NotasManutencao",
                         principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ItensNotaManutencao",
+                name: "PM_ItensNotaManutencao",
                 columns: table => new
                 {
                     IdItemNota = table.Column<int>(type: "integer", nullable: false)
@@ -806,13 +806,13 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_ItensNotaManutencao_NotasManutencao_NotaId",
                         column: x => x.NotaId,
-                        principalTable: "NotasManutencao",
+                        principalTable: "PM_NotasManutencao",
                         principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MedidasNota",
+                name: "PM_MedidasNota",
                 columns: table => new
                 {
                     IdMedida = table.Column<int>(type: "integer", nullable: false)
@@ -826,13 +826,13 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_MedidasNota_NotasManutencao_NotaId",
                         column: x => x.NotaId,
-                        principalTable: "NotasManutencao",
+                        principalTable: "PM_NotasManutencao",
                         principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrdensManutencao",
+                name: "PM_OrdensManutencao",
                 columns: table => new
                 {
                     IdOrdem = table.Column<long>(type: "bigint", nullable: false),
@@ -858,31 +858,31 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_OrdensManutencao_NotasManutencao_NotaRelacionadaId",
                         column: x => x.NotaRelacionadaId,
-                        principalTable: "NotasManutencao",
+                        principalTable: "PM_NotasManutencao",
                         principalColumn: "IdNota",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_OrdensManutencao_PlanosManutencaoNormalizados_PlanoManutenc~",
                         column: x => x.PlanoManutencaoCodigo,
-                        principalTable: "PlanosManutencaoNormalizados",
+                        principalTable: "PM_PlanosManutencaoNormalizados",
                         principalColumn: "CodigoPlano",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_OrdensManutencao_UsuariosSap_CriadaPorUsuarioId",
                         column: x => x.CriadaPorUsuarioId,
-                        principalTable: "UsuariosSap",
+                        principalTable: "PM_UsuariosSap",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_OrdensManutencao_UsuariosSap_ModificadaPorUsuarioId",
                         column: x => x.ModificadaPorUsuarioId,
-                        principalTable: "UsuariosSap",
+                        principalTable: "PM_UsuariosSap",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OperacoesOrdem",
+                name: "PM_OperacoesOrdem",
                 columns: table => new
                 {
                     IdOperacao = table.Column<int>(type: "integer", nullable: false)
@@ -902,65 +902,65 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_OperacoesOrdem_OrdensManutencao_OrdemId",
                         column: x => x.OrdemId,
-                        principalTable: "OrdensManutencao",
+                        principalTable: "PM_OrdensManutencao",
                         principalColumn: "IdOrdem",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AtividadesNota_NotaId",
-                table: "AtividadesNota",
+                table: "PM_AtividadesNota",
                 column: "NotaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CentrosTrabalho_Codigo",
-                table: "CentrosTrabalho",
+                table: "PM_CentrosTrabalho",
                 column: "Codigo",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_CiclosManutencao_PlanoManutencaoCodigo",
-                table: "CiclosManutencao",
+                table: "PM_CiclosManutencao",
                 column: "PlanoManutencaoCodigo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EquipamentosAtivos_CentroTrabalhoId",
-                table: "EquipamentosAtivos",
+                table: "PM_EquipamentosAtivos",
                 column: "CentroTrabalhoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EquipamentosAtivos_EnderecoId",
-                table: "EquipamentosAtivos",
+                table: "PM_EquipamentosAtivos",
                 column: "EnderecoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EquipamentosAtivos_FabricanteId",
-                table: "EquipamentosAtivos",
+                table: "PM_EquipamentosAtivos",
                 column: "FabricanteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EquipamentosAtivos_GpmId",
-                table: "EquipamentosAtivos",
+                table: "PM_EquipamentosAtivos",
                 column: "GpmId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EquipamentosAtivos_ImobilizadoTag",
-                table: "EquipamentosAtivos",
+                table: "PM_EquipamentosAtivos",
                 column: "ImobilizadoTag");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EquipamentosAtivos_LocalInstalacaoCodigo",
-                table: "EquipamentosAtivos",
+                table: "PM_EquipamentosAtivos",
                 column: "LocalInstalacaoCodigo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EquipamentosAtivos_LocalizacaoId",
-                table: "EquipamentosAtivos",
+                table: "PM_EquipamentosAtivos",
                 column: "LocalizacaoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Fabricantes_Nome",
-                table: "Fabricantes",
+                table: "PM_Fabricantes",
                 column: "Nome",
                 unique: true);
 
@@ -971,7 +971,7 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_GruposPlanejamentoManutencao_Codigo",
-                table: "GruposPlanejamentoManutencao",
+                table: "PM_GruposPlanejamentoManutencao",
                 column: "Codigo",
                 unique: true);
 
@@ -982,108 +982,108 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItensNotaManutencao_NotaId",
-                table: "ItensNotaManutencao",
+                table: "PM_ItensNotaManutencao",
                 column: "NotaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItensPlanoManutencao_EquipamentoTag",
-                table: "ItensPlanoManutencao",
+                table: "PM_ItensPlanoManutencao",
                 column: "EquipamentoTag");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItensPlanoManutencao_LocalInstalacaoCodigo",
-                table: "ItensPlanoManutencao",
+                table: "PM_ItensPlanoManutencao",
                 column: "LocalInstalacaoCodigo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItensPlanoManutencao_PlanoManutencaoCodigo",
-                table: "ItensPlanoManutencao",
+                table: "PM_ItensPlanoManutencao",
                 column: "PlanoManutencaoCodigo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocaisInstalacao_CentroTrabalhoId",
-                table: "LocaisInstalacao",
+                table: "PM_LocaisInstalacao",
                 column: "CentroTrabalhoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocaisInstalacao_EnderecoId",
-                table: "LocaisInstalacao",
+                table: "PM_LocaisInstalacao",
                 column: "EnderecoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocaisInstalacao_FabricanteId",
-                table: "LocaisInstalacao",
+                table: "PM_LocaisInstalacao",
                 column: "FabricanteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocaisInstalacao_GpmId",
-                table: "LocaisInstalacao",
+                table: "PM_LocaisInstalacao",
                 column: "GpmId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocaisInstalacao_ImobilizadoTag",
-                table: "LocaisInstalacao",
+                table: "PM_LocaisInstalacao",
                 column: "ImobilizadoTag");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocaisInstalacao_LocalizacaoId",
-                table: "LocaisInstalacao",
+                table: "PM_LocaisInstalacao",
                 column: "LocalizacaoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Localizacoes_CodigoLocalizacao",
-                table: "Localizacoes",
+                table: "PM_Localizacoes",
                 column: "CodigoLocalizacao",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Localizacoes_EnderecoId",
-                table: "Localizacoes",
+                table: "PM_Localizacoes",
                 column: "EnderecoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MedidasNota_NotaId",
-                table: "MedidasNota",
+                table: "PM_MedidasNota",
                 column: "NotaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NotasManutencao_CriadoPorUsuarioId",
-                table: "NotasManutencao",
+                table: "PM_NotasManutencao",
                 column: "CriadoPorUsuarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NotasManutencao_EquipamentoTag",
-                table: "NotasManutencao",
+                table: "PM_NotasManutencao",
                 column: "EquipamentoTag");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NotasManutencao_LocalInstalacaoCodigo",
-                table: "NotasManutencao",
+                table: "PM_NotasManutencao",
                 column: "LocalInstalacaoCodigo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OperacoesOrdem_OrdemId",
-                table: "OperacoesOrdem",
+                table: "PM_OperacoesOrdem",
                 column: "OrdemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrdensManutencao_CriadaPorUsuarioId",
-                table: "OrdensManutencao",
+                table: "PM_OrdensManutencao",
                 column: "CriadaPorUsuarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrdensManutencao_ModificadaPorUsuarioId",
-                table: "OrdensManutencao",
+                table: "PM_OrdensManutencao",
                 column: "ModificadaPorUsuarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrdensManutencao_NotaRelacionadaId",
-                table: "OrdensManutencao",
+                table: "PM_OrdensManutencao",
                 column: "NotaRelacionadaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrdensManutencao_PlanoManutencaoCodigo",
-                table: "OrdensManutencao",
+                table: "PM_OrdensManutencao",
                 column: "PlanoManutencaoCodigo");
 
             migrationBuilder.CreateIndex(
@@ -1094,7 +1094,7 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_PlanosManutencaoNormalizados_EstrategiaId",
-                table: "PlanosManutencaoNormalizados",
+                table: "PM_PlanosManutencaoNormalizados",
                 column: "EstrategiaId");
 
             migrationBuilder.CreateIndex(
@@ -1114,7 +1114,7 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_UsuariosSap_Nome_Mandante",
-                table: "UsuariosSap",
+                table: "PM_UsuariosSap",
                 columns: new[] { "Nome", "Mandante" },
                 unique: true);
         }
@@ -1126,13 +1126,13 @@ namespace app_pm_back.Migrations
                 name: "AcaoNotaCongas");
 
             migrationBuilder.DropTable(
-                name: "Anexos");
+                name: "PM_Anexos");
 
             migrationBuilder.DropTable(
-                name: "AtividadesNota");
+                name: "PM_AtividadesNota");
 
             migrationBuilder.DropTable(
-                name: "CiclosManutencao");
+                name: "PM_CiclosManutencao");
 
             migrationBuilder.DropTable(
                 name: "FerramentasTipoModel");
@@ -1141,28 +1141,28 @@ namespace app_pm_back.Migrations
                 name: "ItemRenovacaoTipoModel");
 
             migrationBuilder.DropTable(
-                name: "ItensNotaManutencao");
+                name: "PM_ItensNotaManutencao");
 
             migrationBuilder.DropTable(
-                name: "ItensPlanoManutencao");
+                name: "PM_ItensPlanoManutencao");
 
             migrationBuilder.DropTable(
-                name: "MedidasNota");
+                name: "PM_MedidasNota");
 
             migrationBuilder.DropTable(
-                name: "OperacoesOrdem");
+                name: "PM_OperacoesOrdem");
 
             migrationBuilder.DropTable(
                 name: "OrdensPetro");
 
             migrationBuilder.DropTable(
-                name: "Regras");
+                name: "PM_Regras");
 
             migrationBuilder.DropTable(
                 name: "TipoManutencaoModel");
 
             migrationBuilder.DropTable(
-                name: "OrdensManutencao");
+                name: "PM_OrdensManutencao");
 
             migrationBuilder.DropTable(
                 name: "NotasPetro");
@@ -1171,40 +1171,40 @@ namespace app_pm_back.Migrations
                 name: "TipoEstrategiaModel");
 
             migrationBuilder.DropTable(
-                name: "NotasManutencao");
+                name: "PM_NotasManutencao");
 
             migrationBuilder.DropTable(
-                name: "PlanosManutencaoNormalizados");
+                name: "PM_PlanosManutencaoNormalizados");
 
             migrationBuilder.DropTable(
-                name: "EquipamentosAtivos");
+                name: "PM_EquipamentosAtivos");
 
             migrationBuilder.DropTable(
-                name: "UsuariosSap");
+                name: "PM_UsuariosSap");
 
             migrationBuilder.DropTable(
-                name: "EstrategiasManutencao");
+                name: "PM_EstrategiasManutencao");
 
             migrationBuilder.DropTable(
-                name: "LocaisInstalacao");
+                name: "PM_LocaisInstalacao");
 
             migrationBuilder.DropTable(
-                name: "CentrosTrabalho");
+                name: "PM_CentrosTrabalho");
 
             migrationBuilder.DropTable(
-                name: "Fabricantes");
+                name: "PM_Fabricantes");
 
             migrationBuilder.DropTable(
-                name: "GruposPlanejamentoManutencao");
+                name: "PM_GruposPlanejamentoManutencao");
 
             migrationBuilder.DropTable(
-                name: "Imobilizados");
+                name: "PM_Imobilizados");
 
             migrationBuilder.DropTable(
-                name: "Localizacoes");
+                name: "PM_Localizacoes");
 
             migrationBuilder.DropTable(
-                name: "Enderecos");
+                name: "PM_Enderecos");
         }
     }
 }

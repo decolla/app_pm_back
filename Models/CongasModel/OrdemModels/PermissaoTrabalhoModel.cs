@@ -48,7 +48,7 @@ public class PermissaoTrabalhoModel
     public virtual OrdemManutencaoModel? Ordem { get; set; }
 
     /// <summary>
-    /// Anexos associados a permissao.
+    /// PM_Anexos associados a permissao.
     /// </summary>
     public virtual ICollection<AnnexModel> Anexos { get; set; } = new List<AnnexModel>();
 }

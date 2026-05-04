@@ -68,7 +68,7 @@ public class EnderecoModel
     public string? Telefone { get; set; }
 
     /// <summary>
-    /// Localizacoes vinculadas ao endereco.
+    /// PM_Localizacoes vinculadas ao endereco.
     /// </summary>
     public virtual ICollection<LocalizacaoModel> Localizacoes { get; set; } = new List<LocalizacaoModel>();
 }

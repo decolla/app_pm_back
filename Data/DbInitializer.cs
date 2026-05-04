@@ -22,8 +22,8 @@ public class DbInitializer
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<AppDbContext>();
             await context.Database.EnsureCreatedAsync();
-            if(context.Regras.Any() == false)            {
-                Console.WriteLine($"A base de dados já contém {context.Regras.Count()} regra(s) cadastrada(s).");
+            if(context.PM_Regras.Any() == false)            {
+                Console.WriteLine($"A base de dados já contém {context.PM_Regras.Count()} regra(s) cadastrada(s).");
             }
             else // adiciona as regras padrões ao banco de dados
             {
@@ -46,7 +46,7 @@ public class DbInitializer
                     regras.Add(regraZM01);
                     
                     // adiciona as regras ao banco de dados
-                    context.Regras.AddRange(regras);
+                    context.PM_Regras.AddRange(regras);
                     await context.SaveChangesAsync();
                 }                
                 catch (Exception e)

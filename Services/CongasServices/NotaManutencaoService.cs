@@ -33,13 +33,13 @@ public class NotaManutencaoService : BaseCrudService<NotaManutencaoModel>
             .ToList();
 
         // consulta o Banco de Dados 
-        var locaisExistentes = (await _context.LocaisInstalacao
+        var locaisExistentes = (await _context.PM_LocaisInstalacao
                 .Where(l => codigosLocaisExcel.Contains(l.CodigoLocalInstalacao)) 
                 .Select(l => l.CodigoLocalInstalacao)
                 .ToListAsync())
                 .ToHashSet();
 
-        var equipamentosExistentes = (await _context.EquipamentosAtivos
+        var equipamentosExistentes = (await _context.PM_EquipamentosAtivos
                 .Where(e => tagsEquipamentosExcel.Contains(e.TagEquipamento))
                 .Select(e => e.TagEquipamento)
                 .ToListAsync())

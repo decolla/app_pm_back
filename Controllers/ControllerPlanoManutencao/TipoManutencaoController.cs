@@ -74,7 +74,7 @@ public class TipoManutencaoController : ControllerBase
         if (dto.PlanoManutencaoId.HasValue && dto.TipoEstrategiaId.HasValue)
         {
             // busca o plano com a estratégia associada
-            var plano = await context.PlanosManutencaoNormalizados
+            var plano = await context.PM_PlanosManutencaoNormalizados
                 .Include(p => p.Estrategia)
                 .ThenInclude(e => e!.Itens) // Itens é a coleção de TipoEstrategiaModel no seu modelo
                 .FirstOrDefaultAsync(p => p.CodigoPlano == dto.PlanoManutencaoId);

@@ -452,12 +452,12 @@ public class AppDbContext : DbContext
     /// <summary>
     /// Tabela de anexos.
     /// </summary>
-    public DbSet<AnnexModel> Anexos { get; set; }
+    public DbSet<AnnexModel> PM_Anexos { get; set; }
 
     /// <summary>
     /// Tabela de regras para classificacao.
     /// </summary>
-    public DbSet<RuleClassificationModel> Regras { get; set; }
+    public DbSet<RuleClassificationModel> PM_Regras { get; set; }
     
     // /// <summary>
     // /// Tabela de itens de nota Congas.
@@ -487,130 +487,130 @@ public class AppDbContext : DbContext
     /// <summary>
     /// Tabela de fabricantes.
     /// </summary>
-    public DbSet<FabricanteModel> Fabricantes { get; set; }
+    public DbSet<FabricanteModel> PM_Fabricantes { get; set; }
 
     /// <summary>
     /// Tabela de enderecos.
     /// </summary>
-    public DbSet<EnderecoModel> Enderecos { get; set; }
+    public DbSet<EnderecoModel> PM_Enderecos { get; set; }
 
     /// <summary>
     /// Tabela de localizacoes.
     /// </summary>
-    public DbSet<LocalizacaoModel> Localizacoes { get; set; }
+    public DbSet<LocalizacaoModel> PM_Localizacoes { get; set; }
 
     /// <summary>
     /// Tabela de imobilizados.
     /// </summary>
-    public DbSet<ImobilizadoModel> Imobilizados { get; set; }
+    public DbSet<ImobilizadoModel> PM_Imobilizados { get; set; }
 
     /// <summary>
     /// Tabela de grupos de planejamento de manutencao.
     /// </summary>
-    public DbSet<GrupoPlanejamentoManutencaoModel> GruposPlanejamentoManutencao { get; set; }
+    public DbSet<GrupoPlanejamentoManutencaoModel> PM_GruposPlanejamentoManutencao { get; set; }
 
     /// <summary>
     /// Tabela de centros de trabalho.
     /// </summary>
-    public DbSet<CentroTrabalhoModel> CentrosTrabalho { get; set; }
+    public DbSet<CentroTrabalhoModel> PM_CentrosTrabalho { get; set; }
 
     /// <summary>
     /// Tabela de locais de instalacao.
     /// </summary>
-    public DbSet<LocalInstalacaoModel> LocaisInstalacao { get; set; }
+    public DbSet<LocalInstalacaoModel> PM_LocaisInstalacao { get; set; }
 
     /// <summary>
     /// Tabela de equipamentos normalizados.
     /// </summary>
-    public DbSet<EquipamentoAtivoModel> EquipamentosAtivos { get; set; }
+    public DbSet<EquipamentoAtivoModel> PM_EquipamentosAtivos { get; set; }
 
     /// <summary>
     /// Tabela de estrategias de manutencao.
     /// </summary>
-    public DbSet<EstrategiaManutencaoModel> EstrategiasManutencao { get; set; }
+    public DbSet<EstrategiaManutencaoModel> PM_EstrategiasManutencao { get; set; }
 
     /// <summary>
     /// Tabela de planos de manutencao normalizados.
     /// </summary>
-    public DbSet<PlanoManutencaoModel> PlanosManutencaoNormalizados { get; set; }
+    public DbSet<PlanoManutencaoModel> PM_PlanosManutencaoNormalizados { get; set; }
 
     /// <summary>
     /// Tabela de ciclos de manutencao.
     /// </summary>
-    public DbSet<CicloManutencaoModel> CiclosManutencao { get; set; }
+    public DbSet<CicloManutencaoModel> PM_CiclosManutencao { get; set; }
 
     /// <summary>
     /// Tabela de itens de plano de manutencao.
     /// </summary>
-    public DbSet<ItemPlanoManutencaoModel> ItensPlanoManutencao { get; set; }
+    public DbSet<ItemPlanoManutencaoModel> PM_ItensPlanoManutencao { get; set; }
 
     /// <summary>
     /// Tabela de notas de manutencao normalizadas.
     /// </summary>
-    public DbSet<NotaManutencaoModel> NotasManutencao { get; set; }
+    public DbSet<NotaManutencaoModel> PM_NotasManutencao { get; set; }
 
     /// <summary>
     /// Tabela de itens de notas de manutencao.
     /// </summary>
-    public DbSet<ItemNotaManutencaoModel> ItensNotaManutencao { get; set; }
+    public DbSet<ItemNotaManutencaoModel> PM_ItensNotaManutencao { get; set; }
 
     /// <summary>
     /// Tabela de medidas de nota.
     /// </summary>
-    public DbSet<MedidaNotaModel> MedidasNota { get; set; }
+    public DbSet<MedidaNotaModel> PM_MedidasNota { get; set; }
 
     /// <summary>
     /// Tabela de atividades de nota.
     /// </summary>
-    public DbSet<AtividadeNotaModel> AtividadesNota { get; set; }
+    public DbSet<AtividadeNotaModel> PM_AtividadesNota { get; set; }
 
     /// <summary>
     /// Tabela de ordens de manutencao normalizadas.
     /// </summary>
-    public DbSet<OrdemManutencaoModel> OrdensManutencao { get; set; }
+    public DbSet<OrdemManutencaoModel> PM_OrdensManutencao { get; set; }
 
     /// <summary>
     /// Tabela de analises de risco (AR).
     /// </summary>
-    public DbSet<AnaliseRiscoModel> AnalisesRisco { get; set; }
+    public DbSet<AnaliseRiscoModel> PM_AnalisesRisco { get; set; }
 
     /// <summary>
     /// Tabela de analises de risco operacional (ARO).
     /// </summary>
-    public DbSet<AnaliseRiscoOperacionalModel> AnalisesRiscoOperacional { get; set; }
+    public DbSet<AnaliseRiscoOperacionalModel> PM_AnalisesRiscoOperacional { get; set; }
 
     /// <summary>
     /// Tabela de permissoes de trabalho (PT).
     /// </summary>
-    public DbSet<PermissaoTrabalhoModel> PermissoesTrabalho { get; set; }
+    public DbSet<PermissaoTrabalhoModel> PM_PermissoesTrabalho { get; set; }
 
     /// <summary>
     /// Tabela de matrizes LIBRA.
     /// </summary>
-    public DbSet<MatrizLibraModel> MatrizesLibra { get; set; }
+    public DbSet<MatrizLibraModel> PM_MatrizesLibra { get; set; }
 
     /// <summary>
     /// Tabela de operacoes de ordens.
     /// </summary>
-    public DbSet<OperacaoOrdemModel> OperacoesOrdem { get; set; }
+    public DbSet<OperacaoOrdemModel> PM_OperacoesOrdem { get; set; }
 
     /// <summary>
     /// Tabela de ferramentas por tipo de manutencao.
     /// </summary>
-    public DbSet<FerramentasTipoModel> FerramentasTipo { get; set; }
+    public DbSet<FerramentasTipoModel> PM_FerramentasTipo { get; set; }
 
     /// <summary>
     /// Tabela de itens de renovacao por tipo de manutencao.
     /// </summary>
-    public DbSet<ItemRenovacaoTipoModel> ItensRenovacaoTipo { get; set; }
+    public DbSet<ItemRenovacaoTipoModel> PM_ItensRenovacaoTipo { get; set; }
 
     /// <summary>
     /// Tabela de tarefas por tipo de manutencao.
     /// </summary>
-    public DbSet<TarefaModel> TarefasTipoManutencao { get; set; }
+    public DbSet<TarefaModel> PM_TarefasTipoManutencao { get; set; }
 
     /// <summary>
     /// Tabela de tipos de manutencao CEP.
     /// </summary>
-    public DbSet<TipoManutencaoCepModel> TiposManutencaoCep { get; set; }
+    public DbSet<TipoManutencaoCepModel> PM_TiposManutencaoCep { get; set; }
 }

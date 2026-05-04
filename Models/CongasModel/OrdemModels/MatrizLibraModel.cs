@@ -43,7 +43,7 @@ public class MatrizLibraModel
     public virtual EquipamentoAtivoModel? Equipamento { get; set; }
 
     /// <summary>
-    /// Anexos associados a matriz.
+    /// PM_Anexos associados a matriz.
     /// </summary>
     public virtual ICollection<AnnexModel> Anexos { get; set; } = new List<AnnexModel>();
 }

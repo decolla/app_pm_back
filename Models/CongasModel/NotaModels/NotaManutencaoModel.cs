@@ -261,7 +261,7 @@ public class NotaManutencaoModel : IClassifiable
     public virtual ICollection<ItemNotaManutencaoModel> Itens { get; set; } = new List<ItemNotaManutencaoModel>();
 
     /// <summary>
-    /// Anexos da nota.
+    /// PM_Anexos da nota.
     /// </summary>
     public virtual ICollection<AnnexModel> Anexos { get; set; } = new List<AnnexModel>();
     

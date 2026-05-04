@@ -20,7 +20,7 @@ public class EquipmentService : BaseCrudService<EquipamentoAtivoModel>
     /// </summary>
     public async Task CreateEquipamentosEmMassaAsync(List<EquipamentoAtivoModel> equipamentos)
     {
-        var idsExistentes = _context.EquipamentosAtivos
+        var idsExistentes = _context.PM_EquipamentosAtivos
             .Select(e => e.TagEquipamento)
             .ToHashSet();
 
@@ -40,13 +40,13 @@ public class EquipmentService : BaseCrudService<EquipamentoAtivoModel>
     /// </summary>
     public async Task<bool> DeleteByTagAsync(string tagEquipamento)
     {
-        var entity = await _context.EquipamentosAtivos.FindAsync(tagEquipamento);
+        var entity = await _context.PM_EquipamentosAtivos.FindAsync(tagEquipamento);
         if (entity == null)
         {
             return false;
         }
 
-        _context.EquipamentosAtivos.Remove(entity);
+        _context.PM_EquipamentosAtivos.Remove(entity);
         return await _context.SaveChangesAsync() > 0;
     }
 }

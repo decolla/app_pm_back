@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace app_pm_back.Models;
 
 /// <summary>
-/// Regras para classificação de notas/ordens
+/// PM_Regras para classificação de notas/ordens
 /// </summary>
 public class RuleClassificationModel
 {

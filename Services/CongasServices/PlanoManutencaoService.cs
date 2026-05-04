@@ -24,7 +24,7 @@ public class PlanoManutencaoService : BaseCrudService<PlanoManutencaoModel>
     {
         if (planos.Any())
         {
-            await _context.PlanosManutencaoNormalizados.AddRangeAsync(planos);
+            await _context.PM_PlanosManutencaoNormalizados.AddRangeAsync(planos);
             await _context.SaveChangesAsync();
         }
     }
