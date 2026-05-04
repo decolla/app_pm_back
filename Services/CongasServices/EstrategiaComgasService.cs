@@ -7,7 +7,7 @@ namespace app_pm_back.Services.CongasServices;
 /// <summary>
 /// Servico de regras e consultas de estrategia de manutencao.
 /// </summary>
-public class EstrategiaComgasService : BaseCrudService<EstrategiaManutencaoModel>
+public class          EstrategiaComgasService : BaseCrudService<EstrategiaManutencaoModel>
 {
     /// <summary>
     /// Inicializa o servico de estrategia.

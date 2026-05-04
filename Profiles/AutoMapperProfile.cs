@@ -36,6 +36,22 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.ModificadaPorUsuario, opt => opt.Ignore())
             .ForMember(dest => dest.Operacoes, opt => opt.Ignore());
 
+        CreateMap<AnaliseRiscoComgasDto, AnaliseRiscoModel>()
+            .ForMember(dest => dest.Ordem, opt => opt.Ignore())
+            .ForMember(dest => dest.Anexos, opt => opt.Ignore());
+
+        CreateMap<AnaliseRiscoOperacionalComgasDto, AnaliseRiscoOperacionalModel>()
+            .ForMember(dest => dest.Ordem, opt => opt.Ignore())
+            .ForMember(dest => dest.Anexos, opt => opt.Ignore());
+
+        CreateMap<PermissaoTrabalhoComgasDto, PermissaoTrabalhoModel>()
+            .ForMember(dest => dest.Ordem, opt => opt.Ignore())
+            .ForMember(dest => dest.Anexos, opt => opt.Ignore());
+
+        CreateMap<MatrizLibraComgasDto, MatrizLibraModel>()
+            .ForMember(dest => dest.Equipamento, opt => opt.Ignore())
+            .ForMember(dest => dest.Anexos, opt => opt.Ignore());
+
         // CreateMap<AcaoNotaCongasComgasDto, AcaoNotaCongasModel>();
 
         CreateMap<ItemNotaManutencaoComgasDto, ItemNotaManutencaoModel>()

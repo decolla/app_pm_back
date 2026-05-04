@@ -482,7 +482,7 @@ public class AppDbContext : DbContext
     /// <summary>
     /// Tabela de usuarios SAP.
     /// </summary>
-    public DbSet<UsuarioSapModel> UsuariosSap { get; set; }
+    public DbSet<UsuarioSapModel> PM_UsuariosSap { get; set; }
 
     /// <summary>
     /// Tabela de fabricantes.

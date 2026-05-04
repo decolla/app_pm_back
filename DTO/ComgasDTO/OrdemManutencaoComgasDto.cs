@@ -56,6 +56,69 @@ public class OrdemManutencaoComgasDto
 
     [SheetColumn("Cust.tot.reais")]
     public decimal? CustoReal { get; set; }
+
+    [SheetColumn("Codigo trabalho")]
+    public string? CodigoTrabalho { get; set; }
+
+    [SheetColumn("Descricao")]
+    public string? Descricao { get; set; }
+
+    [SheetColumn("Situacao")]
+    public string? Situacao { get; set; }
+
+    [SheetColumn("Situacao planejamento")]
+    public string? SituacaoPlanejamento { get; set; }
+
+    [SheetColumn("Inicio planejado")]
+    public DateTime? InicioPlanejado { get; set; }
+
+    [SheetColumn("Fim planejado")]
+    public DateTime? FimPlanejado { get; set; }
+
+    [SheetColumn("Inicio real")]
+    public DateTime? InicioReal { get; set; }
+
+    [SheetColumn("Fim real")]
+    public DateTime? FimReal { get; set; }
+
+    [SheetColumn("Equipamento")]
+    public string? EquipamentoTag { get; set; }
+
+    [SheetColumn("Loc.instalacao")]
+    public string? LocalInstalacaoCodigo { get; set; }
+
+    [SheetColumn("Material")]
+    public string? Material { get; set; }
+
+    [SheetColumn("Numero serie")]
+    public string? NumeroSerie { get; set; }
+
+    [SheetColumn("Dados adicionais")]
+    public string? DadosAdicionaisDispositivo { get; set; }
+
+    [SheetColumn("Periodo")]
+    public string? Periodo { get; set; }
+
+    [SheetColumn("Etiqueta nota")]
+    public string? EtiquetaNota { get; set; }
+
+    [SheetColumn("Data criacao")]
+    public DateTime? DataCriacao { get; set; }
+
+    [SheetColumn("Analise criticidade")]
+    public string? AnaliseCriticidade { get; set; }
+
+    [SheetColumn("Analise risco")]
+    public string? AnaliseRisco { get; set; }
+
+    [SheetColumn("ARO/ADTC")]
+    public string? AroAdtc { get; set; }
+
+    [SheetColumn("Matriz LIBRA")]
+    public string? MatrizLibra { get; set; }
+
+    [SheetColumn("Permissao trabalho")]
+    public string? PermissaoTrabalho { get; set; }
 }
 
 #pragma warning restore CS1591

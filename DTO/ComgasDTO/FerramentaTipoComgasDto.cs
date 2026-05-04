@@ -26,7 +26,39 @@ public class FerramentaTipoComgasDto
 
     [SheetColumn("Id Tipo Manutenção")]
     public int TipoManutencaoId { get; set; }
+
+    [SheetColumn("Tipo ferramenta")]
+    public string? TipoFerramenta { get; set; }
+
+    [SheetColumn("Quantidade")]
+    public int Quantidade { get; set; }
+
+    [SheetColumn("Centro trabalho")]
+    public int? CentroTrabalhoId { get; set; }
+
+    [SheetColumn("Loc.instalacao")]
+    public string? LocalInstalacaoCodigo { get; set; }
+
+    [SheetColumn("Fabricante")]
+    public int? FabricanteId { get; set; }
+
+    [SheetColumn("Peso bruto")]
+    public decimal? PesoBruto { get; set; }
+
+    [SheetColumn("Peso liquido")]
+    public decimal? PesoLiquido { get; set; }
+
+    [SheetColumn("Volume")]
+    public decimal? Volume { get; set; }
+
+    [SheetColumn("Dimensao")]
+    public decimal? Dimensao { get; set; }
+
+    [SheetColumn("Valor")]
+    public decimal? Valor { get; set; }
+
+    [SheetColumn("Garantia ate")]
+    public DateTime? GarantiaAte { get; set; }
 }
 
 #pragma warning restore CS1591
-

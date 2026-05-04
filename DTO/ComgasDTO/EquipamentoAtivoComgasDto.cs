@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using app_pm_back.Attributes;
 
 namespace app_pm_back.DTO.ComgasDTO;
@@ -73,5 +74,19 @@ public class EquipamentoAtivoComgasDto
 
     [SheetColumn("Loc.instalação")]
     public string? LocalInstalacaoCodigo { get; set; }
-}
 
+    [SheetColumn("Nº de serie")]
+    public string? NumeroSerie { get; set; }
+
+    [SheetColumn("Numero modelo")]
+    public string? NumeroModelo { get; set; }
+
+    [SheetColumn("Denominacao tipo")]
+    public string? DenominacaoTipo { get; set; }
+
+    [SheetColumn("Ano mes fabricacao")]
+    public string? AnoMesFabricacao { get; set; }
+
+    [SheetColumn("Detalhes tecnicos")]
+    public Dictionary<string, string>? DetalhesTecnicos { get; set; }
+}

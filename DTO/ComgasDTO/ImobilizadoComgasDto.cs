@@ -39,5 +39,10 @@ public class ImobilizadoComgasDto
 
     [SheetColumn("Valor atual")]
     public decimal? ValorAtual { get; set; }
-}
 
+    [SheetColumn("Nome imobilizado")]
+    public string? NomeImobilizado { get; set; }
+
+    [SheetColumn("Informacao adicional")]
+    public string? InformacaoAdicional { get; set; }
+}

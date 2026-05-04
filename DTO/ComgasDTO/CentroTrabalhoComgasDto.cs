@@ -19,5 +19,13 @@ public class CentroTrabalhoComgasDto
 
     [SheetColumn("Centro planej.")]
     public string? CentroPlanejamento { get; set; }
-}
 
+    [SheetColumn("Id CPM")]
+    public int? CpmId { get; set; }
+
+    [SheetColumn("Status")]
+    public string? Status { get; set; }
+
+    [SheetColumn("Descricao")]
+    public string? Descricao { get; set; }
+}

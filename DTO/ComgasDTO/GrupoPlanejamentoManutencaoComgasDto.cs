@@ -16,5 +16,13 @@ public class GrupoPlanejamentoManutencaoComgasDto
 
     [SheetColumn("Descrição GPM")]
     public string? Descricao { get; set; }
-}
 
+    [SheetColumn("Nome")]
+    public string? Nome { get; set; }
+
+    [SheetColumn("Id CPM")]
+    public int? IdCpm { get; set; }
+
+    [SheetColumn("Status")]
+    public string? Status { get; set; }
+}
