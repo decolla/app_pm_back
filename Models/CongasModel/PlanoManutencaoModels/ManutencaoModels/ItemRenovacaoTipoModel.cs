@@ -15,7 +15,7 @@ public class ItemRenovacaoTipoModel
     /// Codigo do item de renovacao.
     /// </summary>
     public required string CodigoItem { get; set; }
-    
+
     /// <summary>
     /// Observações do item de renovacao.
     /// </summary>

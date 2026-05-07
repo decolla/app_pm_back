@@ -34,6 +34,7 @@ public class OperacaoOrdemModel
     /// <summary>
     /// Numero de profissionais necessarios.
     /// </summary>
+    [Range(1, 1000)]
     public int? NumeroProfissionais { get; set; }
 
     /// <summary>
@@ -59,6 +60,12 @@ public class OperacaoOrdemModel
     public string? TextoBreve { get; set; }
 
     /// <summary>
+    /// Texto detalhado da operacao.
+    /// </summary>
+    [MaxLength(2000)]
+    public string? TextoDetalhado { get; set; }
+
+    /// <summary>
     /// Ferramentas e kits necessarios para a operação.
     /// </summary>
     public virtual ICollection<FerramentasTipoModel> FerramentasNecessarias { get; set; } = new List<FerramentasTipoModel>();
@@ -69,4 +76,3 @@ public class OperacaoOrdemModel
     [ForeignKey(nameof(OrdemId))]
     public virtual OrdemManutencaoModel Ordem { get; set; } = null!;
 }
-

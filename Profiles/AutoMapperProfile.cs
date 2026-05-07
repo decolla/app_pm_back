@@ -22,6 +22,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.IdNota,
                 opt => opt.MapFrom(src => src.IdNota > 0 ? src.IdNota : src.NumeroNota))
             .ForMember(dest => dest.Itens, opt => opt.Ignore())
+            .ForMember(dest => dest.Variaveis, opt => opt.Ignore())
             .ForMember(dest => dest.Medidas, opt => opt.Ignore())
             .ForMember(dest => dest.Atividades, opt => opt.Ignore())
             .ForMember(dest => dest.Ordens, opt => opt.Ignore())
@@ -55,6 +56,9 @@ public class AutoMapperProfile : Profile
         // CreateMap<AcaoNotaCongasComgasDto, AcaoNotaCongasModel>();
 
         CreateMap<ItemNotaManutencaoComgasDto, ItemNotaManutencaoModel>()
+            .ForMember(dest => dest.Nota, opt => opt.Ignore());
+
+        CreateMap<VariavelNotaComgasDto, VariavelNotaModel>()
             .ForMember(dest => dest.Nota, opt => opt.Ignore());
 
         CreateMap<EquipamentoAtivoComgasDto, EquipamentoAtivoModel>()
@@ -106,5 +110,89 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.AcoesFalha,
                 opt => opt.MapFrom(src => src.AcoesFalha.Select(a => (AcoesFalha)a).ToList()))
             .ForMember(dest => dest.PlanoManutencao, opt => opt.Ignore());
+
+        CreateMap<UsuarioSapComgasDto, UsuarioSapModel>()
+            .ForMember(dest => dest.NotasCriadas, opt => opt.Ignore())
+            .ForMember(dest => dest.OrdensCriadas, opt => opt.Ignore())
+            .ForMember(dest => dest.OrdensModificadas, opt => opt.Ignore());
+
+        CreateMap<FabricanteComgasDto, FabricanteModel>()
+            .ForMember(dest => dest.LocaisInstalacao, opt => opt.Ignore())
+            .ForMember(dest => dest.Equipamentos, opt => opt.Ignore());
+
+        CreateMap<EnderecoComgasDto, EnderecoModel>()
+            .ForMember(dest => dest.Localizacoes, opt => opt.Ignore());
+
+        CreateMap<LocalizacaoComgasDto, LocalizacaoModel>()
+            .ForMember(dest => dest.Endereco, opt => opt.Ignore())
+            .ForMember(dest => dest.LocaisInstalacao, opt => opt.Ignore())
+            .ForMember(dest => dest.Equipamentos, opt => opt.Ignore());
+
+        CreateMap<ImobilizadoComgasDto, ImobilizadoModel>()
+            .ForMember(dest => dest.LocaisInstalacao, opt => opt.Ignore())
+            .ForMember(dest => dest.Equipamentos, opt => opt.Ignore());
+
+        CreateMap<CentroPlanejamentoManutencaoComgasDto, CentroPlanejamentoManutencaoModel>()
+            .ForMember(dest => dest.CentrosTrabalho, opt => opt.Ignore())
+            .ForMember(dest => dest.GruposPlanejamento, opt => opt.Ignore())
+            .ForMember(dest => dest.LocalizacaoReferencia, opt => opt.Ignore());
+
+        CreateMap<CentroTrabalhoComgasDto, CentroTrabalhoModel>()
+            .ForMember(dest => dest.CentroPlanejamentoManutencao, opt => opt.Ignore())
+            .ForMember(dest => dest.LocaisInstalacao, opt => opt.Ignore())
+            .ForMember(dest => dest.Equipamentos, opt => opt.Ignore())
+            .ForMember(dest => dest.Funcionarios, opt => opt.Ignore());
+
+        CreateMap<GrupoPlanejamentoManutencaoComgasDto, GrupoPlanejamentoManutencaoModel>()
+            .ForMember(dest => dest.CentroPlanejamentoManutencao, opt => opt.Ignore())
+            .ForMember(dest => dest.LocaisInstalacao, opt => opt.Ignore())
+            .ForMember(dest => dest.ListaFuncionario, opt => opt.Ignore());
+
+        CreateMap<LocalInstalacaoComgasDto, LocalInstalacaoModel>()
+            .ForMember(dest => dest.Fabricante, opt => opt.Ignore())
+            .ForMember(dest => dest.Localizacao, opt => opt.Ignore())
+            .ForMember(dest => dest.Endereco, opt => opt.Ignore())
+            .ForMember(dest => dest.Imobilizado, opt => opt.Ignore())
+            .ForMember(dest => dest.Gpm, opt => opt.Ignore())
+            .ForMember(dest => dest.CentroTrabalho, opt => opt.Ignore())
+            .ForMember(dest => dest.Equipamentos, opt => opt.Ignore())
+            .ForMember(dest => dest.Notas, opt => opt.Ignore())
+            .ForMember(dest => dest.ItensPlano, opt => opt.Ignore())
+            .ForMember(dest => dest.Ordens, opt => opt.Ignore());
+
+        CreateMap<ComponenteEquipamentoComgasDto, ComponenteEquipamentoModel>()
+            .ForMember(dest => dest.Equipamento, opt => opt.Ignore());
+
+        CreateMap<CicloManutencaoComgasDto, CicloManutencaoModel>()
+            .ForMember(dest => dest.PlanoManutencao, opt => opt.Ignore());
+
+        CreateMap<ItemPlanoManutencaoComgasDto, ItemPlanoManutencaoModel>()
+            .ForMember(dest => dest.PlanoManutencao, opt => opt.Ignore())
+            .ForMember(dest => dest.Equipamento, opt => opt.Ignore())
+            .ForMember(dest => dest.LocalInstalacao, opt => opt.Ignore());
+
+        CreateMap<MedidaNotaComgasDto, MedidaNotaModel>()
+            .ForMember(dest => dest.Nota, opt => opt.Ignore());
+
+        CreateMap<AtividadeNotaComgasDto, AtividadeNotaModel>()
+            .ForMember(dest => dest.Nota, opt => opt.Ignore());
+
+        CreateMap<OperacaoOrdemComgasDto, OperacaoOrdemModel>()
+            .ForMember(dest => dest.FerramentasNecessarias, opt => opt.Ignore())
+            .ForMember(dest => dest.Ordem, opt => opt.Ignore());
+
+        CreateMap<FuncionarioComgasDto, FuncionarioModel>()
+            .ForMember(dest => dest.CentrosTrabalho, opt => opt.Ignore())
+            .ForMember(dest => dest.SetoresVendas, opt => opt.Ignore())
+            .ForMember(dest => dest.Almoxarifados, opt => opt.Ignore());
+
+        CreateMap<SetorVendasComgasDto, SetorVendasModel>()
+            .ForMember(dest => dest.Localizacao, opt => opt.Ignore())
+            .ForMember(dest => dest.Funcionarios, opt => opt.Ignore());
+
+        CreateMap<AlmoxarifadoComgasDto, AlmoxarifadoModel>()
+            .ForMember(dest => dest.Localizacao, opt => opt.Ignore())
+            .ForMember(dest => dest.Funcionarios, opt => opt.Ignore())
+            .ForMember(dest => dest.Ferramentas, opt => opt.Ignore());
     }
 }

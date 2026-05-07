@@ -45,9 +45,9 @@ public class GrupoPlanejamentoManutencaoModel
     /// Locais de instalacao vinculados ao grupo.
     /// </summary>
     public virtual ICollection<LocalInstalacaoModel> LocaisInstalacao { get; set; } = new List<LocalInstalacaoModel>();
-
+    
     /// <summary>
-    /// Equipamentos vinculados ao grupo.
+    /// Funcionarios vinculados ao grupo.
     /// </summary>
-    public virtual ICollection<EquipamentoAtivoModel> Equipamentos { get; set; } = new List<EquipamentoAtivoModel>();
+    public virtual ICollection<FuncionarioModel> ListaFuncionario { get; set; } = new List<FuncionarioModel>();
 }

@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using System.Collections.Generic;
 
 namespace app_pm_back.DTO.ComgasDTO;
 
@@ -63,6 +64,8 @@ public class OrdemManutencaoComgasDto
     [SheetColumn("Descricao")]
     public string? Descricao { get; set; }
 
+    public string? DescricaoBreve { get; set; }
+
     [SheetColumn("Situacao")]
     public string? Situacao { get; set; }
 
@@ -86,6 +89,10 @@ public class OrdemManutencaoComgasDto
 
     [SheetColumn("Loc.instalacao")]
     public string? LocalInstalacaoCodigo { get; set; }
+
+    public string? AreaOperacional { get; set; }
+
+    public int? GpmResponsavelId { get; set; }
 
     [SheetColumn("Material")]
     public string? Material { get; set; }
@@ -119,6 +126,8 @@ public class OrdemManutencaoComgasDto
 
     [SheetColumn("Permissao trabalho")]
     public string? PermissaoTrabalho { get; set; }
+
+    public List<OperacaoOrdemComgasDto> Operacoes { get; set; } = new();
 }
 
 #pragma warning restore CS1591

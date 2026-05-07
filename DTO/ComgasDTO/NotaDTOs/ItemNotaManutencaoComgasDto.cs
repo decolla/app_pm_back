@@ -15,6 +15,9 @@ public class ItemNotaManutencaoComgasDto
     [SheetColumn("Nota")]
     public long NotaId { get; set; }
 
+    [SheetColumn("Nome")]
+    public string? Nome { get; set; }
+
     [SheetColumn("Code parte obj.")]
     public string? ParteObjeto { get; set; }
 

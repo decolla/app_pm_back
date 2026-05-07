@@ -22,6 +22,12 @@ public class ItemNotaManutencaoModel
     public long NotaId { get; set; }
 
     /// <summary>
+    /// Nome do item informado.
+    /// </summary>
+    [MaxLength(150)]
+    public string? Nome { get; set; }
+
+    /// <summary>
     /// Parte objeto reportada.
     /// </summary>
     [MaxLength(120)]
@@ -102,4 +108,3 @@ public class ItemNotaManutencaoModel
     [JsonIgnore]
     public virtual NotaManutencaoModel Nota { get; set; } = null!;
 }
-

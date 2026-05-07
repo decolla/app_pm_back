@@ -15,6 +15,12 @@ public class ImobilizadoModel
     public required string TagImobilizado { get; set; }
 
     /// <summary>
+    /// TAG do ativo principal associado.
+    /// </summary>
+    [MaxLength(60)]
+    public string? AtivoTag { get; set; }
+
+    /// <summary>
     /// Denominacao do imobilizado.
     /// </summary>
     [MaxLength(150)]

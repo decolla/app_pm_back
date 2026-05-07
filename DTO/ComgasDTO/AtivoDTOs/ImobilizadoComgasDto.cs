@@ -10,6 +10,8 @@ public class ImobilizadoComgasDto
     [SheetColumn("Tag Imobilizado")]
     public string? TagImobilizado { get; set; }
 
+    public string? AtivoTag { get; set; }
+
     [SheetColumn("Denominação")]
     public string? Denominacao { get; set; }
 

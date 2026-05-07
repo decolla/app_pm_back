@@ -18,6 +18,10 @@ public class FerramentaTipoComgasDto
     [SheetColumn("Nome Ferramenta")]
     public string? Nome { get; set; }
 
+    public string? Categoria { get; set; }
+
+    public string? TextoBreve { get; set; }
+
     [SheetColumn("Descrição Ferramenta")]
     public string? Descricao { get; set; }
 
@@ -33,6 +37,8 @@ public class FerramentaTipoComgasDto
     [SheetColumn("Quantidade")]
     public int Quantidade { get; set; }
 
+    public string? TextoDetalhado { get; set; }
+
     [SheetColumn("Centro trabalho")]
     public int? CentroTrabalhoId { get; set; }
 
@@ -45,17 +51,27 @@ public class FerramentaTipoComgasDto
     [SheetColumn("Peso bruto")]
     public decimal? PesoBruto { get; set; }
 
+    public string? PesoBrutoUnidade { get; set; }
+
     [SheetColumn("Peso liquido")]
     public decimal? PesoLiquido { get; set; }
+
+    public string? PesoLiquidoUnidade { get; set; }
 
     [SheetColumn("Volume")]
     public decimal? Volume { get; set; }
 
+    public string? VolumeUnidade { get; set; }
+
     [SheetColumn("Dimensao")]
     public decimal? Dimensao { get; set; }
 
+    public string? DimensaoUnidade { get; set; }
+
     [SheetColumn("Valor")]
     public decimal? Valor { get; set; }
+
+    public DateTime? DataAquisicao { get; set; }
 
     [SheetColumn("Garantia ate")]
     public DateTime? GarantiaAte { get; set; }

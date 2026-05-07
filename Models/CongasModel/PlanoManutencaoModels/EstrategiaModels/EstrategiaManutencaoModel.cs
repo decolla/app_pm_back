@@ -47,13 +47,18 @@ public class EstrategiaManutencaoModel
     /// Quantidade de ciclos de manutencao previstos para o plano.
     /// </summary>
     public int NumeroCiclos { get; set; }
-    
+
+    /// <summary>
+    /// Indica se o ciclo se aplica continuamente.
+    /// </summary>
+    public bool CicloContinuo { get; set; }
+
     /// <summary>
     /// Tipo de ativo aplicável 
     /// </summary>
     /// <example>Nível A</example>
     public string TipoAtivoAplicavel { get; set; }
-
+    
     /// <summary>
     /// Planos que usam esta estrategia.
     /// </summary>
@@ -105,4 +110,3 @@ public enum UnidadeCiclo
     Mes = 1,
     Dia = 2
 }
-

@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using System.Collections.Generic;
 
 namespace app_pm_back.DTO.ComgasDTO;
 
@@ -62,6 +63,38 @@ public class NotaManutencaoComgasDto
 
     [SheetColumn("Criado por")]
     public int? CriadoPorUsuarioId { get; set; }
+    
+    public string? AreaOperacional { get; set; }
+    
+    public string? ReferenciaLocalizacaoAtivo { get; set; }
+    
+    public string? CategoriaNota { get; set; }
+    
+    public DateTime? DataAvaria { get; set; }
+    
+    public TimeSpan? HoraAvaria { get; set; }
+    
+    public string? EquipamentoDisponivel { get; set; }
+    
+    public bool? AnaliseRiscoOperacional { get; set; }
+    
+    public string? AnomaliaObservada { get; set; }
+    
+    public string? ObservacoesComplementares { get; set; }
+    
+    public string? PontoReferencia { get; set; }
+    
+    public string? MatrizLibra { get; set; }
+    
+    public decimal? Temperatura { get; set; }
+    
+    public decimal? Tensao { get; set; }
+    
+    public string? Fluido { get; set; }
+    
+    public decimal? Pressao { get; set; }
+    
+    public string? Plaqueta { get; set; }
 
     [SheetColumn("Tipo prioridade")]
     public string? TipoPrioridade { get; set; }
@@ -86,6 +119,14 @@ public class NotaManutencaoComgasDto
     
     [SheetColumn("Finalidade")]
     public string Finalidade { get; set; }
+
+    public List<ItemNotaManutencaoComgasDto> Itens { get; set; } = new();
+
+    public List<VariavelNotaComgasDto> Variaveis { get; set; } = new();
+
+    public List<MedidaNotaComgasDto> Medidas { get; set; } = new();
+
+    public List<AtividadeNotaComgasDto> Atividades { get; set; } = new();
 }
 
 #pragma warning restore CS1591

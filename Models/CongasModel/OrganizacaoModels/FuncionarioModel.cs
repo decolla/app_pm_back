@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.Domain;
 
@@ -42,11 +43,22 @@ public class FuncionarioModel
     /// </summary>
     [MaxLength(80)]
     public string? Organizacao { get; set; }
+    
+    /// <summary>
+    /// GPM vinculado ao funcionario.
+    /// </summary>
+    public int GpmId { get; set; }
 
     /// <summary>
     /// Perfil de permissao do funcionario no sistema.
     /// </summary>
     public PermissaoFuncionario Permissao { get; set; }
+    
+    /// <summary>
+    /// Grupo de planejamento vinculado ao funcionario.
+    /// </summary>
+    [ForeignKey(nameof(GpmId))]
+    public virtual GrupoPlanejamentoManutencaoModel? Gpm { get; set; }
 
     /// <summary>
     /// Centros de trabalho vinculados.

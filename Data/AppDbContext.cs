@@ -11,6 +11,7 @@ namespace app_pm_back.Data;
 /// </summary>
 public class AppDbContext : DbContext
 {
+
     /// <summary>
     /// Opcoes do banco de dados.
     /// </summary>
@@ -25,6 +26,8 @@ public class AppDbContext : DbContext
     /// <param name="modelBuilder">Builder de mapeamento do modelo.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("public");   
+        
         base.OnModelCreating(modelBuilder);
 
         // // Relacionamentos legados COMGAS.
@@ -158,9 +161,9 @@ public class AppDbContext : DbContext
             .HasForeignKey(e => e.ImobilizadoTag)
             .OnDelete(DeleteBehavior.SetNull);
 
-        modelBuilder.Entity<EquipamentoAtivoModel>()
+        modelBuilder.Entity<FuncionarioModel>()
             .HasOne(e => e.Gpm)
-            .WithMany(g => g.Equipamentos)
+            .WithMany(g => g.ListaFuncionario)
             .HasForeignKey(e => e.GpmId)
             .OnDelete(DeleteBehavior.SetNull);
 
@@ -208,6 +211,12 @@ public class AppDbContext : DbContext
             .HasOne(i => i.Nota)
             .WithMany(n => n.Itens)
             .HasForeignKey(i => i.NotaId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<VariavelNotaModel>()
+            .HasOne(v => v.Nota)
+            .WithMany(n => n.Variaveis)
+            .HasForeignKey(v => v.NotaId)
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<MedidaNotaModel>()
@@ -432,12 +441,12 @@ public class AppDbContext : DbContext
     /// <summary>
     /// Tabela de notas Petro.
     /// </summary>
-    public DbSet<NotaPetroModel> NotasPetro { get; set; }
+    public DbSet<NotaPetroModel> PM_NotasPetro { get; set; }
 
     /// <summary>
     /// Tabela de ordens Petro.
     /// </summary>
-    public DbSet<OrdemPetroModel> OrdensPetro { get; set; }
+    public DbSet<OrdemPetroModel> PM_OrdensPetro { get; set; }
 
     // /// <summary>
     // /// Tabela de notas Congas.
@@ -553,6 +562,11 @@ public class AppDbContext : DbContext
     /// Tabela de itens de notas de manutencao.
     /// </summary>
     public DbSet<ItemNotaManutencaoModel> PM_ItensNotaManutencao { get; set; }
+
+    /// <summary>
+    /// Tabela de variaveis de nota.
+    /// </summary>
+    public DbSet<VariavelNotaModel> PM_VariaveisNota { get; set; }
 
     /// <summary>
     /// Tabela de medidas de nota.

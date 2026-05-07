@@ -46,7 +46,25 @@ public class NotaManutencaoModel : IClassifiable
     /// </summary>
     [MaxLength(60)]
     public string? LocalInstalacaoCodigo { get; set; }
-    
+
+    /// <summary>
+    /// Area operacional associada a nota.
+    /// </summary>
+    [MaxLength(120)]
+    public string? AreaOperacional { get; set; }
+
+    /// <summary>
+    /// Referencia de localizacao do ativo.
+    /// </summary>
+    [MaxLength(200)]
+    public string? ReferenciaLocalizacaoAtivo { get; set; }
+
+    /// <summary>
+    /// Categoria da nota (manutencao, inspecao, etc.).
+    /// </summary>
+    [MaxLength(40)]
+    public string? CategoriaNota { get; set; }
+
     /// <summary>
     /// Finalidade de criação da nota
     /// </summary>
@@ -259,6 +277,11 @@ public class NotaManutencaoModel : IClassifiable
     /// Itens de diagnostico da nota.
     /// </summary>
     public virtual ICollection<ItemNotaManutencaoModel> Itens { get; set; } = new List<ItemNotaManutencaoModel>();
+
+    /// <summary>
+    /// Variaveis registradas na nota.
+    /// </summary>
+    public virtual ICollection<VariavelNotaModel> Variaveis { get; set; } = new List<VariavelNotaModel>();
 
     /// <summary>
     /// PM_Anexos da nota.

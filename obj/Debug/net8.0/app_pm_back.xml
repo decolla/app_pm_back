@@ -777,157 +777,162 @@
             </summary>
             <param name="modelBuilder">Builder de mapeamento do modelo.</param>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.NotasPetro">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_NotasPetro">
             <summary>
             Tabela de notas Petro.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.OrdensPetro">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_OrdensPetro">
             <summary>
             Tabela de ordens Petro.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.Anexos">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_Anexos">
             <summary>
             Tabela de anexos.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.Regras">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_Regras">
             <summary>
             Tabela de regras para classificacao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.UsuariosSap">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_UsuariosSap">
             <summary>
             Tabela de usuarios SAP.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.Fabricantes">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_Fabricantes">
             <summary>
             Tabela de fabricantes.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.Enderecos">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_Enderecos">
             <summary>
             Tabela de enderecos.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.Localizacoes">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_Localizacoes">
             <summary>
             Tabela de localizacoes.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.Imobilizados">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_Imobilizados">
             <summary>
             Tabela de imobilizados.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.GruposPlanejamentoManutencao">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_GruposPlanejamentoManutencao">
             <summary>
             Tabela de grupos de planejamento de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.CentrosTrabalho">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_CentrosTrabalho">
             <summary>
             Tabela de centros de trabalho.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.LocaisInstalacao">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_LocaisInstalacao">
             <summary>
             Tabela de locais de instalacao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.EquipamentosAtivos">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_EquipamentosAtivos">
             <summary>
             Tabela de equipamentos normalizados.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.EstrategiasManutencao">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_EstrategiasManutencao">
             <summary>
             Tabela de estrategias de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.PlanosManutencaoNormalizados">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_PlanosManutencaoNormalizados">
             <summary>
             Tabela de planos de manutencao normalizados.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.CiclosManutencao">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_CiclosManutencao">
             <summary>
             Tabela de ciclos de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.ItensPlanoManutencao">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_ItensPlanoManutencao">
             <summary>
             Tabela de itens de plano de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.NotasManutencao">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_NotasManutencao">
             <summary>
             Tabela de notas de manutencao normalizadas.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.ItensNotaManutencao">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_ItensNotaManutencao">
             <summary>
             Tabela de itens de notas de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.MedidasNota">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_VariaveisNota">
+            <summary>
+            Tabela de variaveis de nota.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Data.AppDbContext.PM_MedidasNota">
             <summary>
             Tabela de medidas de nota.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.AtividadesNota">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_AtividadesNota">
             <summary>
             Tabela de atividades de nota.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.OrdensManutencao">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_OrdensManutencao">
             <summary>
             Tabela de ordens de manutencao normalizadas.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.AnalisesRisco">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_AnalisesRisco">
             <summary>
             Tabela de analises de risco (AR).
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.AnalisesRiscoOperacional">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_AnalisesRiscoOperacional">
             <summary>
             Tabela de analises de risco operacional (ARO).
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.PermissoesTrabalho">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_PermissoesTrabalho">
             <summary>
             Tabela de permissoes de trabalho (PT).
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.MatrizesLibra">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_MatrizesLibra">
             <summary>
             Tabela de matrizes LIBRA.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.OperacoesOrdem">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_OperacoesOrdem">
             <summary>
             Tabela de operacoes de ordens.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.FerramentasTipo">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_FerramentasTipo">
             <summary>
             Tabela de ferramentas por tipo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.ItensRenovacaoTipo">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_ItensRenovacaoTipo">
             <summary>
             Tabela de itens de renovacao por tipo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.TarefasTipoManutencao">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_TarefasTipoManutencao">
             <summary>
             Tabela de tarefas por tipo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.TiposManutencaoCep">
+        <member name="P:app_pm_back.Data.AppDbContext.PM_TiposManutencaoCep">
             <summary>
             Tabela de tipos de manutencao CEP.
             </summary>
@@ -943,14 +948,74 @@
             </summary>
             <param name="app"></param>
         </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.ComponenteEquipamentoComgasDto">
+            <summary>
+            DTO de componente de equipamento Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.EquipamentoAtivoComgasDto">
+            <summary>
+            DTO de equipamento ativo da Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.FabricanteComgasDto">
+            <summary>
+            DTO de fabricante da Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.ImobilizadoComgasDto">
+            <summary>
+            DTO de imobilizado da Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.LocalInstalacaoComgasDto">
+            <summary>
+            DTO de local de instalacao da Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.CentroTrabalhoComgasDto">
+            <summary>
+            DTO de centro de trabalho da Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.EnderecoComgasDto">
+            <summary>
+            DTO de endereco para importacao de localizacao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.LocalizacaoComgasDto">
+            <summary>
+            DTO de localizacao administrativa da Comgas.
+            </summary>
+        </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.AcaoNotaCongasComgasDto">
             <summary>
             DTO de importacao de acoes de nota da Comgas.
             </summary>
         </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.AlmoxarifadoComgasDto">
+        <member name="T:app_pm_back.DTO.ComgasDTO.AtividadeNotaComgasDto">
             <summary>
-            DTO de almoxarifado Comgas.
+            DTO de atividades sugeridas para notas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.ItemNotaManutencaoComgasDto">
+            <summary>
+            DTO de item de nota de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.MedidaNotaComgasDto">
+            <summary>
+            DTO de medidas sugeridas para notas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto">
+            <summary>
+            DTO de importacao de notas de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.VariavelNotaComgasDto">
+            <summary>
+            DTO de variavel registrada na nota de manutencao.
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.AnaliseRiscoComgasDto">
@@ -963,59 +1028,9 @@
             DTO de analise de risco operacional (ARO) Comgas.
             </summary>
         </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.AtividadeNotaComgasDto">
-            <summary>
-            DTO de atividades sugeridas para notas.
-            </summary>
-        </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.CentroPlanejamentoManutencaoComgasDto">
             <summary>
             DTO de centro de planejamento de manutencao Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.CentroTrabalhoComgasDto">
-            <summary>
-            DTO de centro de trabalho da Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.CicloManutencaoComgasDto">
-            <summary>
-            DTO de ciclo de manutencao Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.ComponenteEquipamentoComgasDto">
-            <summary>
-            DTO de componente de equipamento Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.EnderecoComgasDto">
-            <summary>
-            DTO de endereco para importacao de localizacao.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.EquipamentoAtivoComgasDto">
-            <summary>
-            DTO de equipamento ativo da Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.EstrategiaManutencaoComgasDto">
-            <summary>
-            DTO de estrategia de manutencao Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.FabricanteComgasDto">
-            <summary>
-            DTO de fabricante da Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.FerramentaTipoComgasDto">
-            <summary>
-            DTO de ferramenta vinculada ao tipo de manutencao.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.FuncionarioComgasDto">
-            <summary>
-            DTO de funcionario Comgas.
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.GrupoPlanejamentoManutencaoComgasDto">
@@ -1023,49 +1038,9 @@
             DTO de grupo de planejamento de manutencao.
             </summary>
         </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.ImobilizadoComgasDto">
-            <summary>
-            DTO de imobilizado da Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.ItemNotaManutencaoComgasDto">
-            <summary>
-            DTO de item de nota de manutencao Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.ItemPlanoManutencaoComgasDto">
-            <summary>
-            DTO de item do plano de manutencao Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.ItemRenovacaoTipoComgasDto">
-            <summary>
-            DTO de item de renovacao vinculado ao tipo de manutencao.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.LocalInstalacaoComgasDto">
-            <summary>
-            DTO de local de instalacao da Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.LocalizacaoComgasDto">
-            <summary>
-            DTO de localizacao administrativa da Comgas.
-            </summary>
-        </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.MatrizLibraComgasDto">
             <summary>
             DTO de matriz LIBRA Comgas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.MedidaNotaComgasDto">
-            <summary>
-            DTO de medidas sugeridas para notas.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto">
-            <summary>
-            DTO de importacao de notas de manutencao Comgas.
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.OperacaoOrdemComgasDto">
@@ -1083,9 +1058,14 @@
             DTO de permissao de trabalho (PT) Comgas.
             </summary>
         </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.PlanoManutencaoComgasDto">
+        <member name="T:app_pm_back.DTO.ComgasDTO.AlmoxarifadoComgasDto">
             <summary>
-            DTO de plano de manutencao Comgas.
+            DTO de almoxarifado Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.FuncionarioComgasDto">
+            <summary>
+            DTO de funcionario Comgas.
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.SetorVendasComgasDto">
@@ -1093,14 +1073,44 @@
             DTO de setor de vendas Comgas.
             </summary>
         </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.TarefaComgasDto">
+        <member name="T:app_pm_back.DTO.ComgasDTO.EstrategiaManutencaoComgasDto">
             <summary>
-            DTO de tarefa vinculada ao tipo de manutencao.
+            DTO de estrategia de manutencao Comgas.
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.TipoEstrategiaComgasDto">
             <summary>
             DTO de tipo de estrategia de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.CicloManutencaoComgasDto">
+            <summary>
+            DTO de ciclo de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.FerramentaTipoComgasDto">
+            <summary>
+            DTO de ferramenta vinculada ao tipo de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.ItemPlanoManutencaoComgasDto">
+            <summary>
+            DTO de item do plano de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.ItemRenovacaoTipoComgasDto">
+            <summary>
+            DTO de item de renovacao vinculado ao tipo de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.PlanoManutencaoComgasDto">
+            <summary>
+            DTO de plano de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.TarefaComgasDto">
+            <summary>
+            DTO de tarefa vinculada ao tipo de manutencao.
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.TipoManutencaoCepComgasDto">
@@ -1195,18 +1205,6 @@
             <inheritdoc />
         </member>
         <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.AjusteModelosComgas">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.AjusteModelosComgas.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.AjusteModelosComgas.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.AjusteModelosComgas.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Models.AnnexModel">
@@ -1538,6 +1536,11 @@
         <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.TagImobilizado">
             <summary>
             TAG de identificacao do imobilizado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.AtivoTag">
+            <summary>
+            TAG do ativo principal associado.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.Denominacao">
@@ -1877,7 +1880,7 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.EnderecoModel.Localizacoes">
             <summary>
-            Localizacoes vinculadas ao endereco.
+            PM_Localizacoes vinculadas ao endereco.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.LocalizacaoModel">
@@ -2040,6 +2043,11 @@
             Nota dona do item.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaManutencaoModel.Nome">
+            <summary>
+            Nome do item informado.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.ItemNotaManutencaoModel.ParteObjeto">
             <summary>
             Parte objeto reportada.
@@ -2164,6 +2172,21 @@
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.LocalInstalacaoCodigo">
             <summary>
             Codigo do local de instalacao relacionado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.AreaOperacional">
+            <summary>
+            Area operacional associada a nota.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.ReferenciaLocalizacaoAtivo">
+            <summary>
+            Referencia de localizacao do ativo.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.CategoriaNota">
+            <summary>
+            Categoria da nota (manutencao, inspecao, etc.).
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Finalidade">
@@ -2348,9 +2371,14 @@
             Itens de diagnostico da nota.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Variaveis">
+            <summary>
+            Variaveis registradas na nota.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Anexos">
             <summary>
-            Anexos da nota.
+            PM_Anexos da nota.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Medidas">
@@ -2366,6 +2394,46 @@
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Ordens">
             <summary>
             Ordens relacionadas a nota.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.VariavelNotaModel">
+            <summary>
+            Variavel registrada na nota.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.IdVariavel">
+            <summary>
+            Identificador da variavel.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.NotaId">
+            <summary>
+            Nota associada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.Nome">
+            <summary>
+            Nome da variavel.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.ValorNumerico">
+            <summary>
+            Valor numerico da variavel.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.UnidadeMedida">
+            <summary>
+            Unidade de medida informada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.Comentarios">
+            <summary>
+            Comentarios adicionais.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.Nota">
+            <summary>
+            Nota associada.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.AnaliseRiscoModel">
@@ -2410,7 +2478,7 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.AnaliseRiscoModel.Anexos">
             <summary>
-            Anexos associados a analise.
+            PM_Anexos associados a analise.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.CentroPlanejamentoManutencaoModel.IdCpm">
@@ -2498,9 +2566,9 @@
             Locais de instalacao vinculados ao grupo.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.GrupoPlanejamentoManutencaoModel.Equipamentos">
+        <member name="P:app_pm_back.Models.Domain.GrupoPlanejamentoManutencaoModel.ListaFuncionario">
             <summary>
-            Equipamentos vinculados ao grupo.
+            Funcionarios vinculados ao grupo.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.MatrizLibraModel">
@@ -2540,7 +2608,7 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.MatrizLibraModel.Anexos">
             <summary>
-            Anexos associados a matriz.
+            PM_Anexos associados a matriz.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.OperacaoOrdemModel">
@@ -2593,6 +2661,11 @@
             Texto breve da operacao.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoOrdemModel.TextoDetalhado">
+            <summary>
+            Texto detalhado da operacao.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.OperacaoOrdemModel.FerramentasNecessarias">
             <summary>
             Ferramentas e kits necessarios para a operação.
@@ -2627,6 +2700,11 @@
         <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.Descricao">
             <summary>
             Descricao principal da ordem.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.DescricaoBreve">
+            <summary>
+            Descricao breve da ordem.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.Situacao">
@@ -2694,6 +2772,16 @@
         <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.LocalInstalacaoCodigo">
             <summary>
             Codigo do local de instalacao associado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.AreaOperacional">
+            <summary>
+            Area operacional vinculada a ordem.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.GpmResponsavelId">
+            <summary>
+            GPM responsavel pela ordem.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.Material">
@@ -2826,6 +2914,11 @@
             Usuario que alterou a ordem.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.GpmResponsavel">
+            <summary>
+            Grupo de planejamento responsavel.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.Operacoes">
             <summary>
             Operacoes planejadas ou executadas na ordem.
@@ -2916,9 +3009,19 @@
             Organizacao vinculada ao funcionario.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.FuncionarioModel.GpmId">
+            <summary>
+            GPM vinculado ao funcionario.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.FuncionarioModel.Permissao">
             <summary>
             Perfil de permissao do funcionario no sistema.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FuncionarioModel.Gpm">
+            <summary>
+            Grupo de planejamento vinculado ao funcionario.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.FuncionarioModel.CentrosTrabalho">
@@ -3020,6 +3123,11 @@
         <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.NumeroCiclos">
             <summary>
             Quantidade de ciclos de manutencao previstos para o plano.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.CicloContinuo">
+            <summary>
+            Indica se o ciclo se aplica continuamente.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.EstrategiaManutencaoModel.TipoAtivoAplicavel">
@@ -3343,6 +3451,17 @@
             Nome de identificação da ferramenta
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.Categoria">
+            <summary>
+            Categoria do item (kit ou ferramenta).
+            </summary>
+            <example>kit</example>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.TextoBreve">
+            <summary>
+            Texto breve do item.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.TipoFerramenta">
             <summary>
             Tipo do kit ou ferramenta.
@@ -3351,6 +3470,11 @@
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.Quantidade">
             <summary>
             Quantidade presente no kit ou quantidade total da ferramenta, caso seja unitária.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.TextoDetalhado">
+            <summary>
+            Texto detalhado do item.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.Descricao">
@@ -3378,9 +3502,19 @@
             Peso bruto do item.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.PesoBrutoUnidade">
+            <summary>
+            Unidade de medida do peso bruto.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.PesoLiquido">
             <summary>
             Peso líquido do item.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.PesoLiquidoUnidade">
+            <summary>
+            Unidade de medida do peso liquido.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.Volume">
@@ -3388,14 +3522,29 @@
             Volume do item.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.VolumeUnidade">
+            <summary>
+            Unidade de medida do volume.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.Dimensao">
             <summary>
             Dimensão do item.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.DimensaoUnidade">
+            <summary>
+            Unidade de medida da dimensao.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.Valor">
             <summary>
             Valor de aquisição ou referência.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.DataAquisicao">
+            <summary>
+            Data de aquisicao do item.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.GarantiaAte">
@@ -3805,7 +3954,7 @@
         </member>
         <member name="T:app_pm_back.Models.RuleClassificationModel">
             <summary>
-            Regras para classificação de notas/ordens
+            PM_Regras para classificação de notas/ordens
             </summary>
         </member>
         <member name="P:app_pm_back.Models.RuleClassificationModel.IdRegra">
@@ -4239,7 +4388,7 @@
         </member>
         <member name="P:AnaliseRiscoOperacionalModel.Anexos">
             <summary>
-            Anexos associados a analise.
+            PM_Anexos associados a analise.
             </summary>
         </member>
         <member name="T:PermissaoTrabalhoModel">
@@ -4284,7 +4433,7 @@
         </member>
         <member name="P:PermissaoTrabalhoModel.Anexos">
             <summary>
-            Anexos associados a permissao.
+            PM_Anexos associados a permissao.
             </summary>
         </member>
     </members>

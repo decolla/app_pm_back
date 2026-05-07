@@ -22,6 +22,19 @@ public class FerramentasTipoModel
     public required string Nome { get; set; }
 
     /// <summary>
+    /// Categoria do item (kit ou ferramenta).
+    /// </summary>
+    /// <example>kit</example>
+    [MaxLength(30)]
+    public string? Categoria { get; set; }
+
+    /// <summary>
+    /// Texto breve do item.
+    /// </summary>
+    [MaxLength(300)]
+    public string? TextoBreve { get; set; }
+
+    /// <summary>
     /// Tipo do kit ou ferramenta.
     /// </summary>
     [MaxLength(80)]
@@ -31,7 +44,13 @@ public class FerramentasTipoModel
     /// Quantidade presente no kit ou quantidade total da ferramenta, caso seja unitária.
     /// </summary>
     public int Quantidade { get; set; }
-    
+
+    /// <summary>
+    /// Texto detalhado do item.
+    /// </summary>
+    [MaxLength(1000)]
+    public string? TextoDetalhado { get; set; }
+
     /// <summary>
     /// Descrição da ferramenta
     /// </summary>
@@ -60,9 +79,21 @@ public class FerramentasTipoModel
     public decimal? PesoBruto { get; set; }
 
     /// <summary>
+    /// Unidade de medida do peso bruto.
+    /// </summary>
+    [MaxLength(20)]
+    public string? PesoBrutoUnidade { get; set; }
+
+    /// <summary>
     /// Peso líquido do item.
     /// </summary>
     public decimal? PesoLiquido { get; set; }
+
+    /// <summary>
+    /// Unidade de medida do peso liquido.
+    /// </summary>
+    [MaxLength(20)]
+    public string? PesoLiquidoUnidade { get; set; }
 
     /// <summary>
     /// Volume do item.
@@ -70,14 +101,31 @@ public class FerramentasTipoModel
     public decimal? Volume { get; set; }
 
     /// <summary>
+    /// Unidade de medida do volume.
+    /// </summary>
+    [MaxLength(20)]
+    public string? VolumeUnidade { get; set; }
+
+    /// <summary>
     /// Dimensão do item.
     /// </summary>
     public decimal? Dimensao { get; set; }
 
     /// <summary>
+    /// Unidade de medida da dimensao.
+    /// </summary>
+    [MaxLength(20)]
+    public string? DimensaoUnidade { get; set; }
+
+    /// <summary>
     /// Valor de aquisição ou referência.
     /// </summary>
     public decimal? Valor { get; set; }
+
+    /// <summary>
+    /// Data de aquisicao do item.
+    /// </summary>
+    public DateTime? DataAquisicao { get; set; }
 
     /// <summary>
     /// Data de garantia do item.

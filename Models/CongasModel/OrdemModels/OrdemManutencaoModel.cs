@@ -36,6 +36,12 @@ public class OrdemManutencaoModel : IClassifiable
     public string? Descricao { get; set; }
 
     /// <summary>
+    /// Descricao breve da ordem.
+    /// </summary>
+    [MaxLength(300)]
+    public string? DescricaoBreve { get; set; }
+
+    /// <summary>
     /// Situação geral da ordem.
     /// </summary>
     [MaxLength(40)]
@@ -106,6 +112,17 @@ public class OrdemManutencaoModel : IClassifiable
     /// </summary>
     [MaxLength(60)]
     public string? LocalInstalacaoCodigo { get; set; }
+
+    /// <summary>
+    /// Area operacional vinculada a ordem.
+    /// </summary>
+    [MaxLength(120)]
+    public string? AreaOperacional { get; set; }
+
+    /// <summary>
+    /// GPM responsavel pela ordem.
+    /// </summary>
+    public int? GpmResponsavelId { get; set; }
 
     /// <summary>
     /// Material referenciado na ordem.
@@ -256,8 +273,13 @@ public class OrdemManutencaoModel : IClassifiable
     public virtual UsuarioSapModel? ModificadaPorUsuario { get; set; }
 
     /// <summary>
+    /// Grupo de planejamento responsavel.
+    /// </summary>
+    [ForeignKey(nameof(GpmResponsavelId))]
+    public virtual GrupoPlanejamentoManutencaoModel? GpmResponsavel { get; set; }
+
+    /// <summary>
     /// Operacoes planejadas ou executadas na ordem.
     /// </summary>
     public virtual ICollection<OperacaoOrdemModel> Operacoes { get; set; } = new List<OperacaoOrdemModel>();
 }
-

@@ -29,7 +29,9 @@ public class EstrategiaManutencaoComgasDto
     [SheetColumn("Número ciclos")]
     public int NumeroCiclos { get; set; }
 
+    [SheetColumn("Ciclo contínuo")]
+    public bool CicloContinuo { get; set; }
+
     [SheetColumn("Tipo ativo aplicável")]
     public string? TipoAtivoAplicavel { get; set; }
 }
-

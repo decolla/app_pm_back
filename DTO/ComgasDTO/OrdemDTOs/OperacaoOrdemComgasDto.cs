@@ -15,7 +15,7 @@ public class OperacaoOrdemComgasDto
     [SheetColumn("Ordem")]
     public long OrdemId { get; set; }
 
-    [SheetColumn("Operação")]
+    [SheetColumn("Operação")] 
     public string? NomeOperacao { get; set; }
 
     [SheetColumn("Tipo ativid.PM")]
@@ -29,6 +29,8 @@ public class OperacaoOrdemComgasDto
 
     [SheetColumn("Texto breve")]
     public string? TextoBreve { get; set; }
+
+    public string? TextoDetalhado { get; set; }
 
     [SheetColumn("Data início")]
     public DateTime? DataInicio { get; set; }

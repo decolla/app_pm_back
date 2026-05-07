@@ -28,9 +28,11 @@ public class FuncionarioComgasDto
     [SheetColumn("Organizacao")]
     public string? Organizacao { get; set; }
 
+    [SheetColumn("Id GPM")]
+    public int GpmId { get; set; }
+
     [SheetColumn("Permissao")]
     public PermissaoFuncionario Permissao { get; set; }
 }
 
 #pragma warning restore CS1591
-
