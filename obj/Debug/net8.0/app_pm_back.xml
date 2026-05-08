@@ -121,6 +121,14 @@
             Valida pagina e tamanho para evitar consultas inconsistentes.
             </summary>
         </member>
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.ItensPlanoManutencaoController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Valida pagina e tamanho para evitar consultas inconsistentes.
+            </summary>
+            <param name="pagina">Número da página</param>
+            <param name="tamanho">Tamanho da página</param>
+            <returns>Bool de validação</returns>
+        </member>
         <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.TarefaController">
             <summary>
             Endpoints de tarefas por tipo de manutencao.

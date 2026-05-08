@@ -274,6 +274,12 @@ public class ItensPlanoManutencaoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Valida pagina e tamanho para evitar consultas inconsistentes.
+    /// </summary>
+    /// <param name="pagina">Número da página</param>
+    /// <param name="tamanho">Tamanho da página</param>
+    /// <returns>Bool de validação</returns>
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
