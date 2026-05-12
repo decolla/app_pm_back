@@ -10,7 +10,7 @@ namespace app_pm_back.Controllers.ControllerPlanoManutencao;
 /// Endpoints de plano de manutencao da Comgas.
 /// </summary>
 [ApiController]
-[Route("api/V1/Comgas/maintance-plan")]
+[Route("api/V1/Comgas/plano-manutencao")]
 public class PlanoManutencaoController : ControllerBase
 {
     private readonly string _operador = "plano de mantuenção";

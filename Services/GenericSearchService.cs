@@ -16,9 +16,16 @@ public class GenericSearchService
     private readonly DbSet<PlanoManutencaoModel> _planosManutencaoModels;
     private static readonly Dictionary<string, Type> Tabelas = BuildTabelas();
 
-    public GenericSearchService(AppDbContext context)
+    public GenericSearchService(
+        AppDbContext context, 
+        DbSet<NotaManutencaoModel> notaManutencaoModels, 
+        DbSet<OrdemManutencaoModel> ordemManutencaoModels, 
+        DbSet<PlanoManutencaoModel> planosManutencaoModels)
     {
         _context = context;
+        _notaManutencaoModels = notaManutencaoModels;
+        _ordemManutencaoModels = ordemManutencaoModels;
+        _planosManutencaoModels = planosManutencaoModels;
     }
 
     public Task<IReadOnlyList<object>> BuscarPorNomeAsync(
@@ -217,9 +224,9 @@ public class GenericSearchService
     }
     
     /// <summary>
-    /// 
+    /// Busca por uma última nota/ordem associada a um ativo, e o plano de manutenção associado.
     /// </summary>
-    /// <param name="ativo"></param>
+    /// <param name="ativo">Ativo a ser buscado</param>
     /// <returns></returns>
     public async Task<object?> AtivoGerald(int ativo)
     {
@@ -235,35 +242,51 @@ public class GenericSearchService
             .OrderByDescending(o => o.DataAvaria)
             .FirstOrDefaultAsync();
         
-        var ultimaData = (ultimaOrdem?.DataCriacao > ultimaNota?.DataAvaria) ? ultimaOrdem.DataCriacao : ultimaNota?.DataAvaria;
+        if (ultimaOrdem == null && ultimaNota == null)
+            return null;
         
-        if(ultimaData == null) return null;
+        DateTime? ultimaData = null;
+        long? codigoPlanoParaBuscar = null;
+        
+        if (ultimaOrdem != null && ultimaNota != null)
+        {
+            if (ultimaOrdem.DataCriacao > ultimaNota.DataNota)
+            {
+                ultimaData = ultimaOrdem.DataCriacao;
+                codigoPlanoParaBuscar = ultimaOrdem.PlanoManutencaoCodigo;
+            }
+            else
+            {
+                ultimaData = ultimaNota.DataNota;
+                codigoPlanoParaBuscar = ultimaNota.PlanoManutencaoCodigo;
+            }
+        }else if (ultimaOrdem != null)
+        {
+            ultimaData = ultimaOrdem.DataCriacao;
+            codigoPlanoParaBuscar = ultimaOrdem.PlanoManutencaoCodigo;
+        }
+        else if (ultimaNota != null)
+        {
+            ultimaData = ultimaNota.DataNota;
+            codigoPlanoParaBuscar = ultimaNota.PlanoManutencaoCodigo; 
+        }
         
         PlanoManutencaoModel? ultimoPlano = null;
-        
-        if(ultimaData == ultimaOrdem.DataCriacao)
+        if (codigoPlanoParaBuscar.HasValue)
         {
-            // encontra o último plano criado 
-             ultimoPlano = await _planosManutencaoModels
-                .Where(p => p.CodigoPlano == ultimaOrdem.PlanoManutencaoCodigo)
-                .FirstOrDefaultAsync();
-        }
-        else
-        {
-            // encontra o último plano criado 
             ultimoPlano = await _planosManutencaoModels
-                .Where(p => p.CodigoPlano == ultimaNota.PlanoManutencaoCodigo)
+                .Include(p => p.Estrategia)
+                .Include(p => p.Ciclos) // É bom incluir os ciclos para não retornar nulo no JSON
+                .Where(p => p.CodigoPlano == codigoPlanoParaBuscar.Value)
                 .FirstOrDefaultAsync();
         }
         
-        if(ultimoPlano == null) return null;
-
         return new
         {
             Ativo = ativo,
             UltimaData = ultimaData,
-            Estrategia = ultimoPlano.Estrategia,
-            Ciclo = ultimoPlano.Ciclos,
+            Estrategia = ultimoPlano?.Estrategia,
+            Ciclo = ultimoPlano?.Ciclos,
             Plano = ultimoPlano
         };
     }

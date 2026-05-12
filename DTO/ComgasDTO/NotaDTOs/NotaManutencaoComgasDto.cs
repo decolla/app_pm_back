@@ -121,7 +121,7 @@ public class NotaManutencaoComgasDto
     public string? GrupoDeCodes { get; set; }
     
     [SheetColumn("Finalidade")]
-    public string Finalidade { get; set; }
+    public string? Finalidade { get; set; }
 
     public List<ItemNotaManutencaoComgasDto> Itens { get; set; } = new();
 

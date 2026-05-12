@@ -10,8 +10,8 @@ namespace app_pm_back.Controllers;
 /// Controller para equipamentos
 /// </summary>
 [ApiController]
-[Route("api/V1/Comgas/equipments")]
-public class EquipmentsController : ControllerBase
+[Route("api/V1/Comgas/equipamentos")]
+public class EquipamentosController : ControllerBase
 {
     private readonly EquipmentService _equipmentService;
     private readonly IMapper _mapper;
@@ -21,7 +21,7 @@ public class EquipmentsController : ControllerBase
     /// </summary>
     /// <param name="equipmentService"></param>
     /// <param name="mapper"></param>
-    public EquipmentsController(EquipmentService equipmentService, IMapper mapper)
+    public EquipamentosController(EquipmentService equipmentService, IMapper mapper)
     {
         _equipmentService = equipmentService;
         _mapper = mapper;

@@ -328,38 +328,38 @@
             Valida pagina e tamanho para evitar consultas inconsistentes.
             </summary>
         </member>
-        <member name="T:app_pm_back.Controllers.EquipmentsController">
+        <member name="T:app_pm_back.Controllers.EquipamentosController">
             <summary>
             Controller para equipamentos
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.EquipmentsController.#ctor(app_pm_back.Services.EquipmentService,AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.EquipamentosController.#ctor(app_pm_back.Services.EquipmentService,AutoMapper.IMapper)">
             <summary>
             Construtor
             </summary>
             <param name="equipmentService"></param>
             <param name="mapper"></param>
         </member>
-        <member name="M:app_pm_back.Controllers.EquipmentsController.CriarEquipamentoCongas(app_pm_back.DTO.ComgasDTO.EquipamentoAtivoComgasDto)">
+        <member name="M:app_pm_back.Controllers.EquipamentosController.CriarEquipamentoCongas(app_pm_back.DTO.ComgasDTO.EquipamentoAtivoComgasDto)">
             <summary>
             Cadastra um equipamento
             </summary>
             <param name="dto">Equipamento a ser criado</param>
         </member>
-        <member name="M:app_pm_back.Controllers.EquipmentsController.ListarEquipamentoCongas(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.EquipamentosController.ListarEquipamentoCongas(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Exibe os equipamentos cadastrados em formato de página
             </summary>
             <param name="pagina">Página de exibição</param>
             <param name="tamanho">Tamanho da página</param>
         </member>
-        <member name="M:app_pm_back.Controllers.EquipmentsController.ContarItensCongas">
+        <member name="M:app_pm_back.Controllers.EquipamentosController.ContarItensCongas">
             <summary>
             Número total de equipamentos cadastrados
             </summary>
             <returns>Quantidade de equipamentos cadastrados</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.EquipmentsController.AtualizarEquipamento(System.String,app_pm_back.DTO.ComgasDTO.EquipamentoAtivoComgasDto)">
+        <member name="M:app_pm_back.Controllers.EquipamentosController.AtualizarEquipamento(System.String,app_pm_back.DTO.ComgasDTO.EquipamentoAtivoComgasDto)">
             <summary>
             Atualiza um equipamento
             </summary>
@@ -367,13 +367,13 @@
             <param name="dto">Equipamento a ser atualizado</param>
             <returns>Equipamento atualizado</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.EquipmentsController.DeletarNotaCongas(System.String)">
+        <member name="M:app_pm_back.Controllers.EquipamentosController.DeletarNotaCongas(System.String)">
             <summary>
             Deleta um equipamento
             </summary>
             <param name="tag">Tag do equipamento</param>
         </member>
-        <member name="M:app_pm_back.Controllers.EquipmentsController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.EquipamentosController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Valida pagina e tamanho para evitar consultas inconsistentes.
             </summary>
