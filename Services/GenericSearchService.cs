@@ -17,15 +17,12 @@ public class GenericSearchService
     private static readonly Dictionary<string, Type> Tabelas = BuildTabelas();
 
     public GenericSearchService(
-        AppDbContext context, 
-        DbSet<NotaManutencaoModel> notaManutencaoModels, 
-        DbSet<OrdemManutencaoModel> ordemManutencaoModels, 
-        DbSet<PlanoManutencaoModel> planosManutencaoModels)
+        AppDbContext context)
     {
         _context = context;
-        _notaManutencaoModels = notaManutencaoModels;
-        _ordemManutencaoModels = ordemManutencaoModels;
-        _planosManutencaoModels = planosManutencaoModels;
+        _notaManutencaoModels = context.Set<NotaManutencaoModel>();
+        _ordemManutencaoModels = context.Set<OrdemManutencaoModel>();
+        _planosManutencaoModels = context.Set<PlanoManutencaoModel>();
     }
 
     public Task<IReadOnlyList<object>> BuscarPorNomeAsync(
