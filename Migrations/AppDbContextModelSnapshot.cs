@@ -496,7 +496,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("TipoManutencaoId");
 
-                    b.ToTable("TipoPlanoModel", "public");
+                    b.ToTable("PM_TiposPlano", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AlmoxarifadoModel", b =>
@@ -532,7 +532,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("LocalizacaoId");
 
-                    b.ToTable("AlmoxarifadoModel", "public");
+                    b.ToTable("PM_Almoxarifados", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AnaliseRiscoModel", b =>
@@ -622,7 +622,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("LocalizacaoId");
 
-                    b.ToTable("CentroPlanejamentoManutencaoModel", "public");
+                    b.ToTable("PM_CentrosPlanejamentoManutencao", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.CentroTrabalhoModel", b =>
@@ -740,7 +740,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("EquipamentoTag");
 
-                    b.ToTable("ComponenteEquipamentoModel", "public");
+                    b.ToTable("PM_ComponentesEquipamento", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.EnderecoModel", b =>
@@ -1017,7 +1017,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("GpmId");
 
-                    b.ToTable("FuncionarioModel", "public");
+                    b.ToTable("PM_Funcionarios", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.GrupoPlanejamentoManutencaoModel", b =>
@@ -1860,7 +1860,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("EstrategiaId");
 
-                    b.ToTable("PM_PlanosManutencaoNormalizados", "public");
+                    b.ToTable("PlanoManutencaoModel", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.PlanoManutencaoModels.TipoManutencaoModel", b =>
@@ -1890,7 +1890,7 @@ namespace app_pm_back.Migrations
 
                     b.HasKey("IdTipoManutencao");
 
-                    b.ToTable("TipoManutencaoModel", "public");
+                    b.ToTable("PM_TipoManutencao", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.SetorVendasModel", b =>
@@ -1922,7 +1922,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("LocalizacaoId");
 
-                    b.ToTable("SetorVendasModel", "public");
+                    b.ToTable("PM_SetoresVendas", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.UsuarioSapModel", b =>

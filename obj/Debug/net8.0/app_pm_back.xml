@@ -842,6 +842,16 @@
             Tabela de centros de trabalho.
             </summary>
         </member>
+        <member name="P:app_pm_back.Data.AppDbContext.PM_CentrosPlanejamentoManutencao">
+            <summary>
+            Tabela de Centros de Planejamento de Manutencao (CPM).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Data.AppDbContext.PM_Funcionarios">
+            <summary>
+            Tabela de funcionarios.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Data.AppDbContext.PM_LocaisInstalacao">
             <summary>
             Tabela de locais de instalacao.
@@ -1195,16 +1205,16 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.InitialCreate">
+        <member name="T:app_pm_back.Migrations.InitialCreation">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreation.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreation.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreation.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Models.AnnexModel">

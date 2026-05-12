@@ -2,6 +2,7 @@ using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
 using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 using app_pm_back.Models.Domain;
+using app_pm_back.Models.Domain.PlanoManutencaoModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Data;
@@ -498,7 +499,30 @@ public class AppDbContext : DbContext
     /// Tabela de centros de trabalho.
     /// </summary>
     public DbSet<CentroTrabalhoModel> PM_CentrosTrabalho { get; set; }
+    
+    /// <summary>
+    /// Tabela de Centros de Planejamento de Manutencao (CPM).
+    /// </summary>
+    public DbSet<CentroPlanejamentoManutencaoModel> PM_CentrosPlanejamentoManutencao { get; set; }
 
+    /// <summary>
+    /// Tabela de funcionarios.
+    /// </summary>
+    public DbSet<FuncionarioModel> PM_Funcionarios { get; set; }
+    
+    
+    public DbSet<SetorVendasModel> PM_SetoresVendas { get; set; }
+    
+    public DbSet<AlmoxarifadoModel> PM_Almoxarifados { get; set; }
+    
+    public DbSet<ComponenteEquipamentoModel> PM_ComponentesEquipamento { get; set; }
+    
+    public DbSet<TipoPlanoModel> PM_TiposPlano { get; set; }
+    
+    public DbSet<PlanoManutencaoModel> PM_PlanosManutencao { get; set; }
+    
+    public DbSet<TipoManutencaoModel> PM_TipoManutencao { get; set; }
+    
     /// <summary>
     /// Tabela de locais de instalacao.
     /// </summary>
