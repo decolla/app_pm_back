@@ -28,7 +28,6 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Atividades, opt => opt.Ignore())
             .ForMember(dest => dest.Ordens, opt => opt.Ignore())
             .ForMember(dest => dest.Equipamento, opt => opt.Ignore())
-            .ForMember(dest => dest.LocalInstalacaoCodigo, opt => opt.Ignore())
             .ForMember(dest => dest.CriadoPorUsuario, opt => opt.Ignore());
 
         CreateMap<OrdemManutencaoComgasDto, OrdemManutencaoModel>()
