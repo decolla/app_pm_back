@@ -29,36 +29,45 @@ public class PlanoManutencaoService : BaseCrudService<PlanoManutencaoModel>
         }
     }
 
-    public async Task<object?> AtivoGerald(string ativo)
+    public async Task<PlanoManutencaoModel> CreateComTiposAsync(PlanoManutencaoModel novo)
     {
-        // seleciona todas os LI associadas ao ativo
-        List<LocalInstalacaoModel> locais = await _localInstalacaoModels
-            .Where(n => n.CodigoLocalInstalacao == ativo)
-            .ToListAsync();
-        
-        // seleciona todos os itens de manutenção associados aos locais
-        List<ItemPlanoManutencaoModel> itens = await _itemPlanoManutencaoModels
-            .Where(i => locais.Any(l => l.CodigoLocalInstalacao == i.LocalInstalacaoCodigo))
-            .ToListAsync();
+        var criado = await CreateAsync(novo);
 
-        // encontra os planos de manutenção associados aos itens
-        List<PlanoManutencaoModel> planosManut = await _maintancePlanComgasModels
-            .Where(p => itens.Any(i => i.PlanoManutencaoCodigo == p.CodigoPlano))
-            .ToListAsync(); //alterar dps para busca melhorada, sem puxar todos os planos
-        
-        // encontra o último plano criado 
-        PlanoManutencaoModel? ultimoPlano = planosManut
-            .OrderByDescending(p => p.DataInicio)
-            .FirstOrDefault();
-
-        if(ultimoPlano == null) return null;
-
-        return new
+        if (!criado.EstrategiaId.HasValue)
         {
-            DataCriacao = ultimoPlano.DataInicio,
-            Estrategia = ultimoPlano.Estrategia,
-            Ciclo = ultimoPlano.Estrategia.Ciclos,
-            Plano = ultimoPlano
-        };
+            return criado;
+        }
+
+        var estrategia = await _context.Set<EstrategiaManutencaoModel>()
+            .Include(e => e.Itens)
+            .FirstOrDefaultAsync(e => e.IdEstrategia == criado.EstrategiaId.Value);
+
+        if (estrategia == null)
+        {
+            throw new Exception("Estrategia informada nao encontrada.");
+        }
+
+        if (!estrategia.Itens.Any())
+        {
+            return criado;
+        }
+
+        var tiposPlanos = estrategia.Itens.Select(item => new TipoPlanoModel
+        {
+            PlanoManutencaoId = criado.CodigoPlano,
+            TipoEstrategiaId = item.IdTipoEstrategia,
+            Dias = item.Dias,
+            ToleranciaPositiva = item.ToleranciaPositiva,
+            ToleranciaNegativa = item.ToleranciaNegativa,
+            Continua = item.Continua,
+            Categoria = item.Categoria,
+            TipoManutencaoCepId = item.IdTipoManutencaoCep,
+            TipoManutencaoId = item.IdTipoManutencao
+        }).ToList();
+
+        await _context.Set<TipoPlanoModel>().AddRangeAsync(tiposPlanos);
+        await _context.SaveChangesAsync();
+
+        return criado;
     }
 }

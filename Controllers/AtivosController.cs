@@ -174,7 +174,7 @@ public class LocaisInstalacaoController : ControllerBase
             }
 
             var local = _mapper.Map<LocalInstalacaoModel>(dto);
-            if (string.IsNullOrWhiteSpace(local.CodigoLocalInstalacao))
+            if (local.CodigoLocalInstalacao <= 0)
             {
                 return BadRequest(new { message = "CodigoLocalInstalacao invalido." });
             }
@@ -243,16 +243,7 @@ public class LocaisInstalacaoController : ControllerBase
             {
                 return BadRequest(new { message = "CodigoLocalInstalacao invalido na rota." });
             }
-
-            if (string.IsNullOrWhiteSpace(dto.CodigoLocalInstalacao))
-            {
-                dto.CodigoLocalInstalacao = codigo;
-            }
-
-            if (!string.Equals(dto.CodigoLocalInstalacao, codigo, StringComparison.OrdinalIgnoreCase))
-            {
-                return BadRequest(new { message = "Codigo da rota e CodigoLocalInstalacao do corpo devem ser iguais." });
-            }
+            
 
             var local = _mapper.Map<LocalInstalacaoModel>(dto);
             var result = await _service.UpdateNotaAsync(local);
@@ -265,11 +256,11 @@ public class LocaisInstalacaoController : ControllerBase
     }
 
     [HttpDelete("{codigo}")]
-    public async Task<IActionResult> Deletar([FromRoute] string codigo)
+    public async Task<IActionResult> Deletar([FromRoute] int codigo)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(codigo))
+            if (codigo <= 0)
             {
                 return BadRequest(new { message = "CodigoLocalInstalacao invalido." });
             }

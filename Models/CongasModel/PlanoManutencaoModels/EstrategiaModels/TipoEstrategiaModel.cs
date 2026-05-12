@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 using app_pm_back.Models.Domain;
+using app_pm_back.Models.Domain.PlanoManutencaoModels;
 
 namespace app_pm_back.Models.CongasModel;
 
@@ -12,61 +14,73 @@ public class TipoEstrategiaModel
     /// </summary>
     [Key]
     public int IdTipoEstrategia { get; set; }
-    
-    /// <summary>
-    /// Nome do tipo da estratégia 
-    /// </summary>
-    [MaxLength(80)]
-    public string NomeTipo { get; set; }
-    
-    /// <summary>
-    /// Descrição para o tipo 
-    /// </summary>
-    [MaxLength(500)]
-    public string Descricao { get; set; }
 
     /// <summary>
     /// Número de meses que ocorrerá a manutenção do tipo especificado
     /// </summary>
-    public int Meses { get; set; } = 80;
-    
+    public int Dias { get; set; } = 80;
+
     /// <summary>
-    /// Tolerância positiva para a manutenção do tipo especificado
+    /// Tolerância em dias positiva para a manutenção do tipo especificado
     /// </summary>
     public int ToleranciaPositiva { get; set; }
 
     /// <summary>
-    /// Unidade de medida para a tolerancia positiva
-    /// </summary>
-    [MaxLength(80)]
-    public string UnidadeToleranciaPositiva { get; set; }
-
-    /// <summary>
-    /// Tolerância negativa para a manutenção do tipo especificado
+    /// Tolerância em dias negativa para a manutenção do tipo especificado
     /// </summary>
     public int ToleranciaNegativa { get; set; }
-    
+
     /// <summary>
-    /// Unidade de medida para a tolerancia negativa
+    /// Se o tipo de estratégia é contínua ou não.
     /// </summary>
-    [MaxLength(80)]
-    public string UnidadeToleranciaNegativa { get; set; }
-    
+    public bool Continua { get; set; } = false;
+
+    /// <summary>
+    /// Categoria atribuida ao tipo de estratégia, indicando a qual tipo de plano de manutenção ela pertence.
+    /// </summary>
+    /// <example>Manutencao = 0, Renovacao = 1, CEP = 2</example>
+    public CategoriaTipoEstrategia Categoria { get; set; }
+
     /// <summary>
     /// FK da estrategia associada.
     /// </summary>
-    public int? EstrategiaId { get; set; }
-    
+    public int EstrategiaId { get; set; }
+
     /// <summary>
     /// Estrategia associada ao plano.
     /// </summary>
     [ForeignKey(nameof(EstrategiaId))]
     [JsonIgnore]
-    public virtual EstrategiaManutencaoModel? Estrategia{ get; set; }
-    
+    public virtual EstrategiaManutencaoModel Estrategia { get; set; }
+
     /// <summary>
-    /// Tipos de manutenção que herdam deste tipo de estratégia.
+    /// FK do tipo CEP associada.
+    /// </summary>
+    public int? IdTipoManutencaoCep { get; set; }
+
+    [ForeignKey(nameof(IdTipoManutencaoCep))]
+    [JsonIgnore]
+    public virtual TipoManutencaoCepModel? TipoManutencaoCep {get; set;}
+
+    /// <summary>
+    /// FK do tipo de manutenção associada.
+    /// </summary>
+    public int? IdTipoManutencao { get; set; }
+
+    [ForeignKey(nameof(IdTipoManutencao))]
+    [JsonIgnore]
+    public virtual TipoManutencaoModel? TipoManutencao {get; set;}
+
+    /// <summary>
+    /// Tipos de plano que herdam deste tipo de estratégia.
     /// </summary>
     [JsonIgnore]
-    public virtual ICollection<TipoManutencaoModel> TiposManutencao { get; set; } = new List<TipoManutencaoModel>();
+    public virtual ICollection<TipoPlanoModel> TiposPlanos { get; set; } = new List<TipoPlanoModel>();
+}
+
+public enum CategoriaTipoEstrategia
+{
+    Manutencao = 0,
+    Renovacao = 1,
+    CEP = 2
 }

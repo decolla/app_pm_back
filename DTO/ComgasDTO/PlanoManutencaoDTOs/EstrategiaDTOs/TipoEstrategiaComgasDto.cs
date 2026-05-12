@@ -18,7 +18,7 @@ public class TipoEstrategiaComgasDto
     [SheetColumn("Descrição")]
     public string? Descricao { get; set; }
 
-    [SheetColumn("Meses")]
+    [SheetColumn("Dias")]
     public int Meses { get; set; }
 
     [SheetColumn("Tolerância positiva")]

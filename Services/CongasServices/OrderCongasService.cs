@@ -18,15 +18,12 @@ public class OrderCongasService : BaseCrudService<OrdemManutencaoModel>
     /// <param name="ativo"></param>
     /// <param name="tipoOrdem"></param>
     /// <returns></returns>
-    public async Task<object> GetFichasPorAtivoAsync(string ativo, string? tipoOrdem)
+    public async Task<object> GetFichasPorAtivoAsync(int ativo, string? tipoOrdem)
     {
         var query = _dbSet.AsQueryable(); // usa o _dbSet da Superclasse
         
-        bool isNumero = long.TryParse(ativo, out long ativoId);
-
         query = query.Where(n => 
-            n.NotaRelacionada.LocalInstalacaoCodigo.ToString() == ativo || 
-            n.NotaRelacionada.EquipamentoTag == ativo);
+            n.NotaRelacionada.LocalInstalacaoCodigo == ativo);
         
         if (!string.IsNullOrWhiteSpace(tipoOrdem))
         {

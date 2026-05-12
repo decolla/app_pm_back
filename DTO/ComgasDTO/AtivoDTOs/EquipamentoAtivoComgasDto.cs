@@ -73,7 +73,7 @@ public class EquipamentoAtivoComgasDto
     public int? CentroTrabalhoId { get; set; }
 
     [SheetColumn("Loc.instalação")]
-    public string? LocalInstalacaoCodigo { get; set; }
+    public int? LocalInstalacaoCodigo { get; set; }
 
     [SheetColumn("Nº de serie")]
     public string? NumeroSerie { get; set; }

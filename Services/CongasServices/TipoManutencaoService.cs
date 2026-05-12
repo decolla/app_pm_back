@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.CongasServices;
 
-public class TipoManutencaoService : BaseCrudService<TipoManutencaoModel>
+public class TipoManutencaoService : BaseCrudService<TipoPlanoModel>
 {
     public TipoManutencaoService(AppDbContext context) : base(context)
     {
@@ -13,24 +13,53 @@ public class TipoManutencaoService : BaseCrudService<TipoManutencaoModel>
     }
     
     // sobrescrevemos a busca por ID para incluir os filhos
-    public async Task<TipoManutencaoModel?> GetCompletoByIdAsync(int id)
+    public async Task<TipoPlanoModel?> GetCompletoByIdAsync(int id)
     {
-        return await _context.Set<TipoManutencaoModel>()
+        return await _context.Set<TipoPlanoModel>()
             .Include(t => t.Ferramentas)
-            .Include(t => t.ItensRenovacao)
             .Include(t => t.ListaTarefa)
             .FirstOrDefaultAsync(t => t.IdTipoManutencao == id);
     }
     
-    public async Task<List<TipoManutencaoModel>> GetTodosByTipo(TipoTipo tipo)
+    public async Task<List<TipoPlanoModel>> GetTodosByTipo(CategoriaTipoEstrategia tipo)
     {
-        return await _context.Set<TipoManutencaoModel>()
-            .Where(t => t.TipoTipo == tipo)
+        return await _context.Set<TipoPlanoModel>()
+            .Where(t => t.Categoria == tipo)
             .ToListAsync();
     }
 
+    public async Task<TipoPlanoModel> CreateComCopiaAsync(TipoPlanoModel novo)
+    {
+        if (novo.TipoEstrategiaId.HasValue)
+        {
+            var tipoEstrategia = await _context.Set<TipoEstrategiaModel>()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.IdTipoEstrategia == novo.TipoEstrategiaId.Value);
+
+            if (tipoEstrategia == null)
+            {
+                throw new Exception("Tipo de estrategia nao encontrado.");
+            }
+
+            AplicarDadosTipoEstrategia(novo, tipoEstrategia);
+        }
+
+        return await CreateAsync(novo);
+    }
+
+    private static void AplicarDadosTipoEstrategia(TipoPlanoModel destino, TipoEstrategiaModel origem)
+    {
+        destino.Dias = origem.Dias;
+        destino.ToleranciaPositiva = origem.ToleranciaPositiva;
+        destino.ToleranciaNegativa = origem.ToleranciaNegativa;
+        destino.Continua = origem.Continua;
+        destino.Categoria = origem.Categoria;
+        destino.TipoManutencaoCepId = origem.IdTipoManutencaoCep;
+        destino.TipoManutencaoId = origem.IdTipoManutencao;
+    }
+
     // método especializado para atualizar o "Grafo" de objetos
-    public async Task<TipoManutencaoModel> UpdateComListasAsync(TipoManutencaoModel atualizado)
+    public async Task<TipoPlanoModel> UpdateComListasAsync(TipoPlanoModel atualizado)
     {
         var existente = await GetCompletoByIdAsync(atualizado.IdTipoManutencao);
         if (existente == null) throw new Exception("Registo não encontrado");
@@ -42,9 +71,6 @@ public class TipoManutencaoService : BaseCrudService<TipoManutencaoModel>
         existente.Ferramentas!.Clear();
         foreach (var f in atualizado.Ferramentas ?? new List<FerramentasTipoModel>()) existente.Ferramentas.Add(f);
 
-        // Atualiza Itens Renovação (Substitui a lista)
-        existente.ItensRenovacao!.Clear();
-        foreach (var i in atualizado.ItensRenovacao ?? new List<ItemRenovacaoTipoModel>()) existente.ItensRenovacao.Add(i);
 
         // Atualiza Tarefas (Substitui a lista)
         existente.ListaTarefa!.Clear();

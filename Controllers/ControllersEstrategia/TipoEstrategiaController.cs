@@ -1,8 +1,11 @@
 using app_pm_back.DTO.ComgasDTO;
+using app_pm_back.Data;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services.CongasServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Controllers.ControllersEstrategia;
 
@@ -33,7 +36,7 @@ public class TipoEstrategiaController: ControllerBase
     /// </summary>
     /// <param name="dto">Objeto a ser adicionado</param>
     [HttpPost]
-    public async Task<IActionResult> Criar([FromBody] TipoEstrategiaComgasDto dto)
+    public async Task<IActionResult> Criar([FromBody] TipoEstrategiaComgasDto dto, [FromServices] AppDbContext context)
     {
 
             if (!ModelState.IsValid)
@@ -41,16 +44,24 @@ public class TipoEstrategiaController: ControllerBase
                 return ValidationProblem(ModelState);
             }
 
+            if (!dto.EstrategiaId.HasValue || dto.EstrategiaId.Value <= 0)
+            {
+                return BadRequest(new { message = "IdEstrategia obrigatorio. Envie um Id maior que zero." });
+            }
+
+            var estrategiaExiste = await context.Set<EstrategiaManutencaoModel>()
+                .AnyAsync(e => e.IdEstrategia == dto.EstrategiaId.Value);
+
+            if (!estrategiaExiste)
+            {
+                return BadRequest(new { message = "Estrategia informada nao encontrada." });
+            }
+
             var obj = _mapper.Map<TipoEstrategiaModel>(dto);
             
             if (obj.EstrategiaId <= 0)
             {
                 return BadRequest(new { message = "IdEstrategia invalido. Envie um Id maior que zero." });
-            }
-            
-            if (string.IsNullOrWhiteSpace(obj.NomeTipo))
-            {
-                return BadRequest(new { message = "NomeTipo obrigatorio." });
             }
 
             var novoObj = await _tipoEstrategiaService.CreateAsync(obj);

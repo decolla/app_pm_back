@@ -48,18 +48,16 @@ public class TipoManutencaoCepModel
     /// <example>AbrirNota = 0, AbrirOrdem = 1, OpcaoTemplate = 2, Nada = 3</example>
     [Column(TypeName = "jsonb")]
     public List<AcoesFalha> AcoesFalha { get; set; } = [Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.AcoesFalha.Nada];
-
+    
     /// <summary>
-    /// FK do plano de manutencao associado.
+    /// Guarda os tipos de estrategia associados a este tipo de manutencao.
     /// </summary>
-    public long? PlanoManutencaoCodigo { get; set; }
-
+    public virtual ICollection<TipoEstrategiaModel> TiposEstrategias { get; set; }
+    
     /// <summary>
-    /// Plano de manutencao associado ao tipo.
+    /// Guarda os tipos de plano associados a este tipo de manutencao.
     /// </summary>
-    [ForeignKey(nameof(PlanoManutencaoCodigo))]
-    [JsonIgnore]
-    public virtual PlanoManutencaoModel? PlanoManutencao { get; set; }
+    public virtual ICollection<TipoPlanoModel> TipoPlanoModels { get; set; }
 }
 
 public enum AcoesFalha

@@ -88,7 +88,7 @@ public class OrdemManutencaoComgasDto
     public string? EquipamentoTag { get; set; }
 
     [SheetColumn("Loc.instalacao")]
-    public string? LocalInstalacaoCodigo { get; set; }
+    public int? LocalInstalacaoCodigo { get; set; }
 
     public string? AreaOperacional { get; set; }
 

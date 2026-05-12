@@ -22,7 +22,7 @@ public class ItemPlanoManutencaoComgasDto
     public string? EquipamentoTag { get; set; }
 
     [SheetColumn("Loc.instalação")]
-    public string? LocalInstalacaoCodigo { get; set; }
+    public int? LocalInstalacaoCodigo { get; set; }
 }
 
 #pragma warning restore CS1591

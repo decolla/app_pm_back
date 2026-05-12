@@ -13,7 +13,7 @@ public class LocalInstalacaoModel
     /// </summary>
     [Key]
     [MaxLength(60)]
-    public required string CodigoLocalInstalacao { get; set; }
+    public required int CodigoLocalInstalacao { get; set; }
 
     /// <summary>
     /// Denominacao do local.

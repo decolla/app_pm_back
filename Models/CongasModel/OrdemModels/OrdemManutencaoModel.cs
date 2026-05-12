@@ -111,7 +111,7 @@ public class OrdemManutencaoModel : IClassifiable
     /// Codigo do local de instalacao associado.
     /// </summary>
     [MaxLength(60)]
-    public string? LocalInstalacaoCodigo { get; set; }
+    public int? LocalInstalacaoCodigo { get; set; }
 
     /// <summary>
     /// Area operacional vinculada a ordem.
@@ -253,12 +253,6 @@ public class OrdemManutencaoModel : IClassifiable
     /// </summary>
     [ForeignKey(nameof(EquipamentoTag))]
     public virtual EquipamentoAtivoModel? Equipamento { get; set; }
-
-    /// <summary>
-    /// Local de instalação associado à ordem.
-    /// </summary>
-    [ForeignKey(nameof(LocalInstalacaoCodigo))]
-    public virtual LocalInstalacaoModel? LocalInstalacao { get; set; }
 
     /// <summary>
     /// Usuario criador da ordem.

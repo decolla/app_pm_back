@@ -53,14 +53,23 @@
             <param name="tipoReferencia">Tipo da referência de busca</param>
             <returns></returns>
         </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscaGerald(System.Int32)">
+            <summary>
+            Busca um plano de mantuenção associado a um ativo, retorna um objeto com os dados relevantes
+            </summary>
+            <param name="ativo">Ativo a ser procurado</param>
+            <returns>Objeto com informações relevantes</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscaGeraldList(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Busca um plano de manuntenção associado a uma lista de ativos, retorna um objeto com os dados relevantes
+            </summary>
+            <param name="ativos"></param>
+            <returns></returns>
+        </member>
         <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.FerramentaTipoController">
             <summary>
             Endpoints de ferramentas de tipo de manutencao.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.ItemRenovacaoTipoController">
-            <summary>
-            Endpoints de itens de renovacao por tipo de manutencao.
             </summary>
         </member>
         <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController">
@@ -109,13 +118,6 @@
             </summary>
             <param name="id">Id do objeto a ser deletado</param>
         </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.BuscaGerald(System.String)">
-            <summary>
-            Busca um plano de mantuenção associado a um ativo, retorna um objeto com os dados relevantes
-            </summary>
-            <param name="ativo">Ativo a ser procurado</param>
-            <returns>Objeto com informações relevantes</returns>
-        </member>
         <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Valida pagina e tamanho para evitar consultas inconsistentes.
@@ -151,7 +153,7 @@
             <param name="tipoManutencaoService"></param>
             <param name="mapper"></param>
         </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Criar(System.Int32,app_pm_back.DTO.ComgasDTO.TipoManutencaoComgasDto,app_pm_back.Data.AppDbContext)">
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Criar(System.Int32,app_pm_back.DTO.ComgasDTO.TipoPlanoCongasDto,app_pm_back.Data.AppDbContext)">
             <summary>
             Cria um tipo de manutenção respeitando a hierarquia da Estratégia
             </summary>
@@ -187,7 +189,7 @@
             <param name="tipo">Tipo do tipo a ser criado, 0 = manutenção, 1 = renovação</param>
             <returns>Lista de tipos</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Atualizar(System.Int32,app_pm_back.DTO.ComgasDTO.TipoManutencaoComgasDto)">
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Atualizar(System.Int32,app_pm_back.DTO.ComgasDTO.TipoPlanoCongasDto)">
             <summary>
             Atualiza um tipo de manutenção.
             </summary>
@@ -287,7 +289,7 @@
             <param name="tipoEstrategiaService"></param>
             <param name="mapper"></param>
         </member>
-        <member name="M:app_pm_back.Controllers.ControllersEstrategia.TipoEstrategiaController.Criar(app_pm_back.DTO.ComgasDTO.TipoEstrategiaComgasDto)">
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.TipoEstrategiaController.Criar(app_pm_back.DTO.ComgasDTO.TipoEstrategiaComgasDto,app_pm_back.Data.AppDbContext)">
             <summary>
             Cria uma estratégia 
             </summary>
@@ -551,7 +553,7 @@
             Conta o número total de notas Congas salvas no banco
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.ListarFichasPorAtivoCongas(System.String,System.String)">
+        <member name="M:app_pm_back.Controllers.ComgasNotesController.ListarFichasPorAtivoCongas(System.Int32,System.String)">
             <summary>
             Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
             </summary>
@@ -716,7 +718,7 @@
             Conta o número total de notas Congas salvas no banco
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasOrdersController.ListarFichasPorAtivoCongas(System.String,System.String)">
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.ListarFichasPorAtivoCongas(System.Int32,System.String)">
             <summary>
             Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
             </summary>
@@ -930,11 +932,6 @@
             Tabela de ferramentas por tipo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.PM_ItensRenovacaoTipo">
-            <summary>
-            Tabela de itens de renovacao por tipo de manutencao.
-            </summary>
-        </member>
         <member name="P:app_pm_back.Data.AppDbContext.PM_TarefasTipoManutencao">
             <summary>
             Tabela de tarefas por tipo de manutencao.
@@ -1106,11 +1103,6 @@
             DTO de item do plano de manutencao Comgas.
             </summary>
         </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.ItemRenovacaoTipoComgasDto">
-            <summary>
-            DTO de item de renovacao vinculado ao tipo de manutencao.
-            </summary>
-        </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.PlanoManutencaoComgasDto">
             <summary>
             DTO de plano de manutencao Comgas.
@@ -1126,7 +1118,7 @@
             DTO do cadastro de tipo de manutencao CEP.
             </summary>
         </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.TipoManutencaoComgasDto">
+        <member name="T:app_pm_back.DTO.ComgasDTO.TipoPlanoCongasDto">
             <summary>
             DTO de tipo de manutencao Comgas.
             </summary>
@@ -2182,6 +2174,11 @@
             Codigo do local de instalacao relacionado.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.PlanoManutencaoCodigo">
+            <summary>
+            Codigo do plano de manutencao relacionado.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.AreaOperacional">
             <summary>
             Area operacional associada a nota.
@@ -2364,9 +2361,9 @@
             Equipamento associado a nota.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.LocalInstalacao">
+        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.PlanoManutencao">
             <summary>
-            Local de instalacao associado a nota.
+            Plano de manutencao associado a nota.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.CriadoPorUsuario">
@@ -2907,11 +2904,6 @@
             Equipamento associado à ordem.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.LocalInstalacao">
-            <summary>
-            Local de instalação associado à ordem.
-            </summary>
-        </member>
         <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.CriadaPorUsuario">
             <summary>
             Usuario criador da ordem.
@@ -3344,6 +3336,57 @@
             Gerar automaticamente nota, ordem ou ambos.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModels.TipoManutencaoModel.IdTipoManutencao">
+            <summary>
+            Identificador interno do tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModels.TipoManutencaoModel.Categoria">
+            <summary>
+            Tipo do tipo de manutencao, se é uma manutencao ou renovacao de ativo.
+            </summary>
+            <example>Manutencao = 0, RenovacaoAtivo = 1</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModels.TipoManutencaoModel.Nome">
+            <summary>
+            Nome do tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModels.TipoManutencaoModel.TipoAtivo">
+            <summary>
+            Tipo de ativo suportado pelo tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModels.TipoManutencaoModel.Confiabilidade">
+            <summary>
+            Confiabilidade do tipo de manutencao em porcentagem.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModels.TipoManutencaoModel.Habilitada">
+            <summary>
+            Se o tipo de manutencao esta habilitado para ser utilizado em planos de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModels.TipoManutencaoModel.ListaTarefas">
+            <summary>
+            Guarda fas tarefas associadas a este tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModels.TipoManutencaoModel.TiposEstrategia">
+            <summary>
+            Guarda os tipos de estrategia associados a este tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModels.TipoManutencaoModel.TipoPlanoModels">
+            <summary>
+            Guarda os tipos de plano associados a este tipo de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.PlanoManutencaoModels.TipoTipo">
+            <summary>
+            Qual o tipo do tipo cadastrado.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Models.Domain.UsuarioSapModel">
             <summary>
             Usuario do SAP responsavel por criar e atualizar registros de manutencao.
@@ -3394,40 +3437,31 @@
             Id do item da estratégia.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.NomeTipo">
-            <summary>
-            Nome do tipo da estratégia 
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.Descricao">
-            <summary>
-            Descrição para o tipo 
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.Meses">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.Dias">
             <summary>
             Número de meses que ocorrerá a manutenção do tipo especificado
             </summary>
         </member>
         <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.ToleranciaPositiva">
             <summary>
-            Tolerância positiva para a manutenção do tipo especificado
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.UnidadeToleranciaPositiva">
-            <summary>
-            Unidade de medida para a tolerancia positiva
+            Tolerância em dias positiva para a manutenção do tipo especificado
             </summary>
         </member>
         <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.ToleranciaNegativa">
             <summary>
-            Tolerância negativa para a manutenção do tipo especificado
+            Tolerância em dias negativa para a manutenção do tipo especificado
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.UnidadeToleranciaNegativa">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.Continua">
             <summary>
-            Unidade de medida para a tolerancia negativa
+            Se o tipo de estratégia é contínua ou não.
             </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.Categoria">
+            <summary>
+            Categoria atribuida ao tipo de estratégia, indicando a qual tipo de plano de manutenção ela pertence.
+            </summary>
+            <example>Manutencao = 0, Renovacao = 1, CEP = 2</example>
         </member>
         <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.EstrategiaId">
             <summary>
@@ -3439,9 +3473,19 @@
             Estrategia associada ao plano.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.TiposManutencao">
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.IdTipoManutencaoCep">
             <summary>
-            Tipos de manutenção que herdam deste tipo de estratégia.
+            FK do tipo CEP associada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.IdTipoManutencao">
+            <summary>
+            FK do tipo de manutenção associada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.TipoEstrategiaModel.TiposPlanos">
+            <summary>
+            Tipos de plano que herdam deste tipo de estratégia.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel">
@@ -3567,10 +3611,10 @@
         </member>
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.TipoManutencaoId">
             <summary>
-            Chave estrangeira para TipoManutencao
+            Chave estrangeira para TipoPlano
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.TipoManutencao">
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.FerramentasTipoModel.TipoPlano">
             <summary>
             Tipo de manutenção associado ao item.
             </summary>
@@ -3600,36 +3644,6 @@
             Almoxarifados que armazenam esta ferramenta ou kit.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.IdItemRenovacaoTipo">
-            <summary>
-            Id do item de renovacao.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.CodigoItem">
-            <summary>
-            Codigo do item de renovacao.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.Observacoes">
-            <summary>
-            Observações do item de renovacao.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.Template1">
-            <summary>
-            Template1 do item de renovacao.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.Template2">
-            <summary>
-            Template2 do item de renovacao.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.ItemRenovacaoTipoModel.TipoManutencaoId">
-            <summary>
-            FK do tipo de manutencao.
-            </summary>
-        </member>
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TarefaModel.IdTarefa">
             <summary>
             Id da tarefa
@@ -3653,6 +3667,11 @@
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TarefaModel.TipoManutencaoId">
             <summary>
             FK do tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TarefaModel.Ferramentas">
+            <summary>
+            Guarda ferramentas e kits específicos dos equipamentos 
             </summary>
         </member>
         <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.IdTipoManutencaoCep">
@@ -3691,87 +3710,101 @@
             </summary>
             <example>AbrirNota = 0, AbrirOrdem = 1, OpcaoTemplate = 2, Nada = 3</example>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.PlanoManutencaoCodigo">
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.TiposEstrategias">
             <summary>
-            FK do plano de manutencao associado.
+            Guarda os tipos de estrategia associados a este tipo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.PlanoManutencao">
+        <member name="P:app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels.TipoManutencaoCepModel.TipoPlanoModels">
             <summary>
-            Plano de manutencao associado ao tipo.
+            Guarda os tipos de plano associados a este tipo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.IdTipoManutencao">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.IdTipoManutencao">
             <summary>
             Id do tipo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.TipoTipo">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.Visivel">
             <summary>
-            Tipo do tipo a ser cadastrado.
+            Se o tipo está visível.
             </summary>
-            <example>Manutencao = 0,
-            RenovacaoAtivo = 1</example>
+            <example>Invisivel = 0, Visivel = 1, Nova = 2</example>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.NomeTipoManutencao">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.Categoria">
             <summary>
-            Nome do tipo de manutencao.
+            Categoria do tipo de manutencao.
             </summary>
+            <example>Manutencao = 0, Renovacao = 1, CEP = 2</example>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.Habilitada">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.Dias">
             <summary>
-            Se o tipo está habilitado.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.Confiabilidade">
-            <summary>
-            Confiabilidade do tipo de manutencao em porcentagem.
+            Número de meses que ocorrerá a manutenção do tipo especificado
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.TipoAtivo">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.ToleranciaPositiva">
             <summary>
-            Tipo de ativo.
+            Tolerância em dias positiva para a manutenção do tipo especificado
             </summary>
-            <example>ERP</example>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.TipoEstrategiaId">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.ToleranciaNegativa">
+            <summary>
+            Tolerância em dias negativa para a manutenção do tipo especificado
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.Continua">
+            <summary>
+            Se o tipo de estratégia é contínua ou não.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.TipoEstrategiaId">
             <summary>
             FK do tipo de estratégia.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.PlanoManutencaoId">
-            <summary>
-            FK do plano de manutencao.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.TipoEstrategia">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.TipoEstrategia">
             <summary>
             Tipo de estratégia herdada para este tipo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.PlanoManutencao">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.PlanoManutencaoId">
+            <summary>
+            FK do plano de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.PlanoManutencao">
             <summary>
             Plano de manutencao associado a este tipo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.Ferramentas">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.TipoManutencaoCepId">
             <summary>
-            Guarda ferramentas e kits específicos dos equipamentos 
+            FK do tipo de manutencao CEP.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.ItensRenovacao">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.TipoManutencaoCep">
             <summary>
-            Guarda itens de renovação para o cadastro de tipos de ativo
+            Tipo de manutencao CEP associado a este tipo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.CongasModel.TipoManutencaoModel.ListaTarefa">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.TipoManutencaoId">
+            <summary>
+            FK do tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.TipoManutencao">
+            <summary>
+            Tipo de manutencao associado a este tipo de manutencao.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.ListaTarefa">
             <summary>
             Tarefas relacionadas a este tipo de manutencao
             </summary>
         </member>
-        <member name="T:app_pm_back.Models.CongasModel.TipoTipo">
+        <member name="P:app_pm_back.Models.CongasModel.TipoPlanoModel.Ferramentas">
             <summary>
-            Qual o tipo do tipo cadastrado.
+            Ferramentas relacionadas a este tipo de manutencao.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.NotaPetroModel.IdNota">
@@ -4209,28 +4242,13 @@
             <param name="id">Id da nota a ser realizada a busca</param>
             <returns>Lista de Itens associadas a essa nota</returns>
         </member>
-        <member name="T:app_pm_back.Services.CongasServices.ItemRenovacaoTipoService">
-            <summary>
-            Servico de itens de renovacao por tipo de manutencao.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.CongasServices.ItemRenovacaoTipoService.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa o servico.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.CongasServices.ItemRenovacaoTipoService.BuscarPorTipoManutencaoAsync(System.Int32)">
-            <summary>
-            Lista itens por tipo de manutencao.
-            </summary>
-        </member>
         <member name="M:app_pm_back.Services.CongasServices.NotaManutencaoService.ImportarNotasEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaManutencaoModel})">
             <summary>
             Importa notas em lote, validando e ignorando Chaves Estrangeiras que não existem no banco.
             </summary>
             <param name="notas">Notas a serem cadastradas</param>
         </member>
-        <member name="M:app_pm_back.Services.CongasServices.NotaManutencaoService.GetFichasPorAtivoAsync(System.String,System.String)">
+        <member name="M:app_pm_back.Services.CongasServices.NotaManutencaoService.GetFichasPorAtivoAsync(System.Int32,System.String)">
             <summary>
             Regra específica para a API, busca fichas por ativo e tipo de nota
             </summary>
@@ -4238,7 +4256,7 @@
             <param name="tipoNota">Tipo da nota (corretiva ou preventiva)</param>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Services.CongasServices.OrderCongasService.GetFichasPorAtivoAsync(System.String,System.String)">
+        <member name="M:app_pm_back.Services.CongasServices.OrderCongasService.GetFichasPorAtivoAsync(System.Int32,System.String)">
             <summary>
             Regra específica para a API, busca fichas por ativo e tipo de nota.
             </summary>
@@ -4295,6 +4313,13 @@
             <summary>
             Remove um equipamento pela tag (chave primaria textual).
             </summary>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.AtivoGerald(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="ativo"></param>
+            <returns></returns>
         </member>
         <member name="M:app_pm_back.Services.NotesPetroService.GetFichasPorAtivoAsync(System.String,System.String)">
             <summary>

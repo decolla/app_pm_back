@@ -33,12 +33,12 @@ public class LocalInstalacaoService : BaseCrudService<LocalInstalacaoModel>
     {
     }
 
-    public async Task<LocalInstalacaoModel?> GetByCodigoAsync(string codigoLocalInstalacao)
+    public async Task<LocalInstalacaoModel?> GetByCodigoAsync(int codigoLocalInstalacao)
     {
         return await _context.PM_LocaisInstalacao.FindAsync(codigoLocalInstalacao);
     }
 
-    public async Task<bool> DeleteByCodigoAsync(string codigoLocalInstalacao)
+    public async Task<bool> DeleteByCodigoAsync(int codigoLocalInstalacao)
     {
         var entity = await _context.PM_LocaisInstalacao.FindAsync(codigoLocalInstalacao);
         if (entity == null)

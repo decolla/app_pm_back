@@ -31,5 +31,11 @@ public class TarefaModel
     /// </summary>
     public int TipoManutencaoId { get; set; }
     [ForeignKey(nameof(TipoManutencaoId))]
-    public virtual TipoManutencaoModel TipoManutencao { get; set; } = null!;
+    public virtual TipoPlanoModel TipoPlano { get; set; } = null!;
+    
+    /// <summary>
+    /// Guarda ferramentas e kits específicos dos equipamentos 
+    /// </summary>
+    public virtual ICollection<FerramentasTipoModel>? Ferramentas { get; set; } = new List<FerramentasTipoModel>();
+    
 }

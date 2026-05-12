@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using app_pm_back.Models.CongasModel;
 using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 
 namespace app_pm_back.DTO.ComgasDTO;
@@ -8,34 +9,34 @@ namespace app_pm_back.DTO.ComgasDTO;
 /// <summary>
 /// DTO de tipo de manutencao Comgas.
 /// </summary>
-public class TipoManutencaoComgasDto
+public class TipoPlanoCongasDto
 {
     [SheetColumn("Id Tipo Manutenção")]
     public int IdTipoManutencao { get; set; }
 
-    [SheetColumn("Tipo do tipo")]
-    public int TipoTipo { get; set; }
+    public Visivel Visivel { get; set; } = Visivel.Visivel;
 
-    [SheetColumn("Nome tipo manutenção")]
-    public string? NomeTipoManutencao { get; set; }
+    public CategoriaTipoEstrategia Categoria { get; set; } = CategoriaTipoEstrategia.Manutencao;
 
-    [SheetColumn("Habilitada")]
-    public bool Habilitada { get; set; }
+    public int Dias { get; set; } = 80;
 
-    [SheetColumn("Confiabilidade")]
-    public int Confiabilidade { get; set; }
+    public int ToleranciaPositiva { get; set; }
 
-    [SheetColumn("Tipo ativo")]
-    public string? TipoAtivo { get; set; }
+    public int ToleranciaNegativa { get; set; }
+
+    public bool Continua { get; set; }
 
     [SheetColumn("Id Tipo Estratégia")]
     public int? TipoEstrategiaId { get; set; }
 
     [SheetColumn("Plano manut.")]
     public long? PlanoManutencaoId { get; set; }
-    
+
+    public int? TipoManutencaoCepId { get; set; }
+
+    public int? TipoManutencaoId { get; set; }
+
     public List<FerramentaTipoDto> Ferramentas { get; set; } = new();
-    public List<ItemRenovacaoTipoDto> ItensRenovacao { get; set; } = new();
 
     public List<TarefaComgasDto> ListaTarefas { get; set; } = new();
 }
@@ -47,15 +48,6 @@ public class FerramentaTipoDto
     public string? Descricao { get; set; }
     public int QuantidadeDisp { get; set; }
     public bool Checkbox { get; set; }
-}
-
-public class ItemRenovacaoTipoDto
-{
-    public int? IdItemRenovacaoTipo { get; set; }
-    public required string CodigoItem { get; set; }
-    public string? Observacoes { get; set; }
-    public string? Template1 { get; set; }
-    public string? Template2 { get; set; }
 }
 
 #pragma warning restore CS1591

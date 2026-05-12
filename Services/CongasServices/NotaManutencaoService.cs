@@ -31,13 +31,7 @@ public class NotaManutencaoService : BaseCrudService<NotaManutencaoModel>
             .Select(n => n.EquipamentoTag!)
             .Distinct()
             .ToList();
-
-        // consulta o Banco de Dados 
-        var locaisExistentes = (await _context.PM_LocaisInstalacao
-                .Where(l => codigosLocaisExcel.Contains(l.CodigoLocalInstalacao)) 
-                .Select(l => l.CodigoLocalInstalacao)
-                .ToListAsync())
-                .ToHashSet();
+        
 
         var equipamentosExistentes = (await _context.PM_EquipamentosAtivos
                 .Where(e => tagsEquipamentosExcel.Contains(e.TagEquipamento))
@@ -48,11 +42,6 @@ public class NotaManutencaoService : BaseCrudService<NotaManutencaoModel>
         // limpeza
         foreach (var nota in notas)
         {
-            // se a nota apontar para um Local que NÃO está no banco, anulamos o campo
-            if (!string.IsNullOrWhiteSpace(nota.LocalInstalacaoCodigo) && !locaisExistentes.Contains(nota.LocalInstalacaoCodigo))
-            {
-                nota.LocalInstalacaoCodigo = null; 
-            }
 
             // se a nota apontar para um Equipamento que NÃO está no banco, anulamos o campo
             if (!string.IsNullOrWhiteSpace(nota.EquipamentoTag) && !equipamentosExistentes.Contains(nota.EquipamentoTag))
@@ -72,11 +61,11 @@ public class NotaManutencaoService : BaseCrudService<NotaManutencaoModel>
     /// <param name="ativo">Nome do ativo a ser buscado como referência</param>
     /// <param name="tipoNota">Tipo da nota (corretiva ou preventiva)</param>
     /// <returns></returns>
-    public async Task<object> GetFichasPorAtivoAsync(string ativo, string? tipoNota)
+    public async Task<object> GetFichasPorAtivoAsync(int ativo, string? tipoNota)
     {
         var query = _dbSet.AsQueryable(); 
         
-        query = query.Where(n => n.LocalInstalacaoCodigo == ativo || n.EquipamentoTag == ativo);
+        query = query.Where(n => n.LocalInstalacaoCodigo == ativo);
         
         if (!string.IsNullOrWhiteSpace(tipoNota))
         {

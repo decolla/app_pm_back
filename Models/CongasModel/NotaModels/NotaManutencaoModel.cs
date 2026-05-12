@@ -45,7 +45,12 @@ public class NotaManutencaoModel : IClassifiable
     /// Codigo do local de instalacao relacionado.
     /// </summary>
     [MaxLength(60)]
-    public string? LocalInstalacaoCodigo { get; set; }
+    public int? LocalInstalacaoCodigo { get; set; }
+    
+    /// <summary>
+    /// Codigo do plano de manutencao relacionado.
+    /// </summary>
+    public long? PlanoManutencaoCodigo {get; set;}
 
     /// <summary>
     /// Area operacional associada a nota.
@@ -260,12 +265,12 @@ public class NotaManutencaoModel : IClassifiable
      /// </summary>
      [ForeignKey(nameof(EquipamentoTag))]
      public virtual EquipamentoAtivoModel? Equipamento { get; set; }
-
+    
      /// <summary>
-     /// Local de instalacao associado a nota.
+     /// Plano de manutencao associado a nota.
      /// </summary>
-     [ForeignKey(nameof(LocalInstalacaoCodigo))]
-     public virtual LocalInstalacaoModel? LocalInstalacao { get; set; }
+     [ForeignKey(nameof(PlanoManutencaoCodigo))]
+     public virtual PlanoManutencaoModel? PlanoManutencao { get; set; }
 
      /// <summary>
     /// Usuario criador da nota.

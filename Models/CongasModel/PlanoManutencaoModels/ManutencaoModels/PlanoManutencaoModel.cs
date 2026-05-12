@@ -88,7 +88,7 @@ public class PlanoManutencaoModel
     /// <summary>
     /// Tipos de manutencao deste plano.
     /// </summary>
-    public virtual ICollection<TipoManutencaoModel> TiposManutencao { get; set; } = new List<TipoManutencaoModel>();
+    public virtual ICollection<TipoPlanoModel> TiposManutencao { get; set; } = new List<TipoPlanoModel>();
 
     /// <summary>
     /// Ciclos previstos para o plano.
@@ -104,6 +104,8 @@ public class PlanoManutencaoModel
     /// Ordens vinculadas ao plano.
     /// </summary>
     public virtual ICollection<OrdemManutencaoModel> Ordens { get; set; } = new List<OrdemManutencaoModel>();
+    
+    public virtual ICollection<NotaManutencaoModel> Notas { get; set; } = new List<NotaManutencaoModel>();
 }
 
 /// <summary>

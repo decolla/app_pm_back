@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using app_pm_back.Data;
+using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 
@@ -10,6 +11,9 @@ namespace app_pm_back.Services;
 public class GenericSearchService
 {
     private readonly AppDbContext _context;
+    private readonly DbSet<NotaManutencaoModel> _notaManutencaoModels;
+    private readonly DbSet<OrdemManutencaoModel> _ordemManutencaoModels;
+    private readonly DbSet<PlanoManutencaoModel> _planosManutencaoModels;
     private static readonly Dictionary<string, Type> Tabelas = BuildTabelas();
 
     public GenericSearchService(AppDbContext context)
@@ -210,5 +214,57 @@ public class GenericSearchService
                 p => p.Name,
                 p => p.PropertyType.GetGenericArguments()[0],
                 StringComparer.OrdinalIgnoreCase);
+    }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="ativo"></param>
+    /// <returns></returns>
+    public async Task<object?> AtivoGerald(int ativo)
+    {
+        // seleciona a última ordem associada ao ativo
+        OrdemManutencaoModel? ultimaOrdem = await _ordemManutencaoModels
+            .Where(o => o.LocalInstalacaoCodigo == ativo)
+            .OrderByDescending(o => o.DataCriacao)
+            .FirstOrDefaultAsync();
+        
+        // seleciona a última ordem associada ao ativo
+        NotaManutencaoModel? ultimaNota = await _notaManutencaoModels
+            .Where(o => o.LocalInstalacaoCodigo == ativo)
+            .OrderByDescending(o => o.DataAvaria)
+            .FirstOrDefaultAsync();
+        
+        var ultimaData = (ultimaOrdem?.DataCriacao > ultimaNota?.DataAvaria) ? ultimaOrdem.DataCriacao : ultimaNota?.DataAvaria;
+        
+        if(ultimaData == null) return null;
+        
+        PlanoManutencaoModel? ultimoPlano = null;
+        
+        if(ultimaData == ultimaOrdem.DataCriacao)
+        {
+            // encontra o último plano criado 
+             ultimoPlano = await _planosManutencaoModels
+                .Where(p => p.CodigoPlano == ultimaOrdem.PlanoManutencaoCodigo)
+                .FirstOrDefaultAsync();
+        }
+        else
+        {
+            // encontra o último plano criado 
+            ultimoPlano = await _planosManutencaoModels
+                .Where(p => p.CodigoPlano == ultimaNota.PlanoManutencaoCodigo)
+                .FirstOrDefaultAsync();
+        }
+        
+        if(ultimoPlano == null) return null;
+
+        return new
+        {
+            Ativo = ativo,
+            UltimaData = ultimaData,
+            Estrategia = ultimoPlano.Estrategia,
+            Ciclo = ultimoPlano.Ciclos,
+            Plano = ultimoPlano
+        };
     }
 }

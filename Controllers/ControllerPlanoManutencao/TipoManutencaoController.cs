@@ -1,6 +1,7 @@
 using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Data;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain.PlanoManutencaoModels;
 using app_pm_back.Services.CongasServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +40,7 @@ public class TipoManutencaoController : ControllerBase
     [HttpPost("{tipo:int}")]
     public async Task<IActionResult> Criar(
         [FromRoute] int tipo,
-        [FromBody] TipoManutencaoComgasDto dto,
+        [FromBody] TipoPlanoCongasDto dto,
         [FromServices] AppDbContext context)
     {
         if (!ModelState.IsValid)
@@ -47,19 +48,14 @@ public class TipoManutencaoController : ControllerBase
             return ValidationProblem(ModelState);
         }
         
-        dto.TipoTipo = tipo;
+        dto.Categoria = (CategoriaTipoEstrategia)tipo;
 
-        if (dto.TipoTipo == 0 && (dto.ItensRenovacao?.Any() ?? false))
-        {
-            return BadRequest(new { message = "Erro: Um cadastro de MANUTENÇÃO não pode conter Itens de Renovação." });
-        }
-        
-        if (dto.TipoTipo == 1 && (dto.ListaTarefas?.Any() ?? false))
+        if (dto.Categoria == CategoriaTipoEstrategia.Renovacao && (dto.ListaTarefas?.Any() ?? false))
         {
             return BadRequest(new { message = "Erro: Um cadastro de RENOVAÇÃO não pode conter uma lista de tarefas." });
         }
 
-        if (dto.TipoTipo == 1 && (dto.Ferramentas?.Any() ?? false))
+        if (dto.Categoria == CategoriaTipoEstrategia.Renovacao && (dto.Ferramentas?.Any() ?? false))
         {
             return BadRequest(new { message = "Erro: Um cadastro de RENOVAÇÃO não pode conter Ferramentas." });
         }
@@ -68,6 +64,25 @@ public class TipoManutencaoController : ControllerBase
         {
             return BadRequest(new
                 { message = "Rota inválida. Use /tipo-manutencao/0 ou /tipo-manutencao/1" });
+        }
+
+        if (!dto.TipoEstrategiaId.HasValue && !dto.PlanoManutencaoId.HasValue)
+        {
+            return BadRequest(new
+            {
+                message = "Regra de Negócio: informe PlanoManutencaoId quando nao houver TipoEstrategiaId."
+            });
+        }
+
+        if (dto.PlanoManutencaoId.HasValue)
+        {
+            var planoExiste = await context.PM_PlanosManutencaoNormalizados
+                .AnyAsync(p => p.CodigoPlano == dto.PlanoManutencaoId.Value);
+
+            if (!planoExiste)
+            {
+                return NotFound(new { message = "O Plano de Manutenção informado não existe." });
+            }
         }
 
         // validação da arquitetura da hierarquia
@@ -101,8 +116,8 @@ public class TipoManutencaoController : ControllerBase
         
         try
         {
-            var obj = _mapper.Map<TipoManutencaoModel>(dto);
-            var novoObj = await _tipoManutencaoService.CreateAsync(obj);
+            var obj = _mapper.Map<TipoPlanoModel>(dto);
+            var novoObj = await _tipoManutencaoService.CreateComCopiaAsync(obj);
 
             return new ObjectResult(novoObj);
         }
@@ -199,7 +214,7 @@ public class TipoManutencaoController : ControllerBase
                 return BadRequest(new
                     { message = "Rota inválida. Use /tipo-manutencao/tipado/0 ou /tipo-manutencao/tipado/1" });
             }
-            TipoTipo tipagem = (TipoTipo)tipo;
+            CategoriaTipoEstrategia tipagem = (CategoriaTipoEstrategia)tipo;
             var acoes = await _tipoManutencaoService.GetTodosByTipo(tipagem);
             return Ok(acoes);
         }
@@ -216,7 +231,7 @@ public class TipoManutencaoController : ControllerBase
     /// <param name="dto">DTO do tipo a ser atualizado</param>
     /// <returns></returns>
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TipoManutencaoComgasDto dto)
+    public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TipoPlanoCongasDto dto)
     {
         try
         {
@@ -235,11 +250,20 @@ public class TipoManutencaoController : ControllerBase
                 dto.IdTipoManutencao = id;
             }
             
-            if (id != dto.IdTipoManutencao)            {
+            if (id != dto.IdTipoManutencao)
+            {
                 return BadRequest(new { message = "Id da rota e Id do objeto no corpo da requisição devem ser iguais, ou o do dto = 0." });
             }
 
-            var obj = _mapper.Map<TipoManutencaoModel>(dto);
+            if (!dto.TipoEstrategiaId.HasValue && !dto.PlanoManutencaoId.HasValue)
+            {
+                return BadRequest(new
+                {
+                    message = "Regra de Negócio: informe PlanoManutencaoId quando nao houver TipoEstrategiaId."
+                });
+            }
+
+            var obj = _mapper.Map<TipoPlanoModel>(dto);
             if (obj.IdTipoManutencao <= 0)
             {
                 return BadRequest(new

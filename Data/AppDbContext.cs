@@ -196,15 +196,15 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<NotaManutencaoModel>()
-            .HasOne(n => n.LocalInstalacao)
-            .WithMany(l => l.Notas)
-            .HasForeignKey(n => n.LocalInstalacaoCodigo)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<NotaManutencaoModel>()
             .HasOne(n => n.CriadoPorUsuario)
             .WithMany(u => u.NotasCriadas)
             .HasForeignKey(n => n.CriadoPorUsuarioId)
+            .OnDelete(DeleteBehavior.SetNull);
+        
+        modelBuilder.Entity<NotaManutencaoModel>()
+            .HasOne(o => o.PlanoManutencao)
+            .WithMany(p => p.Notas)
+            .HasForeignKey(o => o.PlanoManutencaoCodigo)
             .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<ItemNotaManutencaoModel>()
@@ -236,23 +236,11 @@ public class AppDbContext : DbContext
             .WithMany(n => n.Ordens)
             .HasForeignKey(o => o.NotaRelacionadaId)
             .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<OrdemManutencaoModel>()
-            .HasOne(o => o.PlanoManutencao)
-            .WithMany(p => p.Ordens)
-            .HasForeignKey(o => o.PlanoManutencaoCodigo)
-            .OnDelete(DeleteBehavior.SetNull);
-
+        
         modelBuilder.Entity<OrdemManutencaoModel>()
             .HasOne(o => o.Equipamento)
             .WithMany(e => e.Ordens)
             .HasForeignKey(o => o.EquipamentoTag)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<OrdemManutencaoModel>()
-            .HasOne(o => o.LocalInstalacao)
-            .WithMany(l => l.Ordens)
-            .HasForeignKey(o => o.LocalInstalacaoCodigo)
             .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<OrdemManutencaoModel>()
@@ -310,28 +298,16 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<FerramentasTipoModel>()
-            .HasOne(f => f.TipoManutencao)
+            .HasOne(f => f.TipoPlano)
             .WithMany(t => t.Ferramentas)
             .HasForeignKey(f => f.TipoManutencaoId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<ItemRenovacaoTipoModel>()
-            .HasOne(i => i.TipoManutencao)
-            .WithMany(t => t.ItensRenovacao)
-            .HasForeignKey(i => i.TipoManutencaoId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         modelBuilder.Entity<TarefaModel>()
-            .HasOne(t => t.TipoManutencao)
+            .HasOne(t => t.TipoPlano)
             .WithMany(m => m.ListaTarefa)
             .HasForeignKey(t => t.TipoManutencaoId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<TipoManutencaoCepModel>()
-            .HasOne(c => c.PlanoManutencao)
-            .WithMany()
-            .HasForeignKey(c => c.PlanoManutencaoCodigo)
-            .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<TipoManutencaoCepModel>()
             .HasIndex(c => new { c.NomeTipo, c.TipoAtivo })
@@ -613,10 +589,6 @@ public class AppDbContext : DbContext
     /// </summary>
     public DbSet<FerramentasTipoModel> PM_FerramentasTipo { get; set; }
 
-    /// <summary>
-    /// Tabela de itens de renovacao por tipo de manutencao.
-    /// </summary>
-    public DbSet<ItemRenovacaoTipoModel> PM_ItensRenovacaoTipo { get; set; }
 
     /// <summary>
     /// Tabela de tarefas por tipo de manutencao.

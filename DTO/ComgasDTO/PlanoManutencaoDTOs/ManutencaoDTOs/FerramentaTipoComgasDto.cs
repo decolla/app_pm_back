@@ -43,7 +43,7 @@ public class FerramentaTipoComgasDto
     public int? CentroTrabalhoId { get; set; }
 
     [SheetColumn("Loc.instalacao")]
-    public string? LocalInstalacaoCodigo { get; set; }
+    public int? LocalInstalacaoCodigo { get; set; }
 
     [SheetColumn("Fabricante")]
     public int? FabricanteId { get; set; }

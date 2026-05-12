@@ -48,7 +48,7 @@ public class PlanoManutencaoController : ControllerBase
                 return BadRequest(new { message = "CodigoPlano invalido. Envie CodigoPlano maior que zero." });
             }
 
-            var novoObj = await _planoManutencaoService.CreateAsync(obj);
+            var novoObj = await _planoManutencaoService.CreateComTiposAsync(obj);
             return new ObjectResult(novoObj);
         }
         catch (Exception e)
@@ -175,33 +175,6 @@ public class PlanoManutencaoController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Busca um plano de mantuenção associado a um ativo, retorna um objeto com os dados relevantes
-    /// </summary>
-    /// <param name="ativo">Ativo a ser procurado</param>
-    /// <returns>Objeto com informações relevantes</returns>
-    [HttpGet("busca-ativo")]
-    public async Task<IActionResult> BuscaGerald([FromQuery] string ativo)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(ativo))
-            {
-                return BadRequest(new { message = "Parametro ativo obrigatorio." });
-            }
-
-            var obj = await _planoManutencaoService.AtivoGerald(ativo);
-            if (obj == null) return NotFound(new { message = $"Nenhum {_operador} encontrado para o ativo informado." });
-
-            return Ok(obj);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao buscar {_operador}: {e.Message}." });
-        }
-    }
-
-
 
     /// <summary>
     /// Valida pagina e tamanho para evitar consultas inconsistentes.
@@ -210,4 +183,5 @@ public class PlanoManutencaoController : ControllerBase
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
     }
+    
 }

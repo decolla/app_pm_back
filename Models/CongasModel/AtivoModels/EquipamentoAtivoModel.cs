@@ -147,7 +147,7 @@ public class EquipamentoAtivoModel
     /// FK do local de instalacao.
     /// </summary>
     [MaxLength(60)]
-    public string? LocalInstalacaoCodigo { get; set; }
+    public int? LocalInstalacaoCodigo { get; set; }
 
     /// <summary>
     /// Fabricante do equipamento.

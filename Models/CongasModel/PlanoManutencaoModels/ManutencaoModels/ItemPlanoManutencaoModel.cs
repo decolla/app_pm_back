@@ -35,7 +35,7 @@ public class ItemPlanoManutencaoModel
     /// Codigo do local de instalacao relacionado.
     /// </summary>
     [MaxLength(60)]
-    public string? LocalInstalacaoCodigo { get; set; }
+    public int? LocalInstalacaoCodigo { get; set; }
 
     /// <summary>
     /// Plano de manutencao dono do item.

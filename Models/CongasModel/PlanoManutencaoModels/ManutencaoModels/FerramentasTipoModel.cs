@@ -66,7 +66,7 @@ public class FerramentasTipoModel
     /// Local de instalação associado ao kit/ferramenta.
     /// </summary>
     [MaxLength(60)]
-    public string? LocalInstalacaoCodigo { get; set; }
+    public int? LocalInstalacaoCodigo { get; set; }
 
     /// <summary>
     /// Fabricante informado para o kit/ferramenta.
@@ -138,7 +138,7 @@ public class FerramentasTipoModel
     public int QuantidadeDisp { get; set; }
     
     /// <summary>
-    /// Chave estrangeira para TipoManutencao
+    /// Chave estrangeira para TipoPlano
     /// </summary>
     public int TipoManutencaoId { get; set; }
 
@@ -146,7 +146,7 @@ public class FerramentasTipoModel
     /// Tipo de manutenção associado ao item.
     /// </summary>
     [ForeignKey(nameof(TipoManutencaoId))]
-    public virtual TipoManutencaoModel TipoManutencao { get; set; } = null!;
+    public virtual TipoPlanoModel TipoPlano { get; set; } = null!;
 
     /// <summary>
     /// Centro de trabalho associado.

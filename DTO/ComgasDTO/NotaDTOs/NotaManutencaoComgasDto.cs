@@ -27,6 +27,9 @@ public class NotaManutencaoComgasDto
 
     [SheetColumn("Classificado por")]
     public string? ClassificadoPor { get; set; }
+    
+    [SheetColumn("Plano manut.")]
+    public long? PlanoManutencaoCodigo { get; set; }
 
     [SheetColumn("Data classificação")]
     public DateTime? DataClassificacao { get; set; }
@@ -59,7 +62,7 @@ public class NotaManutencaoComgasDto
     public string? EquipamentoTag { get; set; }
 
     [SheetColumn("Loc.instalação")]
-    public string? LocalInstalacaoCodigo { get; set; }
+    public int? LocalInstalacaoCodigo { get; set; }
 
     [SheetColumn("Criado por")]
     public int? CriadoPorUsuarioId { get; set; }

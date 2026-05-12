@@ -78,7 +78,6 @@ builder.Services.AddScoped<TipoManutencaoService>();
 builder.Services.AddScoped<TipoManutencaoCepService>();
 builder.Services.AddScoped<TarefaService>();
 builder.Services.AddScoped<FerramentaTipoService>();
-builder.Services.AddScoped<ItemRenovacaoTipoService>();
 builder.Services.AddScoped<UsuarioSapService>();
 builder.Services.AddScoped<FabricanteService>();
 builder.Services.AddScoped<EnderecoService>();

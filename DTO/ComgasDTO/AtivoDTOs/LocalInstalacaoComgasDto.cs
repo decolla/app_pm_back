@@ -10,7 +10,7 @@ namespace app_pm_back.DTO.ComgasDTO;
 public class LocalInstalacaoComgasDto
 {
     [SheetColumn("Loc.instalação")]
-    public string? CodigoLocalInstalacao { get; set; }
+    public int? CodigoLocalInstalacao { get; set; }
 
     [SheetColumn("Denominação")]
     public string? Denominacao { get; set; }

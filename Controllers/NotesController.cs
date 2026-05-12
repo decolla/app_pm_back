@@ -411,11 +411,11 @@ public class ComgasNotesController : ControllerBase
     /// Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
     /// </summary>
     [HttpGet("ativo/{dnsIoT}")]
-    public async Task<IActionResult> ListarFichasPorAtivoCongas([FromRoute] string dnsIoT, [FromQuery] string? type)
+    public async Task<IActionResult> ListarFichasPorAtivoCongas([FromRoute] int dnsIoT, [FromQuery] string? type)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(dnsIoT))
+            if (dnsIoT <= 0)
             {
                 return BadRequest(new { message = "Parametro dnsIoT invalido." });
             }
