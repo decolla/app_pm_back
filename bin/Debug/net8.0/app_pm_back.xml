@@ -947,11 +947,6 @@
             Tabela de tarefas por tipo de manutencao.
             </summary>
         </member>
-        <member name="P:app_pm_back.Data.AppDbContext.PM_TiposManutencaoCep">
-            <summary>
-            Tabela de tipos de manutencao CEP.
-            </summary>
-        </member>
         <member name="T:app_pm_back.Data.DbInitializer">
             <summary>
             Classe para inicializar o banco de dados.

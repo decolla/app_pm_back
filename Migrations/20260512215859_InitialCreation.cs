@@ -153,7 +153,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PM_TipoManutencao",
+                name: "PM_TiposManutencao",
                 schema: "public",
                 columns: table => new
                 {
@@ -167,7 +167,7 @@ namespace app_pm_back.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PM_TipoManutencao", x => x.IdTipoManutencao);
+                    table.PrimaryKey("PK_PM_TiposManutencao", x => x.IdTipoManutencao);
                 });
 
             migrationBuilder.CreateTable(
@@ -304,7 +304,7 @@ namespace app_pm_back.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TipoEstrategiaModel",
+                name: "PM_TiposEstrategia",
                 schema: "public",
                 columns: table => new
                 {
@@ -321,26 +321,26 @@ namespace app_pm_back.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TipoEstrategiaModel", x => x.IdTipoEstrategia);
+                    table.PrimaryKey("PK_PM_TiposEstrategia", x => x.IdTipoEstrategia);
                     table.ForeignKey(
-                        name: "FK_TipoEstrategiaModel_PM_EstrategiasManutencao_EstrategiaId",
+                        name: "FK_PM_TiposEstrategia_PM_EstrategiasManutencao_EstrategiaId",
                         column: x => x.EstrategiaId,
                         principalSchema: "public",
                         principalTable: "PM_EstrategiasManutencao",
                         principalColumn: "IdEstrategia",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TipoEstrategiaModel_PM_TipoManutencao_IdTipoManutencao",
-                        column: x => x.IdTipoManutencao,
-                        principalSchema: "public",
-                        principalTable: "PM_TipoManutencao",
-                        principalColumn: "IdTipoManutencao");
-                    table.ForeignKey(
-                        name: "FK_TipoEstrategiaModel_PM_TiposManutencaoCep_IdTipoManutencaoC~",
+                        name: "FK_PM_TiposEstrategia_PM_TiposManutencaoCep_IdTipoManutencaoCep",
                         column: x => x.IdTipoManutencaoCep,
                         principalSchema: "public",
                         principalTable: "PM_TiposManutencaoCep",
                         principalColumn: "IdTipoManutencaoCep");
+                    table.ForeignKey(
+                        name: "FK_PM_TiposEstrategia_PM_TiposManutencao_IdTipoManutencao",
+                        column: x => x.IdTipoManutencao,
+                        principalSchema: "public",
+                        principalTable: "PM_TiposManutencao",
+                        principalColumn: "IdTipoManutencao");
                 });
 
             migrationBuilder.CreateTable(
@@ -462,11 +462,11 @@ namespace app_pm_back.Migrations
                 {
                     table.PrimaryKey("PK_PM_TiposPlano", x => x.IdTipoManutencao);
                     table.ForeignKey(
-                        name: "FK_PM_TiposPlano_PM_TipoManutencao_TipoManutencaoId",
-                        column: x => x.TipoManutencaoId,
+                        name: "FK_PM_TiposPlano_PM_TiposEstrategia_TipoEstrategiaId",
+                        column: x => x.TipoEstrategiaId,
                         principalSchema: "public",
-                        principalTable: "PM_TipoManutencao",
-                        principalColumn: "IdTipoManutencao");
+                        principalTable: "PM_TiposEstrategia",
+                        principalColumn: "IdTipoEstrategia");
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_TiposManutencaoCep_TipoManutencaoCepId",
                         column: x => x.TipoManutencaoCepId,
@@ -474,17 +474,17 @@ namespace app_pm_back.Migrations
                         principalTable: "PM_TiposManutencaoCep",
                         principalColumn: "IdTipoManutencaoCep");
                     table.ForeignKey(
+                        name: "FK_PM_TiposPlano_PM_TiposManutencao_TipoManutencaoId",
+                        column: x => x.TipoManutencaoId,
+                        principalSchema: "public",
+                        principalTable: "PM_TiposManutencao",
+                        principalColumn: "IdTipoManutencao");
+                    table.ForeignKey(
                         name: "FK_PM_TiposPlano_PlanoManutencaoModel_PlanoManutencaoId",
                         column: x => x.PlanoManutencaoId,
                         principalSchema: "public",
                         principalTable: "PlanoManutencaoModel",
                         principalColumn: "CodigoPlano");
-                    table.ForeignKey(
-                        name: "FK_PM_TiposPlano_TipoEstrategiaModel_TipoEstrategiaId",
-                        column: x => x.TipoEstrategiaId,
-                        principalSchema: "public",
-                        principalTable: "TipoEstrategiaModel",
-                        principalColumn: "IdTipoEstrategia");
                 });
 
             migrationBuilder.CreateTable(
@@ -553,10 +553,10 @@ namespace app_pm_back.Migrations
                 {
                     table.PrimaryKey("PK_PM_TarefasTipoManutencao", x => x.IdTarefa);
                     table.ForeignKey(
-                        name: "FK_PM_TarefasTipoManutencao_PM_TipoManutencao_TipoManutencaoMo~",
+                        name: "FK_PM_TarefasTipoManutencao_PM_TiposManutencao_TipoManutencaoM~",
                         column: x => x.TipoManutencaoModelIdTipoManutencao,
                         principalSchema: "public",
-                        principalTable: "PM_TipoManutencao",
+                        principalTable: "PM_TiposManutencao",
                         principalColumn: "IdTipoManutencao");
                     table.ForeignKey(
                         name: "FK_PM_TarefasTipoManutencao_PM_TiposPlano_TipoManutencaoId",
@@ -1901,6 +1901,24 @@ namespace app_pm_back.Migrations
                 column: "TipoManutencaoModelIdTipoManutencao");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PM_TiposEstrategia_EstrategiaId",
+                schema: "public",
+                table: "PM_TiposEstrategia",
+                column: "EstrategiaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_TiposEstrategia_IdTipoManutencao",
+                schema: "public",
+                table: "PM_TiposEstrategia",
+                column: "IdTipoManutencao");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_TiposEstrategia_IdTipoManutencaoCep",
+                schema: "public",
+                table: "PM_TiposEstrategia",
+                column: "IdTipoManutencaoCep");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposManutencaoCep_NomeTipo_TipoAtivo",
                 schema: "public",
                 table: "PM_TiposManutencaoCep",
@@ -1949,24 +1967,6 @@ namespace app_pm_back.Migrations
                 schema: "public",
                 table: "SetorVendasFuncionario",
                 column: "FuncionarioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TipoEstrategiaModel_EstrategiaId",
-                schema: "public",
-                table: "TipoEstrategiaModel",
-                column: "EstrategiaId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TipoEstrategiaModel_IdTipoManutencao",
-                schema: "public",
-                table: "TipoEstrategiaModel",
-                column: "IdTipoManutencao");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TipoEstrategiaModel_IdTipoManutencaoCep",
-                schema: "public",
-                table: "TipoEstrategiaModel",
-                column: "IdTipoManutencaoCep");
         }
 
         /// <inheritdoc />
@@ -2089,7 +2089,7 @@ namespace app_pm_back.Migrations
                 schema: "public");
 
             migrationBuilder.DropTable(
-                name: "TipoEstrategiaModel",
+                name: "PM_TiposEstrategia",
                 schema: "public");
 
             migrationBuilder.DropTable(
@@ -2105,11 +2105,11 @@ namespace app_pm_back.Migrations
                 schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PM_TipoManutencao",
+                name: "PM_TiposManutencaoCep",
                 schema: "public");
 
             migrationBuilder.DropTable(
-                name: "PM_TiposManutencaoCep",
+                name: "PM_TiposManutencao",
                 schema: "public");
 
             migrationBuilder.DropTable(

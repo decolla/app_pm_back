@@ -14,7 +14,7 @@ using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 namespace app_pm_back.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260512214948_InitialCreation")]
+    [Migration("20260512215859_InitialCreation")]
     partial class InitialCreation
     {
         /// <inheritdoc />
@@ -448,7 +448,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("IdTipoManutencaoCep");
 
-                    b.ToTable("TipoEstrategiaModel", "public");
+                    b.ToTable("PM_TiposEstrategia", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoPlanoModel", b =>
@@ -1893,7 +1893,7 @@ namespace app_pm_back.Migrations
 
                     b.HasKey("IdTipoManutencao");
 
-                    b.ToTable("PM_TipoManutencao", "public");
+                    b.ToTable("PM_TiposManutencao", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.SetorVendasModel", b =>

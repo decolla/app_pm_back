@@ -521,7 +521,11 @@ public class AppDbContext : DbContext
     
     public DbSet<PlanoManutencaoModel> PM_PlanosManutencao { get; set; }
     
-    public DbSet<TipoManutencaoModel> PM_TipoManutencao { get; set; }
+    public DbSet<TipoManutencaoModel> PM_TiposManutencao { get; set; }
+    
+    public DbSet<TipoEstrategiaModel> PM_TiposEstrategia { get; set; }
+    
+    public DbSet<TipoManutencaoCepModel> PM_TiposManutencaoCep { get; set; }
     
     /// <summary>
     /// Tabela de locais de instalacao.
@@ -619,8 +623,4 @@ public class AppDbContext : DbContext
     /// </summary>
     public DbSet<TarefaModel> PM_TarefasTipoManutencao { get; set; }
 
-    /// <summary>
-    /// Tabela de tipos de manutencao CEP.
-    /// </summary>
-    public DbSet<TipoManutencaoCepModel> PM_TiposManutencaoCep { get; set; }
 }
