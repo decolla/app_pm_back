@@ -74,7 +74,7 @@ public class NotaManutencaoModel : IClassifiable
     /// Finalidade de criação da nota
     /// </summary>
     [MaxLength(120)]
-    public string Finalidade { get; set; }
+    public string? Finalidade { get; set; }
 
     /// <summary>
     /// Conclusao desejada para a nota.
@@ -175,7 +175,7 @@ public class NotaManutencaoModel : IClassifiable
     /// Prioridade de 1 a 4 (4 = baixa).
     /// </summary>
     [Range(1, 4)]
-    public int Prioridade { get; set; }
+    public int? Prioridade { get; set; }
 
     /// <summary>
     /// Inicio desejado para execucao.
@@ -281,30 +281,30 @@ public class NotaManutencaoModel : IClassifiable
     /// <summary>
     /// Itens de diagnostico da nota.
     /// </summary>
-    public virtual ICollection<ItemNotaManutencaoModel> Itens { get; set; } = new List<ItemNotaManutencaoModel>();
+    public virtual ICollection<ItemNotaManutencaoModel>? Itens { get; set; } = new List<ItemNotaManutencaoModel>();
 
     /// <summary>
     /// Variaveis registradas na nota.
     /// </summary>
-    public virtual ICollection<VariavelNotaModel> Variaveis { get; set; } = new List<VariavelNotaModel>();
+    public virtual ICollection<VariavelNotaModel>? Variaveis { get; set; } = new List<VariavelNotaModel>();
 
     /// <summary>
     /// PM_Anexos da nota.
     /// </summary>
-    public virtual ICollection<AnnexModel> Anexos { get; set; } = new List<AnnexModel>();
+    public virtual ICollection<AnnexModel>? Anexos { get; set; } = new List<AnnexModel>();
     
     /// <summary>
     /// Medidas sugeridas para a nota.
     /// </summary>
-    public virtual ICollection<MedidaNotaModel> Medidas { get; set; } = new List<MedidaNotaModel>();
+    public virtual ICollection<MedidaNotaModel>? Medidas { get; set; } = new List<MedidaNotaModel>();
 
     /// <summary>
     /// Atividades sugeridas para a nota.
     /// </summary>
-    public virtual ICollection<AtividadeNotaModel> Atividades { get; set; } = new List<AtividadeNotaModel>();
+    public virtual ICollection<AtividadeNotaModel>? Atividades { get; set; } = new List<AtividadeNotaModel>();
 
     /// <summary>
     /// Ordens relacionadas a nota.
     /// </summary>
-    public virtual ICollection<OrdemManutencaoModel> Ordens { get; set; } = new List<OrdemManutencaoModel>();
+    public virtual ICollection<OrdemManutencaoModel>? Ordens { get; set; } = new List<OrdemManutencaoModel>();
 }

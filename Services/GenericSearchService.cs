@@ -283,6 +283,8 @@ public class GenericSearchService
             Ativo = ativo, // Id do ativo/LI que foi passado
             UltimaData = ultimaData, // Ùltima ocorrência em uma nota/ordem
             Estrategia = ultimoPlano?.Estrategia, // Estratégia associada ao plano
+            TempoCiclo = ultimoPlano?.Estrategia.Ciclos,
+            UnidadeCiclo = ultimoPlano?.Estrategia.UnidadeCiclo,
             DataInicio = ultimoPlano?.DataInicio, // Data de início do plano
             DataConclusao = ultimoPlano?.DataConclusao, // Data de conclusão do plano
             Plano = ultimoPlano // O plano completo encontrado

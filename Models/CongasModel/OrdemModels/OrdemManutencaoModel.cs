@@ -276,10 +276,10 @@ public class OrdemManutencaoModel : IClassifiable
     /// <summary>
     /// Operacoes planejadas ou executadas na ordem.
     /// </summary>
-    public virtual ICollection<OperacaoOrdemModel> Operacoes { get; set; } = new List<OperacaoOrdemModel>();
+    public virtual ICollection<OperacaoOrdemModel>? Operacoes { get; set; } = new List<OperacaoOrdemModel>();
 
     /// <summary>
     /// PM_Anexos associados a ordem.
     /// </summary>
-    public virtual ICollection<AnnexModel> Anexos { get; set; } = new List<AnnexModel>();
+    public virtual ICollection<AnnexModel>? Anexos { get; set; } = new List<AnnexModel>();
 }
