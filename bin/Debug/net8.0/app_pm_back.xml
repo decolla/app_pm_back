@@ -1168,14 +1168,29 @@
             Arquivo enviado.
             </summary>
         </member>
+        <member name="P:app_pm_back.DTO.UploadAnnexRequestDto.NotaId">
+            <summary>
+            Id da nota associada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.UploadAnnexRequestDto.OrdemId">
+            <summary>
+            Id da ordem associada.
+            </summary>
+        </member>
         <member name="P:app_pm_back.DTO.UploadAnnexRequestDto.ReferenciaId">
             <summary>
-            Id da entidade referenciada.
+            Id da entidade referenciada (legado).
             </summary>
         </member>
         <member name="P:app_pm_back.DTO.UploadAnnexRequestDto.TipoReferencia">
             <summary>
             Tipo da entidade referenciada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.UploadAnnexRequestDto.Categoria">
+            <summary>
+            Categoria do anexo.
             </summary>
         </member>
         <member name="P:app_pm_back.Interfaces.IClassifiable.Classificacao">
@@ -1200,16 +1215,16 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.InitialCreation">
+        <member name="T:app_pm_back.Migrations.InitialCreate">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreation.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreation.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreation.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Models.AnnexModel">
@@ -1237,15 +1252,36 @@
             Conteúdo físico do arquivo
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.AnnexModel.ReferenciaId">
+        <member name="P:app_pm_back.Models.AnnexModel.NotaId">
             <summary>
-            Guarda o id da referência (NumeroNota, IdOrdem...)
+            Id da possível nota associada ao anexo, caso haja
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.AnnexModel.Nota">
+            <summary>
+            Nota associada ao anexo.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.AnnexModel.OrdemId">
+            <summary>
+            Id da possível ordem associada ao anexo, caso haja
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.AnnexModel.Ordem">
+            <summary>
+            Ordem associada ao anexo.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.AnnexModel.TipoReferencia">
             <summary>
             Qual o tipo de referência o anexo é associado (NOTA_CONGAS, ORDEM_CONGAS...)
             </summary>
+        </member>
+        <member name="P:app_pm_back.Models.AnnexModel.Categoria">
+            <summary>
+            Categoria do anexo
+            </summary>
+            <example>AnaLiseRisco = 1</example>
         </member>
         <member name="P:app_pm_back.Models.AnnexModel.DataUpload">
             <summary>
@@ -2929,6 +2965,11 @@
             Operacoes planejadas ou executadas na ordem.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemManutencaoModel.Anexos">
+            <summary>
+            PM_Anexos associados a ordem.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Models.Domain.AlmoxarifadoModel">
             <summary>
             Almoxarifado com estoque de kits e ferramentas.
@@ -4075,13 +4116,15 @@
             </summary>
             <param name="context">Contexto da aplicacao.</param>
         </member>
-        <member name="M:app_pm_back.Services.AnnexService.UploadAnexo(Microsoft.AspNetCore.Http.IFormFile,System.Int64,System.String)">
+        <member name="M:app_pm_back.Services.AnnexService.UploadAnexo(Microsoft.AspNetCore.Http.IFormFile,System.Nullable{System.Int64},System.Nullable{System.Int64},System.String,app_pm_back.Models.CategoriaAnexo)">
             <summary>
             Faz upload e salva um anexo no banco.
             </summary>
             <param name="file">Arquivo enviado.</param>
-            <param name="referenciaId">Id da entidade referenciada.</param>
+            <param name="notaId">Id da nota associada.</param>
+            <param name="ordemId">Id da ordem associada.</param>
             <param name="tipoReferencia">Tipo da referencia.</param>
+            <param name="categoria">Categoria do anexo.</param>
             <returns>Anexo salvo.</returns>
         </member>
         <member name="M:app_pm_back.Services.AnnexService.DownloadAnexo(System.Int64)">
@@ -4091,11 +4134,12 @@
             <param name="id">Id do anexo.</param>
             <returns>Anexo encontrado ou nulo.</returns>
         </member>
-        <member name="M:app_pm_back.Services.AnnexService.BuscarAnexo(System.Int64,System.String)">
+        <member name="M:app_pm_back.Services.AnnexService.BuscarAnexo(System.Nullable{System.Int64},System.Nullable{System.Int64},System.String)">
             <summary>
             Lista anexos por referencia e tipo.
             </summary>
-            <param name="referenciaId">Id da referencia.</param>
+            <param name="notaId">Id da nota associada.</param>
+            <param name="ordemId">Id da ordem associada.</param>
             <param name="tipoReferencia">Tipo da referencia.</param>
             <returns>Lista de pares id/nome do anexo.</returns>
         </member>
@@ -4321,9 +4365,9 @@
         </member>
         <member name="M:app_pm_back.Services.GenericSearchService.AtivoGerald(System.Int32)">
             <summary>
-            
+            Busca por uma última nota/ordem associada a um ativo, e o plano de manutenção associado.
             </summary>
-            <param name="ativo"></param>
+            <param name="ativo">Ativo a ser buscado</param>
             <returns></returns>
         </member>
         <member name="M:app_pm_back.Services.NotesPetroService.GetFichasPorAtivoAsync(System.String,System.String)">

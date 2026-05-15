@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using app_pm_back.Interfaces;
+using app_pm_back.Models;
 
 namespace app_pm_back.Models.Domain;
 
@@ -276,4 +277,9 @@ public class OrdemManutencaoModel : IClassifiable
     /// Operacoes planejadas ou executadas na ordem.
     /// </summary>
     public virtual ICollection<OperacaoOrdemModel> Operacoes { get; set; } = new List<OperacaoOrdemModel>();
+
+    /// <summary>
+    /// PM_Anexos associados a ordem.
+    /// </summary>
+    public virtual ICollection<AnnexModel> Anexos { get; set; } = new List<AnnexModel>();
 }

@@ -36,12 +36,17 @@ public class AnnexController : ControllerBase
             return BadRequest(new { message = "Arquivo invalido para upload." });
         }
 
-        if (request.ReferenciaId <= 0 || string.IsNullOrWhiteSpace(request.TipoReferencia))
+        if (string.IsNullOrWhiteSpace(request.TipoReferencia))
         {
-            return BadRequest(new { message = "ReferenciaId e tipoReferencia sao obrigatorios." });
+            return BadRequest(new { message = "TipoReferencia e obrigatorio." });
         }
 
-        var result = await _annexService.UploadAnexo(request.Arquivo, request.ReferenciaId, request.TipoReferencia);
+        if (!TryResolveReferencia(request, out var notaId, out var ordemId, out var error))
+        {
+            return BadRequest(new { message = error });
+        }
+
+        var result = await _annexService.UploadAnexo(request.Arquivo, notaId, ordemId, request.TipoReferencia, request.Categoria);
         return Ok(new { message = $"Arquivo enviado com sucesso {result.IdAnexo}" });
     }
 
@@ -78,7 +83,71 @@ public class AnnexController : ControllerBase
             return BadRequest(new { message = "ReferenciaId e tipoReferencia sao obrigatorios." });
         }
 
-        var list = await _annexService.BuscarAnexo(referenciaId, tipoReferencia);
+        if (!TryResolveReferencia(referenciaId, tipoReferencia, out var notaId, out var ordemId, out var error))
+        {
+            return BadRequest(new { message = error });
+        }
+
+        var list = await _annexService.BuscarAnexo(notaId, ordemId, tipoReferencia);
         return Ok(list);
     }
+
+    private static bool TryResolveReferencia(UploadAnnexRequestDto request, out long? notaId, out long? ordemId, out string? error)
+    {
+        notaId = request.NotaId;
+        ordemId = request.OrdemId;
+        error = null;
+
+        if (notaId.HasValue && ordemId.HasValue)
+        {
+            error = "Informe apenas NotaId ou OrdemId.";
+            return false;
+        }
+
+        if (notaId.HasValue || ordemId.HasValue)
+        {
+            return true;
+        }
+
+        if (!request.ReferenciaId.HasValue || request.ReferenciaId <= 0)
+        {
+            error = "Informe NotaId ou OrdemId (ou ReferenciaId legado).";
+            return false;
+        }
+
+        return TryResolveReferencia(request.ReferenciaId.Value, request.TipoReferencia, out notaId, out ordemId, out error);
+    }
+
+    private static bool TryResolveReferencia(long referenciaId, string tipoReferencia, out long? notaId, out long? ordemId, out string? error)
+    {
+        notaId = null;
+        ordemId = null;
+        error = null;
+
+        if (IsTipoReferenciaOrdem(tipoReferencia))
+        {
+            ordemId = referenciaId;
+            return true;
+        }
+
+        if (IsTipoReferenciaNota(tipoReferencia))
+        {
+            notaId = referenciaId;
+            return true;
+        }
+
+        error = "TipoReferencia invalido para associacao de nota ou ordem.";
+        return false;
+    }
+
+    private static bool IsTipoReferenciaOrdem(string tipoReferencia)
+    {
+        return tipoReferencia.Contains("ORDEM", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsTipoReferenciaNota(string tipoReferencia)
+    {
+        return tipoReferencia.Contains("NOTA", StringComparison.OrdinalIgnoreCase);
+    }
 }
+

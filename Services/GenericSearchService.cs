@@ -280,11 +280,12 @@ public class GenericSearchService
         
         return new
         {
-            Ativo = ativo,
-            UltimaData = ultimaData,
-            Estrategia = ultimoPlano?.Estrategia,
-            Ciclo = ultimoPlano?.Ciclos,
-            Plano = ultimoPlano
+            Ativo = ativo, // Id do ativo/LI que foi passado
+            UltimaData = ultimaData, // Ùltima ocorrência em uma nota/ordem
+            Estrategia = ultimoPlano?.Estrategia, // Estratégia associada ao plano
+            DataInicio = ultimoPlano?.DataInicio, // Data de início do plano
+            DataConclusao = ultimoPlano?.DataConclusao, // Data de conclusão do plano
+            Plano = ultimoPlano // O plano completo encontrado
         };
     }
 }

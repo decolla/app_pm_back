@@ -208,6 +208,18 @@ public class AppDbContext : DbContext
             .HasForeignKey(o => o.PlanoManutencaoCodigo)
             .OnDelete(DeleteBehavior.SetNull);
 
+        modelBuilder.Entity<AnnexModel>()
+            .HasOne(a => a.Nota)
+            .WithMany(n => n.Anexos)
+            .HasForeignKey(a => a.NotaId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<AnnexModel>()
+            .HasOne(a => a.Ordem)
+            .WithMany(o => o.Anexos)
+            .HasForeignKey(a => a.OrdemId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         modelBuilder.Entity<ItemNotaManutencaoModel>()
             .HasOne(i => i.Nota)
             .WithMany(n => n.Itens)

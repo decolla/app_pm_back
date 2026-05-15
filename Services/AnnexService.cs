@@ -33,11 +33,15 @@ public class AnnexService
     /// Faz upload e salva um anexo no banco.
     /// </summary>
     /// <param name="file">Arquivo enviado.</param>
-    /// <param name="referenciaId">Id da entidade referenciada.</param>
+    /// <param name="notaId">Id da nota associada.</param>
+    /// <param name="ordemId">Id da ordem associada.</param>
     /// <param name="tipoReferencia">Tipo da referencia.</param>
+    /// <param name="categoria">Categoria do anexo.</param>
     /// <returns>Anexo salvo.</returns>
-    public async Task<AnnexModel> UploadAnexo(IFormFile file, long referenciaId, string tipoReferencia)
+    public async Task<AnnexModel> UploadAnexo(IFormFile file, long? notaId, long? ordemId, string tipoReferencia, CategoriaAnexo categoria)
     {
+        ValidateAssociacao(notaId, ordemId);
+
         await using var stream = new MemoryStream();
         await file.CopyToAsync(stream);
 
@@ -46,8 +50,10 @@ public class AnnexService
             NomeAnexo = file.FileName,
             MimeType = file.ContentType,
             Dados = stream.ToArray(),
-            ReferenciaId = referenciaId,
+            NotaId = notaId,
+            OrdemId = ordemId,
             TipoReferencia = tipoReferencia,
+            Categoria = categoria,
             DataUpload = DateTime.Now
         };
 
@@ -71,21 +77,36 @@ public class AnnexService
     /// <summary>
     /// Lista anexos por referencia e tipo.
     /// </summary>
-    /// <param name="referenciaId">Id da referencia.</param>
+    /// <param name="notaId">Id da nota associada.</param>
+    /// <param name="ordemId">Id da ordem associada.</param>
     /// <param name="tipoReferencia">Tipo da referencia.</param>
     /// <returns>Lista de pares id/nome do anexo.</returns>
-    public async Task<List<(long, string)>> BuscarAnexo(long referenciaId, string tipoReferencia)
+    public async Task<List<(long, string)>> BuscarAnexo(long? notaId, long? ordemId, string tipoReferencia)
     {
-        List<(long, string)> list = new List<(long, string)>();
+        ValidateAssociacao(notaId, ordemId);
 
-        var query = await _annexModels.Where(o => o.ReferenciaId == referenciaId &&
-                                                  o.TipoReferencia == tipoReferencia).ToListAsync();
+        var query = _annexModels.AsNoTracking()
+            .Where(o => o.TipoReferencia == tipoReferencia);
 
-        foreach (var model in query)
+        if (notaId.HasValue)
         {
-            list.Add((model.IdAnexo, model.NomeAnexo));   
+            query = query.Where(o => o.NotaId == notaId);
         }
-        
-        return list;
+        else
+        {
+            query = query.Where(o => o.OrdemId == ordemId);
+        }
+
+        return await query
+            .Select(model => new ValueTuple<long, string>(model.IdAnexo, model.NomeAnexo))
+            .ToListAsync();
+    }
+
+    private static void ValidateAssociacao(long? notaId, long? ordemId)
+    {
+        if ((notaId.HasValue && ordemId.HasValue) || (!notaId.HasValue && !ordemId.HasValue))
+        {
+            throw new ArgumentException("Informe apenas NotaId ou OrdemId para o anexo.");
+        }
     }
 }
