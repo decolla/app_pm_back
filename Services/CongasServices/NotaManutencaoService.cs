@@ -31,11 +31,22 @@ public class NotaManutencaoService : BaseCrudService<NotaManutencaoModel>
             .Select(n => n.EquipamentoTag!)
             .Distinct()
             .ToList();
-        
+
+        var usuariosCriadoresExcel = notas
+            .Where(n => n.CriadoPorUsuarioId.HasValue)
+            .Select(n => n.CriadoPorUsuarioId!.Value)
+            .Distinct()
+            .ToList();
 
         var equipamentosExistentes = (await _context.PM_EquipamentosAtivos
                 .Where(e => tagsEquipamentosExcel.Contains(e.TagEquipamento))
                 .Select(e => e.TagEquipamento)
+                .ToListAsync())
+                .ToHashSet();
+
+        var usuariosExistentes = (await _context.PM_UsuariosSap
+                .Where(u => usuariosCriadoresExcel.Contains(u.IdUsuario))
+                .Select(u => u.IdUsuario)
                 .ToListAsync())
                 .ToHashSet();
 
@@ -47,6 +58,11 @@ public class NotaManutencaoService : BaseCrudService<NotaManutencaoModel>
             if (!string.IsNullOrWhiteSpace(nota.EquipamentoTag) && !equipamentosExistentes.Contains(nota.EquipamentoTag))
             {
                 nota.EquipamentoTag = null;
+            }
+
+            if (nota.CriadoPorUsuarioId.HasValue && !usuariosExistentes.Contains(nota.CriadoPorUsuarioId.Value))
+            {
+                nota.CriadoPorUsuarioId = null;
             }
         }
 
