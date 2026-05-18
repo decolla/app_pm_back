@@ -138,6 +138,8 @@ using (var scope = app.Services.CreateScope())
     {
         var dbContext = services.GetRequiredService<AppDbContext>();
         Console.WriteLine("A tentar aplicar as migrations no banco de dados...");
+        // REMOVER DEPOIS: APAGA TODAS AS TABELAS
+        dbContext.Database.EnsureDeleted();
         dbContext.Database.Migrate();
         Console.WriteLine("Migrations aplicadas com sucesso!");
     }
