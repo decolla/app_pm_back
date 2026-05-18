@@ -14,7 +14,7 @@ using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 namespace app_pm_back.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260518140622_InitialCreate")]
+    [Migration("20260518170113_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
