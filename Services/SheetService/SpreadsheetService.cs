@@ -301,7 +301,7 @@ public class SpreadsheetService
             Codificacao = dto.Codificacao,
             Consequencia = dto.Consequencia,
             GrupoDeCodes = dto.GrupoDeCodes,
-            Finalidade = dto.Finalidade
+            Finalidade = string.IsNullOrWhiteSpace(dto.Finalidade) ? "N/A" : dto.Finalidade
         };
     }
 
