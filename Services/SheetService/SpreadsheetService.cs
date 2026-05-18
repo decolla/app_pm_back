@@ -300,7 +300,8 @@ public class SpreadsheetService
             TxtCodeCodif = dto.TxtCodeCodif,
             Codificacao = dto.Codificacao,
             Consequencia = dto.Consequencia,
-            GrupoDeCodes = dto.GrupoDeCodes
+            GrupoDeCodes = dto.GrupoDeCodes,
+            Finalidade = dto.Finalidade
         };
     }
 
