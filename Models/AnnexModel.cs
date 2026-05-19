@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.Models;
 
@@ -31,9 +32,26 @@ public class AnnexModel
     public byte[] Dados { get; set; }
     
     /// <summary>
-    /// Guarda o id da referência (NumeroNota, IdOrdem...)
+    /// Id da possível nota associada ao anexo, caso haja
     /// </summary>
-    public long ReferenciaId { get; set; }
+    public long? NotaId { get; set; }
+    
+    /// <summary>
+    /// Nota associada ao anexo.
+    /// </summary>
+    [ForeignKey(nameof(NotaId))]
+    public virtual NotaManutencaoModel? Nota { get; set; }
+    
+    /// <summary>
+    /// Id da possível ordem associada ao anexo, caso haja
+    /// </summary>
+    public long? OrdemId { get; set; }
+
+    /// <summary>
+    /// Ordem associada ao anexo.
+    /// </summary>
+    [ForeignKey(nameof(OrdemId))]
+    public virtual OrdemManutencaoModel? Ordem { get; set; }
     
     /// <summary>
     /// Qual o tipo de referência o anexo é associado (NOTA_CONGAS, ORDEM_CONGAS...)
@@ -41,7 +59,24 @@ public class AnnexModel
     public string TipoReferencia { get; set; }
     
     /// <summary>
+    /// Categoria do anexo
+    /// </summary>
+    /// <example>AnaLiseRisco = 1</example>
+    public CategoriaAnexo Categoria { get; set; } = CategoriaAnexo.Outros;
+    
+    /// <summary>
     /// Data de upload do anexo
     /// </summary>
     public DateTime DataUpload { get; set; }
+}
+
+public enum CategoriaAnexo
+{
+    Outros = 0,
+    AnaliseRisco = 1,
+    ARO = 2,
+    MatrizLibra = 3,
+    PermissaoTrabalho =4,
+    Relatorio = 5
+    
 }

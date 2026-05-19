@@ -1,3 +1,4 @@
+using app_pm_back.DTO;
 using app_pm_back.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,16 +25,28 @@ public class AnnexController : ControllerBase
     /// <summary>
     /// Upload de um arquivo em IFormFile 
     /// </summary>
-    /// <param name="arquivo">Arquivo a ser passado</param>
-    /// <param name="referenciaId">Id de referência</param>
-    /// <param name="tipoReferencia">Tipo de referência a ser usada</param>
+    /// <param name="request">Dados de upload do anexo.</param>
     /// <returns></returns>
     [HttpPost("upload")]
-    public async Task<IActionResult> UploadArquivo(IFormFile arquivo, [FromForm] long referenciaId,
-        [FromForm] string tipoReferencia)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadArquivo([FromForm] UploadAnnexRequestDto request)
     {
-        var result = await _annexService.UploadAnexo(arquivo, referenciaId, tipoReferencia);
-        if (result == null) return BadRequest(new { message = "Erro ao enviar arquivo" });
+        if (request.Arquivo == null || request.Arquivo.Length == 0)
+        {
+            return BadRequest(new { message = "Arquivo invalido para upload." });
+        }
+
+        if (string.IsNullOrWhiteSpace(request.TipoReferencia))
+        {
+            return BadRequest(new { message = "TipoReferencia e obrigatorio." });
+        }
+
+        if (!TryResolveReferencia(request, out var notaId, out var ordemId, out var error))
+        {
+            return BadRequest(new { message = error });
+        }
+
+        var result = await _annexService.UploadAnexo(request.Arquivo, notaId, ordemId, request.TipoReferencia, request.Categoria);
         return Ok(new { message = $"Arquivo enviado com sucesso {result.IdAnexo}" });
     }
 
@@ -43,10 +56,15 @@ public class AnnexController : ControllerBase
     /// <param name="id">Id regsitrado no arquivo</param>
     /// <returns></returns>
     [HttpGet("{id:long}")]
-    public async Task<IActionResult> DownloadArquivo(long id)
+    public async Task<IActionResult> DownloadArquivo([FromRoute] long id)
     {
+        if (id <= 0)
+        {
+            return BadRequest(new { message = "Id do anexo invalido." });
+        }
+
         var anexo = await _annexService.DownloadAnexo(id);
-        if (anexo == null || anexo.Dados == null) return NotFound();
+        if (anexo == null) return NotFound();
 
         return File(anexo.Dados, anexo.MimeType, anexo.NomeAnexo);
     }
@@ -58,11 +76,78 @@ public class AnnexController : ControllerBase
     /// <param name="tipoReferencia">Tipo da referência de busca</param>
     /// <returns></returns>
     [HttpGet("referencia/{referenciaId:long}/{tipoReferencia}")]
-    public async Task<IActionResult> BuscarArquivo(long referenciaId, string tipoReferencia)
+    public async Task<IActionResult> BuscarArquivo([FromRoute] long referenciaId, [FromRoute] string tipoReferencia)
     {
-        var list = await _annexService.BuscarAnexo(referenciaId, tipoReferencia);
-        
-        if (list == null) return NotFound();
+        if (referenciaId <= 0 || string.IsNullOrWhiteSpace(tipoReferencia))
+        {
+            return BadRequest(new { message = "ReferenciaId e tipoReferencia sao obrigatorios." });
+        }
+
+        if (!TryResolveReferencia(referenciaId, tipoReferencia, out var notaId, out var ordemId, out var error))
+        {
+            return BadRequest(new { message = error });
+        }
+
+        var list = await _annexService.BuscarAnexo(notaId, ordemId, tipoReferencia);
         return Ok(list);
     }
+
+    private static bool TryResolveReferencia(UploadAnnexRequestDto request, out long? notaId, out long? ordemId, out string? error)
+    {
+        notaId = request.NotaId;
+        ordemId = request.OrdemId;
+        error = null;
+
+        if (notaId.HasValue && ordemId.HasValue)
+        {
+            error = "Informe apenas NotaId ou OrdemId.";
+            return false;
+        }
+
+        if (notaId.HasValue || ordemId.HasValue)
+        {
+            return true;
+        }
+
+        if (!request.ReferenciaId.HasValue || request.ReferenciaId <= 0)
+        {
+            error = "Informe NotaId ou OrdemId (ou ReferenciaId legado).";
+            return false;
+        }
+
+        return TryResolveReferencia(request.ReferenciaId.Value, request.TipoReferencia, out notaId, out ordemId, out error);
+    }
+
+    private static bool TryResolveReferencia(long referenciaId, string tipoReferencia, out long? notaId, out long? ordemId, out string? error)
+    {
+        notaId = null;
+        ordemId = null;
+        error = null;
+
+        if (IsTipoReferenciaOrdem(tipoReferencia))
+        {
+            ordemId = referenciaId;
+            return true;
+        }
+
+        if (IsTipoReferenciaNota(tipoReferencia))
+        {
+            notaId = referenciaId;
+            return true;
+        }
+
+        error = "TipoReferencia invalido para associacao de nota ou ordem.";
+        return false;
+    }
+
+    private static bool IsTipoReferenciaOrdem(string tipoReferencia)
+    {
+        return tipoReferencia.Contains("ORDEM", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsTipoReferenciaNota(string tipoReferencia)
+    {
+        return tipoReferencia.Contains("NOTA", StringComparison.OrdinalIgnoreCase);
+    }
 }
+

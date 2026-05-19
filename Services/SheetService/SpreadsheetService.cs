@@ -3,8 +3,10 @@ using System.Reflection;
 using System.Text;
 using api.Communications.Service.Impl.Data;
 using app_pm_back.Attributes;
+using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
+using app_pm_back.Models.Domain;
 using Microsoft.VisualBasic.FileIO;
 
 namespace app_pm_back.Services;
@@ -22,12 +24,12 @@ public class SpreadsheetService
     {
         public string TipoIdentificado { get; set; } = "DESCONHECIDO";
         public List<NotaPetroModel> NotasPetro { get; set; } = new();
-        public List<NoteCongasModel> NotasCongas { get; set; } = new();
+        public List<NotaManutencaoModel> NotasCongas { get; set; } = new();
         public List<OrdemPetroModel> OrdensPetro { get; set; } = new();
-        public List<OrderCongasModel> OrdensCongas { get; set; } = new();
-        public List<ItemNotaCongasModel> ItensCongas { get; set; } = new();
-        public List<EquipmentComgasModel> Equipamentos { get; set; } = new();
-        public List<AcaoNotaCongasModel> AcoesCongas { get; set; } = new();
+        public List<OrdemManutencaoModel> OrdensCongas { get; set; } = new();
+        public List<ItemNotaManutencaoModel> ItensCongas { get; set; } = new();
+        public List<EquipamentoAtivoModel> Equipamentos { get; set; } = new();
+        // public List<AcaoNotaCongasModel> AcoesCongas { get; set; } = new();
     }
 
     public async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(IFormFile spreadSheet)
@@ -156,31 +158,32 @@ public class SpreadsheetService
             }
             else if (resultado.TipoIdentificado == "NOTA_CONGAS")
             {
-                var notaCongas = ReadLineForModel<NoteCongasModel>(row, columns);
-                resultado.NotasCongas.Add(notaCongas);
+                var dto = ReadLineForModel<NotaManutencaoComgasDto>(row, columns);
+                resultado.NotasCongas.Add(MapNotaComgasDto(dto));
             }
             else if (resultado.TipoIdentificado == "ORDEM_CONGAS")
             {
-                var orderCongas = ReadLineForModel<OrderCongasModel>(row, columns);
-                resultado.OrdensCongas.Add(orderCongas);
+                var dto = ReadLineForModel<OrdemManutencaoComgasDto>(row, columns);
+                resultado.OrdensCongas.Add(MapOrdemComgasDto(dto));
             }
             else if (resultado.TipoIdentificado == "ITEM_CONGAS")
             {
-                var orderCongas = ReadLineForModel<ItemNotaCongasModel>(row, columns);
-                resultado.ItensCongas.Add(orderCongas);
+                var dto = ReadLineForModel<ItemNotaManutencaoComgasDto>(row, columns);
+                resultado.ItensCongas.Add(MapItemNotaComgasDto(dto));
             }
             else if (resultado.TipoIdentificado == "ACAO_NOTA_CONGAS")
             {
-                var acaoCongas = ReadLineForModel<AcaoNotaCongasModel>(row, columns);
-                resultado.AcoesCongas.Add(acaoCongas);
+                var dto = ReadLineForModel<AcaoNotaCongasComgasDto>(row, columns);
+                // resultado.AcoesCongas.Add(MapAcaoNotaComgasDto(dto));
             }
             else if (resultado.TipoIdentificado == "EQUIPAMENTO_SAP")
             {
-                var equipamento = ReadLineForModel<EquipmentComgasModel>(row, columns);
+                var dto = ReadLineForModel<EquipamentoAtivoComgasDto>(row, columns);
+                var equipamento = MapEquipamentoComgasDto(dto);
 
                 PreencherDetalhesTecnicos(equipamento, row, columns);
 
-                if (!string.IsNullOrWhiteSpace(equipamento.IdEquipamento))
+                if (!string.IsNullOrWhiteSpace(equipamento.TagEquipamento))
                 {
                     resultado.Equipamentos.Add(equipamento);
                 }
@@ -270,6 +273,144 @@ public class SpreadsheetService
         return model;
     }
 
+    private static NotaManutencaoModel MapNotaComgasDto(NotaManutencaoComgasDto dto)
+    {
+        return new NotaManutencaoModel
+        {
+            IdNota = dto.IdNota != 0 ? dto.IdNota : dto.NumeroNota,
+            NumeroNota = dto.NumeroNota,
+            TipoNota = dto.TipoNota,
+            Classificacao = dto.Classificacao,
+            MetodoClassificacao = dto.MetodoClassificacao,
+            ClassificadoPor = dto.ClassificadoPor,
+            DataClassificacao = dto.DataClassificacao,
+            Descricao = dto.Descricao,
+            DescricaoDetalhada = dto.DescricaoDetalhada,
+            StatusNota = dto.StatusNota,
+            DataNota = dto.DataNota,
+            Prioridade = dto.Prioridade,
+            InicioDesejado = dto.InicioDesejado,
+            DataFim = dto.DataFim,
+            EquipamentoTag = dto.EquipamentoTag,
+            LocalInstalacaoCodigo = dto.LocalInstalacaoCodigo,
+            CriadoPorUsuarioId = dto.CriadoPorUsuarioId,
+            TipoPrioridade = dto.TipoPrioridade,
+            TipoDeNota = dto.TipoDeNota,
+            TxtGrpCodific = dto.TxtGrpCodific,
+            TxtCodeCodif = dto.TxtCodeCodif,
+            Codificacao = dto.Codificacao,
+            Consequencia = dto.Consequencia,
+            GrupoDeCodes = dto.GrupoDeCodes,
+            Finalidade = string.IsNullOrWhiteSpace(dto.Finalidade) ? "N/A" : dto.Finalidade
+        };
+    }
+
+    private static OrdemManutencaoModel MapOrdemComgasDto(OrdemManutencaoComgasDto dto)
+    {
+        return new OrdemManutencaoModel
+        {
+            IdOrdem = dto.IdOrdem,
+            TipoOrdem = dto.TipoOrdem,
+            Classificacao = dto.Classificacao,
+            MetodoClassificacao = dto.MetodoClassificacao,
+            ClassificadoPor = dto.ClassificadoPor,
+            DataClassificacao = dto.DataClassificacao,
+            StatusOrdem = dto.StatusOrdem,
+            NotaRelacionadaId = dto.NotaRelacionadaId,
+            PlanoManutencaoCodigo = dto.PlanoManutencaoCodigo,
+            Prioridade = dto.Prioridade,
+            DataEntrada = dto.DataEntrada,
+            CriadaPorUsuarioId = dto.CriadaPorUsuarioId,
+            ModificadaPorUsuarioId = dto.ModificadaPorUsuarioId,
+            CustoEstimado = dto.CustoEstimado,
+            CustoPlanejado = dto.CustoPlanejado,
+            CustoReal = dto.CustoReal
+        };
+    }
+
+    private static ItemNotaManutencaoModel MapItemNotaComgasDto(ItemNotaManutencaoComgasDto dto)
+    {
+        return new ItemNotaManutencaoModel
+        {
+            IdItemNota = dto.IdItemNota,
+            NotaId = dto.NotaId,
+            ParteObjeto = dto.ParteObjeto,
+            Sintoma = dto.Sintoma,
+            TextoSintoma = dto.TextoSintoma,
+            Causa = dto.Causa,
+            TextoCausa = dto.TextoCausa,
+            NDeOrdenacao1 = dto.NDeOrdenacao1,
+            TxtGrpCodPartOb = dto.TxtGrpCodPartOb,
+            TxtCodPartOb = dto.TxtCodPartOb,
+            TxtCodeProb = dto.TxtCodeProb,
+            TextoGrpCausa = dto.TextoGrpCausa,
+            TxtGrpCodPr = dto.TxtGrpCodPr,
+            TxtCodeCausa = dto.TxtCodeCausa
+        };
+    }
+
+    // private static AcaoNotaCongasModel MapAcaoNotaComgasDto(AcaoNotaCongasComgasDto dto)
+    // {
+    //     return new AcaoNotaCongasModel
+    //     {
+    //         AreaOperac = dto.AreaOperac,
+    //         Atividade = dto.Atividade,
+    //         TpCatalogo = dto.TpCatalogo,
+    //         Bairro = dto.Bairro,
+    //         CanalDistrib = dto.CanalDistrib,
+    //         CentroCusto = dto.CentroCusto,
+    //         CenLocaliz = dto.CenLocaliz,
+    //         CenPCenTrab = dto.CenPCenTrab,
+    //         CentroPlanej = dto.CentroPlanej,
+    //         CenTrabRespon = dto.CenTrabRespon,
+    //         Pais = dto.Pais,
+    //         ClasseDefeitos = dto.ClasseDefeitos,
+    //         Cliente = dto.Cliente,
+    //         Codificacao = dto.Codificacao,
+    //         CodeParteObj = dto.CodeParteObj,
+    //         CodigoDeAcao = dto.CodigoDeAcao,
+    //         CodigoDoDano = dto.CodigoDoDano,
+    //         ConclDesejada = dto.ConclDesejada,
+    //         DataDaNota = dto.DataDaNota,
+    //         Descricao = dto.Descricao,
+    //         Equipamento = dto.Equipamento,
+    //         LocInstalacao = dto.LocInstalacao,
+    //         Nota = dto.Nota,
+    //         Ordem = dto.Ordem,
+    //         Texto = dto.Texto,
+    //         TipoDeNota = dto.TipoDeNota,
+    //         TipoPrioridade = dto.TipoPrioridade
+    //     };
+    // }
+
+    private static EquipamentoAtivoModel MapEquipamentoComgasDto(EquipamentoAtivoComgasDto dto)
+    {
+        return new EquipamentoAtivoModel
+        {
+            TagEquipamento = dto.TagEquipamento ?? string.Empty,
+            Tipo = dto.Tipo,
+            Denominacao = dto.Denominacao,
+            Status = dto.Status,
+            ValidoDesde = dto.ValidoDesde,
+            ValidoAte = dto.ValidoAte,
+            Classe = dto.Classe,
+            TipoObjeto = dto.TipoObjeto,
+            GrupoAutorizacoes = dto.GrupoAutorizacoes,
+            Peso = dto.Peso,
+            NumeroInventario = dto.NumeroInventario,
+            TipoNotaPadrao = dto.TipoNotaPadrao,
+            ValorAquisicao = dto.ValorAquisicao,
+            DataAquisicao = dto.DataAquisicao,
+            FabricanteId = dto.FabricanteId,
+            LocalizacaoId = dto.LocalizacaoId,
+            EnderecoId = dto.EnderecoId,
+            ImobilizadoTag = dto.ImobilizadoTag,
+            GpmId = dto.GpmId,
+            CentroTrabalhoId = dto.CentroTrabalhoId,
+            LocalInstalacaoCodigo = dto.LocalInstalacaoCodigo
+        };
+    }
+
     // ================= MÉTODOS AUXILIARES SEGUROS =================
 
     private string? SafeText(string colName, string[] row, Dictionary<string, int> columns)
@@ -317,10 +458,10 @@ public class SpreadsheetService
     /// <summary>
     /// Lê as colunas extras que não estão mapeadas com [SheetColumn] e atira-as para o JSONB
     /// </summary>
-    public void PreencherDetalhesTecnicos(EquipmentComgasModel equipamento, string[] row, Dictionary<string, int> columns)
+    public void PreencherDetalhesTecnicos(EquipamentoAtivoModel equipamento, string[] row, Dictionary<string, int> columns)
     {
         // 1. Descobrir quais são os nomes das colunas mapeadas de forma estática
-        var colunasMapeadas = typeof(EquipmentComgasModel).GetProperties()
+        var colunasMapeadas = typeof(EquipamentoAtivoModel).GetProperties()
             .Select(p => p.GetCustomAttribute<SheetColumnAttribute>()?.NomeDaColuna.ToUpperInvariant())
             .Where(nome => nome != null)
             .ToHashSet();

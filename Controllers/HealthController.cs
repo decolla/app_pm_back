@@ -7,7 +7,7 @@ namespace app_pm_back.Controllers;
 /// Controller para Health
 /// </summary>
 [ApiController]
-[Route("health/")]
+[Route("health")]
 public class HealthController : ControllerBase
 {
     private readonly IReportService _reportService;
@@ -15,7 +15,7 @@ public class HealthController : ControllerBase
     /// <summary>
     /// Construtor
     /// </summary>
-    /// <param name="reportService"></param>;
+    /// <param name="reportService"></param>
     public HealthController(IReportService reportService)
     {
         _reportService = reportService;

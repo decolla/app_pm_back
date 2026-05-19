@@ -1,24 +1,38 @@
-﻿version: '3.3'
-
+﻿
 services:
   app_pm_back:
-    #nome
-    container_name: app_pm_back
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5234:5234"
+      - "60135:60135"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5234
-      - Kafka__BootstrapServers=${KAFKA_BROKER_1}
-      - ConnectionStrings__DefaultConnection=Host=host.docker.internal;Database=
-    networks:
-      - default
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:60135
+      ASPNETCORE_HTTPS_PORT: 60135
+      ConnectionStrings__DefaultConnection: ${PHYSIS_POSTGRESQL}; Include Error Detail=True
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+    restart: unless-stopped
 
-volumes:
-  notas-data:
+#  postgres:
+#    image: postgres:16
+#    environment:
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: postgres
+#      POSTGRES_DB: app_pm_back
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+#    restart: unless-stopped
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U postgres"]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 10
+#
+#volumes:
+#  postgres_data:
 
 networks:
   default:

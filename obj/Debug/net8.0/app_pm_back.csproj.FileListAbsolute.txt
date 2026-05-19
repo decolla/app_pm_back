@@ -85,6 +85,7 @@
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/global.json
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/catboostmodel.dll
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/Data/catboost_model.cbm
+/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/libcatboostmodel.so
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/app_pm_back
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/app_pm_back.deps.json
 /home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/app_pm_back.runtimeconfig.json

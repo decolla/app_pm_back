@@ -1,0 +1,179 @@
+using app_pm_back.DTO.ComgasDTO;
+using app_pm_back.Models.Domain;
+using app_pm_back.Services.CongasServices;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+
+namespace app_pm_back.Controllers;
+
+/// <summary>
+/// Controller para itens de notas e ordens 
+/// </summary>
+[ApiController]
+[Route("api/V1/Comgas/items")]
+// /// <param name="id">Id do item na rota</param>
+// /// <param name="dto">Dados do item a ser atualizado</param>
+public class ItemsController : ControllerBase
+{
+    private readonly ItemNoteCongasService _itemNoteCongasService;
+    private readonly IMapper _mapper;
+
+    /// <summary>
+    /// Construtor.
+    /// </summary>
+    /// <param name="itemNoteCongasService"></param>
+    /// <param name="mapper"></param>
+    public ItemsController(ItemNoteCongasService itemNoteCongasService, IMapper mapper)
+    {
+        _itemNoteCongasService = itemNoteCongasService;
+        _mapper = mapper;
+    }
+
+    /// <summary>
+    /// Cadastra um item de nota Congas
+    /// </summary>
+    [HttpPost]
+    public async Task<IActionResult> CriarItemCongas([FromBody] ItemNotaManutencaoComgasDto dto)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var novaNota = _mapper.Map<ItemNotaManutencaoModel>(dto);
+            if (novaNota.NotaId <= 0)
+            {
+                return BadRequest(new { message = "NotaId invalido. Envie NotaId maior que zero." });
+            }
+
+            var item = await _itemNoteCongasService.CreateAsync(novaNota);
+            return new ObjectResult(item);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao criar o item de nota Comgas: {e.Message}." });
+        }
+    }
+
+    /// <summary>
+    /// Retorna uma lista todos os itens da Congas com sistema de páginas
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> ListarItensCongas([FromQuery] int? pagina, [FromQuery] int? tamanho)
+    {
+        try
+        {
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
+            if (pagina.HasValue || tamanho.HasValue)
+            {
+                int p = pagina ?? 1;
+                int t = tamanho ?? 20;
+                var notasPaginadas = await _itemNoteCongasService.GetNotasPaginadasAsync(p, t);
+                return Ok(notasPaginadas);
+            }
+
+            var todasNotas = await _itemNoteCongasService.GetAllNotasAsync();
+            return Ok(todasNotas);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao processar itens de notas Comgas: {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Conta o número total de itens Congas salvas no banco
+    /// </summary>
+    [HttpGet("count")]
+    public async Task<IActionResult> ContarItensCongas()
+    {
+        try
+        {
+            var notas = await _itemNoteCongasService.CountNotasAsync();
+            return Ok(new { count = notas });
+        }
+        catch (Exception)
+        {
+            return NotFound(new { message = "Erro ao procurar items Comgas." });
+        }
+    }
+
+    /// <summary>
+    /// Atualiza uma nota Congas de mesmo Id
+    /// </summary>
+    /// <param name="id">Id do item na rota</param>
+    /// <param name="dto">Dados do item a ser atualizado</param>
+    // [HttpPut]
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> AtualizarNotaCongas([FromRoute] int id, [FromBody] ItemNotaManutencaoComgasDto dto)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id do item invalido na rota. Envie id maior que zero." });
+            }
+
+            if (dto.IdItemNota <= 0)
+            {
+                dto.IdItemNota = id;
+            }
+
+            if (dto.IdItemNota != id)
+            {
+                return BadRequest(new { message = "Id da rota e IdItemNota do corpo da requisição devem ser iguais." });
+            }
+
+            var item = _mapper.Map<ItemNotaManutencaoModel>(dto);
+            if (item.IdItemNota <= 0)
+            {
+                return BadRequest(new { message = "Id do item invalido. Envie IdItemNota maior que zero." });
+            }
+
+            var result = await _itemNoteCongasService.UpdateNotaAsync(item);
+            return Ok(new { message = "Nota Comgas atualizada com sucesso: " + result.IdItemNota });
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = "Erro ao atualizar item Comgas." });
+        }
+    }
+
+    /// <summary>
+    /// Delete uma nota Congas de mesmo Id
+    /// </summary>
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeletarNotaCongas(int id)
+    {
+        try
+        {
+            var deleted = await _itemNoteCongasService.DeleteNotaAsync(id);
+            if (!deleted) return NotFound(new { message = "Item Comgas não encontrado." });
+
+            return Ok(new { message = "Item Comgas deletada com sucesso" });
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = "Erro ao deletar item Comgas." });
+        }
+    }
+
+    /// <summary>
+    /// Valida pagina e tamanho para evitar consultas inconsistentes.
+    /// </summary>
+    private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
+    {
+        return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
+    }
+}
