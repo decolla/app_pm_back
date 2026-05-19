@@ -152,9 +152,8 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
-// captura erros
-// No seu Program.cs, atualize o seu UseExceptionHandler:
 
+// captura erros
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
