@@ -105,6 +105,7 @@ builder.Services.AddScoped<ClassificationService<NotaPetroModel>>();
 builder.Services.AddScoped<ClassificationService<OrdemManutencaoModel>>();
 builder.Services.AddScoped<ClassificationService<OrdemPetroModel>>();
 builder.Services.AddScoped<AnnexService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 var modelPath = Path.Combine(AppContext.BaseDirectory, "Data", "catboost_model.cbm");
 var metaPath = Path.Combine(AppContext.BaseDirectory, "Data", "model_meta.json");
