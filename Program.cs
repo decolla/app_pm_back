@@ -130,6 +130,8 @@ else
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
+var schema = Environment.GetEnvironmentVariable("SCHEMA") ?? "(not set)";
+app.Logger.LogInformation("SCHEMA={Schema}", schema);
 
 using (var scope = app.Services.CreateScope())
 {
