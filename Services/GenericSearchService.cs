@@ -279,10 +279,10 @@ public class GenericSearchService
         }
 
         // pega a confiabilidade associada ao tipo de manutenção do plano, ou da estratégia caso o tipo seja nulo
-        var tiposPlano = ultimoPlano?.TiposPlano;
-        var tiposManutencao = tiposPlano.
-            Select(t => t.TipoManutencao == null ? t.TipoEstrategia.TipoManutencao : t.TipoManutencao).ToList();
-        int confiabilidades = tiposManutencao.Select(t => t.Confiabilidade).FirstOrDefault();
+        int confiabilidadeFinal = ultimoPlano?.TiposPlano?
+            .Select(t => t.TipoManutencao ?? t.TipoEstrategia?.TipoManutencao)
+            .FirstOrDefault(tm => tm != null)?
+            .Confiabilidade ?? 0;
         
         return new
         {
@@ -293,7 +293,7 @@ public class GenericSearchService
             UnidadeCiclo = ultimoPlano?.Estrategia.UnidadeCiclo, // Unidade de tempo do ciclo (dias, meses...)
             DataInicio = ultimoPlano?.DataInicio, // Data de início do plano
             DataConclusao = ultimoPlano?.DataConclusao, // Data de conclusão do plano
-            Confiabilidade = confiabilidades // Confiabilidade associada ao tipo de manutenção/estratégia
+            Confiabilidade = confiabilidadeFinal // Confiabilidade associada ao tipo de manutenção/estratégia
         };
     }
 }

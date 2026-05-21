@@ -306,7 +306,7 @@ public class PetroNotesController : ControllerBase
 /// </summary>
 [ApiController]
 [Route("api/V1/Comgas/notes")]
-public class ComgasNotesController : ControllerBase
+public class NotasController : ControllerBase
 {
     private readonly NotaManutencaoService _congasService;
     private readonly ItemNoteCongasService _itemNoteCongasService;
@@ -320,7 +320,7 @@ public class ComgasNotesController : ControllerBase
     /// <param name="itemNoteCongasService"></param>
     /// <param name="classificationServiceCongas"></param>
     /// <param name="mapper"></param>
-    public ComgasNotesController(
+    public NotasController(
         NotaManutencaoService congasService,
         ItemNoteCongasService itemNoteCongasService,
         ClassificationService<NotaManutencaoModel> classificationServiceCongas,
