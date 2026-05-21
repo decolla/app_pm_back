@@ -1,6 +1,7 @@
 using app_pm_back.Attributes;
 using app_pm_back.Models.CongasModel;
 using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
+using app_pm_back.Models.Domain.PlanoManutencaoModels;
 
 namespace app_pm_back.DTO.ComgasDTO;
 
@@ -48,6 +49,21 @@ public class FerramentaTipoDto
     public string? Descricao { get; set; }
     public int QuantidadeDisp { get; set; }
     public bool Checkbox { get; set; }
+}
+
+public class TipoManutencaoComgasDto
+{
+    public int IdTipoManutencao { get; set; }
+
+    public TipoTipo Categoria { get; set; } = TipoTipo.Manutencao;
+
+    public string Nome { get; set; } = string.Empty;
+
+    public string TipoAtivo { get; set; } = string.Empty;
+
+    public int Confiabilidade { get; set; }
+
+    public bool Habilitada { get; set; } = true;
 }
 
 #pragma warning restore CS1591

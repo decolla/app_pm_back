@@ -76,6 +76,7 @@ builder.Services.AddScoped<PlanoManutencaoService>();
 builder.Services.AddScoped<EstrategiaComgasService>();
 builder.Services.AddScoped<TipoEstrategiaService>();
 builder.Services.AddScoped<TipoManutencaoService>();
+builder.Services.AddScoped<TipoPlanoService>();
 builder.Services.AddScoped<TipoManutencaoCepService>();
 builder.Services.AddScoped<TarefaService>();
 builder.Services.AddScoped<FerramentaTipoService>();

@@ -146,66 +146,9 @@
             Endpoints de tipo de manutencao da Comgas.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.#ctor(app_pm_back.Services.CongasServices.TipoManutencaoService,AutoMapper.IMapper)">
+        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.TipoPlanoController">
             <summary>
-            Construtor.
-            </summary>
-            <param name="tipoManutencaoService"></param>
-            <param name="mapper"></param>
-        </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Criar(System.Int32,app_pm_back.DTO.ComgasDTO.TipoPlanoCongasDto,app_pm_back.Data.AppDbContext)">
-            <summary>
-            Cria um tipo de manutenção respeitando a hierarquia da Estratégia
-            </summary>
-            <param name="dto">Objeto a ser adicionado</param>
-            <param name="context">Contexto injetado para validação</param>
-            <param name="tipo">Tipo do tipo a ser criado, 0 = manutenção, 1 = renovação </param>
-        </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Lista as estratégias em formato de página 
-            </summary>
-            <param name="pagina">Página a ser exibida</param>
-            <param name="tamanho">Quantidade de objetos na página</param>
-            <returns>Lista de objetos presentes na página</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Contar">
-            <summary>
-            Retorna a quantidade de elementos 
-            </summary>
-            <returns>Quantidade de elementos cadastrados no banco</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.BuscarPorId(System.Int32)">
-            <summary>
-            Realiza uma busca por Id e retorna o objeto completo, com as listas filhas carregadas.
-            </summary>
-            <param name="id">Id a ser buscado</param>
-            <returns>Objeto completo</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.ListarPorTipo(System.Int32)">
-            <summary>
-            Lista todos os tipos com base em um tipo específico
-            </summary>
-            <param name="tipo">Tipo do tipo a ser criado, 0 = manutenção, 1 = renovação</param>
-            <returns>Lista de tipos</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Atualizar(System.Int32,app_pm_back.DTO.ComgasDTO.TipoPlanoCongasDto)">
-            <summary>
-            Atualiza um tipo de manutenção.
-            </summary>
-            <param name="id">Id do DTO a ser atualizado</param>
-            <param name="dto">DTO do tipo a ser atualizado</param>
-            <returns></returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.Deletar(System.Int32)">
-            <summary>
-            Deleta um objeto do modelo
-            </summary>
-            <param name="id">Id do objeto a ser deletado</param>
-        </member>
-        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Valida pagina e tamanho para evitar consultas inconsistentes.
+            Endpoints de tipo de plano da Comgas.
             </summary>
         </member>
         <member name="T:app_pm_back.Controllers.EquipamentosController">
@@ -3352,7 +3295,7 @@
             Ultima ordem gerada por este plano.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModel.TiposManutencao">
+        <member name="P:app_pm_back.Models.Domain.PlanoManutencaoModel.TiposPlano">
             <summary>
             Tipos de manutencao deste plano.
             </summary>
@@ -4385,10 +4328,33 @@
             Cria registros "fantasma" para referencias que ainda nao existem no banco.
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureUsuariosSapAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+            <summary>
+            Verifica se os usuarios SAP existem, e caso contrario cria registros "fantasma" com nome e senha padrao.
+            </summary>
+            <param name="context"></param>
+            <param name="ids">Ids a serem criados fantasmas</param>
+        </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureEquipamentosAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Cria equipamentos "fantasmas" caso não existam
+            </summary>
+            <param name="context"></param>
+            <param name="tags"></param>
+        </member>
         <member name="T:app_pm_back.Services.ImportMergeHelper">
             <summary>
             Utilitarios para mesclar dados importados sem sobrescrever valores existentes.
             </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ImportMergeHelper.MergeNonEmpty``1(``0,``0,System.String[])">
+            <summary>
+            Realiza a operação de merge em tabelas a serem atualizadas
+            </summary>
+            <param name="target"></param>
+            <param name="source"></param>
+            <param name="ignoreProperties"></param>
+            <typeparam name="T"></typeparam>
         </member>
         <member name="M:app_pm_back.Services.NotesPetroService.GetFichasPorAtivoAsync(System.String,System.String)">
             <summary>

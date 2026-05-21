@@ -97,6 +97,8 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.TipoEstrategia, opt => opt.Ignore())
             .ForMember(dest => dest.PlanoManutencao, opt => opt.Ignore());
 
+        CreateMap<TipoManutencaoComgasDto, TipoManutencaoModel>();
+
         CreateMap<FerramentaTipoDto, FerramentasTipoModel>();
 
         CreateMap<TarefaComgasDto, TarefaModel>();
