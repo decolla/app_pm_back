@@ -87,7 +87,7 @@ public class AutoMapperProfile : Profile
                     ? (GerarAutomaticamente?)src.GerarAutomaticamente.Value
                     : null))
             .ForMember(dest => dest.Estrategia, opt => opt.Ignore())
-            .ForMember(dest => dest.TiposManutencao, opt => opt.Ignore())
+            .ForMember(dest => dest.TiposPlano, opt => opt.Ignore())
             .ForMember(dest => dest.Ciclos, opt => opt.Ignore())
             .ForMember(dest => dest.Itens, opt => opt.Ignore())
             .ForMember(dest => dest.Ordens, opt => opt.Ignore());

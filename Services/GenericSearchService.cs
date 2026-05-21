@@ -277,6 +277,12 @@ public class GenericSearchService
                 .Where(p => p.CodigoPlano == codigoPlanoParaBuscar.Value)
                 .FirstOrDefaultAsync();
         }
+
+        // pega a confiabilidade associada ao tipo de manutenção do plano, ou da estratégia caso o tipo seja nulo
+        var tiposPlano = ultimoPlano?.TiposPlano;
+        var tiposManutencao = tiposPlano.
+            Select(t => t.TipoManutencao == null ? t.TipoEstrategia.TipoManutencao : t.TipoManutencao).ToList();
+        int confiabilidades = tiposManutencao.Select(t => t.Confiabilidade).FirstOrDefault();
         
         return new
         {
@@ -287,7 +293,7 @@ public class GenericSearchService
             UnidadeCiclo = ultimoPlano?.Estrategia.UnidadeCiclo, // Unidade de tempo do ciclo (dias, meses...)
             DataInicio = ultimoPlano?.DataInicio, // Data de início do plano
             DataConclusao = ultimoPlano?.DataConclusao, // Data de conclusão do plano
-            Plano = ultimoPlano // O plano completo encontrado
+            Confiabilidade = confiabilidades // Confiabilidade associada ao tipo de manutenção/estratégia
         };
     }
 }

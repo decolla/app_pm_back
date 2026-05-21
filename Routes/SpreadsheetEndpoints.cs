@@ -82,7 +82,7 @@ public static class SpreadsheetEndpoints
                     var ordensDeduplicadas = resultadoPlanilha.OrdensCongas
                         .DistinctBy(o => o.IdOrdem).ToList();
 
-                    await orderCongasService.CreateNotasEmMassaAsync(ordensDeduplicadas);
+                    await orderCongasService.ImportarOrdensEmLoteSeguroAsync(ordensDeduplicadas);
                     var inseridas = ordensDeduplicadas.Count;
 
                     return Results.Ok(new { message = $"{inseridas} ordens da CONGAS processadas com sucesso!" });
@@ -116,6 +116,16 @@ public static class SpreadsheetEndpoints
                         .Select(n => new { n.IdNota, n.NumeroNota })
                         .ToDictionaryAsync(n => n.NumeroNota, n => n.IdNota);
 
+                    var notasFaltantes = sapNumbers.Except(notasNoBanco.Keys).ToList();
+                    if (notasFaltantes.Any())
+                    {
+                        await ImportGhostHelper.EnsureNotasAsync(dbContext, notasFaltantes.Select(n => (long?)n));
+                        foreach (var nota in notasFaltantes)
+                        {
+                            notasNoBanco[nota] = nota;
+                        }
+                    }
+
                     // atribui o ID correto antes de salvar
                     var itensValidos = new List<ItemNotaManutencaoModel>();
                     foreach (var item in resultadoPlanilha.ItensCongas)
@@ -129,7 +139,7 @@ public static class SpreadsheetEndpoints
 
                     if (itensValidos.Any())
                     {
-                        await itemNoteCongasService.CreateNotasEmMassaAsync(itensValidos);
+                        await itemNoteCongasService.ImportarItensEmLoteSeguroAsync(itensValidos);
                         return Results.Ok(
                             new { message = $"{itensValidos.Count} itens da CONGAS vinculados e salvos!" });
                     }

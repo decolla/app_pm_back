@@ -2359,7 +2359,7 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.CongasModel.TipoPlanoModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.PlanoManutencaoModel", "PlanoManutencao")
-                        .WithMany("TiposManutencao")
+                        .WithMany("TiposPlano")
                         .HasForeignKey("PlanoManutencaoId");
 
                     b.HasOne("app_pm_back.Models.CongasModel.TipoEstrategiaModel", "TipoEstrategia")
@@ -2912,7 +2912,7 @@ namespace app_pm_back.Migrations
 
                     b.Navigation("Ordens");
 
-                    b.Navigation("TiposManutencao");
+                    b.Navigation("TiposPlano");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.PlanoManutencaoModels.TipoManutencaoModel", b =>

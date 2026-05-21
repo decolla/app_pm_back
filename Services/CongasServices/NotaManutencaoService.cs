@@ -1,6 +1,7 @@
 using app_pm_back.Data;
 using app_pm_back.Models.CongasModel;
 using app_pm_back.Models.Domain;
+using app_pm_back.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.CongasServices;
@@ -12,19 +13,12 @@ public class NotaManutencaoService : BaseCrudService<NotaManutencaoModel>
     }
     
     /// <summary>
-    /// Importa notas em lote, validando e ignorando Chaves Estrangeiras que não existem no banco.
+    /// Importa notas em lote, criando registros fantasma para referencias ausentes.
     /// </summary>
     /// <param name="notas">Notas a serem cadastradas</param>
     public async Task ImportarNotasEmLoteSeguroAsync(List<NotaManutencaoModel> notas)
     {
         if (notas == null || !notas.Any()) return;
-
-        // extrai todos os códigos únicos que vieram do Excel
-        var codigosLocaisExcel = notas
-            .Where(n => n.LocalInstalacaoCodigo != null) // filtra para evitar nulls
-            .Select(n => n.LocalInstalacaoCodigo!)
-            .Distinct()
-            .ToList();
 
         var tagsEquipamentosExcel = notas
             .Where(n => !string.IsNullOrWhiteSpace(n.EquipamentoTag))
@@ -38,36 +32,46 @@ public class NotaManutencaoService : BaseCrudService<NotaManutencaoModel>
             .Distinct()
             .ToList();
 
-        var equipamentosExistentes = (await _context.PM_EquipamentosAtivos
-                .Where(e => tagsEquipamentosExcel.Contains(e.TagEquipamento))
-                .Select(e => e.TagEquipamento)
-                .ToListAsync())
-                .ToHashSet();
+        var planosExcel = notas
+            .Where(n => n.PlanoManutencaoCodigo.HasValue)
+            .Select(n => n.PlanoManutencaoCodigo!.Value)
+            .Distinct()
+            .ToList();
 
-        var usuariosExistentes = (await _context.PM_UsuariosSap
-                .Where(u => usuariosCriadoresExcel.Contains(u.IdUsuario))
-                .Select(u => u.IdUsuario)
-                .ToListAsync())
-                .ToHashSet();
+        await ImportGhostHelper.EnsureEquipamentosAsync(_context, tagsEquipamentosExcel);
+        await ImportGhostHelper.EnsureUsuariosSapAsync(_context, usuariosCriadoresExcel.Select(id => (int?)id));
+        await ImportGhostHelper.EnsurePlanosAsync(_context, planosExcel.Select(id => (long?)id));
 
-        // limpeza
+        var idsNotas = notas.Select(n => n.IdNota).Distinct().ToList();
+        var numerosNotas = notas.Select(n => n.NumeroNota).Distinct().ToList();
+
+        var existentesPorId = await _context.PM_NotasManutencao
+            .Where(n => idsNotas.Contains(n.IdNota))
+            .ToDictionaryAsync(n => n.IdNota);
+
+        var existentesPorNumero = await _context.PM_NotasManutencao
+            .Where(n => numerosNotas.Contains(n.NumeroNota))
+            .ToDictionaryAsync(n => n.NumeroNota);
+
+        var novasNotas = new List<NotaManutencaoModel>();
         foreach (var nota in notas)
         {
-
-            // se a nota apontar para um Equipamento que NÃO está no banco, anulamos o campo
-            if (!string.IsNullOrWhiteSpace(nota.EquipamentoTag) && !equipamentosExistentes.Contains(nota.EquipamentoTag))
+            if (existentesPorId.TryGetValue(nota.IdNota, out var existente) ||
+                existentesPorNumero.TryGetValue(nota.NumeroNota, out existente))
             {
-                nota.EquipamentoTag = null;
+                ImportMergeHelper.MergeNonEmpty(existente, nota);
             }
-
-            if (nota.CriadoPorUsuarioId.HasValue && !usuariosExistentes.Contains(nota.CriadoPorUsuarioId.Value))
+            else
             {
-                nota.CriadoPorUsuarioId = null;
+                novasNotas.Add(nota);
             }
         }
 
-        // inserção Rápida em Lote
-        await _dbSet.AddRangeAsync(notas);
+        if (novasNotas.Any())
+        {
+            await _dbSet.AddRangeAsync(novasNotas);
+        }
+
         await _context.SaveChangesAsync();
     }
 

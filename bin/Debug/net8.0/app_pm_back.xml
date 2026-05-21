@@ -4284,6 +4284,11 @@
             Lista ferramentas por tipo de manutencao.
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.CongasServices.ItemNoteCongasService.ImportarItensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.ItemNotaManutencaoModel})">
+            <summary>
+            Importa itens em lote, criando notas fantasma quando necessario.
+            </summary>
+        </member>
         <member name="M:app_pm_back.Services.CongasServices.ItemNoteCongasService.GetItemsByNotaIdAsync(System.Int64)">
             <summary>
             Retorna os itens de uma nota pelo ID
@@ -4293,7 +4298,7 @@
         </member>
         <member name="M:app_pm_back.Services.CongasServices.NotaManutencaoService.ImportarNotasEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaManutencaoModel})">
             <summary>
-            Importa notas em lote, validando e ignorando Chaves Estrangeiras que não existem no banco.
+            Importa notas em lote, criando registros fantasma para referencias ausentes.
             </summary>
             <param name="notas">Notas a serem cadastradas</param>
         </member>
@@ -4304,6 +4309,11 @@
             <param name="ativo">Nome do ativo a ser buscado como referência</param>
             <param name="tipoNota">Tipo da nota (corretiva ou preventiva)</param>
             <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.CongasServices.OrderCongasService.ImportarOrdensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemManutencaoModel})">
+            <summary>
+            Importa ordens em lote, criando registros fantasma para referencias ausentes.
+            </summary>
         </member>
         <member name="M:app_pm_back.Services.CongasServices.OrderCongasService.GetFichasPorAtivoAsync(System.Int32,System.String)">
             <summary>
@@ -4355,7 +4365,7 @@
         </member>
         <member name="M:app_pm_back.Services.EquipmentService.CreateEquipamentosEmMassaAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.EquipamentoAtivoModel})">
             <summary>
-            Cria equipamentos em massa ignorando tags ja existentes.
+            Cria ou atualiza equipamentos em massa, criando referencias fantasma quando necessario.
             </summary>
         </member>
         <member name="M:app_pm_back.Services.EquipmentService.DeleteByTagAsync(System.String)">
@@ -4369,6 +4379,16 @@
             </summary>
             <param name="ativo">Ativo a ser buscado</param>
             <returns></returns>
+        </member>
+        <member name="T:app_pm_back.Services.ImportGhostHelper">
+            <summary>
+            Cria registros "fantasma" para referencias que ainda nao existem no banco.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.ImportMergeHelper">
+            <summary>
+            Utilitarios para mesclar dados importados sem sobrescrever valores existentes.
+            </summary>
         </member>
         <member name="M:app_pm_back.Services.NotesPetroService.GetFichasPorAtivoAsync(System.String,System.String)">
             <summary>
