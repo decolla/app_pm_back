@@ -136,7 +136,7 @@ public class NotaManutencaoModel : IClassifiable
     /// Status atual da nota.
     /// </summary>
     [MaxLength(20)]
-    public string? StatusNota { get; set; }
+    public string? StatusNota { get; set; } = "Aberta";
 
     /// <summary>
     /// Prioridade de 1 a 4 (4 = baixa).

@@ -53,6 +53,15 @@
             <param name="tipoReferencia">Tipo da referência de busca</param>
             <returns></returns>
         </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaModel,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Busca notas ou ordens de manutenção por diversos critérios, retorna uma lista de objetos com os dados relevantes
+            </summary>
+            <param name="busca">Modelo de busca com campos comparáveis</param>
+            <param name="pagina">Página a ser exibida</param>
+            <param name="tamanho">Número de elementos presente na página</param>
+            <returns>Lista de Nota e Ordens com base nos filtros</returns>
+        </member>
         <member name="M:app_pm_back.Controllers.BuscaController.BuscaGerald(System.Int32)">
             <summary>
             Busca um plano de mantuenção associado a um ativo, retorna um objeto com os dados relevantes
@@ -1197,6 +1206,18 @@
             <inheritdoc />
         </member>
         <member name="M:app_pm_back.Migrations.NewOrderUpdate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:app_pm_back.Migrations.SerachMigration">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SerachMigration.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SerachMigration.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SerachMigration.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Models.AnnexModel">
@@ -4358,6 +4379,17 @@
             Lista as tabelas e seus campos disponíveis para busca.
             </summary>
             <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarNotaOrdemAsync(app_pm_back.Models.BuscaOrdemNotaModel,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Realiza uma busca em nota e ordem com base nos filtros selecionados
+            </summary>
+            <param name="busca">Modelo de dado de busca com campos comparáveis</param>
+            <param name="pagina">Pagina a ser exibida</param>
+            <param name="tamanho">Tamanho da página</param>
+            <returns>Lista de Nota e Ordem</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:app_pm_back.Services.GenericSearchService.BuscarInternoAsync``1(System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
