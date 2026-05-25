@@ -112,9 +112,9 @@ public class BuscaController : ControllerBase
     /// <param name="pagina">Página a ser exibida</param>
     /// <param name="tamanho">Número de elementos presente na página</param>
     /// <returns>Lista de Nota e Ordens com base nos filtros</returns>
-    [HttpGet("fichas")]
+    [HttpPost("fichas")]
     public async Task<IActionResult> BuscarNotaOrdem(
-        [FromQuery] BuscaOrdemNotaModel busca,
+        [FromBody] BuscaOrdemNotaModel busca,
         [FromQuery] int? pagina = null,
         [FromQuery] int? tamanho = null)
     {
