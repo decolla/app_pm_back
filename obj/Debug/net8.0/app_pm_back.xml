@@ -1260,6 +1260,22 @@
             Data de upload do anexo
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.BuscaOrdemNotaModel.StatusNota">
+            <summary>
+            Status da nota
+            </summary>
+            <example>Aberta</example>
+        </member>
+        <member name="P:app_pm_back.Models.BuscaOrdemNotaModel.NotaIdInicio">
+            <summary>
+            Id de início da nota
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.BuscaOrdemNotaModel.NotaIdFim">
+            <summary>
+            Id de fim da nota
+            </summary>
+        </member>
         <member name="T:app_pm_back.Models.Domain.ComponenteEquipamentoModel">
             <summary>
             Componente vinculado a um equipamento.

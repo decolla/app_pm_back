@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using app_pm_back.Data;
+using app_pm_back.Models;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,10 @@ public class GenericSearchService
     private readonly DbSet<OrdemManutencaoModel> _ordemManutencaoModels;
     private readonly DbSet<PlanoManutencaoModel> _planosManutencaoModels;
     private static readonly Dictionary<string, Type> Tabelas = BuildTabelas();
+
+    public record NotaOrdemSearchResult(
+        IReadOnlyList<object> Notas,
+        IReadOnlyList<object> Ordens);
 
     /// <summary>
     /// Construtor
@@ -95,6 +100,201 @@ public class GenericSearchService
             new object[] { campo, valor, parcial, pagina, tamanho })!;
 
         return await task.ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Realiza uma busca em nota e ordem com base nos filtros selecionados
+    /// </summary>
+    /// <param name="busca">Modelo de dado de busca com campos comparáveis</param>
+    /// <param name="pagina">Pagina a ser exibida</param>
+    /// <param name="tamanho">Tamanho da página</param>
+    /// <returns>Lista de Nota e Ordem</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    /// <exception cref="ArgumentException"></exception>
+    public async Task<NotaOrdemSearchResult> BuscarNotaOrdemAsync(
+        BuscaOrdemNotaModel busca,
+        int? pagina,
+        int? tamanho)
+    {
+        if (busca == null)
+        {
+            throw new ArgumentNullException(nameof(busca));
+        }
+
+        var notasQuery = _notaManutencaoModels.AsNoTracking().AsQueryable();
+        var ordensQuery = _ordemManutencaoModels.AsNoTracking().AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(busca.StatusNota))
+        {
+            notasQuery = notasQuery.Where(n => n.StatusNota == busca.StatusNota);
+        }
+
+        if (busca.NotaIdInicio.HasValue)
+        {
+            long inicio = busca.NotaIdInicio.Value;
+            notasQuery = notasQuery.Where(n => n.NumeroNota >= inicio);
+        }
+
+        if (busca.NotaIdFim.HasValue)
+        {
+            long fim = busca.NotaIdFim.Value;
+            notasQuery = notasQuery.Where(n => n.NumeroNota <= fim);
+        }
+
+        if (busca.OrdemIdInicio.HasValue)
+        {
+            long inicio = busca.OrdemIdInicio.Value;
+            ordensQuery = ordensQuery.Where(o => o.IdOrdem >= inicio);
+        }
+
+        if (busca.OrdemIdFim.HasValue)
+        {
+            long fim = busca.OrdemIdFim.Value;
+            ordensQuery = ordensQuery.Where(o => o.IdOrdem <= fim);
+        }
+
+        if (busca.LocalInstalacaoInicio.HasValue)
+        {
+            int inicio = busca.LocalInstalacaoInicio.Value;
+            notasQuery = notasQuery.Where(n => n.LocalInstalacaoCodigo >= inicio);
+            ordensQuery = ordensQuery.Where(o => o.LocalInstalacaoCodigo >= inicio);
+        }
+
+        if (busca.LocalInstalacaoFim.HasValue)
+        {
+            int fim = busca.LocalInstalacaoFim.Value;
+            notasQuery = notasQuery.Where(n => n.LocalInstalacaoCodigo <= fim);
+            ordensQuery = ordensQuery.Where(o => o.LocalInstalacaoCodigo <= fim);
+        }
+        
+        // if (!string.IsNullOrWhiteSpace(busca.AtivoInicio))
+        // {
+        //     var inicio = busca.AtivoInicio.Trim();
+        //     notasQuery = notasQuery.Where(n => n.EquipamentoTag != null
+        //                                        && string.Compare(n.EquipamentoTag, inicio) >= 0);
+        //     ordensQuery = ordensQuery.Where(o => o.EquipamentoTag != null
+        //                                         && string.Compare(o.EquipamentoTag, inicio) >= 0);
+        // }
+        //
+        // if (!string.IsNullOrWhiteSpace(busca.AtivoFim))
+        // {
+        //     var fim = busca.AtivoFim.Trim();
+        //     notasQuery = notasQuery.Where(n => n.EquipamentoTag != null
+        //                                        && string.Compare(n.EquipamentoTag, fim) <= 0);
+        //     ordensQuery = ordensQuery.Where(o => o.EquipamentoTag != null
+        //                                         && string.Compare(o.EquipamentoTag, fim) <= 0);
+        // }
+
+        if (busca.NotaDataInicio.HasValue)
+        {
+            var inicio = busca.NotaDataInicio.Value;
+            notasQuery = notasQuery.Where(n => n.DataNota >= inicio);
+        }
+
+        if (busca.NotaDataFim.HasValue)
+        {
+            var fim = busca.NotaDataFim.Value;
+            notasQuery = notasQuery.Where(n => n.DataNota <= fim);
+        }
+
+        if (busca.OrdemDataInicio.HasValue)
+        {
+            var inicio = busca.OrdemDataInicio.Value;
+            ordensQuery = ordensQuery.Where(o => o.DataCriacao.HasValue && o.DataCriacao.Value >= inicio);
+        }
+
+        if (busca.OrdemDataFim.HasValue)
+        {
+            var fim = busca.OrdemDataFim.Value;
+            ordensQuery = ordensQuery.Where(o => o.DataCriacao.HasValue && o.DataCriacao.Value <= fim);
+        }
+
+        if (busca.GpmInicio.HasValue)
+        {
+            int inicio = busca.GpmInicio.Value;
+            ordensQuery = ordensQuery.Where(o => o.GpmResponsavelId >= inicio);
+        }
+
+        if (busca.GpmFim.HasValue)
+        {
+            int fim = busca.GpmFim.Value;
+            ordensQuery = ordensQuery.Where(o => o.GpmResponsavelId <= fim);
+        }
+
+        if (!string.IsNullOrWhiteSpace(busca.PrioridadeInicio))
+        {
+            if (!int.TryParse(busca.PrioridadeInicio, out var inicio))
+            {
+                throw new ArgumentException("PrioridadeInicio invalida.", nameof(busca));
+            }
+
+            notasQuery = notasQuery.Where(n => n.Prioridade >= inicio);
+            ordensQuery = ordensQuery.Where(o => o.Prioridade >= inicio);
+        }
+
+        if (!string.IsNullOrWhiteSpace(busca.PrioridadeFim))
+        {
+            if (!int.TryParse(busca.PrioridadeFim, out var fim))
+            {
+                throw new ArgumentException("PrioridadeFim invalida.", nameof(busca));
+            }
+
+            notasQuery = notasQuery.Where(n => n.Prioridade <= fim);
+            ordensQuery = ordensQuery.Where(o => o.Prioridade <= fim);
+        }
+
+        if (!string.IsNullOrWhiteSpace(busca.CriadoPorInicio))
+        {
+            if (!int.TryParse(busca.CriadoPorInicio, out var inicio))
+            {
+                throw new ArgumentException("CriadoPorInicio invalido.", nameof(busca));
+            }
+
+            notasQuery = notasQuery.Where(n => n.CriadoPorUsuarioId >= inicio);
+            ordensQuery = ordensQuery.Where(o => o.CriadaPorUsuarioId >= inicio);
+        }
+
+        if (!string.IsNullOrWhiteSpace(busca.CriadoPorFim))
+        {
+            if (!int.TryParse(busca.CriadoPorFim, out var fim))
+            {
+                throw new ArgumentException("CriadoPorFim invalido.", nameof(busca));
+            }
+
+            notasQuery = notasQuery.Where(n => n.CriadoPorUsuarioId <= fim);
+            ordensQuery = ordensQuery.Where(o => o.CriadaPorUsuarioId <= fim);
+        }
+
+        if (!string.IsNullOrWhiteSpace(busca.TipoNota))
+        {
+            notasQuery = notasQuery.Where(n => n.TipoNota == busca.TipoNota || n.TipoDeNota == busca.TipoNota);
+        }
+
+        if (!string.IsNullOrWhiteSpace(busca.TipoOrdem))
+        {
+            ordensQuery = ordensQuery.Where(o => o.TipoOrdem == busca.TipoOrdem);
+        }
+
+        if (!string.IsNullOrWhiteSpace(busca.StatusOrdem))
+        {
+            ordensQuery = ordensQuery.Where(o => o.StatusOrdem == busca.StatusOrdem);
+        }
+
+        notasQuery = AplicarOrdenacao(notasQuery);
+        ordensQuery = AplicarOrdenacao(ordensQuery);
+
+        if (pagina.HasValue || tamanho.HasValue)
+        {
+            int p = pagina ?? 1;
+            int t = tamanho ?? 20;
+            notasQuery = notasQuery.Skip((p - 1) * t).Take(t);
+            ordensQuery = ordensQuery.Skip((p - 1) * t).Take(t);
+        }
+
+        var notas = await notasQuery.Cast<object>().ToListAsync().ConfigureAwait(false);
+        var ordens = await ordensQuery.Cast<object>().ToListAsync().ConfigureAwait(false);
+
+        return new NotaOrdemSearchResult(notas, ordens);
     }
 
     /// <summary>
@@ -185,6 +385,20 @@ public class GenericSearchService
         }
 
         return property;
+    }
+
+    private static bool CampoSuportado(Type tipo, string campo)
+    {
+        var property = tipo
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .FirstOrDefault(p => string.Equals(p.Name, campo, StringComparison.OrdinalIgnoreCase));
+
+        if (property == null)
+        {
+            return false;
+        }
+
+        return TipoSuportado(ObterTipoBase(property.PropertyType));
     }
 
     private static bool TipoSuportado(Type tipo)

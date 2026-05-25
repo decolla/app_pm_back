@@ -1,4 +1,5 @@
 using app_pm_back.Services;
+using app_pm_back.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
@@ -103,7 +104,40 @@ public class BuscaController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar na tabela {tabela}: {e.Message}." });
         }
     }
-    
+
+    /// <summary>
+    /// Busca notas ou ordens de manutenção por diversos critérios, retorna uma lista de objetos com os dados relevantes
+    /// </summary>
+    /// <param name="busca">Modelo de busca com campos comparáveis</param>
+    /// <param name="pagina">Página a ser exibida</param>
+    /// <param name="tamanho">Número de elementos presente na página</param>
+    /// <returns>Lista de Nota e Ordens com base nos filtros</returns>
+    [HttpGet("fichas")]
+    public async Task<IActionResult> BuscarNotaOrdem(
+        [FromQuery] BuscaOrdemNotaModel busca,
+        [FromQuery] int? pagina = null,
+        [FromQuery] int? tamanho = null)
+    {
+        try
+        {
+            if (TemPaginacaoInvalida(pagina, tamanho))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
+            var resultados = await _searchService.BuscarNotaOrdemAsync(
+                busca,
+                pagina,
+                tamanho);
+
+            return Ok(resultados);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar nota/ordem: {e.Message}." });
+        }
+    }
+
     /// <summary>
     /// Busca um plano de mantuenção associado a um ativo, retorna um objeto com os dados relevantes
     /// </summary>
