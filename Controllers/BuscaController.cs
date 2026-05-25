@@ -114,7 +114,7 @@ public class BuscaController : ControllerBase
     /// <returns>Lista de Nota e Ordens com base nos filtros</returns>
     [HttpGet("fichas")]
     public async Task<IActionResult> BuscarNotaOrdem(
-        [FromBody] BuscaOrdemNotaModel busca,
+        [FromQuery] BuscaOrdemNotaModel busca,
         [FromQuery] int? pagina = null,
         [FromQuery] int? tamanho = null)
     {
