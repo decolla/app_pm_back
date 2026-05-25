@@ -86,16 +86,7 @@ public class AnnexService
         ValidateAssociacao(notaId, ordemId);
 
         var query = _annexModels.AsNoTracking()
-            .Where(o => o.TipoReferencia == tipoReferencia);
-
-        if (notaId.HasValue)
-        {
-            query = query.Where(o => o.NotaId == notaId);
-        }
-        else
-        {
-            query = query.Where(o => o.OrdemId == ordemId);
-        }
+            .Where(o => o.TipoReferencia == tipoReferencia && (o.NotaId == notaId || o.OrdemId == ordemId));
 
         return await query
             .Select(model => new ValueTuple<long, string>(model.IdAnexo, model.NomeAnexo))

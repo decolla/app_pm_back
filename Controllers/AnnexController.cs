@@ -1,6 +1,8 @@
 using app_pm_back.DTO;
+using app_pm_back.Models;
 using app_pm_back.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace app_pm_back.Controllers;
 
@@ -34,11 +36,6 @@ public class AnnexController : ControllerBase
         if (request.Arquivo == null || request.Arquivo.Length == 0)
         {
             return BadRequest(new { message = "Arquivo invalido para upload." });
-        }
-
-        if (string.IsNullOrWhiteSpace(request.TipoReferencia))
-        {
-            return BadRequest(new { message = "TipoReferencia e obrigatorio." });
         }
 
         if (!TryResolveReferencia(request, out var notaId, out var ordemId, out var error))
@@ -78,15 +75,18 @@ public class AnnexController : ControllerBase
     [HttpGet("referencia/{referenciaId:long}/{tipoReferencia}")]
     public async Task<IActionResult> BuscarArquivo([FromRoute] long referenciaId, [FromRoute] string tipoReferencia)
     {
-        if (referenciaId <= 0 || string.IsNullOrWhiteSpace(tipoReferencia))
+        if (referenciaId <= 0)
         {
-            return BadRequest(new { message = "ReferenciaId e tipoReferencia sao obrigatorios." });
+            return BadRequest(new { message = "ReferenciaId e obrigatorio." });
         }
 
-        if (!TryResolveReferencia(referenciaId, tipoReferencia, out var notaId, out var ordemId, out var error))
+        if (!Enum.TryParse<TipoReferencia>(tipoReferencia, true, out var tipo))
         {
-            return BadRequest(new { message = error });
+            return BadRequest(new { message = "TipoReferencia invalido." });
         }
+
+        long? notaId = tipo == TipoReferencia.Nota ? referenciaId : null;
+        long? ordemId = tipo == TipoReferencia.Ordem ? referenciaId : null;
 
         var list = await _annexService.BuscarAnexo(notaId, ordemId, tipoReferencia);
         return Ok(list);
@@ -109,45 +109,31 @@ public class AnnexController : ControllerBase
             return true;
         }
 
-        if (!request.ReferenciaId.HasValue || request.ReferenciaId <= 0)
+        if (request.ReferenciaId.HasValue && request.ReferenciaId > 0 && !string.IsNullOrWhiteSpace(request.TipoReferencia))
         {
-            error = "Informe NotaId ou OrdemId (ou ReferenciaId legado).";
-            return false;
+            if (Enum.TryParse<TipoReferencia>(request.TipoReferencia, true, out var tipo))
+            {
+                if (tipo == TipoReferencia.Nota)
+                {
+                    notaId = request.ReferenciaId.Value;
+                    return true;
+                }
+
+                if (tipo == TipoReferencia.Ordem)
+                {
+                    ordemId = request.ReferenciaId.Value;
+                    return true;
+                }
+            }
         }
 
-        return TryResolveReferencia(request.ReferenciaId.Value, request.TipoReferencia, out notaId, out ordemId, out error);
-    }
-
-    private static bool TryResolveReferencia(long referenciaId, string tipoReferencia, out long? notaId, out long? ordemId, out string? error)
-    {
-        notaId = null;
-        ordemId = null;
-        error = null;
-
-        if (IsTipoReferenciaOrdem(tipoReferencia))
-        {
-            ordemId = referenciaId;
-            return true;
-        }
-
-        if (IsTipoReferenciaNota(tipoReferencia))
-        {
-            notaId = referenciaId;
-            return true;
-        }
-
-        error = "TipoReferencia invalido para associacao de nota ou ordem.";
+        error = "Informe NotaId, OrdemId ou um par de ReferenciaId/TipoReferencia valido.";
         return false;
     }
-
-    private static bool IsTipoReferenciaOrdem(string tipoReferencia)
+    
+    public enum TipoReferencia
     {
-        return tipoReferencia.Contains("ORDEM", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool IsTipoReferenciaNota(string tipoReferencia)
-    {
-        return tipoReferencia.Contains("NOTA", StringComparison.OrdinalIgnoreCase);
+        Nota,
+        Ordem
     }
 }
-

@@ -67,15 +67,24 @@ public class NotaManutencaoComgasDto
     [SheetColumn("Criado por")]
     public int? CriadoPorUsuarioId { get; set; }
     
+    [SheetColumn("Área operacion.")]
     public string? AreaOperacional { get; set; }
     
+    [SheetColumn("Referência externa")]
     public string? ReferenciaLocalizacaoAtivo { get; set; }
     
     public string? CategoriaNota { get; set; }
     
+    [SheetColumn("InícioAvar")]
     public DateTime? DataAvaria { get; set; }
-    
-    public TimeSpan? HoraAvaria { get; set; }
+
+    /// <summary>
+    /// Hora de início da avaria. No caso de notas sem avaria, ou com hora de início de avaria desconhecida, o valor será 00:00:00.
+    /// </summary>
+    /// <example>01:30:00</example>
+    [SheetColumn("HoraInícioAvar.")] 
+    public TimeSpan? HoraAvaria { get; set; } = 
+        new TimeSpan(0, 0, 0, 0);
     
     public string? EquipamentoDisponivel { get; set; }
     
@@ -85,19 +94,8 @@ public class NotaManutencaoComgasDto
     
     public string? ObservacoesComplementares { get; set; }
     
+    [SheetColumn("Bairro")]
     public string? PontoReferencia { get; set; }
-    
-    public string? MatrizLibra { get; set; }
-    
-    public decimal? Temperatura { get; set; }
-    
-    public decimal? Tensao { get; set; }
-    
-    public string? Fluido { get; set; }
-    
-    public decimal? Pressao { get; set; }
-    
-    public string? Plaqueta { get; set; }
 
     [SheetColumn("Tipo prioridade")]
     public string? TipoPrioridade { get; set; }

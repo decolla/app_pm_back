@@ -444,12 +444,12 @@
             Valida pagina e tamanho para evitar consultas inconsistentes.
             </summary>
         </member>
-        <member name="T:app_pm_back.Controllers.ComgasNotesController">
+        <member name="T:app_pm_back.Controllers.NotasController">
             <summary>
             Endpoints de notas da Comgas.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.#ctor(app_pm_back.Services.CongasServices.NotaManutencaoService,app_pm_back.Services.CongasServices.ItemNoteCongasService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.NotaManutencaoModel},AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.NotasController.#ctor(app_pm_back.Services.CongasServices.NotaManutencaoService,app_pm_back.Services.CongasServices.ItemNoteCongasService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.NotaManutencaoModel},AutoMapper.IMapper)">
             <summary>
             Construtor
             </summary>
@@ -458,45 +458,45 @@
             <param name="classificationServiceCongas"></param>
             <param name="mapper"></param>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.CriarNotaCongas(app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto)">
+        <member name="M:app_pm_back.Controllers.NotasController.CriarNotaCongas(app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto)">
             <summary>
             Cadastra uma nota Comgas a partir de DTO.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.ListarNotasCongas(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.NotasController.ListarNotasCongas(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Retorna todas as notas Comgas, com paginacao opcional.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.ContarNotasCongas">
+        <member name="M:app_pm_back.Controllers.NotasController.ContarNotasCongas">
             <summary>
             Conta o número total de notas Congas salvas no banco
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.ListarFichasPorAtivoCongas(System.Int32,System.String)">
+        <member name="M:app_pm_back.Controllers.NotasController.ListarFichasPorAtivoCongas(System.Int32,System.String)">
             <summary>
             Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.AtualizarNotaCongas(System.Int64,app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto)">
+        <member name="M:app_pm_back.Controllers.NotasController.AtualizarNotaCongas(System.Int64,app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto)">
             <summary>
             Atualiza uma nota Comgas pelo DTO.
             </summary>
             <param name="id">Id da nota na rota</param>
             <param name="dto">Dados da nota a ser atualizada</param>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.DeletarNotaCongas(System.Int32)">
+        <member name="M:app_pm_back.Controllers.NotasController.DeletarNotaCongas(System.Int32)">
             <summary>
             Delete uma nota Congas de mesmo Id
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.BuscarItensNota(System.Int64)">
+        <member name="M:app_pm_back.Controllers.NotasController.BuscarItensNota(System.Int64)">
             <summary>
             Retorna os itens de uma nota Congas
             </summary>
             <param name="notaId">Id da nota a ser realizado a busca</param>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.ClassificacaoHumanaNotaCongas(System.Int64,System.String,System.String)">
+        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoHumanaNotaCongas(System.Int64,System.String,System.String)">
             <summary>
             Classifica uma nota Congas com base na classificação humana atribuida a uma nota específica
             </summary>
@@ -505,20 +505,20 @@
             <param name="idUsuario">Id do usuário que realizou a classificação</param>
             <returns>Nota atualizada</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.CriarRegraCongas(app_pm_back.Models.RuleClassificationModel)">
+        <member name="M:app_pm_back.Controllers.NotasController.CriarRegraCongas(app_pm_back.Models.RuleClassificationModel)">
             <summary>
             Cria uma regra de classificação por palavras
             </summary>
             <param name="regra">Regra a ser aplicada</param>
             <returns>Regra criada</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.ClassificacaoPalavrasNotaCongas">
+        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoPalavrasNotaCongas">
             <summary>
             Classifica uma nota com base uma lista de palavras armazenadas no banco
             </summary>
             <returns>Lista de notas atualizadas</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.ClassificacaoCatboostCongas">
+        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoCatboostCongas">
             <summary>
             Classifica as notas usando a IA catboost,
             onde ela analisa o texto das notas e classifica-as com base no treinamento
@@ -526,7 +526,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Controllers.ComgasNotesController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.NotasController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Valida pagina e tamanho para evitar consultas inconsistentes.
             </summary>
@@ -890,6 +890,17 @@
             Tabela de tarefas por tipo de manutencao.
             </summary>
         </member>
+        <member name="T:app_pm_back.Data.DatabaseExceptionInterceptor">
+            <summary>
+            Interceptador de exceções do banco de dados para retornar mensagens amigáveis globais.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Data.DatabaseExceptionInterceptor.SaveChangesFailed(Microsoft.EntityFrameworkCore.Diagnostics.DbContextErrorEventData)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Data.DatabaseExceptionInterceptor.SaveChangesFailedAsync(Microsoft.EntityFrameworkCore.Diagnostics.DbContextErrorEventData,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
         <member name="T:app_pm_back.Data.DbInitializer">
             <summary>
             Classe para inicializar o banco de dados.
@@ -965,6 +976,12 @@
             <summary>
             DTO de importacao de notas de manutencao Comgas.
             </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto.HoraAvaria">
+            <summary>
+            Hora de início da avaria. No caso de notas sem avaria, ou com hora de início de avaria desconhecida, o valor será 00:00:00.
+            </summary>
+            <example>01:30:00</example>
         </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.VariavelNotaComgasDto">
             <summary>
@@ -1168,6 +1185,18 @@
             <inheritdoc />
         </member>
         <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:app_pm_back.Migrations.NewOrderUpdate">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.NewOrderUpdate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.NewOrderUpdate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.NewOrderUpdate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Models.AnnexModel">
@@ -2221,36 +2250,6 @@
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.PontoReferencia">
             <summary>
             Ponto de referência para apoio à intervenção.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.MatrizLibra">
-            <summary>
-            Matriz LIBRA aplicada à triagem da nota.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Temperatura">
-            <summary>
-            Temperatura registrada no momento da ocorrência.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Tensao">
-            <summary>
-            Tensão elétrica registrada no momento da ocorrência.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Fluido">
-            <summary>
-            Fluido associado ao ponto observado.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Pressao">
-            <summary>
-            Pressão registrada no momento da ocorrência.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Plaqueta">
-            <summary>
-            Número de plaqueta do ativo ou componente.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaManutencaoModel.Descricao">
@@ -4315,6 +4314,56 @@
             <summary>
             Remove um equipamento pela tag (chave primaria textual).
             </summary>
+        </member>
+        <member name="T:app_pm_back.Services.GenericSearchService">
+            <summary>
+            Classe para busca genérica entre as tabelas do banco de dados 
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Construtor
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarPorNomeAsync(System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Recebe os parâmetros para a busca
+            </summary>
+            <param name="tabela">Nome da tabela que será buscada</param>
+            <param name="campo">Campo a ser buscado</param>
+            <param name="nome">Nome a ser buscado no campo</param>
+            <param name="pagina">Página de exibição</param>
+            <param name="tamanho">Tamanho de cada página</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.ListarTabelasCampos">
+            <summary>
+            Lista as tabelas e seus campos disponíveis para busca.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarInternoAsync``1(System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Realiza a busca interna utilizando expressão dinâmica para filtrar pelo campo e valor informados, com suporte a busca parcial em strings e paginação.
+            </summary>
+            <param name="campo">Campo a ser feito a busca</param>
+            <param name="valor">Valor a ser buscado dentro do campo</param>
+            <param name="parcial">Se a busca será parcial ou não</param>
+            <param name="pagina"></param>
+            <param name="tamanho"></param>
+            <typeparam name="T">Tabela a ser feita a busca</typeparam>
+            <returns>Lista de elementos buscados</returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarPropriedade(System.Type,System.String)">
+            <summary>
+            Busca a propriedade da tabela pelo nome do campo, ignorando maiúsculas e minúsculas. Lança exceção se a propriedade não for encontrada.
+            </summary>
+            <param name="tipo">Tipo da propriedade a ser buscado</param>
+            <param name="campo"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException"></exception>
         </member>
         <member name="M:app_pm_back.Services.GenericSearchService.AtivoGerald(System.Int32)">
             <summary>

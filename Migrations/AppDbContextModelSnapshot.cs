@@ -1507,10 +1507,6 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)");
 
-                    b.Property<string>("Fluido")
-                        .HasMaxLength(80)
-                        .HasColumnType("character varying(80)");
-
                     b.Property<string>("GrupoDeCodes")
                         .HasColumnType("text");
 
@@ -1527,10 +1523,6 @@ namespace app_pm_back.Migrations
                     b.Property<int?>("LocalInstalacaoModelCodigoLocalInstalacao")
                         .HasColumnType("integer");
 
-                    b.Property<string>("MatrizLibra")
-                        .HasMaxLength(80)
-                        .HasColumnType("character varying(80)");
-
                     b.Property<string>("MetodoClassificacao")
                         .HasColumnType("text");
 
@@ -1544,16 +1536,9 @@ namespace app_pm_back.Migrations
                     b.Property<long?>("PlanoManutencaoCodigo")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Plaqueta")
-                        .HasMaxLength(80)
-                        .HasColumnType("character varying(80)");
-
                     b.Property<string>("PontoReferencia")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
-
-                    b.Property<decimal?>("Pressao")
-                        .HasColumnType("numeric");
 
                     b.Property<int?>("Prioridade")
                         .HasColumnType("integer");
@@ -1565,12 +1550,6 @@ namespace app_pm_back.Migrations
                     b.Property<string>("StatusNota")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
-
-                    b.Property<decimal?>("Temperatura")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("Tensao")
-                        .HasColumnType("numeric");
 
                     b.Property<string>("TipoDeNota")
                         .HasColumnType("text");
@@ -1790,8 +1769,8 @@ namespace app_pm_back.Migrations
                         .HasColumnType("character varying(40)");
 
                     b.Property<string>("StatusOrdem")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<string>("TipoOrdem")
                         .HasMaxLength(10)

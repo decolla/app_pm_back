@@ -5,6 +5,8 @@ using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace app_pm_back.Controllers;
 
@@ -16,7 +18,7 @@ namespace app_pm_back.Controllers;
 /// Endpoints de notas da Petrobras.
 /// </summary>
 [ApiController]
-[Route("api/V1/Petrobras/notes")]
+[Route("api/V1/Petrobras/notas")]
 public class PetroNotesController : ControllerBase
 {
     private readonly NotesPetroService _petroService;
@@ -305,7 +307,7 @@ public class PetroNotesController : ControllerBase
 /// Endpoints de notas da Comgas.
 /// </summary>
 [ApiController]
-[Route("api/V1/Comgas/notes")]
+[Route("api/V1/Comgas/notas")]
 public class NotasController : ControllerBase
 {
     private readonly NotaManutencaoService _congasService;
@@ -351,12 +353,20 @@ public class NotasController : ControllerBase
                 return BadRequest(new { message = "Id da nota invalido. Envie IdNota ou NumeroNota maior que zero." });
             }
 
+            // Normalização de chaves estrangeiras com valores default (Swagger/Postman)
+            if (novaNota.PlanoManutencaoCodigo <= 0) novaNota.PlanoManutencaoCodigo = null;
+            if (novaNota.CriadoPorUsuarioId <= 0) novaNota.CriadoPorUsuarioId = null;
+            if (novaNota.LocalInstalacaoCodigo <= 0) novaNota.LocalInstalacaoCodigo = null;
+            if (novaNota.EquipamentoTag == "string" || string.IsNullOrWhiteSpace(novaNota.EquipamentoTag))
+                novaNota.EquipamentoTag = null;
+
             var notaCriada = await _congasService.CreateAsync(novaNota);
             return Created($"api/V1/Comgas/notes/{notaCriada.IdNota}", notaCriada);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao criar a nota Comgas: {e.Message}." });
+            var message = GetDetailedErrorMessage(e);
+            return BadRequest(new { message = $"Erro ao criar a nota Comgas: {message}" });
         }
     }
 
@@ -621,5 +631,27 @@ public class NotasController : ControllerBase
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
+    }
+
+    private static string GetDetailedErrorMessage(Exception ex)
+    {
+        if (ex.Message == "A chave estrangeira passada não existe" || ex.Message == "Este registro já existe no sistema")
+        {
+            return ex.Message;
+        }
+
+        if (ex is DbUpdateException dbEx && dbEx.InnerException is PostgresException pgEx)
+        {
+            if (pgEx.SqlState == "23503")
+            {
+                return "A chave estrangeira passada não existe";
+            }
+            if (pgEx.SqlState == "23505")
+            {
+                return "Este registro já existe no sistema";
+            }
+            return $"Erro de integridade no banco de dados (Detalhe: {pgEx.MessageText})";
+        }
+        return ex.InnerException?.Message ?? ex.Message;
     }
 }

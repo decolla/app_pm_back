@@ -79,7 +79,7 @@ public class OrdemManutencaoModel : IClassifiable
     /// <summary>
     /// Status atual da ordem.
     /// </summary>
-    [MaxLength(20)]
+    [MaxLength(150)]
     public string? StatusOrdem { get; set; }
 
     /// <summary>

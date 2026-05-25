@@ -17,7 +17,7 @@ namespace app_pm_back.Controllers;
 /// Endpoints de ordens da Petrobras.
 /// </summary>
 [ApiController]
-[Route("api/V1/Petrobras/orders")]
+[Route("api/V1/Petrobras/ordems")]
 public class PetroOrdersController : ControllerBase
 {
     private readonly OrderPetroService _petroService;

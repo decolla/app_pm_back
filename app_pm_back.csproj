@@ -44,4 +44,11 @@
       <_ContentIncludedByDefault Remove="app_pm_back\Properties\launchSettings.json" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="app_pm_back.Tests\**" />
+      <Content Remove="app_pm_back.Tests\**" />
+      <EmbeddedResource Remove="app_pm_back.Tests\**" />
+      <None Remove="app_pm_back.Tests\**" />
+    </ItemGroup>
+
 </Project>

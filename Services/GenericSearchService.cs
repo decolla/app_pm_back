@@ -4,10 +4,12 @@ using System.Reflection;
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace app_pm_back.Services;
 
+/// <summary>
+/// Classe para busca genérica entre as tabelas do banco de dados 
+/// </summary>
 public class GenericSearchService
 {
     private readonly AppDbContext _context;
@@ -16,6 +18,10 @@ public class GenericSearchService
     private readonly DbSet<PlanoManutencaoModel> _planosManutencaoModels;
     private static readonly Dictionary<string, Type> Tabelas = BuildTabelas();
 
+    /// <summary>
+    /// Construtor
+    /// </summary>
+    /// <param name="context"></param>
     public GenericSearchService(
         AppDbContext context)
     {
@@ -24,7 +30,16 @@ public class GenericSearchService
         _ordemManutencaoModels = context.Set<OrdemManutencaoModel>();
         _planosManutencaoModels = context.Set<PlanoManutencaoModel>();
     }
-
+    
+    /// <summary>
+    /// Recebe os parâmetros para a busca
+    /// </summary>
+    /// <param name="tabela">Nome da tabela que será buscada</param>
+    /// <param name="campo">Campo a ser buscado</param>
+    /// <param name="nome">Nome a ser buscado no campo</param>
+    /// <param name="pagina">Página de exibição</param>
+    /// <param name="tamanho">Tamanho de cada página</param>
+    /// <returns></returns>
     public Task<IReadOnlyList<object>> BuscarPorNomeAsync(
         string tabela,
         string campo,
@@ -35,6 +50,10 @@ public class GenericSearchService
         return BuscarPorCampoAsync(tabela, campo, nome, true, pagina, tamanho);
     }
 
+    /// <summary>
+    /// Lista as tabelas e seus campos disponíveis para busca.
+    /// </summary>
+    /// <returns></returns>
     public IReadOnlyDictionary<string, IReadOnlyList<string>> ListarTabelasCampos()
     {
         return Tabelas.ToDictionary(
@@ -78,6 +97,17 @@ public class GenericSearchService
         return await task.ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Realiza a busca interna utilizando expressão dinâmica para filtrar pelo campo e valor informados, com suporte a busca parcial em strings e paginação.
+    /// </summary>
+    /// <param name="campo">Campo a ser feito a busca</param>
+    /// <param name="valor">Valor a ser buscado dentro do campo</param>
+    /// <param name="parcial">Se a busca será parcial ou não</param>
+    /// <param name="pagina"></param>
+    /// <param name="tamanho"></param>
+    /// <typeparam name="T">Tabela a ser feita a busca</typeparam>
+    /// <returns>Lista de elementos buscados</returns>
+    /// <exception cref="ArgumentException"></exception>
     private async Task<IReadOnlyList<object>> BuscarInternoAsync<T>(
         string campo,
         string valor,
@@ -136,6 +166,13 @@ public class GenericSearchService
         return await query.Cast<object>().ToListAsync().ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Busca a propriedade da tabela pelo nome do campo, ignorando maiúsculas e minúsculas. Lança exceção se a propriedade não for encontrada.
+    /// </summary>
+    /// <param name="tipo">Tipo da propriedade a ser buscado</param>
+    /// <param name="campo"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     private static PropertyInfo BuscarPropriedade(Type tipo, string campo)
     {
         var property = tipo

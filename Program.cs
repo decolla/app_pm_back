@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json;
 using api.Communications.Service.Impl.Data;
 using app_pm_back.Data;
+using app_pm_back.Middlewares;
 using app_pm_back.Models;
 using app_pm_back.Models.CongasModel;
 using app_pm_back.Models.Domain;
@@ -59,8 +60,8 @@ dataSourceBuilder.EnableDynamicJson();
 var dataSource = dataSourceBuilder.Build();
 
 // adicionar o contexto do PostgreSQL
-builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(dataSource));
-
+builder.Services.AddDbContext<AppDbContext>(options => 
+    options.UseNpgsql(dataSource));
 
 builder.Services.AddScoped<ConvertService>();
 builder.Services.AddScoped<SpreadsheetService>();
@@ -159,47 +160,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // captura erros
-app.UseExceptionHandler(errorApp =>
-{
-    errorApp.Run(async context =>
-    {
-        var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        context.Response.ContentType = "application/json";
-
-        string mensagem = "Ocorreu um erro inesperado.";
-        string detalhe = error?.Message ?? "";
-
-        // Se o erro for do Banco de Dados
-        if (error is DbUpdateException dbEx && dbEx.InnerException is PostgresException pgEx)
-        {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest; // Muda para 400 Bad Request
-
-            if (pgEx.SqlState == "23503")
-            {
-                mensagem = "Erro de Relacionamento: O registo principal (pai) informado não existe.";
-            }
-            else if (pgEx.SqlState == "23505")
-            {
-                mensagem = "Erro de Duplicidade: Este registo já existe no sistema.";
-            }
-            else
-            {
-                mensagem = "Erro de integridade no banco de dados.";
-            }
-
-            detalhe = pgEx.MessageText;
-        }
-
-        await context.Response.WriteAsJsonAsync(new
-        {
-            message = mensagem,
-            detail = detalhe
-        });
-    });
-});
-
+app.UseMiddleware<app_pm_back.Middlewares.GlobalExceptionMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

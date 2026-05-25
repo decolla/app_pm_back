@@ -120,39 +120,6 @@ public class NotaManutencaoModel : IClassifiable
     public string? PontoReferencia { get; set; }
 
     /// <summary>
-    /// Matriz LIBRA aplicada à triagem da nota.
-    /// </summary>
-    [MaxLength(80)]
-    public string? MatrizLibra { get; set; }
-
-    /// <summary>
-    /// Temperatura registrada no momento da ocorrência.
-    /// </summary>
-    public decimal? Temperatura { get; set; }
-
-    /// <summary>
-    /// Tensão elétrica registrada no momento da ocorrência.
-    /// </summary>
-    public decimal? Tensao { get; set; }
-
-    /// <summary>
-    /// Fluido associado ao ponto observado.
-    /// </summary>
-    [MaxLength(80)]
-    public string? Fluido { get; set; }
-
-    /// <summary>
-    /// Pressão registrada no momento da ocorrência.
-    /// </summary>
-    public decimal? Pressao { get; set; }
-
-    /// <summary>
-    /// Número de plaqueta do ativo ou componente.
-    /// </summary>
-    [MaxLength(80)]
-    public string? Plaqueta { get; set; }
-
-    /// <summary>
     /// Descricao breve da nota.
     /// </summary>
     [MaxLength(250)]

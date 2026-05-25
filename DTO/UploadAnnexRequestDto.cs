@@ -11,7 +11,7 @@ public class UploadAnnexRequestDto
     /// <summary>
     /// Arquivo enviado.
     /// </summary>
-    public IFormFile Arquivo { get; set; } = null!;
+    public IFormFile? Arquivo { get; set; }
 
     /// <summary>
     /// Id da nota associada.

@@ -58,58 +58,61 @@ public class OrdemManutencaoComgasDto
     [SheetColumn("Cust.tot.reais")]
     public decimal? CustoReal { get; set; }
 
-    [SheetColumn("Codigo trabalho")]
+    [SheetColumn("CenTrab respon.")]
     public string? CodigoTrabalho { get; set; }
 
-    [SheetColumn("Descricao")]
+    [SheetColumn("Denominação")]
     public string? Descricao { get; set; }
-
+    
+    [SheetColumn("Texto breve")]
     public string? DescricaoBreve { get; set; }
 
-    [SheetColumn("Situacao")]
+    [SheetColumn("Status usuário")]
     public string? Situacao { get; set; }
 
-    [SheetColumn("Situacao planejamento")]
+    [SheetColumn("Status paging")]
     public string? SituacaoPlanejamento { get; set; }
 
-    [SheetColumn("Inicio planejado")]
+    [SheetColumn("Início prog.")]
     public DateTime? InicioPlanejado { get; set; }
 
-    [SheetColumn("Fim planejado")]
+    [SheetColumn("Fim programado")]
     public DateTime? FimPlanejado { get; set; }
 
-    [SheetColumn("Inicio real")]
+    [SheetColumn("Liberação real")]
     public DateTime? InicioReal { get; set; }
 
-    [SheetColumn("Fim real")]
+    [SheetColumn("Dt.real fim")]
     public DateTime? FimReal { get; set; }
 
     [SheetColumn("Equipamento")]
     public string? EquipamentoTag { get; set; }
 
-    [SheetColumn("Loc.instalacao")]
+    [SheetColumn("Loc.instalação")]
     public int? LocalInstalacaoCodigo { get; set; }
 
+    [SheetColumn("Área operacion.")]
     public string? AreaOperacional { get; set; }
 
+    [SheetColumn("Grp.plnj.PM")]
     public int? GpmResponsavelId { get; set; }
 
     [SheetColumn("Material")]
     public string? Material { get; set; }
 
-    [SheetColumn("Numero serie")]
+    [SheetColumn("Nº de série")]
     public string? NumeroSerie { get; set; }
 
-    [SheetColumn("Dados adicionais")]
+    [SheetColumn("Dds.dispositivo")]
     public string? DadosAdicionaisDispositivo { get; set; }
 
     [SheetColumn("Periodo")]
     public string? Periodo { get; set; }
 
-    [SheetColumn("Etiqueta nota")]
+    [SheetColumn("Nota")]
     public string? EtiquetaNota { get; set; }
 
-    [SheetColumn("Data criacao")]
+    [SheetColumn("Data de entrada")]
     public DateTime? DataCriacao { get; set; }
 
     [SheetColumn("Analise criticidade")]
@@ -124,7 +127,7 @@ public class OrdemManutencaoComgasDto
     [SheetColumn("Matriz LIBRA")]
     public string? MatrizLibra { get; set; }
 
-    [SheetColumn("Permissao trabalho")]
+    [SheetColumn("CenTrab respon.")]
     public string? PermissaoTrabalho { get; set; }
 
     public List<OperacaoOrdemComgasDto> Operacoes { get; set; } = new();
