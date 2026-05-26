@@ -323,7 +323,7 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<TipoManutencaoCepModel>()
-            .HasIndex(c => new { c.NomeTipo, c.TipoAtivo })
+            .HasIndex(c => new { c.TipoAtivo })
             .IsUnique();
 
         modelBuilder.Entity<CentroTrabalhoModel>()

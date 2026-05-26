@@ -11,9 +11,7 @@ public class TipoManutencaoCepComgasDto
 {
     [SheetColumn("Id Tipo Manutenção CEP")]
     public int IdTipoManutencaoCep { get; set; }
-
-    [SheetColumn("Nome Tipo")]
-    public string? NomeTipo { get; set; }
+    
 
     [SheetColumn("Tipo Ativo")]
     public string? TipoAtivo { get; set; }
@@ -25,7 +23,7 @@ public class TipoManutencaoCepComgasDto
     public bool Habilitada { get; set; }
 
     [SheetColumn("Níveis")]
-    public Dictionary<string, string>? Niveis { get; set; }
+    public Dictionary<string, int>? Niveis { get; set; }
 
     [SheetColumn("Ações Falha")]
     public List<int> AcoesFalha { get; set; } = new();

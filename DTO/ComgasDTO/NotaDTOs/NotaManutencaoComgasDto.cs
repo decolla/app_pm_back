@@ -40,8 +40,8 @@ public class NotaManutencaoComgasDto
     [SheetColumn("Texto")]
     public string? DescricaoDetalhada { get; set; }
 
-    [SheetColumn("Status sistema")]
-    public string? StatusNota { get; set; }
+    [SheetColumn("Status sistema")] 
+    public string? StatusNota { get; set; } = "Aberta";
 
     [SheetColumn("Data da nota")]
     public DateTime DataNota { get; set; }

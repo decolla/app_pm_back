@@ -14,12 +14,6 @@ public class TipoManutencaoCepModel
     public int IdTipoManutencaoCep { get; set; }
 
     /// <summary>
-    /// Nome do tipo de manutencao.
-    /// </summary>
-    [MaxLength(80)]
-    public string NomeTipo { get; set; } = string.Empty;
-
-    /// <summary>
     /// Tipo de ativo a ser aplicado.
     /// </summary>
     [MaxLength(80)]
@@ -40,7 +34,7 @@ public class TipoManutencaoCepModel
     /// Selecao de niveis e descricoes.
     /// </summary>
     [Column(TypeName = "jsonb")]
-    public Dictionary<string, string>? Niveis { get; set; }
+    public Dictionary<string, int>? Niveis { get; set; }
 
     /// <summary>
     /// Acoes selecionadas em caso de falha.

@@ -26,7 +26,6 @@ public class TipoManutencaoCepController : ControllerBase
     public async Task<IActionResult> Criar([FromBody] TipoManutencaoCepComgasDto dto)
     {
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
-        if (string.IsNullOrWhiteSpace(dto.NomeTipo)) return BadRequest(new { message = "NomeTipo obrigatorio." });
         if (string.IsNullOrWhiteSpace(dto.TipoAtivo)) return BadRequest(new { message = "TipoAtivo obrigatorio." });
 
         var model = _mapper.Map<TipoManutencaoCepModel>(dto);
