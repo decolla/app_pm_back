@@ -30,4 +30,7 @@ public class PlanoModel
 
     [ForeignKey(nameof(IdEstrategia))]
     public virtual EstrategiaModel? Estrategia { get; set; }
+
+    public virtual ICollection<TipoPlanoModel> TiposPlano { get; set; } = new List<TipoPlanoModel>();
+    public virtual ICollection<NotaModel> Notas { get; set; } = new List<NotaModel>();
 }

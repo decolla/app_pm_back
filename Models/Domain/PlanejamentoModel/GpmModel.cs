@@ -18,4 +18,6 @@ public class GpmModel
 
     [ForeignKey(nameof(IdCPM))]
     public virtual CpmModel? CPM { get; set; }
+
+    public virtual ICollection<UsuarioModel> Usuarios { get; set; } = new List<UsuarioModel>();
 }

@@ -19,4 +19,7 @@ public class TipoCepModel
 
     [Column(TypeName = "jsonb")]
     public List<AcoesFalha>? AcoesFalha { get; set; } = new();
+
+    public virtual ICollection<TipoEstrategiaModel> TiposEstrategia { get; set; } = new List<TipoEstrategiaModel>();
+    public virtual ICollection<TipoPlanoModel> TiposPlano { get; set; } = new List<TipoPlanoModel>();
 }

@@ -64,8 +64,8 @@ public class AppDbContext : DbContext
 
         // 2. Almoxarifado/Usuario
         modelBuilder.Entity<AlmoxarifadoModel>()
-            .HasMany<UsuarioModel>()
-            .WithMany()
+            .HasMany(a => a.Usuarios)
+            .WithMany(u => u.Almoxarifados)
             .UsingEntity<Dictionary<string, object>>(
                 "AlmoxarifadoUsuario",
                 j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),
@@ -92,8 +92,8 @@ public class AppDbContext : DbContext
 
         // 4. GPM/Usuario
         modelBuilder.Entity<GpmModel>()
-            .HasMany<UsuarioModel>()
-            .WithMany()
+            .HasMany(g => g.Usuarios)
+            .WithMany(u => u.Gpms)
             .UsingEntity<Dictionary<string, object>>(
                 "GpmUsuario",
                 j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),
@@ -106,8 +106,8 @@ public class AppDbContext : DbContext
 
         // 5. CTM/Usuario
         modelBuilder.Entity<CtmModel>()
-            .HasMany<UsuarioModel>()
-            .WithMany()
+            .HasMany(c => c.Usuarios)
+            .WithMany(u => u.Ctms)
             .UsingEntity<Dictionary<string, object>>(
                 "CtmUsuario",
                 j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),

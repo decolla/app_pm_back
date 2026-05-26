@@ -277,7 +277,7 @@ namespace app_pm_back.Migrations
                     b.Property<int>("IdUsuario")
                         .HasColumnType("integer");
 
-                    b.Property<string>("TipoUR")
+                    b.Property<string>("OrigemUR")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -549,6 +549,9 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<bool>("ConfiabilidadeRestaurada")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("CriadaPorUsuario")
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
@@ -613,6 +616,10 @@ namespace app_pm_back.Migrations
                     b.Property<string>("StatusNota")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
+
+                    b.Property<string>("TipoNota")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("IdNota");
 
@@ -685,6 +692,9 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<bool>("ConfiabilidadeRestaurada")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("CriadaPorUsuario")
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
@@ -732,9 +742,15 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<int>("NumeroOrdem")
+                        .HasColumnType("integer");
+
                     b.Property<string>("StatusOrdem")
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
+
+                    b.Property<string>("TipoOrdem")
+                        .HasColumnType("text");
 
                     b.HasKey("IdOrdem");
 
@@ -1109,7 +1125,7 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.Domain.CtmModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.CpmModel", "CPM")
-                        .WithMany()
+                        .WithMany("Ctms")
                         .HasForeignKey("IdCPM")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1138,7 +1154,7 @@ namespace app_pm_back.Migrations
                         .IsRequired();
 
                     b.HasOne("app_pm_back.Models.Domain.UsuarioModel", "Usuario")
-                        .WithMany()
+                        .WithMany("DadosRenovacao")
                         .HasForeignKey("IdUsuario")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1153,7 +1169,7 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.Domain.FerramentaModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.AlmoxarifadoModel", "Almoxarifado")
-                        .WithMany()
+                        .WithMany("Ferramentas")
                         .HasForeignKey("IdAlmoxarifado")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1164,7 +1180,7 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.Domain.GpmModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.CpmModel", "CPM")
-                        .WithMany()
+                        .WithMany("Gpms")
                         .HasForeignKey("IdCPM")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1186,11 +1202,11 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.Domain.NotaModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.PlanoModel", "Plano")
-                        .WithMany()
+                        .WithMany("Notas")
                         .HasForeignKey("IdPlano");
 
                     b.HasOne("app_pm_back.Models.Domain.UsuarioModel", "Usuario")
-                        .WithMany()
+                        .WithMany("Notas")
                         .HasForeignKey("IdUsuario");
 
                     b.Navigation("Plano");
@@ -1209,7 +1225,7 @@ namespace app_pm_back.Migrations
                         .HasForeignKey("IdOrdem");
 
                     b.HasOne("app_pm_back.Models.Domain.TipoManutencaoModel", "TipoManutencao")
-                        .WithMany()
+                        .WithMany("Operacoes")
                         .HasForeignKey("IdTipoManutencao");
 
                     b.Navigation("Ctm");
@@ -1222,7 +1238,7 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.NotaModel", "Nota")
-                        .WithMany()
+                        .WithMany("Ordens")
                         .HasForeignKey("IdNota");
 
                     b.Navigation("Nota");
@@ -1231,7 +1247,7 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.Domain.PlanoModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.EstrategiaModel", "Estrategia")
-                        .WithMany()
+                        .WithMany("Planos")
                         .HasForeignKey("IdEstrategia")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1242,19 +1258,19 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.Domain.TipoEstrategiaModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.EstrategiaModel", "Estrategia")
-                        .WithMany()
+                        .WithMany("TiposEstrategia")
                         .HasForeignKey("IdEstrategia")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("app_pm_back.Models.Domain.TipoCepModel", "TipoCep")
-                        .WithMany()
+                        .WithMany("TiposEstrategia")
                         .HasForeignKey("IdTipoCep")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("app_pm_back.Models.Domain.TipoManutencaoModel", "TipoManutencao")
-                        .WithMany()
+                        .WithMany("TiposEstrategia")
                         .HasForeignKey("IdTipoManutencao")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1269,13 +1285,13 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.Domain.TipoPlanoModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.PlanoModel", "Plano")
-                        .WithMany()
+                        .WithMany("TiposPlano")
                         .HasForeignKey("IdPlano")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("app_pm_back.Models.Domain.TipoCepModel", "TipoCep")
-                        .WithMany()
+                        .WithMany("TiposPlano")
                         .HasForeignKey("IdTipoCep")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1287,7 +1303,7 @@ namespace app_pm_back.Migrations
                         .IsRequired();
 
                     b.HasOne("app_pm_back.Models.Domain.TipoManutencaoModel", "TipoManutencao")
-                        .WithMany()
+                        .WithMany("TiposPlano")
                         .HasForeignKey("IdTipoManutencao")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1312,11 +1328,32 @@ namespace app_pm_back.Migrations
                     b.Navigation("Nota");
                 });
 
+            modelBuilder.Entity("app_pm_back.Models.Domain.AlmoxarifadoModel", b =>
+                {
+                    b.Navigation("Ferramentas");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.CpmModel", b =>
+                {
+                    b.Navigation("Ctms");
+
+                    b.Navigation("Gpms");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.EstrategiaModel", b =>
+                {
+                    b.Navigation("Planos");
+
+                    b.Navigation("TiposEstrategia");
+                });
+
             modelBuilder.Entity("app_pm_back.Models.Domain.NotaModel", b =>
                 {
                     b.Navigation("Anexos");
 
                     b.Navigation("Itens");
+
+                    b.Navigation("Ordens");
 
                     b.Navigation("Variaveis");
                 });
@@ -1326,6 +1363,36 @@ namespace app_pm_back.Migrations
                     b.Navigation("Anexos");
 
                     b.Navigation("Operacoes");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.PlanoModel", b =>
+                {
+                    b.Navigation("Notas");
+
+                    b.Navigation("TiposPlano");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.TipoCepModel", b =>
+                {
+                    b.Navigation("TiposEstrategia");
+
+                    b.Navigation("TiposPlano");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.TipoManutencaoModel", b =>
+                {
+                    b.Navigation("Operacoes");
+
+                    b.Navigation("TiposEstrategia");
+
+                    b.Navigation("TiposPlano");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.UsuarioModel", b =>
+                {
+                    b.Navigation("DadosRenovacao");
+
+                    b.Navigation("Notas");
                 });
 #pragma warning restore 612, 618
         }

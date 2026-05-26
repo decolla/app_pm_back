@@ -37,9 +37,6 @@ public class NotaManutencaoComgasDto
     [SheetColumn("Descrição")]
     public string? Descricao { get; set; }
 
-    [SheetColumn("Texto")]
-    public string? DescricaoDetalhada { get; set; }
-
     [SheetColumn("Status sistema")] 
     public string? StatusNota { get; set; } = "Aberta";
 
@@ -114,6 +111,8 @@ public class NotaManutencaoComgasDto
 
     [SheetColumn("Conseqüência")]
     public int? Consequencia { get; set; }
+
+    public bool ConfiabilidadeRestaurada { get; set; } = false; 
 
     [SheetColumn("Grupo de codes")]
     public string? GrupoDeCodes { get; set; }

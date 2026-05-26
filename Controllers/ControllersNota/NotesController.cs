@@ -164,6 +164,8 @@ public class NotasController : ControllerBase
             }
 
             var nota = _mapper.Map<NotaModel>(dto);
+            nota.DataModificacao = DateTime.UtcNow;
+            // adicionar dps quem modificou a nota aqui
             var result = await _congasService.UpdateNotaAsync(nota);
             return Ok(new { message = "Nota Comgas atualizada com sucesso: " + result.IdNota });
         }
