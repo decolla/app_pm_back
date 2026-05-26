@@ -1,8 +1,7 @@
 using app_pm_back.DTO;
-using app_pm_back.Models;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace app_pm_back.Controllers;
 
@@ -15,20 +14,11 @@ public class AnnexController : ControllerBase
 {
     private readonly AnnexService _annexService;
 
-    /// <summary>
-    /// Construtor
-    /// </summary>
-    /// <param name="annexService"></param>
     public AnnexController(AnnexService annexService)
     {
         _annexService = annexService;
     }
 
-    /// <summary>
-    /// Upload de um arquivo em IFormFile 
-    /// </summary>
-    /// <param name="request">Dados de upload do anexo.</param>
-    /// <returns></returns>
     [HttpPost("upload")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadArquivo([FromForm] UploadAnnexRequestDto request)
@@ -43,15 +33,10 @@ public class AnnexController : ControllerBase
             return BadRequest(new { message = error });
         }
 
-        var result = await _annexService.UploadAnexo(request.Arquivo, notaId, ordemId, request.TipoReferencia, request.Categoria);
+        dynamic result = await _annexService.UploadAnexo(request.Arquivo, notaId, ordemId, request.TipoReferencia, request.Categoria);
         return Ok(new { message = $"Arquivo enviado com sucesso {result.IdAnexo}" });
     }
 
-    /// <summary>
-    /// Download de um arquivo com base no id
-    /// </summary>
-    /// <param name="id">Id regsitrado no arquivo</param>
-    /// <returns></returns>
     [HttpGet("{id:long}")]
     public async Task<IActionResult> DownloadArquivo([FromRoute] long id)
     {
@@ -63,15 +48,9 @@ public class AnnexController : ControllerBase
         var anexo = await _annexService.DownloadAnexo(id);
         if (anexo == null) return NotFound();
 
-        return File(anexo.Dados, anexo.MimeType, anexo.NomeAnexo);
+        return File(anexo.Value.Dados, anexo.Value.MimeType, anexo.Value.Nome);
     }
     
-    /// <summary>
-    /// Realiza a busca de um arquivo no banco de dados com base no Id e Tipo relacionados 
-    /// </summary>
-    /// <param name="referenciaId">Id da referência de busca</param>
-    /// <param name="tipoReferencia">Tipo da referência de busca</param>
-    /// <returns></returns>
     [HttpGet("referencia/{referenciaId:long}/{tipoReferencia}")]
     public async Task<IActionResult> BuscarArquivo([FromRoute] long referenciaId, [FromRoute] string tipoReferencia)
     {

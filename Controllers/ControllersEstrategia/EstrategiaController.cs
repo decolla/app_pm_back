@@ -17,11 +17,6 @@ public class EstrategiaController : ControllerBase
     private readonly EstrategiaComgasService _estrategiaComgasService;
     private readonly IMapper _mapper;
 
-    /// <summary>
-    /// Construtor.
-    /// </summary>
-    /// <param name="estrategiaComgasService"></param>
-    /// <param name="mapper"></param>
     public EstrategiaController(EstrategiaComgasService estrategiaComgasService, IMapper mapper)
     {
         _estrategiaComgasService = estrategiaComgasService;
@@ -31,7 +26,6 @@ public class EstrategiaController : ControllerBase
     /// <summary>
     /// Cria uma estratégia 
     /// </summary>
-    /// <param name="dto">Objeto a ser adicionado</param>
     [HttpPost]
     public async Task<IActionResult> Criar([FromBody] EstrategiaManutencaoComgasDto dto)
     {
@@ -42,7 +36,7 @@ public class EstrategiaController : ControllerBase
                 return ValidationProblem(ModelState);
             }
 
-            var obj = _mapper.Map<EstrategiaManutencaoModel>(dto);
+            var obj = _mapper.Map<EstrategiaModel>(dto);
             if (string.IsNullOrWhiteSpace(obj.Nome))
             {
                 return BadRequest(new { message = "Nome da estrategia obrigatorio." });
@@ -60,9 +54,6 @@ public class EstrategiaController : ControllerBase
     /// <summary>
     /// Lista as estratégias em formato de página 
     /// </summary>
-    /// <param name="pagina">Página a ser exibida</param>
-    /// <param name="tamanho">Quantidade de objetos na página</param>
-    /// <returns>Lista de objetos presentes na página</returns>
     [HttpGet]
     public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
@@ -93,7 +84,6 @@ public class EstrategiaController : ControllerBase
     /// <summary>
     /// Retorna a quantidade de elementos 
     /// </summary>
-    /// <returns>Quantidade de elementos cadastrados no banco</returns>
     [HttpGet("count")]
     public async Task<IActionResult> Contar()
     {
@@ -111,10 +101,6 @@ public class EstrategiaController : ControllerBase
     /// <summary>
     /// Atualiza um objeto do modelo
     /// </summary>
-    /// <param name="id">Id da estrategia na rota</param>
-    /// <param name="dto">Objeto a ser atualizado</param>
-    /// <returns>Novo objeto</returns>
-    // [HttpPut]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] EstrategiaManutencaoComgasDto dto)
     {
@@ -140,7 +126,7 @@ public class EstrategiaController : ControllerBase
                 return BadRequest(new { message = "Id da rota e IdEstrategia do corpo da requisição devem ser iguais." });
             }
 
-            var obj = _mapper.Map<EstrategiaManutencaoModel>(dto);
+            var obj = _mapper.Map<EstrategiaModel>(dto);
             if (obj.IdEstrategia <= 0)
             {
                 return BadRequest(new { message = "IdEstrategia invalido. Envie IdEstrategia maior que zero." });
@@ -158,7 +144,6 @@ public class EstrategiaController : ControllerBase
     /// <summary>
     /// Deleta um objeto do modelo
     /// </summary>
-    /// <param name="id">Id do objeto a ser deletado</param>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Deletar(int id)
     {
@@ -176,14 +161,8 @@ public class EstrategiaController : ControllerBase
     }
     
     /// <summary>
-    /// Pesquisa estrategias com filtros da tela (nome, id, tipo de ativo e visao).
+    /// Pesquisa estrategias com filtros da tela.
     /// </summary>
-    /// <param name="nome">Nome da estrategia (parcial).</param>
-    /// <param name="id">Id exato da estrategia.</param>
-    /// <param name="tipoAtivo">Tipo de ativo aplicavel (parcial).</param>
-    /// <param name="visao">Visao/denominacao (parcial).</param>
-    /// <param name="pagina">Pagina para retorno paginado (opcional).</param>
-    /// <param name="tamanho">Quantidade por pagina (opcional).</param>
     [HttpGet("pesquisa")]
     public async Task<IActionResult> Pesquisar(
         [FromQuery] string? nome,
@@ -217,8 +196,6 @@ public class EstrategiaController : ControllerBase
     /// <summary>
     /// Busca por id a estratégia 
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> BuscarPorId(int id)
     {
@@ -243,9 +220,6 @@ public class EstrategiaController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Valida pagina e tamanho para evitar consultas inconsistentes.
-    /// </summary>
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);

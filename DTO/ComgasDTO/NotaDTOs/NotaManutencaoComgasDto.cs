@@ -59,10 +59,10 @@ public class NotaManutencaoComgasDto
     public DateTime? DateTime { get; set; }
 
     [SheetColumn("Equipamento")]
-    public string? EquipamentoTag { get; set; }
+    public string? IdAtivo { get; set; }
 
     [SheetColumn("Loc.instalação")]
-    public int? LocalInstalacaoCodigo { get; set; }
+    public int? IdLocalInstalacao { get; set; }
 
     [SheetColumn("Criado por")]
     public int? CriadoPorUsuarioId { get; set; }
@@ -125,9 +125,6 @@ public class NotaManutencaoComgasDto
 
     public List<VariavelNotaComgasDto> Variaveis { get; set; } = new();
 
-    public List<MedidaNotaComgasDto> Medidas { get; set; } = new();
-
-    public List<AtividadeNotaComgasDto> Atividades { get; set; } = new();
 }
 
 #pragma warning restore CS1591

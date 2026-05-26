@@ -1,0 +1,1042 @@
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using app_pm_back.Models.Domain;
+
+#nullable disable
+
+namespace app_pm_back.Migrations
+{
+    /// <inheritdoc />
+    public partial class InitialCreate : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.EnsureSchema(
+                name: "public");
+
+            migrationBuilder.CreateTable(
+                name: "PM_Almoxarifados",
+                schema: "public",
+                columns: table => new
+                {
+                    IdAlmoxarifado = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Organizacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    IdEscopo = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Almoxarifados", x => x.IdAlmoxarifado);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_Cpms",
+                schema: "public",
+                columns: table => new
+                {
+                    IdCPM = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    NomeCentro = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Organizacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    IdEscopo = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Cpms", x => x.IdCPM);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_Estrategias",
+                schema: "public",
+                columns: table => new
+                {
+                    IdEstrategia = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Ciclos = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    Habilitada = table.Column<bool>(type: "boolean", nullable: false),
+                    TipoAtivoAplicavel = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    NumeroCiclos = table.Column<int>(type: "integer", nullable: false),
+                    CicloContinuo = table.Column<bool>(type: "boolean", nullable: false),
+                    IdEscopo = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Estrategias", x => x.IdEstrategia);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_Imobilizados",
+                schema: "public",
+                columns: table => new
+                {
+                    IdImobilizado = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Denominacao = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Nserie = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Quantidade = table.Column<int>(type: "integer", nullable: false),
+                    DataAquisicao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DataIncorporacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ValorCompra = table.Column<decimal>(type: "numeric", nullable: false),
+                    Moeda = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    Depreciacao = table.Column<double>(type: "double precision", nullable: false),
+                    ValorAtual = table.Column<decimal>(type: "numeric", nullable: false),
+                    InfoAdicionais = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Imobilizados", x => x.IdImobilizado);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_TiposCep",
+                schema: "public",
+                columns: table => new
+                {
+                    IdTipoCep = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TipoAtivo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Confiabilidade = table.Column<double>(type: "double precision", nullable: false),
+                    Habilitada = table.Column<bool>(type: "boolean", nullable: false),
+                    CampoIndefinido = table.Column<string>(type: "text", nullable: true),
+                    AcoesFalha = table.Column<List<AcoesFalha>>(type: "jsonb", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_TiposCep", x => x.IdTipoCep);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_TiposManutencao",
+                schema: "public",
+                columns: table => new
+                {
+                    IdTipoManutencao = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Categoria = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    TipoAtivo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Confiabilidade = table.Column<double>(type: "double precision", nullable: false),
+                    Habilitada = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_TiposManutencao", x => x.IdTipoManutencao);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_Usuarios",
+                schema: "public",
+                columns: table => new
+                {
+                    IdUsuario = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    CPF = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Permissoes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    IdEscopo = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Usuarios", x => x.IdUsuario);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_Ferramentas",
+                schema: "public",
+                columns: table => new
+                {
+                    IdFerramenta = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Categoria = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Quantidade = table.Column<int>(type: "integer", nullable: false),
+                    TipoFerramenta = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PesoBruto = table.Column<double>(type: "double precision", nullable: false),
+                    PesoLiquido = table.Column<double>(type: "double precision", nullable: false),
+                    UmPesoBruto = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    UmPesoLiquido = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Volume = table.Column<double>(type: "double precision", nullable: false),
+                    UmVolume = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Dimensao = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    UmDimensao = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Fabricante = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    ValorCompra = table.Column<decimal>(type: "numeric", nullable: false),
+                    DataAquisicao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    IdLI = table.Column<int>(type: "integer", nullable: false),
+                    IdEscopo = table.Column<int>(type: "integer", nullable: false),
+                    IdAlmoxarifado = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Ferramentas", x => x.IdFerramenta);
+                    table.ForeignKey(
+                        name: "FK_PM_Ferramentas_PM_Almoxarifados_IdAlmoxarifado",
+                        column: x => x.IdAlmoxarifado,
+                        principalSchema: "public",
+                        principalTable: "PM_Almoxarifados",
+                        principalColumn: "IdAlmoxarifado",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_Gpms",
+                schema: "public",
+                columns: table => new
+                {
+                    IdGPM = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    IdCPM = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Gpms", x => x.IdGPM);
+                    table.ForeignKey(
+                        name: "FK_PM_Gpms_PM_Cpms_IdCPM",
+                        column: x => x.IdCPM,
+                        principalSchema: "public",
+                        principalTable: "PM_Cpms",
+                        principalColumn: "IdCPM",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_Planos",
+                schema: "public",
+                columns: table => new
+                {
+                    IdPlano = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Prioridade = table.Column<int>(type: "integer", nullable: true),
+                    DataInicios = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    GerarAutomaticamente = table.Column<int>(type: "integer", nullable: true),
+                    Antecedencia = table.Column<int>(type: "integer", nullable: false),
+                    DataConclusao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    NomeAtivo = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    IdAtivo = table.Column<int>(type: "integer", nullable: false),
+                    IdEstrategia = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Planos", x => x.IdPlano);
+                    table.ForeignKey(
+                        name: "FK_PM_Planos_PM_Estrategias_IdEstrategia",
+                        column: x => x.IdEstrategia,
+                        principalSchema: "public",
+                        principalTable: "PM_Estrategias",
+                        principalColumn: "IdEstrategia",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_TiposEstrategia",
+                schema: "public",
+                columns: table => new
+                {
+                    IdTipoEstrategia = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Dias = table.Column<int>(type: "integer", nullable: false),
+                    ToleranciaPositiva = table.Column<double>(type: "double precision", nullable: false),
+                    ToleranciaNegativa = table.Column<double>(type: "double precision", nullable: false),
+                    Continua = table.Column<bool>(type: "boolean", nullable: false),
+                    Categoria = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    IdEstrategia = table.Column<int>(type: "integer", nullable: false),
+                    IdTipoManutencao = table.Column<int>(type: "integer", nullable: false),
+                    IdTipoCep = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_TiposEstrategia", x => x.IdTipoEstrategia);
+                    table.ForeignKey(
+                        name: "FK_PM_TiposEstrategia_PM_Estrategias_IdEstrategia",
+                        column: x => x.IdEstrategia,
+                        principalSchema: "public",
+                        principalTable: "PM_Estrategias",
+                        principalColumn: "IdEstrategia",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_TiposEstrategia_PM_TiposCep_IdTipoCep",
+                        column: x => x.IdTipoCep,
+                        principalSchema: "public",
+                        principalTable: "PM_TiposCep",
+                        principalColumn: "IdTipoCep",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_TiposEstrategia_PM_TiposManutencao_IdTipoManutencao",
+                        column: x => x.IdTipoManutencao,
+                        principalSchema: "public",
+                        principalTable: "PM_TiposManutencao",
+                        principalColumn: "IdTipoManutencao",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_AlmoxarifadoUsuario",
+                schema: "public",
+                columns: table => new
+                {
+                    IdAlmoxarifado = table.Column<int>(type: "integer", nullable: false),
+                    IdUsuario = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_AlmoxarifadoUsuario", x => new { x.IdAlmoxarifado, x.IdUsuario });
+                    table.ForeignKey(
+                        name: "FK_PM_AlmoxarifadoUsuario_PM_Almoxarifados_IdAlmoxarifado",
+                        column: x => x.IdAlmoxarifado,
+                        principalSchema: "public",
+                        principalTable: "PM_Almoxarifados",
+                        principalColumn: "IdAlmoxarifado",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_AlmoxarifadoUsuario_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalSchema: "public",
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_Ctms",
+                schema: "public",
+                columns: table => new
+                {
+                    IdGPM = table.Column<int>(type: "integer", nullable: false),
+                    AreaCTM = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    IdCPM = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Ctms", x => x.IdGPM);
+                    table.ForeignKey(
+                        name: "FK_PM_Ctms_PM_Cpms_IdCPM",
+                        column: x => x.IdCPM,
+                        principalSchema: "public",
+                        principalTable: "PM_Cpms",
+                        principalColumn: "IdCPM",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_Ctms_PM_Gpms_IdGPM",
+                        column: x => x.IdGPM,
+                        principalSchema: "public",
+                        principalTable: "PM_Gpms",
+                        principalColumn: "IdGPM",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_GpmLi",
+                schema: "public",
+                columns: table => new
+                {
+                    IdGPM = table.Column<int>(type: "integer", nullable: false),
+                    IdUsuario = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_GpmLi", x => new { x.IdGPM, x.IdUsuario });
+                    table.ForeignKey(
+                        name: "FK_PM_GpmLi_PM_Gpms_IdGPM",
+                        column: x => x.IdGPM,
+                        principalSchema: "public",
+                        principalTable: "PM_Gpms",
+                        principalColumn: "IdGPM",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_GpmLi_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalSchema: "public",
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_GpmUsuario",
+                schema: "public",
+                columns: table => new
+                {
+                    IdGPM = table.Column<int>(type: "integer", nullable: false),
+                    IdUsuario = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_GpmUsuario", x => new { x.IdGPM, x.IdUsuario });
+                    table.ForeignKey(
+                        name: "FK_PM_GpmUsuario_PM_Gpms_IdGPM",
+                        column: x => x.IdGPM,
+                        principalSchema: "public",
+                        principalTable: "PM_Gpms",
+                        principalColumn: "IdGPM",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_GpmUsuario_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalSchema: "public",
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_Notas",
+                schema: "public",
+                columns: table => new
+                {
+                    IdNota = table.Column<long>(type: "bigint", nullable: false),
+                    NumeroNota = table.Column<long>(type: "bigint", nullable: false),
+                    DataNota = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ReferenciaLocalizacaoAtivo = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    Finalidade = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: true),
+                    Prioridade = table.Column<int>(type: "integer", nullable: true),
+                    FimDesejado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    DataAvaria = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    HoraAvaria = table.Column<TimeSpan>(type: "interval", nullable: true),
+                    StatusNota = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    EquipamentoDisponivel = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    AnomaliaObservada = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    ObservacoesComplementares = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    Classificacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    MetodoClassificacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ClassificadoPor = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    DataClassificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CriadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    ModificadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    DataModificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IdPlano = table.Column<long>(type: "bigint", nullable: true),
+                    IdUsuario = table.Column<int>(type: "integer", nullable: true),
+                    IdAtivo = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Notas", x => x.IdNota);
+                    table.ForeignKey(
+                        name: "FK_PM_Notas_PM_Planos_IdPlano",
+                        column: x => x.IdPlano,
+                        principalSchema: "public",
+                        principalTable: "PM_Planos",
+                        principalColumn: "IdPlano");
+                    table.ForeignKey(
+                        name: "FK_PM_Notas_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalSchema: "public",
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_TiposPlano",
+                schema: "public",
+                columns: table => new
+                {
+                    IdTipoPlano = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Visivel = table.Column<bool>(type: "boolean", nullable: false),
+                    Dias = table.Column<int>(type: "integer", nullable: false),
+                    ToleranciaPositiva = table.Column<double>(type: "double precision", nullable: false),
+                    ToleranciaNegativa = table.Column<double>(type: "double precision", nullable: false),
+                    Continua = table.Column<bool>(type: "boolean", nullable: false),
+                    Categoria = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    IdTipoEstrategia = table.Column<int>(type: "integer", nullable: false),
+                    IdPlano = table.Column<long>(type: "bigint", nullable: false),
+                    IdTipoManutencao = table.Column<int>(type: "integer", nullable: false),
+                    IdTipoCep = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_TiposPlano", x => x.IdTipoPlano);
+                    table.ForeignKey(
+                        name: "FK_PM_TiposPlano_PM_Planos_IdPlano",
+                        column: x => x.IdPlano,
+                        principalSchema: "public",
+                        principalTable: "PM_Planos",
+                        principalColumn: "IdPlano",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_TiposPlano_PM_TiposCep_IdTipoCep",
+                        column: x => x.IdTipoCep,
+                        principalSchema: "public",
+                        principalTable: "PM_TiposCep",
+                        principalColumn: "IdTipoCep",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_TiposPlano_PM_TiposEstrategia_IdTipoEstrategia",
+                        column: x => x.IdTipoEstrategia,
+                        principalSchema: "public",
+                        principalTable: "PM_TiposEstrategia",
+                        principalColumn: "IdTipoEstrategia",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_TiposPlano_PM_TiposManutencao_IdTipoManutencao",
+                        column: x => x.IdTipoManutencao,
+                        principalSchema: "public",
+                        principalTable: "PM_TiposManutencao",
+                        principalColumn: "IdTipoManutencao",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_CtmUsuario",
+                schema: "public",
+                columns: table => new
+                {
+                    IdCTM = table.Column<int>(type: "integer", nullable: false),
+                    IdUsuario = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_CtmUsuario", x => new { x.IdCTM, x.IdUsuario });
+                    table.ForeignKey(
+                        name: "FK_PM_CtmUsuario_PM_Ctms_IdCTM",
+                        column: x => x.IdCTM,
+                        principalSchema: "public",
+                        principalTable: "PM_Ctms",
+                        principalColumn: "IdGPM",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_CtmUsuario_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalSchema: "public",
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_AnexosNota",
+                schema: "public",
+                columns: table => new
+                {
+                    IdAnexoNota = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    TipoArquivo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Dados = table.Column<byte[]>(type: "bytea", nullable: true),
+                    IdNota = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_AnexosNota", x => x.IdAnexoNota);
+                    table.ForeignKey(
+                        name: "FK_PM_AnexosNota_PM_Notas_IdNota",
+                        column: x => x.IdNota,
+                        principalSchema: "public",
+                        principalTable: "PM_Notas",
+                        principalColumn: "IdNota",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_ItensNota",
+                schema: "public",
+                columns: table => new
+                {
+                    IdItemNota = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Componente = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    Sintoma = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    Causa = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    IdNota = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_ItensNota", x => x.IdItemNota);
+                    table.ForeignKey(
+                        name: "FK_PM_ItensNota_PM_Notas_IdNota",
+                        column: x => x.IdNota,
+                        principalSchema: "public",
+                        principalTable: "PM_Notas",
+                        principalColumn: "IdNota",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_Ordens",
+                schema: "public",
+                columns: table => new
+                {
+                    IdOrdem = table.Column<long>(type: "bigint", nullable: false),
+                    DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    StatusOrdem = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    Criticidade = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Classificacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    MetodoClassificacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    ClassificadoPor = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    DataClassificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    InicioPlanejado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    FimPlanejado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    InicioReal = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    FimReal = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Descricao = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    CriadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    ModificadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    DataModificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IdAtivo = table.Column<int>(type: "integer", nullable: true),
+                    IdNota = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Ordens", x => x.IdOrdem);
+                    table.ForeignKey(
+                        name: "FK_PM_Ordens_PM_Notas_IdNota",
+                        column: x => x.IdNota,
+                        principalSchema: "public",
+                        principalTable: "PM_Notas",
+                        principalColumn: "IdNota");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_VariaveisNota",
+                schema: "public",
+                columns: table => new
+                {
+                    IdVariavel = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ValorNumerico = table.Column<double>(type: "double precision", nullable: false),
+                    UnidadeMedida = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Comentarios = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    IdNota = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_VariaveisNota", x => x.IdVariavel);
+                    table.ForeignKey(
+                        name: "FK_PM_VariaveisNota_PM_Notas_IdNota",
+                        column: x => x.IdNota,
+                        principalSchema: "public",
+                        principalTable: "PM_Notas",
+                        principalColumn: "IdNota",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_AnexosOrdem",
+                schema: "public",
+                columns: table => new
+                {
+                    IdAnexoOrdem = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    TipoArquivo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    TipoAnexo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Dados = table.Column<byte[]>(type: "bytea", nullable: true),
+                    IdOrdem = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_AnexosOrdem", x => x.IdAnexoOrdem);
+                    table.ForeignKey(
+                        name: "FK_PM_AnexosOrdem_PM_Ordens_IdOrdem",
+                        column: x => x.IdOrdem,
+                        principalSchema: "public",
+                        principalTable: "PM_Ordens",
+                        principalColumn: "IdOrdem",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_DadosRenovacao",
+                schema: "public",
+                columns: table => new
+                {
+                    IdDados = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UltimaRenovacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    TipoUR = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Confiabilidade = table.Column<double>(type: "double precision", nullable: false),
+                    IdAtivo = table.Column<int>(type: "integer", nullable: false),
+                    IdNota = table.Column<long>(type: "bigint", nullable: false),
+                    IdOrdem = table.Column<long>(type: "bigint", nullable: false),
+                    IdUsuario = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_DadosRenovacao", x => x.IdDados);
+                    table.ForeignKey(
+                        name: "FK_PM_DadosRenovacao_PM_Notas_IdNota",
+                        column: x => x.IdNota,
+                        principalSchema: "public",
+                        principalTable: "PM_Notas",
+                        principalColumn: "IdNota",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_DadosRenovacao_PM_Ordens_IdOrdem",
+                        column: x => x.IdOrdem,
+                        principalSchema: "public",
+                        principalTable: "PM_Ordens",
+                        principalColumn: "IdOrdem",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_DadosRenovacao_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalSchema: "public",
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_Operacoes",
+                schema: "public",
+                columns: table => new
+                {
+                    IdOperacao = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Descricao = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    Duracao = table.Column<double>(type: "double precision", nullable: false),
+                    NdeProfissionais = table.Column<int>(type: "integer", nullable: false),
+                    InicioEsperado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    FimEsperado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    IdCTM = table.Column<int>(type: "integer", nullable: true),
+                    IdTipoManutencao = table.Column<int>(type: "integer", nullable: true),
+                    IdOrdem = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Operacoes", x => x.IdOperacao);
+                    table.ForeignKey(
+                        name: "FK_PM_Operacoes_PM_Ctms_IdCTM",
+                        column: x => x.IdCTM,
+                        principalSchema: "public",
+                        principalTable: "PM_Ctms",
+                        principalColumn: "IdGPM");
+                    table.ForeignKey(
+                        name: "FK_PM_Operacoes_PM_Ordens_IdOrdem",
+                        column: x => x.IdOrdem,
+                        principalSchema: "public",
+                        principalTable: "PM_Ordens",
+                        principalColumn: "IdOrdem");
+                    table.ForeignKey(
+                        name: "FK_PM_Operacoes_PM_TiposManutencao_IdTipoManutencao",
+                        column: x => x.IdTipoManutencao,
+                        principalSchema: "public",
+                        principalTable: "PM_TiposManutencao",
+                        principalColumn: "IdTipoManutencao");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_FerramentasOperacoes",
+                schema: "public",
+                columns: table => new
+                {
+                    IdFerramenta = table.Column<int>(type: "integer", nullable: false),
+                    IdOperacao = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_FerramentasOperacoes", x => new { x.IdFerramenta, x.IdOperacao });
+                    table.ForeignKey(
+                        name: "FK_PM_FerramentasOperacoes_PM_Ferramentas_IdFerramenta",
+                        column: x => x.IdFerramenta,
+                        principalSchema: "public",
+                        principalTable: "PM_Ferramentas",
+                        principalColumn: "IdFerramenta",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_FerramentasOperacoes_PM_Operacoes_IdOperacao",
+                        column: x => x.IdOperacao,
+                        principalSchema: "public",
+                        principalTable: "PM_Operacoes",
+                        principalColumn: "IdOperacao",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_AlmoxarifadoUsuario_IdUsuario",
+                schema: "public",
+                table: "PM_AlmoxarifadoUsuario",
+                column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_AnexosNota_IdNota",
+                schema: "public",
+                table: "PM_AnexosNota",
+                column: "IdNota");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_AnexosOrdem_IdOrdem",
+                schema: "public",
+                table: "PM_AnexosOrdem",
+                column: "IdOrdem");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_Ctms_IdCPM",
+                schema: "public",
+                table: "PM_Ctms",
+                column: "IdCPM");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_CtmUsuario_IdUsuario",
+                schema: "public",
+                table: "PM_CtmUsuario",
+                column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_DadosRenovacao_IdNota",
+                schema: "public",
+                table: "PM_DadosRenovacao",
+                column: "IdNota");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_DadosRenovacao_IdOrdem",
+                schema: "public",
+                table: "PM_DadosRenovacao",
+                column: "IdOrdem");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_DadosRenovacao_IdUsuario",
+                schema: "public",
+                table: "PM_DadosRenovacao",
+                column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_Ferramentas_IdAlmoxarifado",
+                schema: "public",
+                table: "PM_Ferramentas",
+                column: "IdAlmoxarifado");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_FerramentasOperacoes_IdOperacao",
+                schema: "public",
+                table: "PM_FerramentasOperacoes",
+                column: "IdOperacao");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_GpmLi_IdUsuario",
+                schema: "public",
+                table: "PM_GpmLi",
+                column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_Gpms_IdCPM",
+                schema: "public",
+                table: "PM_Gpms",
+                column: "IdCPM");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_GpmUsuario_IdUsuario",
+                schema: "public",
+                table: "PM_GpmUsuario",
+                column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_ItensNota_IdNota",
+                schema: "public",
+                table: "PM_ItensNota",
+                column: "IdNota");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_Notas_IdPlano",
+                schema: "public",
+                table: "PM_Notas",
+                column: "IdPlano");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_Notas_IdUsuario",
+                schema: "public",
+                table: "PM_Notas",
+                column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_Operacoes_IdCTM",
+                schema: "public",
+                table: "PM_Operacoes",
+                column: "IdCTM");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_Operacoes_IdOrdem",
+                schema: "public",
+                table: "PM_Operacoes",
+                column: "IdOrdem");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_Operacoes_IdTipoManutencao",
+                schema: "public",
+                table: "PM_Operacoes",
+                column: "IdTipoManutencao");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_Ordens_IdNota",
+                schema: "public",
+                table: "PM_Ordens",
+                column: "IdNota");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_Planos_IdEstrategia",
+                schema: "public",
+                table: "PM_Planos",
+                column: "IdEstrategia");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_TiposEstrategia_IdEstrategia",
+                schema: "public",
+                table: "PM_TiposEstrategia",
+                column: "IdEstrategia");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_TiposEstrategia_IdTipoCep",
+                schema: "public",
+                table: "PM_TiposEstrategia",
+                column: "IdTipoCep");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_TiposEstrategia_IdTipoManutencao",
+                schema: "public",
+                table: "PM_TiposEstrategia",
+                column: "IdTipoManutencao");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_TiposPlano_IdPlano",
+                schema: "public",
+                table: "PM_TiposPlano",
+                column: "IdPlano");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_TiposPlano_IdTipoCep",
+                schema: "public",
+                table: "PM_TiposPlano",
+                column: "IdTipoCep");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_TiposPlano_IdTipoEstrategia",
+                schema: "public",
+                table: "PM_TiposPlano",
+                column: "IdTipoEstrategia");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_TiposPlano_IdTipoManutencao",
+                schema: "public",
+                table: "PM_TiposPlano",
+                column: "IdTipoManutencao");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_VariaveisNota_IdNota",
+                schema: "public",
+                table: "PM_VariaveisNota",
+                column: "IdNota");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "PM_AlmoxarifadoUsuario",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_AnexosNota",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_AnexosOrdem",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_CtmUsuario",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_DadosRenovacao",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_FerramentasOperacoes",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_GpmLi",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_GpmUsuario",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Imobilizados",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_ItensNota",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_TiposPlano",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_VariaveisNota",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Ferramentas",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Operacoes",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_TiposEstrategia",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Almoxarifados",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Ctms",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Ordens",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_TiposCep",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_TiposManutencao",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Gpms",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Notas",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Cpms",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Planos",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Usuarios",
+                schema: "public");
+
+            migrationBuilder.DropTable(
+                name: "PM_Estrategias",
+                schema: "public");
+        }
+    }
+}

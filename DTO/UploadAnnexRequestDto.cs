@@ -1,4 +1,4 @@
-using app_pm_back.Models;
+using app_pm_back.Models.Domain;
 using Microsoft.AspNetCore.Http;
 
 namespace app_pm_back.DTO;

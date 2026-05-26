@@ -1,8 +1,10 @@
 using app_pm_back.DTO.ComgasDTO;
-using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services.CongasServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace app_pm_back.Controllers.ControllerPlanoManutencao;
 
@@ -13,10 +15,10 @@ namespace app_pm_back.Controllers.ControllerPlanoManutencao;
 [Route("api/V1/Comgas/ferramenta-tipo")]
 public class FerramentaTipoController : ControllerBase
 {
-    private readonly FerramentaTipoService _service;
+    private readonly FerramentaService _service;
     private readonly IMapper _mapper;
 
-    public FerramentaTipoController(FerramentaTipoService service, IMapper mapper)
+    public FerramentaTipoController(FerramentaService service, IMapper mapper)
     {
         _service = service;
         _mapper = mapper;
@@ -26,9 +28,8 @@ public class FerramentaTipoController : ControllerBase
     public async Task<IActionResult> Criar([FromBody] FerramentaTipoComgasDto dto)
     {
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
-        if (dto.TipoManutencaoId <= 0) return BadRequest(new { message = "TipoManutencaoId obrigatorio." });
 
-        var model = _mapper.Map<FerramentasTipoModel>(dto);
+        var model = _mapper.Map<FerramentaModel>(dto);
         var criado = await _service.CreateAsync(model);
         return Ok(criado);
     }
@@ -62,7 +63,7 @@ public class FerramentaTipoController : ControllerBase
         if (dto.IdFerramenta <= 0) dto.IdFerramenta = id;
         if (dto.IdFerramenta != id) return BadRequest(new { message = "Id da rota deve ser igual ao Id do corpo." });
 
-        var model = _mapper.Map<FerramentasTipoModel>(dto);
+        var model = _mapper.Map<FerramentaModel>(dto);
         var atualizado = await _service.UpdateNotaAsync(model);
         return Ok(atualizado);
     }
@@ -75,4 +76,3 @@ public class FerramentaTipoController : ControllerBase
         return Ok(new { message = "Ferramenta removida com sucesso." });
     }
 }
-

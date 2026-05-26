@@ -1,31 +1,22 @@
 using app_pm_back.Data;
-using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
+using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.CongasServices;
 
-/// <summary>
-/// Servico de tipo de manutencao CEP.
-/// </summary>
-public class TipoManutencaoCepService : BaseCrudService<TipoManutencaoCepModel>
+public class TipoManutencaoCepService : BaseCrudService<TipoCepModel>
 {
-    /// <summary>
-    /// Inicializa o servico.
-    /// </summary>
     public TipoManutencaoCepService(AppDbContext context) : base(context)
     {
     }
 
-    /// <summary>
-    /// Busca tipos CEP por tipo de ativo.
-    /// </summary>
-    public async Task<List<TipoManutencaoCepModel>> BuscarPorTipoAtivoAsync(string tipoAtivo)
+    public async Task<List<TipoCepModel>> BuscarPorTipoAtivoAsync(string tipoAtivo)
     {
         var tipoAtivoNormalizado = tipoAtivo.Trim().ToLower();
 
-        return await _context.Set<TipoManutencaoCepModel>()
+        return await _context.PM_TiposCep
             .Where(t => t.TipoAtivo.ToLower().Contains(tipoAtivoNormalizado))
-            .OrderBy(t => t.IdTipoManutencaoCep)
+            .OrderBy(t => t.IdTipoCep)
             .ToListAsync();
     }
 }

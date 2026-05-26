@@ -6,32 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
 
-/// <summary>
-/// Controller para itens de notas e ordens 
-/// </summary>
 [ApiController]
 [Route("api/V1/Comgas/items")]
-// /// <param name="id">Id do item na rota</param>
-// /// <param name="dto">Dados do item a ser atualizado</param>
 public class ItemsController : ControllerBase
 {
-    private readonly ItemNoteCongasService _itemNoteCongasService;
+    private readonly ItemNotaService _itemNoteCongasService;
     private readonly IMapper _mapper;
 
-    /// <summary>
-    /// Construtor.
-    /// </summary>
-    /// <param name="itemNoteCongasService"></param>
-    /// <param name="mapper"></param>
-    public ItemsController(ItemNoteCongasService itemNoteCongasService, IMapper mapper)
+    public ItemsController(ItemNotaService itemNoteCongasService, IMapper mapper)
     {
         _itemNoteCongasService = itemNoteCongasService;
         _mapper = mapper;
     }
 
-    /// <summary>
-    /// Cadastra um item de nota Congas
-    /// </summary>
     [HttpPost]
     public async Task<IActionResult> CriarItemCongas([FromBody] ItemNotaManutencaoComgasDto dto)
     {
@@ -42,24 +29,21 @@ public class ItemsController : ControllerBase
                 return ValidationProblem(ModelState);
             }
 
-            var novaNota = _mapper.Map<ItemNotaManutencaoModel>(dto);
-            if (novaNota.NotaId <= 0)
+            var itemModel = _mapper.Map<ItemNotaModel>(dto);
+            if (itemModel.IdNota <= 0)
             {
-                return BadRequest(new { message = "NotaId invalido. Envie NotaId maior que zero." });
+                return BadRequest(new { message = "IdNota invalido. Envie IdNota maior que zero." });
             }
 
-            var item = await _itemNoteCongasService.CreateAsync(novaNota);
+            var item = await _itemNoteCongasService.CreateAsync(itemModel);
             return new ObjectResult(item);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao criar o item de nota Comgas: {e.Message}." });
+            return BadRequest(new { message = $"Erro ao criar o item: {e.Message}." });
         }
     }
 
-    /// <summary>
-    /// Retorna uma lista todos os itens da Congas com sistema de páginas
-    /// </summary>
     [HttpGet]
     public async Task<IActionResult> ListarItensCongas([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
@@ -74,42 +58,33 @@ public class ItemsController : ControllerBase
             {
                 int p = pagina ?? 1;
                 int t = tamanho ?? 20;
-                var notasPaginadas = await _itemNoteCongasService.GetNotasPaginadasAsync(p, t);
-                return Ok(notasPaginadas);
+                var paginados = await _itemNoteCongasService.GetNotasPaginadasAsync(p, t);
+                return Ok(paginados);
             }
 
-            var todasNotas = await _itemNoteCongasService.GetAllNotasAsync();
-            return Ok(todasNotas);
+            var todos = await _itemNoteCongasService.GetAllNotasAsync();
+            return Ok(todos);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao processar itens de notas Comgas: {e.Message}" });
+            return BadRequest(new { message = $"Erro ao processar itens: {e.Message}" });
         }
     }
 
-    /// <summary>
-    /// Conta o número total de itens Congas salvas no banco
-    /// </summary>
     [HttpGet("count")]
     public async Task<IActionResult> ContarItensCongas()
     {
         try
         {
-            var notas = await _itemNoteCongasService.CountNotasAsync();
-            return Ok(new { count = notas });
+            var count = await _itemNoteCongasService.CountNotasAsync();
+            return Ok(new { count });
         }
         catch (Exception)
         {
-            return NotFound(new { message = "Erro ao procurar items Comgas." });
+            return NotFound(new { message = "Erro ao procurar items." });
         }
     }
 
-    /// <summary>
-    /// Atualiza uma nota Congas de mesmo Id
-    /// </summary>
-    /// <param name="id">Id do item na rota</param>
-    /// <param name="dto">Dados do item a ser atualizado</param>
-    // [HttpPut]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> AtualizarNotaCongas([FromRoute] int id, [FromBody] ItemNotaManutencaoComgasDto dto)
     {
@@ -135,43 +110,32 @@ public class ItemsController : ControllerBase
                 return BadRequest(new { message = "Id da rota e IdItemNota do corpo da requisição devem ser iguais." });
             }
 
-            var item = _mapper.Map<ItemNotaManutencaoModel>(dto);
-            if (item.IdItemNota <= 0)
-            {
-                return BadRequest(new { message = "Id do item invalido. Envie IdItemNota maior que zero." });
-            }
-
+            var item = _mapper.Map<ItemNotaModel>(dto);
             var result = await _itemNoteCongasService.UpdateNotaAsync(item);
-            return Ok(new { message = "Nota Comgas atualizada com sucesso: " + result.IdItemNota });
+            return Ok(new { message = "Item atualizado com sucesso: " + result.IdItemNota });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao atualizar item Comgas." });
+            return BadRequest(new { message = "Erro ao atualizar item." });
         }
     }
 
-    /// <summary>
-    /// Delete uma nota Congas de mesmo Id
-    /// </summary>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeletarNotaCongas(int id)
     {
         try
         {
             var deleted = await _itemNoteCongasService.DeleteNotaAsync(id);
-            if (!deleted) return NotFound(new { message = "Item Comgas não encontrado." });
+            if (!deleted) return NotFound(new { message = "Item não encontrado." });
 
-            return Ok(new { message = "Item Comgas deletada com sucesso" });
+            return Ok(new { message = "Item deletado com sucesso" });
         }
         catch (Exception)
         {
-            return BadRequest(new { message = "Erro ao deletar item Comgas." });
+            return BadRequest(new { message = "Erro ao deletar item." });
         }
     }
 
-    /// <summary>
-    /// Valida pagina e tamanho para evitar consultas inconsistentes.
-    /// </summary>
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);

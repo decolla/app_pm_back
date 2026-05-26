@@ -1,6 +1,5 @@
 using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Data;
-using app_pm_back.Models.CongasModel;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services.CongasServices;
 using AutoMapper;
@@ -14,17 +13,12 @@ namespace app_pm_back.Controllers.ControllersEstrategia;
 /// </summary>
 [Route("api/V1/Comgas/tipo-estrategia")]
 [ApiController]
-public class TipoEstrategiaController: ControllerBase
+public class TipoEstrategiaController : ControllerBase
 {
     private readonly string _operador = "tipo de estratégia";
     private readonly TipoEstrategiaService _tipoEstrategiaService;
     private readonly IMapper _mapper;
 
-    /// <summary>
-    /// Construtor.
-    /// </summary>
-    /// <param name="tipoEstrategiaService"></param>
-    /// <param name="mapper"></param>
     public TipoEstrategiaController(TipoEstrategiaService tipoEstrategiaService, IMapper mapper)
     {
         _tipoEstrategiaService = tipoEstrategiaService;
@@ -34,46 +28,41 @@ public class TipoEstrategiaController: ControllerBase
     /// <summary>
     /// Cria uma estratégia 
     /// </summary>
-    /// <param name="dto">Objeto a ser adicionado</param>
     [HttpPost]
     public async Task<IActionResult> Criar([FromBody] TipoEstrategiaComgasDto dto, [FromServices] AppDbContext context)
     {
+        if (!ModelState.IsValid)
+        {
+            return ValidationProblem(ModelState);
+        }
 
-            if (!ModelState.IsValid)
-            {
-                return ValidationProblem(ModelState);
-            }
+        if (!dto.EstrategiaId.HasValue || dto.EstrategiaId.Value <= 0)
+        {
+            return BadRequest(new { message = "IdEstrategia obrigatorio. Envie um Id maior que zero." });
+        }
 
-            if (!dto.EstrategiaId.HasValue || dto.EstrategiaId.Value <= 0)
-            {
-                return BadRequest(new { message = "IdEstrategia obrigatorio. Envie um Id maior que zero." });
-            }
+        var estrategiaExiste = await context.PM_Estrategias
+            .AnyAsync(e => e.IdEstrategia == dto.EstrategiaId.Value);
 
-            var estrategiaExiste = await context.Set<EstrategiaManutencaoModel>()
-                .AnyAsync(e => e.IdEstrategia == dto.EstrategiaId.Value);
+        if (!estrategiaExiste)
+        {
+            return BadRequest(new { message = "Estrategia informada nao encontrada." });
+        }
 
-            if (!estrategiaExiste)
-            {
-                return BadRequest(new { message = "Estrategia informada nao encontrada." });
-            }
+        var obj = _mapper.Map<TipoEstrategiaModel>(dto);
+        
+        if (obj.IdEstrategia <= 0)
+        {
+            return BadRequest(new { message = "IdEstrategia invalido. Envie um Id maior que zero." });
+        }
 
-            var obj = _mapper.Map<TipoEstrategiaModel>(dto);
-            
-            if (obj.EstrategiaId <= 0)
-            {
-                return BadRequest(new { message = "IdEstrategia invalido. Envie um Id maior que zero." });
-            }
-
-            var novoObj = await _tipoEstrategiaService.CreateAsync(obj);
-            return new ObjectResult(novoObj);
+        var novoObj = await _tipoEstrategiaService.CreateAsync(obj);
+        return new ObjectResult(novoObj);
     }
 
     /// <summary>
     /// Lista as estratégias em formato de página 
     /// </summary>
-    /// <param name="pagina">Página a ser exibida</param>
-    /// <param name="tamanho">Quantidade de objetos na página</param>
-    /// <returns>Lista de objetos presentes na página</returns>
     [HttpGet]
     public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
@@ -104,7 +93,6 @@ public class TipoEstrategiaController: ControllerBase
     /// <summary>
     /// Retorna a quantidade de elementos 
     /// </summary>
-    /// <returns>Quantidade de elementos cadastrados no banco</returns>
     [HttpGet("count")]
     public async Task<IActionResult> Contar()
     {
@@ -122,10 +110,6 @@ public class TipoEstrategiaController: ControllerBase
     /// <summary>
     /// Atualiza um objeto do modelo
     /// </summary>
-    /// <param name="id">Id do tipo de estrategia na rota</param>
-    /// <param name="dto">Objeto a ser atualizado</param>
-    /// <returns>Novo objeto</returns>
-    // [HttpPut]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TipoEstrategiaComgasDto dto)
     {
@@ -169,7 +153,6 @@ public class TipoEstrategiaController: ControllerBase
     /// <summary>
     /// Deleta um objeto do modelo
     /// </summary>
-    /// <param name="id">Id do objeto a ser deletado</param>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Deletar(int id)
     {
@@ -186,9 +169,6 @@ public class TipoEstrategiaController: ControllerBase
         }
     }
 
-    /// <summary>
-    /// Valida pagina e tamanho para evitar consultas inconsistentes.
-    /// </summary>
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);

@@ -1,7 +1,5 @@
 using app_pm_back.Attributes;
-using app_pm_back.Models.CongasModel;
-using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
-using app_pm_back.Models.Domain.PlanoManutencaoModels;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO.ComgasDTO;
 

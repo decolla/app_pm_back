@@ -1,71 +1,56 @@
 using app_pm_back.Data;
-using app_pm_back.Models.CongasModel;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.CongasServices;
 
-public class PlanoManutencaoService : BaseCrudService<PlanoManutencaoModel>
+public class PlanoManutencaoService : BaseCrudService<PlanoModel>
 {
-    private readonly DbSet<NotaManutencaoModel> _notaManutencaoModels;
-    private readonly DbSet<LocalInstalacaoModel> _localInstalacaoModels;
-    private readonly DbSet<ItemPlanoManutencaoModel> _itemPlanoManutencaoModels;
-    private readonly DbSet<PlanoManutencaoModel> _maintancePlanComgasModels;
-    
     public PlanoManutencaoService(AppDbContext context) : base(context)
     {
-        _notaManutencaoModels = context.Set<NotaManutencaoModel>();
-        _maintancePlanComgasModels = context.Set<PlanoManutencaoModel>();
-        _localInstalacaoModels = context.Set<LocalInstalacaoModel>();
-        _itemPlanoManutencaoModels = context.Set<ItemPlanoManutencaoModel>();
     }
     
-    public async Task CreatePlanosEmMassaAsync(List<PlanoManutencaoModel> planos)
+    public async Task CreatePlanosEmMassaAsync(List<PlanoModel> planos)
     {
         if (planos.Any())
         {
-            await _context.PM_PlanosManutencaoNormalizados.AddRangeAsync(planos);
+            await _context.PM_Planos.AddRangeAsync(planos);
             await _context.SaveChangesAsync();
         }
     }
 
-    public async Task<PlanoManutencaoModel> CreateComTiposAsync(PlanoManutencaoModel novo)
+    public async Task<PlanoModel> CreateComTiposAsync(PlanoModel novo)
     {
         var criado = await CreateAsync(novo);
 
-        if (!criado.EstrategiaId.HasValue)
-        {
-            return criado;
-        }
-
-        var estrategia = await _context.Set<EstrategiaManutencaoModel>()
-            .Include(e => e.Itens)
-            .FirstOrDefaultAsync(e => e.IdEstrategia == criado.EstrategiaId.Value);
+        var estrategia = await _context.PM_Estrategias
+            .FirstOrDefaultAsync(e => e.IdEstrategia == criado.IdEstrategia);
 
         if (estrategia == null)
         {
             throw new Exception("Estrategia informada nao encontrada.");
         }
 
-        if (!estrategia.Itens.Any())
-        {
-            return criado;
-        }
+        // Get TipoEstrategias for this strategy
+        var tiposEstrategias = await _context.PM_TiposEstrategia
+            .Where(te => te.IdEstrategia == estrategia.IdEstrategia)
+            .ToListAsync();
 
-        var tiposPlanos = estrategia.Itens.Select(item => new TipoPlanoModel
+        var tiposPlanos = tiposEstrategias.Select(te => new TipoPlanoModel
         {
-            PlanoManutencaoId = criado.CodigoPlano,
-            TipoEstrategiaId = item.IdTipoEstrategia,
-            Dias = item.Dias,
-            ToleranciaPositiva = item.ToleranciaPositiva,
-            ToleranciaNegativa = item.ToleranciaNegativa,
-            Continua = item.Continua,
-            Categoria = item.Categoria,
-            TipoManutencaoCepId = item.IdTipoManutencaoCep,
-            TipoManutencaoId = item.IdTipoManutencao
+            IdPlano = criado.IdPlano,
+            IdTipoEstrategia = te.IdTipoEstrategia,
+            Dias = te.Dias,
+            ToleranciaPositiva = te.ToleranciaPositiva,
+            ToleranciaNegativa = te.ToleranciaNegativa,
+            Continua = te.Continua,
+            Categoria = te.Categoria,
+            IdTipoCep = te.IdTipoCep,
+            IdTipoManutencao = te.IdTipoManutencao,
+            Visivel = true
         }).ToList();
 
-        await _context.Set<TipoPlanoModel>().AddRangeAsync(tiposPlanos);
+        await _context.PM_TiposPlano.AddRangeAsync(tiposPlanos);
         await _context.SaveChangesAsync();
 
         return criado;

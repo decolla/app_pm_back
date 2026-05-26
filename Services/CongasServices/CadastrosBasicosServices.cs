@@ -3,52 +3,30 @@ using app_pm_back.Models.Domain;
 
 namespace app_pm_back.Services.CongasServices;
 
-public class UsuarioSapService : BaseCrudService<UsuarioSapModel>
+public class UsuarioService : BaseCrudService<UsuarioModel>
 {
-    public UsuarioSapService(AppDbContext context) : base(context)
+    public UsuarioService(AppDbContext context) : base(context)
     {
     }
 }
 
-public class FabricanteService : BaseCrudService<FabricanteModel>
+public class CpmService : BaseCrudService<CpmModel>
 {
-    public FabricanteService(AppDbContext context) : base(context)
+    public CpmService(AppDbContext context) : base(context)
     {
     }
 }
 
-public class EnderecoService : BaseCrudService<EnderecoModel>
+public class CtmService : BaseCrudService<CtmModel>
 {
-    public EnderecoService(AppDbContext context) : base(context)
+    public CtmService(AppDbContext context) : base(context)
     {
     }
 }
 
-public class LocalizacaoService : BaseCrudService<LocalizacaoModel>
+public class GpmService : BaseCrudService<GpmModel>
 {
-    public LocalizacaoService(AppDbContext context) : base(context)
+    public GpmService(AppDbContext context) : base(context)
     {
     }
 }
-
-public class CentroPlanejamentoManutencaoService : BaseCrudService<CentroPlanejamentoManutencaoModel>
-{
-    public CentroPlanejamentoManutencaoService(AppDbContext context) : base(context)
-    {
-    }
-}
-
-public class CentroTrabalhoService : BaseCrudService<CentroTrabalhoModel>
-{
-    public CentroTrabalhoService(AppDbContext context) : base(context)
-    {
-    }
-}
-
-public class GrupoPlanejamentoManutencaoService : BaseCrudService<GrupoPlanejamentoManutencaoModel>
-{
-    public GrupoPlanejamentoManutencaoService(AppDbContext context) : base(context)
-    {
-    }
-}
-

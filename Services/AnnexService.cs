@@ -1,96 +1,91 @@
 using app_pm_back.Data;
-using app_pm_back.Models;
+using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services;
 
-/// <summary>
-/// Servico de persistencia e recuperacao de anexos.
-/// </summary>
 public class AnnexService
 {
-    /// <summary>
-    /// Contexto de banco de dados.
-    /// </summary>
     private readonly AppDbContext _context;
 
-    /// <summary>
-    /// Conjunto de anexos.
-    /// </summary>
-    private readonly DbSet<AnnexModel> _annexModels;
-
-    /// <summary>
-    /// Inicializa uma nova instancia de <see cref="AnnexService"/>.
-    /// </summary>
-    /// <param name="context">Contexto da aplicacao.</param>
     public AnnexService(AppDbContext context)
     {
         _context = context;
-        _annexModels = context.Set<AnnexModel>();
     }
 
-    /// <summary>
-    /// Faz upload e salva um anexo no banco.
-    /// </summary>
-    /// <param name="file">Arquivo enviado.</param>
-    /// <param name="notaId">Id da nota associada.</param>
-    /// <param name="ordemId">Id da ordem associada.</param>
-    /// <param name="tipoReferencia">Tipo da referencia.</param>
-    /// <param name="categoria">Categoria do anexo.</param>
-    /// <returns>Anexo salvo.</returns>
-    public async Task<AnnexModel> UploadAnexo(IFormFile file, long? notaId, long? ordemId, string tipoReferencia, CategoriaAnexo categoria)
+    public async Task<object> UploadAnexo(IFormFile file, long? notaId, long? ordemId, string tipoReferencia, CategoriaAnexo categoria)
     {
         ValidateAssociacao(notaId, ordemId);
 
         await using var stream = new MemoryStream();
         await file.CopyToAsync(stream);
 
-        AnnexModel annexModel = new AnnexModel
+        if (notaId.HasValue)
         {
-            NomeAnexo = file.FileName,
-            MimeType = file.ContentType,
-            Dados = stream.ToArray(),
-            NotaId = notaId,
-            OrdemId = ordemId,
-            TipoReferencia = tipoReferencia,
-            Categoria = categoria,
-            DataUpload = DateTime.Now
-        };
-
-        _annexModels.Add(annexModel);
-        await _context.SaveChangesAsync();
-
-        return annexModel;
+            var anexo = new AnexoNotaModel
+            {
+                Nome = file.FileName,
+                TipoArquivo = file.ContentType,
+                Dados = stream.ToArray(),
+                IdNota = notaId.Value
+            };
+            _context.PM_AnexosNota.Add(anexo);
+            await _context.SaveChangesAsync();
+            return new { IdAnexo = anexo.IdAnexoNota, Nome = anexo.Nome };
+        }
+        else
+        {
+            var anexo = new AnexoOrdemModel
+            {
+                Nome = file.FileName,
+                TipoArquivo = file.ContentType,
+                Dados = stream.ToArray(),
+                IdOrdem = ordemId!.Value,
+                TipoAnexo = categoria.ToString()
+            };
+            _context.PM_AnexosOrdem.Add(anexo);
+            await _context.SaveChangesAsync();
+            return new { IdAnexo = anexo.IdAnexoOrdem, Nome = anexo.Nome };
+        }
     }
 
-    /// <summary>
-    /// Busca um anexo por id.
-    /// </summary>
-    /// <param name="id">Id do anexo.</param>
-    /// <returns>Anexo encontrado ou nulo.</returns>
-    public async Task<AnnexModel?> DownloadAnexo(long id)
+    public async Task<(byte[] Dados, string MimeType, string Nome)?> DownloadAnexo(long id)
     {
-        var annexModel = await _annexModels.FindAsync(id);
-        return annexModel;
+        // Try searching in AnexosNota
+        var anexoNota = await _context.PM_AnexosNota.FindAsync((int)id);
+        if (anexoNota != null && anexoNota.Dados != null)
+        {
+            return (anexoNota.Dados, anexoNota.TipoArquivo, anexoNota.Nome);
+        }
+
+        // Try searching in AnexosOrdem
+        var anexoOrdem = await _context.PM_AnexosOrdem.FindAsync((int)id);
+        if (anexoOrdem != null && anexoOrdem.Dados != null)
+        {
+            return (anexoOrdem.Dados, anexoOrdem.TipoArquivo, anexoOrdem.Nome);
+        }
+
+        return null;
     }
 
-    /// <summary>
-    /// Lista anexos por referencia e tipo.
-    /// </summary>
-    /// <param name="notaId">Id da nota associada.</param>
-    /// <param name="ordemId">Id da ordem associada.</param>
-    /// <param name="tipoReferencia">Tipo da referencia.</param>
-    /// <returns>Lista de pares id/nome do anexo.</returns>
     public async Task<List<(long, string)>> BuscarAnexo(long? notaId, long? ordemId, string tipoReferencia)
     {
         ValidateAssociacao(notaId, ordemId);
 
-        var query = _annexModels.AsNoTracking()
-            .Where(o => o.TipoReferencia == tipoReferencia && (o.NotaId == notaId || o.OrdemId == ordemId));
-
-        return await query
-            .Select(model => new ValueTuple<long, string>(model.IdAnexo, model.NomeAnexo))
-            .ToListAsync();
+        if (notaId.HasValue)
+        {
+            return await _context.PM_AnexosNota
+                .Where(a => a.IdNota == notaId.Value)
+                .Select(a => new ValueTuple<long, string>((long)a.IdAnexoNota, a.Nome))
+                .ToListAsync();
+        }
+        else
+        {
+            return await _context.PM_AnexosOrdem
+                .Where(a => a.IdOrdem == ordemId!.Value)
+                .Select(a => new ValueTuple<long, string>((long)a.IdAnexoOrdem, a.Nome))
+                .ToListAsync();
+        }
     }
 
     private static void ValidateAssociacao(long? notaId, long? ordemId)

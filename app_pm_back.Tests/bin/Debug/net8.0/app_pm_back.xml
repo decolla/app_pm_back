@@ -1,0 +1,728 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>app_pm_back</name>
+    </assembly>
+    <members>
+        <member name="T:app_pm_back.Attributes.SheetColumnAttribute">
+            <summary>
+            Anexa ediquetas a colunas de planilhas
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Attributes.SheetColumnAttribute.NomeDaColuna">
+            <summary>
+            Nome da coluna da planilha
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Attributes.SheetColumnAttribute.#ctor(System.String)">
+            <summary>
+            Construtor
+            </summary>
+            <param name="nomeDaColuna"></param>
+        </member>
+        <member name="T:app_pm_back.Controllers.AnnexController">
+            <summary>
+            Controller para anexos
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaModel,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Busca notas ou ordens de manutenção por diversos critérios, retorna uma lista de objetos com os dados relevantes
+            </summary>
+            <param name="busca">Modelo de busca com campos comparáveis</param>
+            <param name="pagina">Página a ser exibida</param>
+            <param name="tamanho">Número de elementos presente na página</param>
+            <returns>Lista de Nota e Ordens com base nos filtros</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscaGerald(System.Int32)">
+            <summary>
+            Busca um plano de mantuenção associado a um ativo, retorna um objeto com os dados relevantes
+            </summary>
+            <param name="ativo">Ativo a ser procurado</param>
+            <returns>Objeto com informações relevantes</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscaGeraldList(System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Busca um plano de manuntenção associado a uma lista de ativos, retorna um objeto com os dados relevantes
+            </summary>
+            <param name="ativos"></param>
+            <returns></returns>
+        </member>
+        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.FerramentaTipoController">
+            <summary>
+            Endpoints de ferramentas de tipo de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController">
+            <summary>
+            Endpoints de plano de manutencao da Comgas.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.#ctor(app_pm_back.Services.CongasServices.PlanoManutencaoService,AutoMapper.IMapper)">
+            <summary>
+            Construtor.
+            </summary>
+            <param name="planoManutencaoService"></param>
+            <param name="mapper"></param>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.Criar(app_pm_back.DTO.ComgasDTO.PlanoManutencaoComgasDto)">
+            <summary>
+            Cria um objeto do modelo
+            </summary>
+            <param name="dto">Objeto a ser adicionado</param>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista objetos do modelo em formato de página 
+            </summary>
+            <param name="pagina">Página a ser exibida</param>
+            <param name="tamanho">Quantidade de objetos na página</param>
+            <returns>Lista de objetos presentes na página</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.Contar">
+            <summary>
+            Retorna a quantidade de elementos 
+            </summary>
+            <returns>Quantidade de elementos cadastrados no banco</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.Atualizar(System.Int64,app_pm_back.DTO.ComgasDTO.PlanoManutencaoComgasDto)">
+            <summary>
+            Atualiza um objeto do modelo
+            </summary>
+            <param name="id">Id do plano na rota</param>
+            <param name="dto">Objeto a ser atualizado</param>
+            <returns>Novo objeto</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.Deletar(System.Int32)">
+            <summary>
+            Deleta um objeto do modelo
+            </summary>
+            <param name="id">Id do objeto a ser deletado</param>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllerPlanoManutencao.PlanoManutencaoController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Valida pagina e tamanho para evitar consultas inconsistentes.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.TarefaController">
+            <summary>
+            Endpoints de tarefas por tipo de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoCepController">
+            <summary>
+            Endpoints de cadastro de tipo de manutencao CEP.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.TipoManutencaoController">
+            <summary>
+            Endpoints de tipo de manutencao da Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.ControllerPlanoManutencao.TipoPlanoController">
+            <summary>
+            Endpoints de tipo de plano da Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController">
+            <summary>
+            Endpoints de estrategia de manutencao da Comgas.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.Criar(app_pm_back.DTO.ComgasDTO.EstrategiaManutencaoComgasDto)">
+            <summary>
+            Cria uma estratégia 
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista as estratégias em formato de página 
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.Contar">
+            <summary>
+            Retorna a quantidade de elementos 
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.Atualizar(System.Int32,app_pm_back.DTO.ComgasDTO.EstrategiaManutencaoComgasDto)">
+            <summary>
+            Atualiza um objeto do modelo
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.Deletar(System.Int32)">
+            <summary>
+            Deleta um objeto do modelo
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.Pesquisar(System.String,System.Nullable{System.Int32},System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Pesquisa estrategias com filtros da tela.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.EstrategiaController.BuscarPorId(System.Int32)">
+            <summary>
+            Busca por id a estratégia 
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.ControllersEstrategia.TipoEstrategiaController">
+            <summary>
+            Endpoints de tipo de estrategia da Comgas.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.TipoEstrategiaController.Criar(app_pm_back.DTO.ComgasDTO.TipoEstrategiaComgasDto,app_pm_back.Data.AppDbContext)">
+            <summary>
+            Cria uma estratégia 
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.TipoEstrategiaController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista as estratégias em formato de página 
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.TipoEstrategiaController.Contar">
+            <summary>
+            Retorna a quantidade de elementos 
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.TipoEstrategiaController.Atualizar(System.Int32,app_pm_back.DTO.ComgasDTO.TipoEstrategiaComgasDto)">
+            <summary>
+            Atualiza um objeto do modelo
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ControllersEstrategia.TipoEstrategiaController.Deletar(System.Int32)">
+            <summary>
+            Deleta um objeto do modelo
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.NotasController">
+            <summary>
+            Endpoints de notas da Comgas.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.CriarNotaCongas(app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto)">
+            <summary>
+            Cadastra uma nota Comgas a partir de DTO.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.ListarNotasCongas(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Retorna todas as notas Comgas, com paginacao opcional.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.ContarNotasCongas">
+            <summary>
+            Conta o número total de notas Congas salvas no banco
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.ListarFichasPorAtivoCongas(System.Int32,System.String)">
+            <summary>
+            Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.AtualizarNotaCongas(System.Int64,app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto)">
+            <summary>
+            Atualiza uma nota Comgas pelo DTO.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.DeletarNotaCongas(System.Int32)">
+            <summary>
+            Delete uma nota Congas de mesmo Id
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.BuscarItensNota(System.Int64)">
+            <summary>
+            Retorna os itens de uma nota Congas
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoHumanaNotaCongas(System.Int64,System.String,System.String)">
+            <summary>
+            Classifica uma nota Congas com base na classificação humana atribuida a uma nota específica
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoPalavrasNotaCongas">
+            <summary>
+            Classifica uma nota com base uma lista de palavras armazenadas no banco
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoCatboostCongas">
+            <summary>
+            Classifica as notas usando a IA catboost
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.ComgasOrdersController">
+            <summary>
+            Endpoints de ordens da Comgas.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.CriarOrdemCongas(app_pm_back.DTO.ComgasDTO.OrdemManutencaoComgasDto)">
+            <summary>
+            Cadastra uma ordem Comgas a partir de DTO.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.ListarOrdensCongas(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Retorna todas as ordens Comgas, com paginacao opcional.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.ContarNotasCongas">
+            <summary>
+            Conta o número total de notas Congas salvas no banco
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.ListarFichasPorAtivoCongas(System.Int32,System.String)">
+            <summary>
+            Retorna as Fichas de uma nota Congas e suas ocorrências de mesmo tipo
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.AtualizarNotaCongas(System.Int64,app_pm_back.DTO.ComgasDTO.OrdemManutencaoComgasDto)">
+            <summary>
+            Atualiza uma ordem Comgas pelo DTO.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.DeletarNotaCongas(System.Int64)">
+            <summary>
+            Delete uma nota Congas de mesmo Id
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.ClassificacaoHumanaNotaCongas(System.Int64,System.String,System.String)">
+            <summary>
+            Classifica uma ordem Congas with manual label
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.ClassificacaoPalavrasNotaCongas">
+            <summary>
+            Classifica uma ordem com base uma lista de palavras armazenadas no banco
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ComgasOrdersController.ClassificacaoCatboostCongas">
+            <summary>
+            Classifica as ordens usando a IA catboost
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.HealthController">
+            <summary>
+            Controller para Health
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.HealthController.#ctor(app_pm_back.Services.IReportService)">
+            <summary>
+            Construtor
+            </summary>
+            <param name="reportService"></param>
+        </member>
+        <member name="M:app_pm_back.Controllers.HealthController.GetStatus">
+            <summary>
+             Return the current status of the application. This endpoint is useful for monitoring the health of the application and getting insights into its performance and any issues that may have occurred since the last report was retrieved.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.HealthController.GetLastReport">
+            <summary>
+             Return the last report and reset the current report to start a new one. This endpoint is useful for monitoring the health of the application and getting insights into its performance and any issues that may have occurred since the last report was retrieved.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:app_pm_back.Data.AppDbContext">
+            <summary>
+            Mapeamento EF Core para PostgreSQL.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Data.DatabaseExceptionInterceptor">
+            <summary>
+            Interceptador de exceções do banco de dados para retornar mensagens amigáveis globais.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Data.DatabaseExceptionInterceptor.SaveChangesFailed(Microsoft.EntityFrameworkCore.Diagnostics.DbContextErrorEventData)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Data.DatabaseExceptionInterceptor.SaveChangesFailedAsync(Microsoft.EntityFrameworkCore.Diagnostics.DbContextErrorEventData,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:app_pm_back.Data.DbInitializer">
+            <summary>
+            Classe para inicializar o banco de dados.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Data.DbInitializer.SeedAsync(Microsoft.AspNetCore.Builder.WebApplication)">
+            <summary>
+            Inicializa o banco de dados.
+            </summary>
+            <param name="app"></param>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.ImobilizadoComgasDto">
+            <summary>
+            DTO de imobilizado da Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.CentroTrabalhoComgasDto">
+            <summary>
+            DTO de centro de trabalho da Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.ItemNotaManutencaoComgasDto">
+            <summary>
+            DTO de item de nota de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto">
+            <summary>
+            DTO de importacao de notas de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto.HoraAvaria">
+            <summary>
+            Hora de início da avaria. No caso de notas sem avaria, ou com hora de início de avaria desconhecida, o valor será 00:00:00.
+            </summary>
+            <example>01:30:00</example>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.VariavelNotaComgasDto">
+            <summary>
+            DTO de variavel registrada na nota de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.CentroPlanejamentoManutencaoComgasDto">
+            <summary>
+            DTO de centro de planejamento de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.GrupoPlanejamentoManutencaoComgasDto">
+            <summary>
+            DTO de grupo de planejamento de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.OperacaoOrdemComgasDto">
+            <summary>
+            DTO de operacao de ordem de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.OrdemManutencaoComgasDto">
+            <summary>
+            DTO de ordem de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.AlmoxarifadoComgasDto">
+            <summary>
+            DTO de almoxarifado Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.EstrategiaManutencaoComgasDto">
+            <summary>
+            DTO de estrategia de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.TipoEstrategiaComgasDto">
+            <summary>
+            DTO de tipo de estrategia de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.FerramentaTipoComgasDto">
+            <summary>
+            DTO de ferramenta vinculada ao tipo de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.PlanoManutencaoComgasDto">
+            <summary>
+            DTO de plano de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.TarefaComgasDto">
+            <summary>
+            DTO de tarefa vinculada ao tipo de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.TipoManutencaoCepComgasDto">
+            <summary>
+            DTO do cadastro de tipo de manutencao CEP.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.TipoPlanoCongasDto">
+            <summary>
+            DTO de tipo de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto">
+            <summary>
+            DTO de importacao para usuarios SAP da Comgas.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto.IdUsuario">
+            <summary>
+            Identificador do usuario no SAP interno.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto.Nome">
+            <summary>
+            Nome do usuario.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto.Senha">
+            <summary>
+            Senha do usuario.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto.Mandante">
+            <summary>
+            Mandante SAP.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto.Idioma">
+            <summary>
+            Idioma padrao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.UploadAnnexRequestDto">
+            <summary>
+            Dados de upload de anexo via multipart/form-data.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.UploadAnnexRequestDto.Arquivo">
+            <summary>
+            Arquivo enviado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.UploadAnnexRequestDto.NotaId">
+            <summary>
+            Id da nota associada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.UploadAnnexRequestDto.OrdemId">
+            <summary>
+            Id da ordem associada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.UploadAnnexRequestDto.ReferenciaId">
+            <summary>
+            Id da entidade referenciada (legado).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.UploadAnnexRequestDto.TipoReferencia">
+            <summary>
+            Tipo da entidade referenciada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.UploadAnnexRequestDto.Categoria">
+            <summary>
+            Categoria do anexo.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Interfaces.IClassifiable.Classificacao">
+            <summary>
+            O resultado do tipo da nota
+            </summary>
+            <example>CORRETIVA ou PREVENTIVA</example>
+        </member>
+        <member name="P:app_pm_back.Interfaces.IClassifiable.MetodoClassificacao">
+            <summary>
+            Quem/o que tomou a decisão da classificação da nota
+            </summary>
+            <example>"MANUAL", "FILTRO_POR_PALAVRAS", "IA_CATBOOST"</example>
+        </member>
+        <member name="P:app_pm_back.Interfaces.IClassifiable.ClassificadoPor">
+            <summary>
+            Identificador de quem classificou a nota. No caso nulo, foi classificado pelo sistema
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Interfaces.IClassifiable.DataClassificacao">
+            <summary>
+            Data de quando a classificacao ocorreu
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.BuscaOrdemNotaModel.StatusNota">
+            <summary>
+            Status da nota
+            </summary>
+            <example>Aberta</example>
+        </member>
+        <member name="P:app_pm_back.Models.BuscaOrdemNotaModel.NotaIdInicio">
+            <summary>
+            Id de início da nota
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.BuscaOrdemNotaModel.NotaIdFim">
+            <summary>
+            Id de fim da nota
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.Prioridade">
+            <summary>
+            Nivel de prioridade do plano.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.GerarAutomaticamente">
+            <summary>
+            Gerar automaticamente nota, ordem ou ambos.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.AcoesFalha">
+            <summary>
+            Acoes selecionadas em caso de falha.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.CategoriaAnexo">
+            <summary>
+            Categoria do anexo.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.Visivel">
+            <summary>
+            Visibilidade do tipo de plano.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.CategoriaTipoEstrategia">
+            <summary>
+            Categoria da estrategia.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.TipoTipo">
+            <summary>
+            Tipo de tipo de manutencao/plano.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.UnidadeCiclo">
+            <summary>
+            Unidade do ciclo.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
+            <summary>
+            Rotas para planilhas
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.CreateAsync(`0)">
+            <summary>
+            Cria uma nota 
+            </summary>
+            <param name="nota"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.CreateNotasEmMassaAsync(System.Collections.Generic.List{`0})">
+            <summary>
+            Cria notas em massa, somente após lido verifica tudo de uma vez no banco
+            </summary>
+            <param name="notas"></param>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.UpdateNotaAsync(`0)">
+            <summary>
+            Atualiza uma nota
+            </summary>
+            <param name="nota"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.GetAllNotasAsync">
+            <summary>
+            Retorna todas as notas cadastradas
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.GetNotasPaginadasAsync(System.Int32,System.Int32)">
+            <summary>
+            Retorna as notas paginadas
+            </summary>
+            <param name="pagina"></param>
+            <param name="tamanho"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.GetNotaByIdAsync(System.Int64)">
+            <summary>
+            Busca uma nota pelo ID
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.DeleteNotaAsync(System.Int64)">
+            <summary>
+            Deleta uma nota pelo ID
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.CountNotasAsync">
+            <summary>
+            Retorna a contagem total de notas
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:app_pm_back.Services.ClassificationService`1">
+            <summary>
+            Classe para classificar notas/ordens usando regras de palavras e catboost.
+            </summary>
+            <typeparam name="T">Tipo genérico para qualquer parâmetro classificável (nota ou ordem)</typeparam>
+        </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.HumanClassification(System.Int64,System.String,System.String)">
+            <summary>
+            Classificação manual de notas/ordens.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.WordsClassification(System.Collections.Generic.List{`0})">
+            <summary>
+            Função para classificar notas/ordens com base nas regras de palavras (mocked/no-op since Rule table is deleted).
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.CatboostClassification">
+            <summary>
+            Classificação de notas/ordens com base no modelo Catboost.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.GenericSearchService">
+            <summary>
+            Classe para busca genérica entre as tabelas do banco de dados 
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.ImportGhostHelper">
+            <summary>
+            Cria registros "fantasma" para referencias que ainda nao existem no banco.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.ImportMergeHelper">
+            <summary>
+            Utilitarios para mesclar dados importados sem sobrescrever valores existentes.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ImportMergeHelper.MergeNonEmpty``1(``0,``0,System.String[])">
+            <summary>
+            Realiza a operação de merge em tabelas a serem atualizadas
+            </summary>
+            <param name="target"></param>
+            <param name="source"></param>
+            <param name="ignoreProperties"></param>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:teste_catboost_cs.Cbm">
+            <summary>
+            Classe que encapsula o uso do modelo CatBoost via FFI.
+            Gerencia o ciclo de vida do modelo e fornece métodos para predição.
+            </summary>
+        </member>
+        <member name="M:teste_catboost_cs.Cbm.#ctor(System.String)">
+            <summary>
+            Inicializa o modelo CatBoost a partir de um arquivo.
+            </summary>
+            <param name="modelPath">Caminho para o arquivo do modelo.</param>
+            <exception cref="T:System.Runtime.InteropServices.ExternalException">Lançada se o modelo não puder ser carregado.</exception>
+        </member>
+        <member name="M:teste_catboost_cs.Cbm.Predict(System.Single[][],System.String[][])">
+            <summary>
+            Realiza a predição do modelo usando features float e categóricas.
+            </summary>
+            <param name="floatFeatures">Matriz de features float.</param>
+            <param name="catFeatures">Matriz de features categóricas.</param>
+            <returns>Array de predições (após aplicação da função sigmoide).</returns>
+            <exception cref="T:System.Runtime.InteropServices.ExternalException">Lançada se a predição falhar.</exception>
+        </member>
+        <member name="M:teste_catboost_cs.Cbm.Predict(System.Single[][],System.String[][],System.String[][])">
+            <summary>
+            Realiza a predição do modelo usando features float, categóricas e de texto.
+            </summary>
+            <param name="floatFeatures">Matriz de features float.</param>
+            <param name="catFeatures">Matriz de features categóricas.</param>
+            <param name="textFeatures">Matriz de features de texto.</param>
+            <returns>Array de predições (após aplicação da função sigmoide).</returns>
+            <exception cref="T:System.Runtime.InteropServices.ExternalException">Lançada se a predição falhar.</exception>
+        </member>
+        <member name="T:teste_catboost_cs.FFI">
+            <summary>
+            Classe interna para interoperação com a biblioteca nativa CatBoost.
+            </summary>
+        </member>
+    </members>
+</doc>

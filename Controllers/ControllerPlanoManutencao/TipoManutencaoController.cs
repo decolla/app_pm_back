@@ -1,7 +1,6 @@
 using app_pm_back.DTO.ComgasDTO;
 using app_pm_back.Data;
-using app_pm_back.Models.CongasModel;
-using app_pm_back.Models.Domain.PlanoManutencaoModels;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services.CongasServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -216,8 +215,8 @@ public class TipoPlanoController : ControllerBase
 
         if (dto.PlanoManutencaoId.HasValue)
         {
-            var planoExiste = await context.PM_PlanosManutencaoNormalizados
-                .AnyAsync(p => p.CodigoPlano == dto.PlanoManutencaoId.Value);
+            var planoExiste = await context.PM_Planos
+                .AnyAsync(p => p.IdPlano == dto.PlanoManutencaoId.Value);
 
             if (!planoExiste)
             {
@@ -227,19 +226,14 @@ public class TipoPlanoController : ControllerBase
 
         if (dto.PlanoManutencaoId.HasValue && dto.TipoEstrategiaId.HasValue)
         {
-            var plano = await context.PM_PlanosManutencaoNormalizados
-                .Include(p => p.Estrategia)
-                .ThenInclude(e => e!.Itens)
-                .FirstOrDefaultAsync(p => p.CodigoPlano == dto.PlanoManutencaoId);
+            var plano = await context.PM_Planos
+                .FirstOrDefaultAsync(p => p.IdPlano == dto.PlanoManutencaoId);
 
             if (plano == null)
                 return NotFound(new { message = "O Plano de Manutenção informado não existe." });
 
-            if (plano.Estrategia == null)
-                return BadRequest(new { message = "Este Plano de Manutenção não possui uma Estratégia vinculada." });
-
-            var tipoEstrategiaValido = plano.Estrategia.Itens
-                .Any(te => te.IdTipoEstrategia == dto.TipoEstrategiaId);
+            var tipoEstrategiaValido = await context.PM_TiposEstrategia
+                .AnyAsync(te => te.IdTipoEstrategia == dto.TipoEstrategiaId && te.IdEstrategia == plano.IdEstrategia);
 
             if (!tipoEstrategiaValido)
             {
@@ -331,7 +325,7 @@ public class TipoPlanoController : ControllerBase
                     { message = "Rota inválida. Use /tipo-plano/tipado/0 ou /tipo-plano/tipado/1" });
             }
             CategoriaTipoEstrategia tipagem = (CategoriaTipoEstrategia)tipo;
-            var acoes = await _tipoPlanoService.GetTodosByTipo(tipagem);
+            var acoes = await _tipoPlanoService.GetTodosByTipo(tipagem.ToString());
             return Ok(acoes);
         }
         catch (Exception e)

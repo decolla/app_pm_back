@@ -1,30 +1,20 @@
 using app_pm_back.Data;
-using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
+using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.CongasServices;
 
-/// <summary>
-/// Servico de tarefas por tipo de manutencao.
-/// </summary>
-public class TarefaService : BaseCrudService<TarefaModel>
+public class TarefaService : BaseCrudService<OperacaoModel>
 {
-    /// <summary>
-    /// Inicializa o servico.
-    /// </summary>
     public TarefaService(AppDbContext context) : base(context)
     {
     }
 
-    /// <summary>
-    /// Lista tarefas por tipo de manutencao.
-    /// </summary>
-    public async Task<List<TarefaModel>> BuscarPorTipoManutencaoAsync(int tipoManutencaoId)
+    public async Task<List<OperacaoModel>> BuscarPorTipoManutencaoAsync(int tipoManutencaoId)
     {
-        return await _context.Set<TarefaModel>()
-            .Where(t => t.TipoManutencaoId == tipoManutencaoId)
-            .OrderBy(t => t.IdTarefa)
+        return await _context.PM_Operacoes
+            .Where(t => t.IdTipoManutencao == tipoManutencaoId)
+            .OrderBy(t => t.IdOperacao)
             .ToListAsync();
     }
 }
-

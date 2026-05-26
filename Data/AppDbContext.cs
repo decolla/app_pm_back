@@ -1,8 +1,4 @@
-using app_pm_back.Models;
-using app_pm_back.Models.CongasModel;
-using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 using app_pm_back.Models.Domain;
-using app_pm_back.Models.Domain.PlanoManutencaoModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Data;
@@ -12,627 +8,136 @@ namespace app_pm_back.Data;
 /// </summary>
 public class AppDbContext : DbContext
 {
-
-    /// <summary>
-    /// Opcoes do banco de dados.
-    /// </summary>
-    /// <param name="options">Opcoes do contexto.</param>
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
 
-    /// <summary>
-    /// Configura entidades, chaves e relacionamentos.
-    /// </summary>
-    /// <param name="modelBuilder">Builder de mapeamento do modelo.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("public");   
-        
         base.OnModelCreating(modelBuilder);
 
-        // // Relacionamentos legados COMGAS.
-        // modelBuilder.Entity<MaintancePlanComgasModel>()
-        //     .HasOne(p => p.Estrategia)
-        //     .WithMany(e => e.Planos)
-        //     .HasForeignKey(p => p.IdEstrategia)
-        //     .OnDelete(DeleteBehavior.SetNull);
-        //
-        // modelBuilder.Entity<ItemManutencaoComgasModel>()
-        //     .HasOne(i => i.PlanoRelacionado)
-        //     .WithMany(p => p.ItensManutencao)
-        //     .HasForeignKey(i => i.PlanoId)
-        //     .OnDelete(DeleteBehavior.SetNull);
-        //
-        // modelBuilder.Entity<CicloComgasModel>()
-        //     .HasOne(c => c.Estrategia)
-        //     .WithMany(e => e.Ciclos)
-        //     .HasForeignKey(c => c.IdEstrategia)
-        //     .OnDelete(DeleteBehavior.SetNull);
-        //
-        // modelBuilder.Entity<NoteCongasModel>()
-        //     .HasOne<EquipmentComgasModel>()
-        //     .WithMany(e => e.Notas)
-        //     .HasForeignKey(n => n.Equipamento)
-        //     .HasPrincipalKey(e => e.IdEquipamento)
-        //     .OnDelete(DeleteBehavior.SetNull);
-        //
-        // modelBuilder.Entity<ItemNotaCongasModel>()
-        //     .HasOne(i => i.NoteCongas)
-        //     .WithMany(n => n.Itens)
-        //     .HasForeignKey(i => i.NoteCongasIdNota)
-        //     .OnDelete(DeleteBehavior.Cascade);
+        // Configure Primary Keys and Auto-increment
+        modelBuilder.Entity<TipoManutencaoModel>().HasKey(e => e.IdTipoManutencao);
+        modelBuilder.Entity<TipoEstrategiaModel>().HasKey(e => e.IdTipoEstrategia);
+        modelBuilder.Entity<TipoCepModel>().HasKey(e => e.IdTipoCep);
+        modelBuilder.Entity<OperacaoModel>().HasKey(e => e.IdOperacao);
+        modelBuilder.Entity<TipoPlanoModel>().HasKey(e => e.IdTipoPlano);
+        modelBuilder.Entity<EstrategiaModel>().HasKey(e => e.IdEstrategia);
+        modelBuilder.Entity<PlanoModel>().HasKey(e => e.IdPlano);
+        modelBuilder.Entity<AlmoxarifadoModel>().HasKey(e => e.IdAlmoxarifado);
+        modelBuilder.Entity<UsuarioModel>().HasKey(e => e.IdUsuario);
+        modelBuilder.Entity<GpmModel>().HasKey(e => e.IdGPM);
+        modelBuilder.Entity<CpmModel>().HasKey(e => e.IdCPM);
+        modelBuilder.Entity<CtmModel>().HasKey(e => e.IdGPM);
+        modelBuilder.Entity<FerramentaModel>().HasKey(e => e.IdFerramenta);
+        modelBuilder.Entity<ImobilizadoModel>().HasKey(e => e.IdImobilizado);
+        modelBuilder.Entity<NotaModel>().HasKey(e => e.IdNota);
+        modelBuilder.Entity<VariavelNotaModel>().HasKey(e => e.IdVariavel);
+        modelBuilder.Entity<ItemNotaModel>().HasKey(e => e.IdItemNota);
+        modelBuilder.Entity<AnexoNotaModel>().HasKey(e => e.IdAnexoNota);
+        modelBuilder.Entity<OrdemModel>().HasKey(e => e.IdOrdem);
+        modelBuilder.Entity<AnexoOrdemModel>().HasKey(e => e.IdAnexoOrdem);
+        modelBuilder.Entity<DadosRenovacaoModel>().HasKey(e => e.IdDados);
 
-        // Dominio normalizado para manutencao.
-        modelBuilder.Entity<UsuarioSapModel>()
-            .HasIndex(u => new { u.Nome, u.Mandante })
-            .IsUnique();
-
-        modelBuilder.Entity<FabricanteModel>()
-            .HasIndex(f => f.Nome)
-            .IsUnique();
-
-        modelBuilder.Entity<LocalizacaoModel>()
-            .HasIndex(l => l.IdLocalizacao)
-            .IsUnique();
-
-        modelBuilder.Entity<GrupoPlanejamentoManutencaoModel>()
-            .HasIndex(g => g.IdGpm)
-            .IsUnique();
-
-        modelBuilder.Entity<CentroTrabalhoModel>()
-            .HasIndex(c => c.Codigo)
-            .IsUnique();
-
-        modelBuilder.Entity<PlanoManutencaoModel>()
-            .HasOne(p => p.Estrategia)
-            .WithMany(e => e.Planos)
-            .HasForeignKey(p => p.EstrategiaId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<CicloManutencaoModel>()
-            .HasOne(c => c.PlanoManutencao)
-            .WithMany(p => p.Ciclos)
-            .HasForeignKey(c => c.PlanoManutencaoCodigo)
+        // 1-to-1: CTM and GPM share same primary key or relate 1-to-1
+        modelBuilder.Entity<CtmModel>()
+            .HasOne<GpmModel>()
+            .WithOne()
+            .HasForeignKey<CtmModel>(c => c.IdGPM)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<ItemPlanoManutencaoModel>()
-            .HasOne(i => i.PlanoManutencao)
-            .WithMany(p => p.Itens)
-            .HasForeignKey(i => i.PlanoManutencaoCodigo)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<LocalInstalacaoModel>()
-            .HasOne(l => l.Fabricante)
-            .WithMany(f => f.LocaisInstalacao)
-            .HasForeignKey(l => l.FabricanteId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<LocalInstalacaoModel>()
-            .HasOne(l => l.Localizacao)
-            .WithMany(loc => loc.LocaisInstalacao)
-            .HasForeignKey(l => l.LocalizacaoId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<LocalInstalacaoModel>()
-            .HasOne(l => l.Endereco)
-            .WithMany()
-            .HasForeignKey(l => l.EnderecoId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<LocalInstalacaoModel>()
-            .HasOne(l => l.Imobilizado)
-            .WithMany(i => i.LocaisInstalacao)
-            .HasForeignKey(l => l.ImobilizadoTag)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<LocalInstalacaoModel>()
-            .HasOne(l => l.Gpm)
-            .WithMany(g => g.LocaisInstalacao)
-            .HasForeignKey(l => l.GpmId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<LocalInstalacaoModel>()
-            .HasOne(l => l.CentroTrabalho)
-            .WithMany(c => c.LocaisInstalacao)
-            .HasForeignKey(l => l.CentroTrabalhoId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<EquipamentoAtivoModel>()
-            .HasOne(e => e.LocalInstalacao)
-            .WithMany(l => l.Equipamentos)
-            .HasForeignKey(e => e.LocalInstalacaoCodigo)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<EquipamentoAtivoModel>()
-            .HasOne(e => e.Fabricante)
-            .WithMany(f => f.Equipamentos)
-            .HasForeignKey(e => e.FabricanteId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<EquipamentoAtivoModel>()
-            .HasOne(e => e.Localizacao)
-            .WithMany(l => l.Equipamentos)
-            .HasForeignKey(e => e.LocalizacaoId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<EquipamentoAtivoModel>()
-            .HasOne(e => e.Imobilizado)
-            .WithMany(i => i.Equipamentos)
-            .HasForeignKey(e => e.ImobilizadoTag)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<FuncionarioModel>()
-            .HasOne(e => e.Gpm)
-            .WithMany(g => g.ListaFuncionario)
-            .HasForeignKey(e => e.GpmId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<EquipamentoAtivoModel>()
-            .HasOne(e => e.CentroTrabalho)
-            .WithMany(c => c.Equipamentos)
-            .HasForeignKey(e => e.CentroTrabalhoId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<ItemPlanoManutencaoModel>()
-            .HasOne(i => i.Equipamento)
-            .WithMany(e => e.ItensPlano)
-            .HasForeignKey(i => i.EquipamentoTag)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<ItemPlanoManutencaoModel>()
-            .HasOne(i => i.LocalInstalacao)
-            .WithMany(l => l.ItensPlano)
-            .HasForeignKey(i => i.LocalInstalacaoCodigo)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<NotaManutencaoModel>()
-            .HasIndex(n => n.NumeroNota)
-            .IsUnique();
-
-        modelBuilder.Entity<NotaManutencaoModel>()
-            .HasOne(n => n.Equipamento)
-            .WithMany(e => e.Notas)
-            .HasForeignKey(n => n.EquipamentoTag)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<NotaManutencaoModel>()
-            .HasOne(n => n.CriadoPorUsuario)
-            .WithMany(u => u.NotasCriadas)
-            .HasForeignKey(n => n.CriadoPorUsuarioId)
-            .OnDelete(DeleteBehavior.SetNull);
-        
-        modelBuilder.Entity<NotaManutencaoModel>()
-            .HasOne(o => o.PlanoManutencao)
-            .WithMany(p => p.Notas)
-            .HasForeignKey(o => o.PlanoManutencaoCodigo)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<AnnexModel>()
-            .HasOne(a => a.Nota)
-            .WithMany(n => n.Anexos)
-            .HasForeignKey(a => a.NotaId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<AnnexModel>()
-            .HasOne(a => a.Ordem)
-            .WithMany(o => o.Anexos)
-            .HasForeignKey(a => a.OrdemId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<ItemNotaManutencaoModel>()
-            .HasOne(i => i.Nota)
-            .WithMany(n => n.Itens)
-            .HasForeignKey(i => i.NotaId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<VariavelNotaModel>()
-            .HasOne(v => v.Nota)
-            .WithMany(n => n.Variaveis)
-            .HasForeignKey(v => v.NotaId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<MedidaNotaModel>()
-            .HasOne(i => i.Nota)
-            .WithMany(n => n.Medidas)
-            .HasForeignKey(i => i.NotaId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<AtividadeNotaModel>()
-            .HasOne(i => i.Nota)
-            .WithMany(n => n.Atividades)
-            .HasForeignKey(i => i.NotaId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<OrdemManutencaoModel>()
-            .HasOne(o => o.NotaRelacionada)
-            .WithMany(n => n.Ordens)
-            .HasForeignKey(o => o.NotaRelacionadaId)
-            .OnDelete(DeleteBehavior.SetNull);
-        
-        modelBuilder.Entity<OrdemManutencaoModel>()
-            .HasOne(o => o.Equipamento)
-            .WithMany(e => e.Ordens)
-            .HasForeignKey(o => o.EquipamentoTag)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<OrdemManutencaoModel>()
-            .HasOne(o => o.CriadaPorUsuario)
-            .WithMany(u => u.OrdensCriadas)
-            .HasForeignKey(o => o.CriadaPorUsuarioId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<OrdemManutencaoModel>()
-            .HasOne(o => o.ModificadaPorUsuario)
-            .WithMany(u => u.OrdensModificadas)
-            .HasForeignKey(o => o.ModificadaPorUsuarioId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<OperacaoOrdemModel>()
-            .HasOne(o => o.Ordem)
-            .WithMany(o => o.Operacoes)
-            .HasForeignKey(o => o.OrdemId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<OperacaoOrdemModel>()
-            .HasMany(o => o.FerramentasNecessarias)
+        // Configure many-to-many associations
+        // 1. Ferramentas/Operacoes
+        modelBuilder.Entity<OperacaoModel>()
+            .HasMany(o => o.Ferramentas)
             .WithMany(f => f.Operacoes)
             .UsingEntity<Dictionary<string, object>>(
-                "OperacaoOrdemFerramenta",
-                j => j.HasOne<FerramentasTipoModel>()
-                    .WithMany()
-                    .HasForeignKey("FerramentaId")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<OperacaoOrdemModel>()
-                    .WithMany()
-                    .HasForeignKey("OperacaoId")
-                    .OnDelete(DeleteBehavior.Cascade),
+                "FerramentasOperacoes",
+                j => j.HasOne<FerramentaModel>().WithMany().HasForeignKey("IdFerramenta").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<OperacaoModel>().WithMany().HasForeignKey("IdOperacao").OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("OperacaoId", "FerramentaId");
+                    j.HasKey("IdFerramenta", "IdOperacao");
+                    j.ToTable("PM_FerramentasOperacoes");
                 });
 
-        modelBuilder.Entity<FerramentasTipoModel>()
-            .HasOne(f => f.CentroTrabalho)
-            .WithMany()
-            .HasForeignKey(f => f.CentroTrabalhoId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<FerramentasTipoModel>()
-            .HasOne(f => f.LocalInstalacao)
-            .WithMany()
-            .HasForeignKey(f => f.LocalInstalacaoCodigo)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<FerramentasTipoModel>()
-            .HasOne(f => f.Fabricante)
-            .WithMany()
-            .HasForeignKey(f => f.FabricanteId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<FerramentasTipoModel>()
-            .HasOne(f => f.TipoPlano)
-            .WithMany(t => t.Ferramentas)
-            .HasForeignKey(f => f.TipoManutencaoId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<TarefaModel>()
-            .HasOne(t => t.TipoPlano)
-            .WithMany(m => m.ListaTarefa)
-            .HasForeignKey(t => t.TipoManutencaoId)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<TipoManutencaoCepModel>()
-            .HasIndex(c => new { c.TipoAtivo })
-            .IsUnique();
-
-        modelBuilder.Entity<CentroTrabalhoModel>()
-            .HasOne(c => c.CentroPlanejamentoManutencao)
-            .WithMany(cpm => cpm.CentrosTrabalho)
-            .HasForeignKey(c => c.CpmId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<CentroPlanejamentoManutencaoModel>()
-            .HasOne(cpm => cpm.LocalizacaoReferencia)
-            .WithMany()
-            .HasForeignKey(cpm => cpm.LocalizacaoId)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<GrupoPlanejamentoManutencaoModel>()
-            .HasOne(g => g.CentroPlanejamentoManutencao)
-            .WithMany(cpm => cpm.GruposPlanejamento)
-            .HasForeignKey(g => g.IdCpm)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<FuncionarioModel>()
-            .HasIndex(f => f.Cpf)
-            .IsUnique();
-
-        modelBuilder.Entity<CentroTrabalhoModel>()
-            .HasMany(c => c.Funcionarios)
-            .WithMany(f => f.CentrosTrabalho)
-            .UsingEntity<Dictionary<string, object>>(
-                "CentroTrabalhoFuncionario",
-                j => j.HasOne<FuncionarioModel>()
-                    .WithMany()
-                    .HasForeignKey("FuncionarioId")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<CentroTrabalhoModel>()
-                    .WithMany()
-                    .HasForeignKey("CentroTrabalhoId")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j =>
-                {
-                    j.HasKey("CentroTrabalhoId", "FuncionarioId");
-                });
-
-        modelBuilder.Entity<SetorVendasModel>()
-            .HasMany(s => s.Funcionarios)
-            .WithMany(f => f.SetoresVendas)
-            .UsingEntity<Dictionary<string, object>>(
-                "SetorVendasFuncionario",
-                j => j.HasOne<FuncionarioModel>()
-                    .WithMany()
-                    .HasForeignKey("FuncionarioId")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<SetorVendasModel>()
-                    .WithMany()
-                    .HasForeignKey("SetorVendasId")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j =>
-                {
-                    j.HasKey("SetorVendasId", "FuncionarioId");
-                });
-
+        // 2. Almoxarifado/Usuario
         modelBuilder.Entity<AlmoxarifadoModel>()
-            .HasMany(a => a.Funcionarios)
-            .WithMany(f => f.Almoxarifados)
+            .HasMany<UsuarioModel>()
+            .WithMany()
             .UsingEntity<Dictionary<string, object>>(
-                "AlmoxarifadoFuncionario",
-                j => j.HasOne<FuncionarioModel>()
-                    .WithMany()
-                    .HasForeignKey("FuncionarioId")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<AlmoxarifadoModel>()
-                    .WithMany()
-                    .HasForeignKey("AlmoxarifadoId")
-                    .OnDelete(DeleteBehavior.Cascade),
+                "AlmoxarifadoUsuario",
+                j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<AlmoxarifadoModel>().WithMany().HasForeignKey("IdAlmoxarifado").OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("AlmoxarifadoId", "FuncionarioId");
+                    j.HasKey("IdAlmoxarifado", "IdUsuario");
+                    j.ToTable("PM_AlmoxarifadoUsuario");
                 });
 
-        modelBuilder.Entity<AlmoxarifadoModel>()
-            .HasMany(a => a.Ferramentas)
-            .WithMany(f => f.Almoxarifados)
+        // 3. GPM/LI (Apesar do nome referenciar LI, os campos internos apontam Usuário)
+        modelBuilder.Entity<GpmModel>()
+            .HasMany<UsuarioModel>()
+            .WithMany()
             .UsingEntity<Dictionary<string, object>>(
-                "AlmoxarifadoFerramenta",
-                j => j.HasOne<FerramentasTipoModel>()
-                    .WithMany()
-                    .HasForeignKey("FerramentaId")
-                    .OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<AlmoxarifadoModel>()
-                    .WithMany()
-                    .HasForeignKey("AlmoxarifadoId")
-                    .OnDelete(DeleteBehavior.Cascade),
+                "GpmLi",
+                j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<GpmModel>().WithMany().HasForeignKey("IdGPM").OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("AlmoxarifadoId", "FerramentaId");
+                    j.HasKey("IdGPM", "IdUsuario");
+                    j.ToTable("PM_GpmLi");
                 });
 
-        modelBuilder.Entity<ComponenteEquipamentoModel>()
-            .HasOne(c => c.Equipamento)
-            .WithMany(e => e.Componentes)
-            .HasForeignKey(c => c.EquipamentoTag)
-            .OnDelete(DeleteBehavior.SetNull);
+        // 4. GPM/Usuario
+        modelBuilder.Entity<GpmModel>()
+            .HasMany<UsuarioModel>()
+            .WithMany()
+            .UsingEntity<Dictionary<string, object>>(
+                "GpmUsuario",
+                j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<GpmModel>().WithMany().HasForeignKey("IdGPM").OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("IdGPM", "IdUsuario");
+                    j.ToTable("PM_GpmUsuario");
+                });
+
+        // 5. CTM/Usuario
+        modelBuilder.Entity<CtmModel>()
+            .HasMany<UsuarioModel>()
+            .WithMany()
+            .UsingEntity<Dictionary<string, object>>(
+                "CtmUsuario",
+                j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<CtmModel>().WithMany().HasForeignKey("IdCTM").OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("IdCTM", "IdUsuario");
+                    j.ToTable("PM_CtmUsuario");
+                });
     }
 
-    /// <summary>
-    /// Tabela de notas Petro.
-    /// </summary>
-    public DbSet<NotaPetroModel> PM_NotasPetro { get; set; }
-
-    /// <summary>
-    /// Tabela de ordens Petro.
-    /// </summary>
-    public DbSet<OrdemPetroModel> PM_OrdensPetro { get; set; }
-
-    // /// <summary>
-    // /// Tabela de notas Congas.
-    // /// </summary>
-    // public DbSet<NoteCongasModel> NotasCongas { get; set; }
-    //
-    // /// <summary>
-    // /// Tabela de ordens Congas.
-    // /// </summary>
-    // public DbSet<OrderCongasModel> OrdensCongas { get; set; }
-
-    /// <summary>
-    /// Tabela de anexos.
-    /// </summary>
-    public DbSet<AnnexModel> PM_Anexos { get; set; }
-
-    /// <summary>
-    /// Tabela de regras para classificacao.
-    /// </summary>
-    public DbSet<RuleClassificationModel> PM_Regras { get; set; }
-    
-    // /// <summary>
-    // /// Tabela de itens de nota Congas.
-    // /// </summary>
-    // public DbSet<ItemNotaCongasModel> ItemNotaCongas { get; set; }
-
-    /// <summary>
-    /// Tabela de acoes de nota Congas.
-    /// </summary>
-    // public DbSet<AcaoNotaCongasModel> AcaoNotaCongas { get; set; }
-
-    // /// <summary>
-    // /// Tabela de equipamentos legados da Congas.
-    // /// </summary>
-    // public DbSet<EquipmentComgasModel> Equipamentos { get; set; }
-    //
-    // /// <summary>
-    // /// Tabela de planos de manutencao legados da Congas.
-    // /// </summary>
-    // public DbSet<MaintancePlanComgasModel> PlanosManutencao { get; set; }
-
-    /// <summary>
-    /// Tabela de usuarios SAP.
-    /// </summary>
-    public DbSet<UsuarioSapModel> PM_UsuariosSap { get; set; }
-
-    /// <summary>
-    /// Tabela de fabricantes.
-    /// </summary>
-    public DbSet<FabricanteModel> PM_Fabricantes { get; set; }
-
-    /// <summary>
-    /// Tabela de enderecos.
-    /// </summary>
-    public DbSet<EnderecoModel> PM_Enderecos { get; set; }
-
-    /// <summary>
-    /// Tabela de localizacoes.
-    /// </summary>
-    public DbSet<LocalizacaoModel> PM_Localizacoes { get; set; }
-
-    /// <summary>
-    /// Tabela de imobilizados.
-    /// </summary>
-    public DbSet<ImobilizadoModel> PM_Imobilizados { get; set; }
-
-    /// <summary>
-    /// Tabela de grupos de planejamento de manutencao.
-    /// </summary>
-    public DbSet<GrupoPlanejamentoManutencaoModel> PM_GruposPlanejamentoManutencao { get; set; }
-
-    /// <summary>
-    /// Tabela de centros de trabalho.
-    /// </summary>
-    public DbSet<CentroTrabalhoModel> PM_CentrosTrabalho { get; set; }
-    
-    /// <summary>
-    /// Tabela de Centros de Planejamento de Manutencao (CPM).
-    /// </summary>
-    public DbSet<CentroPlanejamentoManutencaoModel> PM_CentrosPlanejamentoManutencao { get; set; }
-
-    /// <summary>
-    /// Tabela de funcionarios.
-    /// </summary>
-    public DbSet<FuncionarioModel> PM_Funcionarios { get; set; }
-    
-    
-    public DbSet<SetorVendasModel> PM_SetoresVendas { get; set; }
-    
-    public DbSet<AlmoxarifadoModel> PM_Almoxarifados { get; set; }
-    
-    public DbSet<ComponenteEquipamentoModel> PM_ComponentesEquipamento { get; set; }
-    
-    public DbSet<TipoPlanoModel> PM_TiposPlano { get; set; }
-    
-    public DbSet<PlanoManutencaoModel> PM_PlanosManutencao { get; set; }
-    
     public DbSet<TipoManutencaoModel> PM_TiposManutencao { get; set; }
-    
     public DbSet<TipoEstrategiaModel> PM_TiposEstrategia { get; set; }
-    
-    public DbSet<TipoManutencaoCepModel> PM_TiposManutencaoCep { get; set; }
-    
-    /// <summary>
-    /// Tabela de locais de instalacao.
-    /// </summary>
-    public DbSet<LocalInstalacaoModel> PM_LocaisInstalacao { get; set; }
-
-    /// <summary>
-    /// Tabela de equipamentos normalizados.
-    /// </summary>
-    public DbSet<EquipamentoAtivoModel> PM_EquipamentosAtivos { get; set; }
-
-    /// <summary>
-    /// Tabela de estrategias de manutencao.
-    /// </summary>
-    public DbSet<EstrategiaManutencaoModel> PM_EstrategiasManutencao { get; set; }
-
-    /// <summary>
-    /// Tabela de planos de manutencao normalizados.
-    /// </summary>
-    public DbSet<PlanoManutencaoModel> PM_PlanosManutencaoNormalizados { get; set; }
-
-    /// <summary>
-    /// Tabela de ciclos de manutencao.
-    /// </summary>
-    public DbSet<CicloManutencaoModel> PM_CiclosManutencao { get; set; }
-
-    /// <summary>
-    /// Tabela de itens de plano de manutencao.
-    /// </summary>
-    public DbSet<ItemPlanoManutencaoModel> PM_ItensPlanoManutencao { get; set; }
-
-    /// <summary>
-    /// Tabela de notas de manutencao normalizadas.
-    /// </summary>
-    public DbSet<NotaManutencaoModel> PM_NotasManutencao { get; set; }
-
-    /// <summary>
-    /// Tabela de itens de notas de manutencao.
-    /// </summary>
-    public DbSet<ItemNotaManutencaoModel> PM_ItensNotaManutencao { get; set; }
-
-    /// <summary>
-    /// Tabela de variaveis de nota.
-    /// </summary>
+    public DbSet<TipoCepModel> PM_TiposCep { get; set; }
+    public DbSet<OperacaoModel> PM_Operacoes { get; set; }
+    public DbSet<TipoPlanoModel> PM_TiposPlano { get; set; }
+    public DbSet<EstrategiaModel> PM_Estrategias { get; set; }
+    public DbSet<PlanoModel> PM_Planos { get; set; }
+    public DbSet<AlmoxarifadoModel> PM_Almoxarifados { get; set; }
+    public DbSet<UsuarioModel> PM_Usuarios { get; set; }
+    public DbSet<GpmModel> PM_Gpms { get; set; }
+    public DbSet<CpmModel> PM_Cpms { get; set; }
+    public DbSet<CtmModel> PM_Ctms { get; set; }
+    public DbSet<FerramentaModel> PM_Ferramentas { get; set; }
+    public DbSet<ImobilizadoModel> PM_Imobilizados { get; set; }
+    public DbSet<NotaModel> PM_Notas { get; set; }
     public DbSet<VariavelNotaModel> PM_VariaveisNota { get; set; }
-
-    /// <summary>
-    /// Tabela de medidas de nota.
-    /// </summary>
-    public DbSet<MedidaNotaModel> PM_MedidasNota { get; set; }
-
-    /// <summary>
-    /// Tabela de atividades de nota.
-    /// </summary>
-    public DbSet<AtividadeNotaModel> PM_AtividadesNota { get; set; }
-
-    /// <summary>
-    /// Tabela de ordens de manutencao normalizadas.
-    /// </summary>
-    public DbSet<OrdemManutencaoModel> PM_OrdensManutencao { get; set; }
-
-    /// <summary>
-    /// Tabela de analises de risco (AR).
-    /// </summary>
-    public DbSet<AnaliseRiscoModel> PM_AnalisesRisco { get; set; }
-
-    /// <summary>
-    /// Tabela de analises de risco operacional (ARO).
-    /// </summary>
-    public DbSet<AnaliseRiscoOperacionalModel> PM_AnalisesRiscoOperacional { get; set; }
-
-    /// <summary>
-    /// Tabela de permissoes de trabalho (PT).
-    /// </summary>
-    public DbSet<PermissaoTrabalhoModel> PM_PermissoesTrabalho { get; set; }
-
-    /// <summary>
-    /// Tabela de matrizes LIBRA.
-    /// </summary>
-    public DbSet<MatrizLibraModel> PM_MatrizesLibra { get; set; }
-
-    /// <summary>
-    /// Tabela de operacoes de ordens.
-    /// </summary>
-    public DbSet<OperacaoOrdemModel> PM_OperacoesOrdem { get; set; }
-
-    /// <summary>
-    /// Tabela de ferramentas por tipo de manutencao.
-    /// </summary>
-    public DbSet<FerramentasTipoModel> PM_FerramentasTipo { get; set; }
-
-
-    /// <summary>
-    /// Tabela de tarefas por tipo de manutencao.
-    /// </summary>
-    public DbSet<TarefaModel> PM_TarefasTipoManutencao { get; set; }
-
+    public DbSet<ItemNotaModel> PM_ItensNota { get; set; }
+    public DbSet<AnexoNotaModel> PM_AnexosNota { get; set; }
+    public DbSet<OrdemModel> PM_Ordens { get; set; }
+    public DbSet<AnexoOrdemModel> PM_AnexosOrdem { get; set; }
+    public DbSet<DadosRenovacaoModel> PM_DadosRenovacao { get; set; }
 }

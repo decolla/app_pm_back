@@ -1,8 +1,10 @@
 using app_pm_back.DTO.ComgasDTO;
-using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services.CongasServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace app_pm_back.Controllers.ControllerPlanoManutencao;
 
@@ -28,7 +30,7 @@ public class TipoManutencaoCepController : ControllerBase
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         if (string.IsNullOrWhiteSpace(dto.TipoAtivo)) return BadRequest(new { message = "TipoAtivo obrigatorio." });
 
-        var model = _mapper.Map<TipoManutencaoCepModel>(dto);
+        var model = _mapper.Map<TipoCepModel>(dto);
         var criado = await _service.CreateAsync(model);
         return Ok(criado);
     }
@@ -61,7 +63,7 @@ public class TipoManutencaoCepController : ControllerBase
         if (dto.IdTipoManutencaoCep <= 0) dto.IdTipoManutencaoCep = id;
         if (dto.IdTipoManutencaoCep != id) return BadRequest(new { message = "Id da rota deve ser igual ao Id do corpo." });
 
-        var model = _mapper.Map<TipoManutencaoCepModel>(dto);
+        var model = _mapper.Map<TipoCepModel>(dto);
         var atualizado = await _service.UpdateNotaAsync(model);
         return Ok(atualizado);
     }

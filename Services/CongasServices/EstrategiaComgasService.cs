@@ -4,28 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.CongasServices;
 
-/// <summary>
-/// Servico de regras e consultas de estrategia de manutencao.
-/// </summary>
-public class          EstrategiaComgasService : BaseCrudService<EstrategiaManutencaoModel>
+public class EstrategiaComgasService : BaseCrudService<EstrategiaModel>
 {
-    /// <summary>
-    /// Inicializa o servico de estrategia.
-    /// </summary>
     public EstrategiaComgasService(AppDbContext context) : base(context)
     {
     }
 
-    /// <summary>
-    /// Busca estrategias por filtros opcionais da tela de pesquisa.
-    /// </summary>
-    /// <param name="id">Id da estratégia.</param>
-    /// <param name="nome">Nome (busca parcial).</param>
-    /// <param name="tipoAtivo">Tipo de ativo aplicavel (busca parcial).</param>
-    /// <param name="visao">Visao/denominacao (busca parcial).</param>
-    /// <param name="pagina">Pagina desejada (opcional).</param>
-    /// <param name="tamanho">Quantidade por pagina (opcional).</param>
-    public async Task<List<EstrategiaManutencaoModel>> BuscarAsync(
+    public async Task<List<EstrategiaModel>> BuscarAsync(
         int? id,
         string? nome,
         string? tipoAtivo,
@@ -33,7 +18,7 @@ public class          EstrategiaComgasService : BaseCrudService<EstrategiaManute
         int? pagina,
         int? tamanho)
     {
-        var query = _context.Set<EstrategiaManutencaoModel>()
+        var query = _context.PM_Estrategias
             .AsNoTracking()
             .AsQueryable();
 
@@ -52,12 +37,6 @@ public class          EstrategiaComgasService : BaseCrudService<EstrategiaManute
         {
             var tipoAtivoNormalizado = tipoAtivo.Trim().ToLower();
             query = query.Where(e => e.TipoAtivoAplicavel.ToLower().Contains(tipoAtivoNormalizado));
-        }
-
-        if (!string.IsNullOrWhiteSpace(visao))
-        {
-            var visaoNormalizada = visao.Trim().ToLower();
-            query = query.Where(e => e.Denominacao != null && e.Denominacao.ToLower().Contains(visaoNormalizada));
         }
 
         query = query.OrderBy(e => e.IdEstrategia);

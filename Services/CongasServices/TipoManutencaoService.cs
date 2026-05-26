@@ -1,5 +1,5 @@
 using app_pm_back.Data;
-using app_pm_back.Models.Domain.PlanoManutencaoModels;
+using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.CongasServices;
@@ -12,16 +12,13 @@ public class TipoManutencaoService : BaseCrudService<TipoManutencaoModel>
 
     public async Task<TipoManutencaoModel?> GetCompletoByIdAsync(int id)
     {
-        return await _context.Set<TipoManutencaoModel>()
-            .Include(t => t.ListaTarefas)
-            .Include(t => t.TiposEstrategia)
-            .Include(t => t.TipoPlanoModels)
+        return await _context.PM_TiposManutencao
             .FirstOrDefaultAsync(t => t.IdTipoManutencao == id);
     }
 
     public async Task<TipoManutencaoModel> UpdateBasicoAsync(TipoManutencaoModel atualizado)
     {
-        var existente = await _context.Set<TipoManutencaoModel>()
+        var existente = await _context.PM_TiposManutencao
             .FirstOrDefaultAsync(t => t.IdTipoManutencao == atualizado.IdTipoManutencao);
 
         if (existente == null)

@@ -1,8 +1,10 @@
 using app_pm_back.DTO.ComgasDTO;
-using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services.CongasServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace app_pm_back.Controllers.ControllerPlanoManutencao;
 
@@ -29,7 +31,7 @@ public class TarefaController : ControllerBase
         if (dto.TipoManutencaoId <= 0) return BadRequest(new { message = "TipoManutencaoId obrigatorio." });
         if (string.IsNullOrWhiteSpace(dto.Nome)) return BadRequest(new { message = "Nome da tarefa obrigatorio." });
 
-        var model = _mapper.Map<TarefaModel>(dto);
+        var model = _mapper.Map<OperacaoModel>(dto);
         var criado = await _service.CreateAsync(model);
         return Ok(criado);
     }
@@ -63,7 +65,7 @@ public class TarefaController : ControllerBase
         if (dto.IdTarefa <= 0) dto.IdTarefa = id;
         if (dto.IdTarefa != id) return BadRequest(new { message = "Id da rota deve ser igual ao Id do corpo." });
 
-        var model = _mapper.Map<TarefaModel>(dto);
+        var model = _mapper.Map<OperacaoModel>(dto);
         var atualizado = await _service.UpdateNotaAsync(model);
         return Ok(atualizado);
     }
@@ -76,4 +78,3 @@ public class TarefaController : ControllerBase
         return Ok(new { message = "Tarefa removida com sucesso." });
     }
 }
-

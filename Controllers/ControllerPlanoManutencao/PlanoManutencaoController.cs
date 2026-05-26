@@ -42,10 +42,10 @@ public class PlanoManutencaoController : ControllerBase
                 return ValidationProblem(ModelState);
             }
 
-            var obj = _mapper.Map<PlanoManutencaoModel>(dto);
-            if (obj.CodigoPlano <= 0)
+            var obj = _mapper.Map<PlanoModel>(dto);
+            if (obj.IdPlano <= 0)
             {
-                return BadRequest(new { message = "CodigoPlano invalido. Envie CodigoPlano maior que zero." });
+                return BadRequest(new { message = "IdPlano invalido. Envie IdPlano maior que zero." });
             }
 
             var novoObj = await _planoManutencaoService.CreateComTiposAsync(obj);
@@ -140,14 +140,14 @@ public class PlanoManutencaoController : ControllerBase
                 return BadRequest(new { message = "Id da rota e CodigoPlano do corpo da requisição devem ser iguais." });
             }
 
-            var obj = _mapper.Map<PlanoManutencaoModel>(dto);
-            if (obj.CodigoPlano <= 0)
+            var obj = _mapper.Map<PlanoModel>(dto);
+            if (obj.IdPlano <= 0)
             {
-                return BadRequest(new { message = "CodigoPlano invalido. Envie CodigoPlano maior que zero." });
+                return BadRequest(new { message = "IdPlano invalido. Envie IdPlano maior que zero." });
             }
 
             var result = await _planoManutencaoService.UpdateNotaAsync(obj);
-            return Ok(new { message = $"{_operador} atualizada com sucesso: " + result.CodigoPlano });
+            return Ok(new { message = $"{_operador} atualizada com sucesso: " + result.IdPlano });
         }
         catch (Exception)
         {

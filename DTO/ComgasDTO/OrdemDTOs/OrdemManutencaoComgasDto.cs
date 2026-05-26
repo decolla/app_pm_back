@@ -86,10 +86,10 @@ public class OrdemManutencaoComgasDto
     public DateTime? FimReal { get; set; }
 
     [SheetColumn("Equipamento")]
-    public string? EquipamentoTag { get; set; }
+    public string? IdAtivo { get; set; }
 
     [SheetColumn("Loc.instalação")]
-    public int? LocalInstalacaoCodigo { get; set; }
+    public int? IdLocalInstalacao { get; set; }
 
     [SheetColumn("Área operacion.")]
     public string? AreaOperacional { get; set; }

@@ -22,9 +22,6 @@ public class TipoManutencaoCepComgasDto
     [SheetColumn("Habilitada")]
     public bool Habilitada { get; set; }
 
-    [SheetColumn("Níveis")]
-    public Dictionary<string, int>? Niveis { get; set; }
-
     [SheetColumn("Ações Falha")]
     public List<int> AcoesFalha { get; set; } = new();
 

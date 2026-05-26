@@ -1,195 +1,106 @@
 using app_pm_back.DTO.ComgasDTO;
-using app_pm_back.Models.CongasModel;
-using app_pm_back.Models.CongasModel.PlanoManutencaoModels.ManutencaoModels;
 using app_pm_back.Models.Domain;
-using app_pm_back.Models.Domain.PlanoManutencaoModels;
 using AutoMapper;
 
 namespace app_pm_back.Profiles;
 
-/// <summary>
-/// Configuracao de mapeamentos de DTOs para modelos de dominio.
-/// </summary>
 public class AutoMapperProfile : Profile
 {
-    /// <summary>
-    /// FAZ O MAPEAMENTO AUTOMÁTICO DE VARIÁVES DE MESMO NOME ENTRE DTO E MODEL
-    /// </summary>
-    /// <returns></returns>
     public AutoMapperProfile()
     {
-        CreateMap<NotaManutencaoComgasDto, NotaManutencaoModel>()
-            // A planilha pode enviar IdNota vazio e NumeroNota preenchido.
-            .ForMember(dest => dest.IdNota,
-                opt => opt.MapFrom(src => src.IdNota > 0 ? src.IdNota : src.NumeroNota))
+        CreateMap<NotaManutencaoComgasDto, NotaModel>()
+            .ForMember(dest => dest.IdNota, opt => opt.MapFrom(src => src.IdNota > 0 ? src.IdNota : src.NumeroNota))
             .ForMember(dest => dest.Itens, opt => opt.Ignore())
             .ForMember(dest => dest.Variaveis, opt => opt.Ignore())
-            .ForMember(dest => dest.Medidas, opt => opt.Ignore())
-            .ForMember(dest => dest.Atividades, opt => opt.Ignore())
-            .ForMember(dest => dest.Ordens, opt => opt.Ignore())
-            .ForMember(dest => dest.Equipamento, opt => opt.Ignore())
-            .ForMember(dest => dest.CriadoPorUsuario, opt => opt.Ignore());
+            .ForMember(dest => dest.Anexos, opt => opt.Ignore());
 
-        CreateMap<OrdemManutencaoComgasDto, OrdemManutencaoModel>()
-            .ForMember(dest => dest.NotaRelacionada, opt => opt.Ignore())
-            .ForMember(dest => dest.PlanoManutencao, opt => opt.Ignore())
-            .ForMember(dest => dest.CriadaPorUsuario, opt => opt.Ignore())
-            .ForMember(dest => dest.ModificadaPorUsuario, opt => opt.Ignore())
+        CreateMap<OrdemManutencaoComgasDto, OrdemModel>()
+            .ForMember(dest => dest.Criticidade, opt => opt.MapFrom(src => src.Prioridade.HasValue ? src.Prioridade.Value.ToString() : null))
+            .ForMember(dest => dest.Nota, opt => opt.Ignore())
+            .ForMember(dest => dest.Anexos, opt => opt.Ignore())
             .ForMember(dest => dest.Operacoes, opt => opt.Ignore());
 
-        CreateMap<AnaliseRiscoComgasDto, AnaliseRiscoModel>()
-            .ForMember(dest => dest.Ordem, opt => opt.Ignore())
-            .ForMember(dest => dest.Anexos, opt => opt.Ignore());
-
-        CreateMap<AnaliseRiscoOperacionalComgasDto, AnaliseRiscoOperacionalModel>()
-            .ForMember(dest => dest.Ordem, opt => opt.Ignore())
-            .ForMember(dest => dest.Anexos, opt => opt.Ignore());
-
-        CreateMap<PermissaoTrabalhoComgasDto, PermissaoTrabalhoModel>()
-            .ForMember(dest => dest.Ordem, opt => opt.Ignore())
-            .ForMember(dest => dest.Anexos, opt => opt.Ignore());
-
-        CreateMap<MatrizLibraComgasDto, MatrizLibraModel>()
-            .ForMember(dest => dest.Equipamento, opt => opt.Ignore())
-            .ForMember(dest => dest.Anexos, opt => opt.Ignore());
-
-        // CreateMap<AcaoNotaCongasComgasDto, AcaoNotaCongasModel>();
-
-        CreateMap<ItemNotaManutencaoComgasDto, ItemNotaManutencaoModel>()
-            .ForMember(dest => dest.Nota, opt => opt.Ignore());
-
-        CreateMap<VariavelNotaComgasDto, VariavelNotaModel>()
-            .ForMember(dest => dest.Nota, opt => opt.Ignore());
-
-        CreateMap<EquipamentoAtivoComgasDto, EquipamentoAtivoModel>()
-            .ForMember(dest => dest.Fabricante, opt => opt.Ignore())
-            .ForMember(dest => dest.Localizacao, opt => opt.Ignore())
-            .ForMember(dest => dest.Endereco, opt => opt.Ignore())
-            .ForMember(dest => dest.Imobilizado, opt => opt.Ignore())
-            .ForMember(dest => dest.Gpm, opt => opt.Ignore())
-            .ForMember(dest => dest.CentroTrabalho, opt => opt.Ignore())
-            .ForMember(dest => dest.LocalInstalacao, opt => opt.Ignore())
-            .ForMember(dest => dest.Notas, opt => opt.Ignore())
-            .ForMember(dest => dest.ItensPlano, opt => opt.Ignore());
-
-        CreateMap<EstrategiaManutencaoComgasDto, EstrategiaManutencaoModel>()
-            .ForMember(dest => dest.Planos, opt => opt.Ignore())
-            .ForMember(dest => dest.Itens, opt => opt.Ignore());
+        CreateMap<EstrategiaManutencaoComgasDto, EstrategiaModel>();
 
         CreateMap<TipoEstrategiaComgasDto, TipoEstrategiaModel>()
-            .ForMember(dest => dest.TiposPlanos, opt => opt.Ignore());
-
-        CreateMap<PlanoManutencaoComgasDto, PlanoManutencaoModel>()
-            .ForMember(dest => dest.Prioridade,
-                opt => opt.MapFrom(src => src.Prioridade.HasValue ? (Prioridade?)src.Prioridade.Value : null))
-            .ForMember(dest => dest.GerarAutomaticamente,
-                opt => opt.MapFrom(src => src.GerarAutomaticamente.HasValue
-                    ? (GerarAutomaticamente?)src.GerarAutomaticamente.Value
-                    : null))
             .ForMember(dest => dest.Estrategia, opt => opt.Ignore())
-            .ForMember(dest => dest.TiposPlano, opt => opt.Ignore())
-            .ForMember(dest => dest.Ciclos, opt => opt.Ignore())
-            .ForMember(dest => dest.Itens, opt => opt.Ignore())
-            .ForMember(dest => dest.Ordens, opt => opt.Ignore());
+            .ForMember(dest => dest.TipoManutencao, opt => opt.Ignore())
+            .ForMember(dest => dest.TipoCep, opt => opt.Ignore());
+
+        CreateMap<PlanoManutencaoComgasDto, PlanoModel>()
+            .ForMember(dest => dest.IdPlano, opt => opt.MapFrom(src => src.CodigoPlano))
+            .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.NomePlano ?? string.Empty))
+            .ForMember(dest => dest.DataInicios, opt => opt.MapFrom(src => src.DataInicio))
+            .ForMember(dest => dest.Antecedencia, opt => opt.MapFrom(src => src.Antencedencia))
+            .ForMember(dest => dest.IdEstrategia, opt => opt.MapFrom(src => src.EstrategiaId ?? 0))
+            .ForMember(dest => dest.Prioridade, opt => opt.MapFrom(src => src.Prioridade.HasValue ? (Prioridade?)src.Prioridade.Value : null))
+            .ForMember(dest => dest.GerarAutomaticamente, opt => opt.MapFrom(src => src.GerarAutomaticamente.HasValue ? (GerarAutomaticamente?)src.GerarAutomaticamente.Value : null))
+            .ForMember(dest => dest.Estrategia, opt => opt.Ignore());
 
         CreateMap<TipoPlanoCongasDto, TipoPlanoModel>()
-            .ForMember(dest => dest.ListaTarefa, opt => opt.MapFrom(src => src.ListaTarefas))
+            .ForMember(dest => dest.Visivel, opt => opt.MapFrom(src => src.Visivel == Visivel.Visivel))
             .ForMember(dest => dest.TipoEstrategia, opt => opt.Ignore())
-            .ForMember(dest => dest.PlanoManutencao, opt => opt.Ignore());
+            .ForMember(dest => dest.Plano, opt => opt.Ignore())
+            .ForMember(dest => dest.TipoManutencao, opt => opt.Ignore())
+            .ForMember(dest => dest.TipoCep, opt => opt.Ignore());
 
         CreateMap<TipoManutencaoComgasDto, TipoManutencaoModel>();
 
-        CreateMap<FerramentaTipoDto, FerramentasTipoModel>();
+        CreateMap<TarefaComgasDto, OperacaoModel>()
+            .ForMember(dest => dest.IdOperacao, opt => opt.MapFrom(src => src.IdTarefa))
+            .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome))
+            .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao))
+            .ForMember(dest => dest.Duracao, opt => opt.MapFrom(src => src.Duracao));
 
-        CreateMap<TarefaComgasDto, TarefaModel>();
-        CreateMap<FerramentaTipoComgasDto, FerramentasTipoModel>();
+        CreateMap<TipoManutencaoCepComgasDto, TipoCepModel>()
+            .ForMember(dest => dest.IdTipoCep, opt => opt.MapFrom(src => src.IdTipoManutencaoCep))
+            .ForMember(dest => dest.AcoesFalha, opt => opt.MapFrom(src => src.AcoesFalha.Select(a => (AcoesFalha)a).ToList()));
 
-        CreateMap<TipoManutencaoCepComgasDto, TipoManutencaoCepModel>()
-            .ForMember(dest => dest.AcoesFalha,
-                opt => opt.MapFrom(src => src.AcoesFalha.Select(a => (AcoesFalha)a).ToList()));
-
-        CreateMap<UsuarioSapComgasDto, UsuarioSapModel>()
-            .ForMember(dest => dest.NotasCriadas, opt => opt.Ignore())
-            .ForMember(dest => dest.OrdensCriadas, opt => opt.Ignore())
-            .ForMember(dest => dest.OrdensModificadas, opt => opt.Ignore());
-
-        CreateMap<FabricanteComgasDto, FabricanteModel>()
-            .ForMember(dest => dest.LocaisInstalacao, opt => opt.Ignore())
-            .ForMember(dest => dest.Equipamentos, opt => opt.Ignore());
-
-        CreateMap<EnderecoComgasDto, EnderecoModel>()
-            .ForMember(dest => dest.Localizacoes, opt => opt.Ignore());
-
-        CreateMap<LocalizacaoComgasDto, LocalizacaoModel>()
-            .ForMember(dest => dest.Endereco, opt => opt.Ignore())
-            .ForMember(dest => dest.LocaisInstalacao, opt => opt.Ignore())
-            .ForMember(dest => dest.Equipamentos, opt => opt.Ignore());
+        CreateMap<UsuarioSapComgasDto, UsuarioModel>()
+            .ForMember(dest => dest.IdUsuario, opt => opt.MapFrom(src => src.IdUsuario))
+            .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome));
 
         CreateMap<ImobilizadoComgasDto, ImobilizadoModel>()
-            .ForMember(dest => dest.LocaisInstalacao, opt => opt.Ignore())
-            .ForMember(dest => dest.Equipamentos, opt => opt.Ignore());
+            .ForMember(dest => dest.IdImobilizado, opt => opt.MapFrom(src => ParseIntOrDefault(src.TagImobilizado)))
+            .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.NomeImobilizado ?? string.Empty))
+            .ForMember(dest => dest.Nserie, opt => opt.MapFrom(src => src.NumeroSerie ?? string.Empty))
+            .ForMember(dest => dest.Quantidade, opt => opt.MapFrom(src => src.Quantidade.HasValue ? (int)src.Quantidade.Value : 0))
+            .ForMember(dest => dest.DataAquisicao, opt => opt.MapFrom(src => src.DataAquisicao ?? DateTime.MinValue))
+            .ForMember(dest => dest.DataIncorporacao, opt => opt.MapFrom(src => src.DataIncorporacao ?? DateTime.MinValue))
+            .ForMember(dest => dest.ValorCompra, opt => opt.MapFrom(src => src.ValorCompra ?? 0))
+            .ForMember(dest => dest.Moeda, opt => opt.MapFrom(src => "BRL"))
+            .ForMember(dest => dest.Depreciacao, opt => opt.MapFrom(src => src.DepreciacaoAno.HasValue ? (double)src.DepreciacaoAno.Value : 0.0))
+            .ForMember(dest => dest.ValorAtual, opt => opt.MapFrom(src => src.ValorAtual ?? 0))
+            .ForMember(dest => dest.InfoAdicionais, opt => opt.MapFrom(src => src.InformacaoAdicional));
 
-        CreateMap<CentroPlanejamentoManutencaoComgasDto, CentroPlanejamentoManutencaoModel>()
-            .ForMember(dest => dest.CentrosTrabalho, opt => opt.Ignore())
-            .ForMember(dest => dest.GruposPlanejamento, opt => opt.Ignore())
-            .ForMember(dest => dest.LocalizacaoReferencia, opt => opt.Ignore());
+        CreateMap<CentroPlanejamentoManutencaoComgasDto, CpmModel>()
+            .ForMember(dest => dest.IdCPM, opt => opt.MapFrom(src => src.IdCpm))
+            .ForMember(dest => dest.NomeCentro, opt => opt.MapFrom(src => src.Nome ?? string.Empty))
+            .ForMember(dest => dest.Organizacao, opt => opt.MapFrom(src => src.Organizacao ?? string.Empty))
+            .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao));
 
-        CreateMap<CentroTrabalhoComgasDto, CentroTrabalhoModel>()
-            .ForMember(dest => dest.CentroPlanejamentoManutencao, opt => opt.Ignore())
-            .ForMember(dest => dest.LocaisInstalacao, opt => opt.Ignore())
-            .ForMember(dest => dest.Equipamentos, opt => opt.Ignore())
-            .ForMember(dest => dest.Funcionarios, opt => opt.Ignore());
+        CreateMap<CentroTrabalhoComgasDto, CtmModel>()
+            .ForMember(dest => dest.IdGPM, opt => opt.MapFrom(src => src.IdCentroTrabalho))
+            .ForMember(dest => dest.AreaCTM, opt => opt.MapFrom(src => src.Codigo))
+            .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao));
 
-        CreateMap<GrupoPlanejamentoManutencaoComgasDto, GrupoPlanejamentoManutencaoModel>()
-            .ForMember(dest => dest.CentroPlanejamentoManutencao, opt => opt.Ignore())
-            .ForMember(dest => dest.LocaisInstalacao, opt => opt.Ignore())
-            .ForMember(dest => dest.ListaFuncionario, opt => opt.Ignore());
+        CreateMap<GrupoPlanejamentoManutencaoComgasDto, GpmModel>()
+            .ForMember(dest => dest.IdGPM, opt => opt.MapFrom(src => src.IdGpm))
+            .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome))
+            .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao));
 
-        CreateMap<LocalInstalacaoComgasDto, LocalInstalacaoModel>()
-            .ForMember(dest => dest.Fabricante, opt => opt.Ignore())
-            .ForMember(dest => dest.Localizacao, opt => opt.Ignore())
-            .ForMember(dest => dest.Endereco, opt => opt.Ignore())
-            .ForMember(dest => dest.Imobilizado, opt => opt.Ignore())
-            .ForMember(dest => dest.Gpm, opt => opt.Ignore())
-            .ForMember(dest => dest.CentroTrabalho, opt => opt.Ignore())
-            .ForMember(dest => dest.Equipamentos, opt => opt.Ignore())
-            .ForMember(dest => dest.Notas, opt => opt.Ignore())
-            .ForMember(dest => dest.ItensPlano, opt => opt.Ignore())
-            .ForMember(dest => dest.Ordens, opt => opt.Ignore());
+        CreateMap<AlmoxarifadoComgasDto, AlmoxarifadoModel>();
 
-        CreateMap<ComponenteEquipamentoComgasDto, ComponenteEquipamentoModel>()
-            .ForMember(dest => dest.Equipamento, opt => opt.Ignore());
+        CreateMap<FerramentaTipoComgasDto, FerramentaModel>()
+            .ForMember(dest => dest.IdLI, opt => opt.MapFrom(src => src.IdLocalInstalacao ?? 0))
+            .ForMember(dest => dest.IdEscopo, opt => opt.Ignore())
+            .ForMember(dest => dest.IdAlmoxarifado, opt => opt.Ignore())
+            .ForMember(dest => dest.ValorCompra, opt => opt.MapFrom(src => src.ValorCompra ?? 0))
+            .ForMember(dest => dest.DataAquisicao, opt => opt.MapFrom(src => src.DataAquisicao ?? DateTime.MinValue));
+    }
 
-        CreateMap<CicloManutencaoComgasDto, CicloManutencaoModel>()
-            .ForMember(dest => dest.PlanoManutencao, opt => opt.Ignore());
-
-        CreateMap<ItemPlanoManutencaoComgasDto, ItemPlanoManutencaoModel>()
-            .ForMember(dest => dest.PlanoManutencao, opt => opt.Ignore())
-            .ForMember(dest => dest.Equipamento, opt => opt.Ignore())
-            .ForMember(dest => dest.LocalInstalacao, opt => opt.Ignore());
-
-        CreateMap<MedidaNotaComgasDto, MedidaNotaModel>()
-            .ForMember(dest => dest.Nota, opt => opt.Ignore());
-
-        CreateMap<AtividadeNotaComgasDto, AtividadeNotaModel>()
-            .ForMember(dest => dest.Nota, opt => opt.Ignore());
-
-        CreateMap<OperacaoOrdemComgasDto, OperacaoOrdemModel>()
-            .ForMember(dest => dest.FerramentasNecessarias, opt => opt.Ignore())
-            .ForMember(dest => dest.Ordem, opt => opt.Ignore());
-
-        CreateMap<FuncionarioComgasDto, FuncionarioModel>()
-            .ForMember(dest => dest.CentrosTrabalho, opt => opt.Ignore())
-            .ForMember(dest => dest.SetoresVendas, opt => opt.Ignore())
-            .ForMember(dest => dest.Almoxarifados, opt => opt.Ignore());
-
-        CreateMap<SetorVendasComgasDto, SetorVendasModel>()
-            .ForMember(dest => dest.Localizacao, opt => opt.Ignore())
-            .ForMember(dest => dest.Funcionarios, opt => opt.Ignore());
-
-        CreateMap<AlmoxarifadoComgasDto, AlmoxarifadoModel>()
-            .ForMember(dest => dest.Localizacao, opt => opt.Ignore())
-            .ForMember(dest => dest.Funcionarios, opt => opt.Ignore())
-            .ForMember(dest => dest.Ferramentas, opt => opt.Ignore());
+    private static int ParseIntOrDefault(string? s)
+    {
+        return int.TryParse(s, out var result) ? result : 0;
     }
 }
