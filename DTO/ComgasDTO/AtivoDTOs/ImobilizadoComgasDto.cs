@@ -7,25 +7,22 @@ namespace app_pm_back.DTO.ComgasDTO;
 /// </summary>
 public class ImobilizadoComgasDto
 {
+    // Identificacao
     [SheetColumn("Tag Imobilizado")]
-    public string? TagImobilizado { get; set; }
+    public int? IdImobilizado { get; set; }
 
-    public string? AtivoTag { get; set; }
+    [SheetColumn("Nome imobilizado")]
+    public string? Nome { get; set; }
 
     [SheetColumn("Denominação")]
     public string? Denominacao { get; set; }
 
-    [SheetColumn("Descrição")]
-    public string? Descricao { get; set; }
-
     [SheetColumn("Nº de série")]
-    public string? NumeroSerie { get; set; }
+    public string? Nserie { get; set; }
 
-    [SheetColumn("Nº inventário")]
-    public string? NumeroInventario { get; set; }
-
+    // Dados patrimoniais
     [SheetColumn("Quantidade")]
-    public decimal? Quantidade { get; set; }
+    public int? Quantidade { get; set; }
 
     [SheetColumn("Data aquisição")]
     public DateTime? DataAquisicao { get; set; }
@@ -36,15 +33,16 @@ public class ImobilizadoComgasDto
     [SheetColumn("Valor compra")]
     public decimal? ValorCompra { get; set; }
 
+    // Pode vir de outra fonte; se ausente, usa-se o default no mapeamento.
+    [SheetColumn("Moeda")]
+    public string? Moeda { get; set; }
+
     [SheetColumn("Depreciação por ano")]
-    public decimal? DepreciacaoAno { get; set; }
+    public decimal? Depreciacao { get; set; }
 
     [SheetColumn("Valor atual")]
     public decimal? ValorAtual { get; set; }
 
-    [SheetColumn("Nome imobilizado")]
-    public string? NomeImobilizado { get; set; }
-
     [SheetColumn("Informacao adicional")]
-    public string? InformacaoAdicional { get; set; }
+    public string? InfoAdicionais { get; set; }
 }

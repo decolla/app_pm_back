@@ -36,44 +36,44 @@ public class ImobilizadoModel
     /// Quantidade física disponível.
     /// </summary>
     [Range(0, int.MaxValue)]
-    public int Quantidade { get; set; }
+    public int? Quantidade { get; set; }
 
     /// <summary>
     /// Data em que o item foi adquirido.
     /// </summary>
-    public DateTime DataAquisicao { get; set; }
+    public DateTime? DataAquisicao { get; set; }
 
     /// <summary>
     /// Data em que o item foi incorporado ao patrimônio.
     /// </summary>
-    public DateTime DataIncorporacao { get; set; }
+    public DateTime? DataIncorporacao { get; set; }
 
     /// <summary>
     /// Valor original de compra.
     /// </summary>
     [Range(0, double.MaxValue)]
     [Column(TypeName = "decimal(18,2)")]
-    public decimal ValorCompra { get; set; }
+    public decimal? ValorCompra { get; set; }
 
     /// <summary>
     /// Código da moeda (ex: BRL, USD).
     /// </summary>
     [MaxLength(10)]
-    public required string Moeda { get; set; }
+    public required string Moeda { get; set; } = "Real";
 
     /// <summary>
     /// Taxa ou valor acumulado de depreciação.
     /// </summary>
     [Range(0, double.MaxValue)]
     [Column(TypeName = "decimal(18,2)")]
-    public decimal Depreciacao { get; set; }
+    public decimal? Depreciacao { get; set; }
 
     /// <summary>
     /// Valor contábil atual após depreciação.
     /// </summary>
     [Range(0, double.MaxValue)]
     [Column(TypeName = "decimal(18,2)")]
-    public decimal ValorAtual { get; set; }
+    public decimal? ValorAtual { get; set; }
 
     /// <summary>
     /// Observações ou informações complementares.

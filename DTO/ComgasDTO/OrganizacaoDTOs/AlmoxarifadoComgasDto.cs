@@ -9,23 +9,26 @@ namespace app_pm_back.DTO.ComgasDTO;
 /// </summary>
 public class AlmoxarifadoComgasDto
 {
+    // Identificacao
     [SheetColumn("Id Almoxarifado")]
     public int IdAlmoxarifado { get; set; }
 
     [SheetColumn("Nome")]
-    public string? Nome { get; set; }
+    public required string Nome { get; set; }
 
     [SheetColumn("Organizacao")]
-    public string? Organizacao { get; set; }
+    public required string Organizacao { get; set; }
 
-    [SheetColumn("Localizacao")]
-    public int? LocalizacaoId { get; set; }
-
+    // Status e descricao (opcionais)
     [SheetColumn("Status")]
     public string? Status { get; set; }
 
-    [SheetColumn("Descricao")]
+    [SheetColumn("DescricaoBreve")]
     public string? Descricao { get; set; }
+
+    // Escopo externo (armazenar apenas o ID)
+    [SheetColumn("Id Escopo")]
+    public int IdEscopo { get; set; }
 }
 
 #pragma warning restore CS1591

@@ -31,7 +31,6 @@ public class NotaModel : IClassifiable
     /// Identificador único da nota, gerado a partir do IdPlano e NumeroNota.
     /// Este valor é definido manualmente e não é auto-incrementado pelo banco de dados.
     /// </summary>
-    /// <example>202401001 (onde 2024 é o ano/plano e 01001 é o número sequencial)</example>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public long IdNota { get; set; }
@@ -41,6 +40,7 @@ public class NotaModel : IClassifiable
     /// Utilizado para ordenação e referência rápida.
     /// </summary>
     /// <example>1, 2, 3...</example>
+    [Required(ErrorMessage = "O número de nota é necessário")]
     public long NumeroNota { get; set; }
 
     /// <summary>
@@ -48,16 +48,15 @@ public class NotaModel : IClassifiable
     /// Registra quando a ocorrência foi reportada ou documentada.
     /// </summary>
     /// <example>2024-01-15T14:30:00</example>
-    public DateTime DataNota { get; set; }
-
+    public DateTime? DataNota { get; set; }
+    
     /// <summary>
     /// Tipo da nota que define a natureza da manutenção ou ocorrência.
     /// Campo obrigatório para categorização primária da nota.
     /// </summary>
     /// <example>"Corretiva", "Preventiva", "Preditiva", "Inspeção"</example>
-    [Required(ErrorMessage = "O tipo da nota é obrigatório.")]
     [MaxLength(100, ErrorMessage = "O tipo da nota não pode exceder 100 caracteres.")]
-    public string TipoNota { get; set; }
+    public string? TipoNota { get; set; }
 
     #endregion
 
@@ -88,7 +87,7 @@ public class NotaModel : IClassifiable
     /// Valores menores indicam maior prioridade (ex: 1 = Crítica, 2 = Alta, 3 = Média, 4 = Baixa).
     /// </summary>
     /// <example>1</example>
-    public int? Prioridade { get; set; }
+    public Prioridade? Prioridade { get; set; }
 
     /// <summary>
     /// Data e hora desejada para conclusão da intervenção.
@@ -139,8 +138,8 @@ public class NotaModel : IClassifiable
     /// Indica se a confiabilidade do equipamento foi restaurada após a intervenção.
     /// Importante para métricas de eficácia de manutenção.
     /// </summary>
-    /// <example>false, true</example>
-    public bool ConfiabilidadeRestaurada { get; set; } = false;
+    /// <example>RestauraAtivo</example>
+    public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
 
     #endregion
 
@@ -248,6 +247,12 @@ public class NotaModel : IClassifiable
     /// </summary>
     /// <example>150</example>
     public int? IdAtivo { get; set; }
+    
+    /// <summary>
+    /// Chave estrangeira para a localização de instalação do ativo.
+    /// Permite vincular a nota a um local específico de instalação.
+    /// </summary>
+    public int? IdLi { get; set; }
 
     #endregion
 
@@ -285,7 +290,7 @@ public class NotaModel : IClassifiable
     /// Registra recursos necessários ou utilizados na resolução da ocorrência.
     /// </summary>
     /// <example>
-    /// Itens.Add(new ItemNotaModel { Descricao = "Junta de vedação", Quantidade = 2 });
+    /// Itens.Add(new ItemNotaModel { DescricaoBreve = "Junta de vedação", Quantidade = 2 });
     /// </example>
     public virtual ICollection<ItemNotaModel> Itens { get; set; } = new List<ItemNotaModel>();
 

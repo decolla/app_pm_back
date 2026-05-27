@@ -187,25 +187,13 @@ public class TipoPlanoController : ControllerBase
             return ValidationProblem(ModelState);
         }
 
-        dto.Categoria = (CategoriaTipoEstrategia)tipo;
-
-        if (dto.Categoria == CategoriaTipoEstrategia.Renovacao && (dto.ListaTarefas?.Any() ?? false))
-        {
-            return BadRequest(new { message = "Erro: Um cadastro de RENOVAÇÃO não pode conter uma lista de tarefas." });
-        }
-
-        if (dto.Categoria == CategoriaTipoEstrategia.Renovacao && (dto.Ferramentas?.Any() ?? false))
-        {
-            return BadRequest(new { message = "Erro: Um cadastro de RENOVAÇÃO não pode conter Ferramentas." });
-        }
-
         if (tipo != 0 && tipo != 1)
         {
             return BadRequest(new
                 { message = "Rota inválida. Use /tipo-plano/0 ou /tipo-plano/1" });
         }
 
-        if (!dto.TipoEstrategiaId.HasValue && !dto.PlanoManutencaoId.HasValue)
+        if (!dto.IdTipoEstrategia.HasValue && !dto.IdPlano.HasValue)
         {
             return BadRequest(new
             {
@@ -213,10 +201,10 @@ public class TipoPlanoController : ControllerBase
             });
         }
 
-        if (dto.PlanoManutencaoId.HasValue)
+        if (dto.IdPlano.HasValue)
         {
             var planoExiste = await context.PM_Planos
-                .AnyAsync(p => p.IdPlano == dto.PlanoManutencaoId.Value);
+                .AnyAsync(p => p.IdPlano == dto.IdPlano.Value);
 
             if (!planoExiste)
             {
@@ -224,16 +212,16 @@ public class TipoPlanoController : ControllerBase
             }
         }
 
-        if (dto.PlanoManutencaoId.HasValue && dto.TipoEstrategiaId.HasValue)
+        if (dto.IdPlano.HasValue && dto.IdTipoEstrategia.HasValue)
         {
             var plano = await context.PM_Planos
-                .FirstOrDefaultAsync(p => p.IdPlano == dto.PlanoManutencaoId);
+                .FirstOrDefaultAsync(p => p.IdPlano == dto.IdPlano);
 
             if (plano == null)
                 return NotFound(new { message = "O Plano de Manutenção informado não existe." });
 
             var tipoEstrategiaValido = await context.PM_TiposEstrategia
-                .AnyAsync(te => te.IdTipoEstrategia == dto.TipoEstrategiaId && te.IdEstrategia == plano.IdEstrategia);
+                .AnyAsync(te => te.IdTipoEstrategia == dto.IdTipoEstrategia && te.IdEstrategia == plano.IdEstrategia);
 
             if (!tipoEstrategiaValido)
             {
@@ -359,7 +347,7 @@ public class TipoPlanoController : ControllerBase
                 return BadRequest(new { message = "Id da rota e Id do objeto no corpo da requisição devem ser iguais, ou o do dto = 0." });
             }
 
-            if (!dto.TipoEstrategiaId.HasValue && !dto.PlanoManutencaoId.HasValue)
+                if (!dto.IdTipoEstrategia.HasValue && !dto.IdPlano.HasValue)
             {
                 return BadRequest(new
                 {
@@ -368,14 +356,14 @@ public class TipoPlanoController : ControllerBase
             }
 
             var obj = _mapper.Map<TipoPlanoModel>(dto);
-            if (obj.IdTipoManutencao <= 0)
+            if (obj.IdTipoPlano <= 0)
             {
                 return BadRequest(new
-                    { message = "IdTipoManutencao invalido. Envie IdTipoManutencao maior que zero." });
+                    { message = "IdTipoPlano invalido. Envie IdTipoPlano maior que zero." });
             }
 
             var result = await _tipoPlanoService.UpdateComListasAsync(obj);
-            return Ok(new { message = $"{_operador} atualizado com sucesso: " + result.IdTipoManutencao });
+            return Ok(new { message = $"{_operador} atualizado com sucesso: " + result.IdTipoPlano });
         }
         catch (Exception)
         {

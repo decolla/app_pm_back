@@ -14,6 +14,12 @@ public class CtmModel
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int IdGPM { get; set; }
+    
+    /// <summary>
+    /// Nome do CTM.
+    /// </summary>
+    [MaxLength(100)]
+    public required string Nome { get; set; }
 
     /// <summary>
     /// Nome ou identificação da área do CTM.

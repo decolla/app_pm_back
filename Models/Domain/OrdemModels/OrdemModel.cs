@@ -32,7 +32,7 @@ public class OrdemModel : IClassifiable
     /// </summary>
     /// <example>2024001</example>
     [Required(ErrorMessage = "O número da ordem é obrigatório.")]
-    public int NumeroOrdem { get; set; }
+    public long? NumeroOrdem { get; set; }
 
     /// <summary>
     /// Data e hora em que a ordem foi criada no sistema.
@@ -40,7 +40,7 @@ public class OrdemModel : IClassifiable
     /// </summary>
     /// <example>2024-01-15T08:30:00</example>
     [Required(ErrorMessage = "A data de criação é obrigatória.")]
-    public DateTime DataCriacao { get; set; }
+    public DateTime? DataCriacao { get; set; }
 
     #endregion
 
@@ -106,7 +106,7 @@ public class OrdemModel : IClassifiable
     /// Utilizado para análise de eficácia das intervenções e gestão de desempenho.
     /// </summary>
     /// <example>true, false</example>
-    public bool ConfiabilidadeRestaurada { get; set; } = false;
+    public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
 
     #endregion
 
@@ -150,7 +150,7 @@ public class OrdemModel : IClassifiable
     /// </summary>
     /// <example>Substituição do rolamento do motor principal devido a ruído anormal detectado durante inspeção de rotina.</example>
     [MaxLength(500, ErrorMessage = "A descrição não pode exceder 500 caracteres.")]
-    public string? Descricao { get; set; }
+    public string? DescricaoBreve { get; set; }
 
     #endregion
 

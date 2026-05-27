@@ -1,5 +1,6 @@
 using app_pm_back.Attributes;
 using System.Collections.Generic;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO.ComgasDTO;
 
@@ -29,100 +30,63 @@ public class NotaManutencaoComgasDto
     public string? ClassificadoPor { get; set; }
     
     [SheetColumn("Plano manut.")]
-    public long? PlanoManutencaoCodigo { get; set; }
+    public long? IdPlano { get; set; }
 
     [SheetColumn("Data classificação")]
     public DateTime? DataClassificacao { get; set; }
 
-    [SheetColumn("Descrição")]
-    public string? Descricao { get; set; }
-
-    [SheetColumn("Status sistema")] 
-    public string? StatusNota { get; set; } = "Aberta";
+    [SheetColumn("Status sistema")]
+    public string? StatusNota { get; set; }
 
     [SheetColumn("Data da nota")]
-    public DateTime DataNota { get; set; }
-    
-    [SheetColumn("Data fim")]
-    public DateTime? DataFim { get; set; }
+    public DateTime? DataNota { get; set; }
 
     [SheetColumn("Prioridade")]
-    public int Prioridade { get; set; }
-
-    [SheetColumn("Início desejado")]
-    public DateTime? InicioDesejado { get; set; }
+    public string? Prioridade { get; set; }
 
     [SheetColumn("Concl.desejada")]
-    public DateTime? DateTime { get; set; }
+    public DateTime? FimDesejado { get; set; }
 
     [SheetColumn("Equipamento")]
-    public string? IdAtivo { get; set; }
+    public int? IdAtivo { get; set; }
 
     [SheetColumn("Loc.instalação")]
-    public int? IdLocalInstalacao { get; set; }
+    public int? IdLi { get; set; }
 
     [SheetColumn("Criado por")]
-    public int? CriadoPorUsuarioId { get; set; }
-    
-    [SheetColumn("Área operacion.")]
-    public string? AreaOperacional { get; set; }
-    
+    public string? CriadaPorUsuario { get; set; }
+
+    [SheetColumn("Modificado por")]
+    public string? ModificadaPorUsuario { get; set; }
+
+    [SheetColumn("Data modificacao")]
+    public DateTime? DataModificacao { get; set; }
+
     [SheetColumn("Referência externa")]
     public string? ReferenciaLocalizacaoAtivo { get; set; }
-    
-    public string? CategoriaNota { get; set; }
-    
-    [SheetColumn("InícioAvar")]
-    public DateTime? DataAvaria { get; set; }
 
-    /// <summary>
-    /// Hora de início da avaria. No caso de notas sem avaria, ou com hora de início de avaria desconhecida, o valor será 00:00:00.
-    /// </summary>
-    /// <example>01:30:00</example>
-    [SheetColumn("HoraInícioAvar.")] 
-    public TimeSpan? HoraAvaria { get; set; } = 
-        new TimeSpan(0, 0, 0, 0);
-    
-    public string? EquipamentoDisponivel { get; set; }
-    
-    public bool? AnaliseRiscoOperacional { get; set; }
-    
-    public string? AnomaliaObservada { get; set; }
-    
-    public string? ObservacoesComplementares { get; set; }
-    
-    [SheetColumn("Bairro")]
-    public string? PontoReferencia { get; set; }
-
-    [SheetColumn("Tipo prioridade")]
-    public string? TipoPrioridade { get; set; }
-
-    [SheetColumn("Tipo de nota")]
-    public string? TipoDeNota { get; set; }
-
-    [SheetColumn("Txt.grp.codific")]
-    public string? TxtGrpCodific { get; set; }
-
-    [SheetColumn("Txt.code codif.")]
-    public string? TxtCodeCodif { get; set; }
-
-    [SheetColumn("Codificação")]
-    public string? Codificacao { get; set; }
-
-    [SheetColumn("Conseqüência")]
-    public int? Consequencia { get; set; }
-
-    public bool ConfiabilidadeRestaurada { get; set; } = false; 
-
-    [SheetColumn("Grupo de codes")]
-    public string? GrupoDeCodes { get; set; }
-    
     [SheetColumn("Finalidade")]
     public string? Finalidade { get; set; }
 
-    public List<ItemNotaManutencaoComgasDto> Itens { get; set; } = new();
+    [SheetColumn("InícioAvar")]
+    public DateTime? DataAvaria { get; set; }
 
-    public List<VariavelNotaComgasDto> Variaveis { get; set; } = new();
+    [SheetColumn("HoraInícioAvar.")]
+    public TimeSpan? HoraAvaria { get; set; }
+
+    [SheetColumn("Equipamento")]
+    public string? EquipamentoDisponivel { get; set; }
+
+    public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
+
+    [SheetColumn("Txt.code codif.")]
+    public string? AnomaliaObservada { get; set; }
+
+    [SheetColumn("Txt.grp.codific")]
+    public string? ObservacoesComplementares { get; set; }
+
+    [SheetColumn("Id Usuario")]
+    public int? IdUsuario { get; set; }
 
 }
 

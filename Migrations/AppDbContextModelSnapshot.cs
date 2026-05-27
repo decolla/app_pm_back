@@ -176,7 +176,8 @@ namespace app_pm_back.Migrations
                     b.Property<byte[]>("Dados")
                         .HasColumnType("bytea");
 
-                    b.Property<long>("IdOrdem")
+                    b.Property<long?>("IdOrdem")
+                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
@@ -247,6 +248,11 @@ namespace app_pm_back.Migrations
                     b.Property<int>("IdCPM")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.HasKey("IdGPM");
 
                     b.HasIndex("IdCPM");
@@ -262,25 +268,24 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdDados"));
 
-                    b.Property<double>("Confiabilidade")
+                    b.Property<double?>("Confiabilidade")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("IdAtivo")
+                    b.Property<int?>("IdAtivo")
                         .HasColumnType("integer");
 
-                    b.Property<long>("IdNota")
+                    b.Property<long?>("IdNota")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("IdOrdem")
+                    b.Property<long?>("IdOrdem")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("IdUsuario")
+                    b.Property<int?>("IdUsuario")
                         .HasColumnType("integer");
 
-                    b.Property<string>("OrigemUR")
-                        .IsRequired()
+                    b.Property<int>("OrigemUR")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UltimaRenovacao")
                         .HasColumnType("timestamp without time zone");
@@ -293,7 +298,7 @@ namespace app_pm_back.Migrations
 
                     b.HasIndex("IdUsuario");
 
-                    b.ToTable("PM_DadosRenovacao", "public");
+                    b.ToTable("DadosRenovacao", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.EstrategiaModel", b =>
@@ -304,7 +309,7 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdEstrategia"));
 
-                    b.Property<bool>("CicloContinuo")
+                    b.Property<bool?>("CicloContinuo")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Ciclos")
@@ -314,7 +319,7 @@ namespace app_pm_back.Migrations
                     b.Property<bool>("Habilitada")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("IdEscopo")
+                    b.Property<int?>("IdEscopo")
                         .HasColumnType("integer");
 
                     b.Property<string>("Nome")
@@ -322,7 +327,7 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<int>("NumeroCiclos")
+                    b.Property<int?>("NumeroCiclos")
                         .HasColumnType("integer");
 
                     b.Property<string>("TipoAtivoAplicavel")
@@ -332,7 +337,7 @@ namespace app_pm_back.Migrations
 
                     b.HasKey("IdEstrategia");
 
-                    b.ToTable("PM_Estrategias", "public");
+                    b.ToTable("Estrategias", "public");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.FerramentaModel", b =>
@@ -432,11 +437,10 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
-                    b.Property<int>("IdCPM")
+                    b.Property<int?>("IdCPM")
                         .HasColumnType("integer");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
@@ -455,10 +459,10 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdImobilizado"));
 
-                    b.Property<DateTime>("DataAquisicao")
+                    b.Property<DateTime?>("DataAquisicao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("DataIncorporacao")
+                    b.Property<DateTime?>("DataIncorporacao")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Denominacao")
@@ -466,8 +470,8 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<double>("Depreciacao")
-                        .HasColumnType("double precision");
+                    b.Property<decimal?>("Depreciacao")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("InfoAdicionais")
                         .HasMaxLength(1000)
@@ -488,14 +492,14 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int>("Quantidade")
+                    b.Property<int?>("Quantidade")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("ValorAtual")
-                        .HasColumnType("numeric");
+                    b.Property<decimal?>("ValorAtual")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("ValorCompra")
-                        .HasColumnType("numeric");
+                    b.Property<decimal?>("ValorCompra")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("IdImobilizado");
 
@@ -549,8 +553,8 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<bool>("ConfiabilidadeRestaurada")
-                        .HasColumnType("boolean");
+                    b.Property<int?>("ConfiabilidadeRestaurada")
+                        .HasColumnType("integer");
 
                     b.Property<string>("CriadaPorUsuario")
                         .HasMaxLength(150)
@@ -565,7 +569,7 @@ namespace app_pm_back.Migrations
                     b.Property<DateTime?>("DataModificacao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("DataNota")
+                    b.Property<DateTime?>("DataNota")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("EquipamentoDisponivel")
@@ -583,6 +587,9 @@ namespace app_pm_back.Migrations
                         .HasColumnType("interval");
 
                     b.Property<int?>("IdAtivo")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("IdLi")
                         .HasColumnType("integer");
 
                     b.Property<long?>("IdPlano")
@@ -618,8 +625,8 @@ namespace app_pm_back.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<string>("TipoNota")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("IdNota");
 
@@ -642,7 +649,7 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<double>("Duracao")
+                    b.Property<double?>("Duracao")
                         .HasColumnType("double precision");
 
                     b.Property<DateTime?>("FimEsperado")
@@ -660,11 +667,10 @@ namespace app_pm_back.Migrations
                     b.Property<DateTime?>("InicioEsperado")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("NdeProfissionais")
+                    b.Property<int?>("NdeProfissionais")
                         .HasColumnType("integer");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
@@ -692,8 +698,8 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<bool>("ConfiabilidadeRestaurada")
-                        .HasColumnType("boolean");
+                    b.Property<int?>("ConfiabilidadeRestaurada")
+                        .HasColumnType("integer");
 
                     b.Property<string>("CriadaPorUsuario")
                         .HasMaxLength(150)
@@ -706,13 +712,14 @@ namespace app_pm_back.Migrations
                     b.Property<DateTime?>("DataClassificacao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("DataCriacao")
+                    b.Property<DateTime?>("DataCriacao")
+                        .IsRequired()
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DataModificacao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Descricao")
+                    b.Property<string>("DescricaoBreve")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
@@ -742,15 +749,17 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<int>("NumeroOrdem")
-                        .HasColumnType("integer");
+                    b.Property<long?>("NumeroOrdem")
+                        .IsRequired()
+                        .HasColumnType("bigint");
 
                     b.Property<string>("StatusOrdem")
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
                     b.Property<string>("TipoOrdem")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("IdOrdem");
 
@@ -767,7 +776,7 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdPlano"));
 
-                    b.Property<int>("Antecedencia")
+                    b.Property<int?>("Antecedencia")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("DataConclusao")
@@ -779,10 +788,10 @@ namespace app_pm_back.Migrations
                     b.Property<int?>("GerarAutomaticamente")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdAtivo")
+                    b.Property<int?>("IdAtivo")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdEstrategia")
+                    b.Property<int?>("IdEstrategia")
                         .HasColumnType("integer");
 
                     b.Property<string>("Nome")
@@ -818,14 +827,13 @@ namespace app_pm_back.Migrations
                     b.Property<string>("CampoIndefinido")
                         .HasColumnType("text");
 
-                    b.Property<double>("Confiabilidade")
+                    b.Property<double?>("Confiabilidade")
                         .HasColumnType("double precision");
 
-                    b.Property<bool>("Habilitada")
+                    b.Property<bool?>("Habilitada")
                         .HasColumnType("boolean");
 
                     b.Property<string>("TipoAtivo")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -843,29 +851,28 @@ namespace app_pm_back.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoEstrategia"));
 
                     b.Property<string>("Categoria")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<bool>("Continua")
+                    b.Property<bool?>("Continua")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("Dias")
+                    b.Property<int?>("Dias")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdEstrategia")
+                    b.Property<int?>("IdEstrategia")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdTipoCep")
+                    b.Property<int?>("IdTipoCep")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdTipoManutencao")
+                    b.Property<int?>("IdTipoManutencao")
                         .HasColumnType("integer");
 
-                    b.Property<double>("ToleranciaNegativa")
+                    b.Property<double?>("ToleranciaNegativa")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("ToleranciaPositiva")
+                    b.Property<double?>("ToleranciaPositiva")
                         .HasColumnType("double precision");
 
                     b.HasKey("IdTipoEstrategia");
@@ -887,15 +894,14 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoManutencao"));
 
-                    b.Property<string>("Categoria")
-                        .IsRequired()
+                    b.Property<int?>("Categoria")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("integer");
 
-                    b.Property<double>("Confiabilidade")
+                    b.Property<double?>("Confiabilidade")
                         .HasColumnType("double precision");
 
-                    b.Property<bool>("Habilitada")
+                    b.Property<bool?>("Habilitada")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Nome")
@@ -922,35 +928,34 @@ namespace app_pm_back.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoPlano"));
 
                     b.Property<string>("Categoria")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<bool>("Continua")
+                    b.Property<bool?>("Continua")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("Dias")
+                    b.Property<int?>("Dias")
                         .HasColumnType("integer");
 
-                    b.Property<long>("IdPlano")
+                    b.Property<long?>("IdPlano")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("IdTipoCep")
+                    b.Property<int?>("IdTipoCep")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdTipoEstrategia")
+                    b.Property<int?>("IdTipoEstrategia")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdTipoManutencao")
+                    b.Property<int?>("IdTipoManutencao")
                         .HasColumnType("integer");
 
-                    b.Property<double>("ToleranciaNegativa")
+                    b.Property<double?>("ToleranciaNegativa")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("ToleranciaPositiva")
+                    b.Property<double?>("ToleranciaPositiva")
                         .HasColumnType("double precision");
 
-                    b.Property<bool>("Visivel")
+                    b.Property<bool?>("Visivel")
                         .HasColumnType("boolean");
 
                     b.HasKey("IdTipoPlano");
@@ -975,15 +980,13 @@ namespace app_pm_back.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdUsuario"));
 
                     b.Property<string>("CPF")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<int>("IdEscopo")
+                    b.Property<int?>("IdEscopo")
                         .HasColumnType("integer");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
@@ -1008,14 +1011,14 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<long>("IdNota")
+                    b.Property<long?>("IdNota")
                         .HasColumnType("bigint");
 
                     b.Property<string>("UnidadeMedida")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<double>("ValorNumerico")
+                    b.Property<double?>("ValorNumerico")
                         .HasColumnType("double precision");
 
                     b.HasKey("IdVariavel");
@@ -1143,21 +1146,15 @@ namespace app_pm_back.Migrations
                 {
                     b.HasOne("app_pm_back.Models.Domain.NotaModel", "Nota")
                         .WithMany()
-                        .HasForeignKey("IdNota")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdNota");
 
                     b.HasOne("app_pm_back.Models.Domain.OrdemModel", "Ordem")
                         .WithMany()
-                        .HasForeignKey("IdOrdem")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdOrdem");
 
                     b.HasOne("app_pm_back.Models.Domain.UsuarioModel", "Usuario")
                         .WithMany("DadosRenovacao")
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdUsuario");
 
                     b.Navigation("Nota");
 
@@ -1181,9 +1178,7 @@ namespace app_pm_back.Migrations
                 {
                     b.HasOne("app_pm_back.Models.Domain.CpmModel", "CPM")
                         .WithMany("Gpms")
-                        .HasForeignKey("IdCPM")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdCPM");
 
                     b.Navigation("CPM");
                 });
@@ -1248,9 +1243,7 @@ namespace app_pm_back.Migrations
                 {
                     b.HasOne("app_pm_back.Models.Domain.EstrategiaModel", "Estrategia")
                         .WithMany("Planos")
-                        .HasForeignKey("IdEstrategia")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdEstrategia");
 
                     b.Navigation("Estrategia");
                 });
@@ -1259,21 +1252,15 @@ namespace app_pm_back.Migrations
                 {
                     b.HasOne("app_pm_back.Models.Domain.EstrategiaModel", "Estrategia")
                         .WithMany("TiposEstrategia")
-                        .HasForeignKey("IdEstrategia")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdEstrategia");
 
                     b.HasOne("app_pm_back.Models.Domain.TipoCepModel", "TipoCep")
                         .WithMany("TiposEstrategia")
-                        .HasForeignKey("IdTipoCep")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdTipoCep");
 
                     b.HasOne("app_pm_back.Models.Domain.TipoManutencaoModel", "TipoManutencao")
                         .WithMany("TiposEstrategia")
-                        .HasForeignKey("IdTipoManutencao")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdTipoManutencao");
 
                     b.Navigation("Estrategia");
 
@@ -1286,27 +1273,19 @@ namespace app_pm_back.Migrations
                 {
                     b.HasOne("app_pm_back.Models.Domain.PlanoModel", "Plano")
                         .WithMany("TiposPlano")
-                        .HasForeignKey("IdPlano")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdPlano");
 
                     b.HasOne("app_pm_back.Models.Domain.TipoCepModel", "TipoCep")
-                        .WithMany("TiposPlano")
-                        .HasForeignKey("IdTipoCep")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("IdTipoCep");
 
                     b.HasOne("app_pm_back.Models.Domain.TipoEstrategiaModel", "TipoEstrategia")
-                        .WithMany()
-                        .HasForeignKey("IdTipoEstrategia")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("TiposPlano")
+                        .HasForeignKey("IdTipoEstrategia");
 
                     b.HasOne("app_pm_back.Models.Domain.TipoManutencaoModel", "TipoManutencao")
                         .WithMany("TiposPlano")
-                        .HasForeignKey("IdTipoManutencao")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdTipoManutencao");
 
                     b.Navigation("Plano");
 
@@ -1321,9 +1300,7 @@ namespace app_pm_back.Migrations
                 {
                     b.HasOne("app_pm_back.Models.Domain.NotaModel", "Nota")
                         .WithMany("Variaveis")
-                        .HasForeignKey("IdNota")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdNota");
 
                     b.Navigation("Nota");
                 });
@@ -1375,7 +1352,10 @@ namespace app_pm_back.Migrations
             modelBuilder.Entity("app_pm_back.Models.Domain.TipoCepModel", b =>
                 {
                     b.Navigation("TiposEstrategia");
+                });
 
+            modelBuilder.Entity("app_pm_back.Models.Domain.TipoEstrategiaModel", b =>
+                {
                     b.Navigation("TiposPlano");
                 });
 

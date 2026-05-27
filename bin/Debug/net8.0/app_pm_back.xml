@@ -25,7 +25,7 @@
             Controller para anexos
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaModel,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Busca notas ou ordens de manutenção por diversos critérios, retorna uma lista de objetos com os dados relevantes
             </summary>
@@ -349,6 +349,1570 @@
             </summary>
             <param name="app"></param>
         </member>
+        <member name="P:app_pm_back.Models.BuscaOrdemNotaDto.StatusNota">
+            <summary>
+            Status da nota
+            </summary>
+            <example>Aberta</example>
+        </member>
+        <member name="P:app_pm_back.Models.BuscaOrdemNotaDto.NotaIdInicio">
+            <summary>
+            Id de início da nota
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.BuscaOrdemNotaDto.NotaIdFim">
+            <summary>
+            Id de fim da nota
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.Prioridade">
+            <summary>
+            Nivel de prioridade do plano.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.GerarAutomaticamente">
+            <summary>
+            Gerar automaticamente nota, ordem ou ambos.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.AcoesFalha">
+            <summary>
+            Acoes selecionadas em caso de falha.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.CategoriaAnexo">
+            <summary>
+            Categoria do anexo.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.Visivel">
+            <summary>
+            Visibilidade do tipo de plano.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.CategoriaTipoEstrategia">
+            <summary>
+            Categoria da estrategia.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.CategoriaTipoManutencao">
+            <summary>
+            Tipo de tipo de manutencao/plano.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.TipoTipo">
+            <summary>
+            Tipo de tipo de manutencao/plano.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.UnidadeCiclo">
+            <summary>
+            Unidade do ciclo.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.ConfiabilidadeRestaurada">
+            <summary>
+            Confiabilidade restaurada apos a manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.OrigemUR">
+            <summary>
+            Origem da UR, se a UR foi gerada a partir de uma nota, ordem ou usuario.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.EstrategiaModel">
+            <summary>
+            Representa a definição de uma estratégia de manutenção (ex: Preventiva, Preditiva) e suas regras de periodicidade.
+            </summary>
+            <example>
+            <code>
+            var estrategia = new EstrategiaModel { 
+                Nome = "Preventiva Semestral", 
+                TipoAtivoAplicavel = "Motor Elétrico",
+                Habilitada = true 
+            };
+            </code>
+            </example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.IdEstrategia">
+            <summary>
+            Identificador único e chave primária da estratégia.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.Nome">
+            <summary>
+            Nome descritivo da estratégia de manutenção.
+            </summary>
+            <example>Manutenção Preventiva Nível 1</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.Ciclos">
+            <summary>
+            Descrição detalhada ou definição técnica dos ciclos associados (ex: "500h, 1000h").
+            </summary>
+            <example>A cada 6 meses ou 1000 horas de operação.</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.Habilitada">
+            <summary>
+            Define se a estratégia está disponível para novos planos de manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.TipoAtivoAplicavel">
+            <summary>
+            Categoria ou classe de ativos aos quais esta estratégia é pertinente.
+            </summary>
+            <example>Compressores de Parafuso</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.NumeroCiclos">
+            <summary>
+            Quantidade total de etapas ou ciclos que compõem esta estratégia antes de uma possível reinicialização.
+            </summary>
+            <example>12</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.CicloContinuo">
+            <summary>
+            Se verdadeiro, ao finalizar o último ciclo, a estratégia retorna automaticamente ao primeiro ciclo.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.IdEscopo">
+            <summary>
+            Chave estrangeira para o Escopo de manutenção relacionado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.TiposEstrategia">
+            <summary>
+            Relacionamento com os tipos específicos de estratégia (ex: Mecânica, Elétrica).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.Planos">
+            <summary>
+            Lista de planos de manutenção que estão baseados nesta estratégia.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.OperacaoModel">
+            <summary>
+            Representa uma operação técnica dentro de uma ordem de manutenção.
+            Exemplo: "Troca de óleo", "Inspeção visual".
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdOperacao">
+            <summary>
+            Identificador único da operação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Nome">
+            <summary>
+            Nome ou título da operação.
+            Exemplo: "Lubrificação de mancais".
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Descricao">
+            <summary>
+            Detalhamento técnico do que deve ser executado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Duracao">
+            <summary>
+            Duração estimada para a conclusão em horas.
+            Exemplo: 1.5
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.NdeProfissionais">
+            <summary>
+            Quantidade de profissionais necessários para a tarefa.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.InicioEsperado">
+            <summary>
+            Data e hora prevista para o início.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.FimEsperado">
+            <summary>
+            Data e hora prevista para a conclusão.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdCTM">
+            <summary>
+            Chave estrangeira para o Centro de Trabalho Móvel (CTM).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdTipoManutencao">
+            <summary>
+            Chave estrangeira para a categoria de manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdOrdem">
+            <summary>
+            Chave estrangeira para a Ordem de Manutenção pai.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Ctm">
+            <summary>
+            Objeto de navegação para o CTM associado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.TipoManutencao">
+            <summary>
+            Objeto de navegação para o Tipo de Manutenção associado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Ordem">
+            <summary>
+            Objeto de navegação para a Ordem de Manutenção associada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Ferramentas">
+            <summary>
+            Lista de ferramentas vinculadas a esta operação.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.PlanoModel">
+            <summary>
+            Representa o modelo de domínio para um Plano de Manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.IdPlano">
+            <summary>
+            Identificador único do Plano.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.Nome">
+            <summary>
+            Nome descritivo do plano. Campo obrigatório.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.Prioridade">
+            <summary>
+            Nível de prioridade associado ao plano.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.DataInicios">
+            <summary>
+            Data prevista para o início das atividades do plano.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.GerarAutomaticamente">
+            <summary>
+            Define se o plano deve gerar ordens ou ações automaticamente.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.Antecedencia">
+            <summary>
+            Tempo de antecedência (em dias ou unidade definida) para geração/aviso.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.DataConclusao">
+            <summary>
+            Data em que o plano foi ou deve ser concluído.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.NomeAtivo">
+            <summary>
+            Nome do ativo relacionado, para fins de exibição ou histórico.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.IdAtivo">
+            <summary>
+            Identificador do Ativo vinculado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.IdEstrategia">
+            <summary>
+            Chave estrangeira para a Estratégia de manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.Estrategia">
+            <summary>
+            Propriedade de navegação para a Estratégia.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.TiposPlano">
+            <summary>
+            Coleção de tipos associados a este plano.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.Notas">
+            <summary>
+            Coleção de notas ou observações vinculadas ao plano.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.TipoCepModel">
+            <summary>
+            Representa o modelo de Tipo de CEP (Controle Estatístico de Processo) para ativos.
+            Exemplo: TipoAtivo = "Motor Elétrico", Confiabilidade = 0.95.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoCepModel.IdTipoCep">
+            <summary>
+            Identificador único do Tipo de CEP.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoCepModel.TipoAtivo">
+            <summary>
+            Descrição do tipo de ativo associado.
+            Exemplo: "Bomba Hidráulica"
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoCepModel.Confiabilidade">
+            <summary>
+            Índice de confiabilidade esperada para este tipo de ativo.
+            Exemplo: 0.85
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoCepModel.Habilitada">
+            <summary>
+            Define se o registro está ativo no sistema.
+            Exemplo: true
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoCepModel.CampoIndefinido">
+            <summary>
+            Campo para informações genéricas ou futuras.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoCepModel.AcoesFalha">
+            <summary>
+            Lista de ações a serem tomadas em caso de falha, armazenada em formato JSONB.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoCepModel.TiposEstrategia">
+            <summary>
+            Coleção de estratégias vinculadas a este tipo de CEP.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.TipoEstrategiaModel">
+            <summary>
+            Representa a configuração de uma estratégia de manutenção específica.
+            Exemplo: Uma estratégia de 30 dias com 5% de tolerância.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.IdTipoEstrategia">
+            <summary>
+            Identificador único do Tipo de Estratégia.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.Dias">
+            <summary>
+            Quantidade de dias para o ciclo. Exemplo: 90
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.ToleranciaPositiva">
+            <summary>
+            Margem de atraso permitida. Exemplo: 0.10 (10%)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.ToleranciaNegativa">
+            <summary>
+            Margem de antecipação permitida. Exemplo: 0.05 (5%)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.Continua">
+            <summary>
+            Define se a estratégia é recorrente. Exemplo: true
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.Categoria">
+            <summary>
+            Categoria da estratégia. Exemplo: "Preventiva"
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.IdEstrategia">
+            <summary>
+            Chave estrangeira para a Estratégia pai.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.IdTipoManutencao">
+            <summary>
+            Chave estrangeira para o Tipo de Manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.IdTipoCep">
+            <summary>
+            Chave estrangeira para o Tipo de CEP.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.Estrategia">
+            <summary>
+            Objeto de navegação da Estratégia.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.TipoManutencao">
+            <summary>
+            Objeto de navegação do Tipo de Manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.TipoCep">
+            <summary>
+            Objeto de navegação do Tipo de CEP.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.TiposPlano">
+            <summary>
+            Coleção de planos vinculados a este tipo de CEP.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.TipoManutencaoModel">
+            <summary>
+            Representa o modelo de domínio para os tipos de manutenção do sistema.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.IdTipoManutencao">
+            <summary>
+            Identificador único do Tipo de Manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.Categoria">
+            <summary>
+            Categoria associada ao tipo de manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.Nome">
+            <summary>
+            Nome descritivo do tipo de manutenção. Campo obrigatório.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.TipoAtivo">
+            <summary>
+            Define a qual tipo de ativo esta manutenção se aplica. Campo obrigatório.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.Confiabilidade">
+            <summary>
+            Índice de confiabilidade esperado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.Habilitada">
+            <summary>
+            Indica se o registro está ativo para uso no sistema.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.TiposEstrategia">
+            <summary>
+            Relacionamentos e coleções associadas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.TipoPlanoModel">
+            <summary>
+            Representa o modelo de domínio para os tipos de planos de manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.IdTipoPlano">
+            <summary>
+            Identificador único do Tipo de Plano.
+            Exemplo: 1
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.Visivel">
+            <summary>
+            Define se o plano está visível no sistema.
+            Exemplo: true
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.Dias">
+            <summary>
+            Quantidade de dias de duração ou ciclo.
+            Exemplo: 30
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.ToleranciaPositiva">
+            <summary>
+            Margem de tolerância positiva para execução.
+            Exemplo: 5.0
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.ToleranciaNegativa">
+            <summary>
+            Margem de tolerância negativa para execução.
+            Exemplo: 2.5
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.Continua">
+            <summary>
+            Indica se a estratégia é contínua.
+            Exemplo: false
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.Categoria">
+            <summary>
+            Categoria descritiva do plano.
+            Exemplo: "Preventiva"
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.IdTipoEstrategia">
+            <summary>
+            FK para o Tipo de Estratégia.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.IdPlano">
+            <summary>
+            FK para o Plano.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.IdTipoManutencao">
+            <summary>
+            FK para o Tipo de Manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.IdTipoCep">
+            <summary>
+            FK para o Tipo de CEP.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.TipoEstrategia">
+            <summary>
+            Objeto de navegação para a Estratégia vinculada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.Plano">
+            <summary>
+            Objeto de navegação para o Plano vinculado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.TipoManutencao">
+            <summary>
+            Objeto de navegação para o Tipo de Manutenção vinculado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.TipoCep">
+            <summary>
+            Objeto de navegação para o Tipo de CEP vinculado.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.AnexoNotaModel">
+            <summary>
+            Representa um anexo associado a uma nota no sistema.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.IdAnexoNota">
+            <summary>
+            Identificador único do anexo.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.Nome">
+            <summary>
+            Nome do arquivo anexo.
+            </summary>
+            <example>relatorio_financeiro.pdf</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.TipoArquivo">
+            <summary>
+            Tipo MIME do arquivo (ex: application/pdf, image/png).
+            </summary>
+            <example>application/pdf</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.Dados">
+            <summary>
+            Conteúdo binário do arquivo.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.IdNota">
+            <summary>
+            Chave estrangeira para a nota relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.Nota">
+            <summary>
+            Propriedade de navegação para a nota pai.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.ItemNotaModel">
+            <summary>
+            Representa um item individual de uma nota técnica ou de manutenção.
+            Armazena detalhes sobre falhas, diagnósticos e a relação com a nota principal.
+            </summary>
+            <example>
+            <code>
+            var item = new ItemNotaModel { 
+                Componente = "Motor Elétrico", 
+                Sintoma = "Superaquecimento", 
+                Causa = "Falta de lubrificação" 
+            };
+            </code>
+            </example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaModel.IdItemNota">
+            <summary>
+            Identificador único do item da nota (Chave Primária).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaModel.Componente">
+            <summary>
+            Nome ou descrição do componente afetado.
+            </summary>
+            <value>Máximo de 150 caracteres.</value>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaModel.Sintoma">
+            <summary>
+            Descrição do sintoma observado no componente.
+            </summary>
+            <value>Máximo de 150 caracteres.</value>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaModel.Causa">
+            <summary>
+            Descrição da causa provável ou confirmada do problema.
+            </summary>
+            <value>Máximo de 150 caracteres.</value>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaModel.IdNota">
+            <summary>
+            Chave estrangeira para a nota pai (<see cref="T:app_pm_back.Models.Domain.NotaModel"/>).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaModel.Nota">
+            <summary>
+            Propriedade de navegação para a entidade Nota relacionada.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.NotaModel">
+            <summary>
+            Representa uma nota de manutenção ou ocorrência no sistema de gestão de ativos.
+            Esta entidade centraliza informações sobre anomalias, manutenções preventivas e corretivas,
+            permitindo rastreamento completo do ciclo de vida de cada ocorrência.
+            </summary>
+            <example>
+            var nota = new NotaModel
+            {
+                IdNota = 202401001,
+                NumeroNota = 1,
+                DataNota = DateTime.Now,
+                TipoNota = "Corretiva",
+                StatusNota = "Pendente",
+                Prioridade = 1,
+                AnomaliaObservada = "Vazamento de óleo no compressor",
+                IdPlano = 2024,
+                IdAtivo = 150
+            };
+            </example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.IdNota">
+            <summary>
+            Identificador único da nota, gerado a partir do IdPlano e NumeroNota.
+            Este valor é definido manualmente e não é auto-incrementado pelo banco de dados.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.NumeroNota">
+            <summary>
+            Número sequencial da nota dentro do contexto do plano de manutenção.
+            Utilizado para ordenação e referência rápida.
+            </summary>
+            <example>1, 2, 3...</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.DataNota">
+            <summary>
+            Data e hora de criação da nota no sistema.
+            Registra quando a ocorrência foi reportada ou documentada.
+            </summary>
+            <example>2024-01-15T14:30:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.TipoNota">
+            <summary>
+            Tipo da nota que define a natureza da manutenção ou ocorrência.
+            Campo obrigatório para categorização primária da nota.
+            </summary>
+            <example>"Corretiva", "Preventiva", "Preditiva", "Inspeção"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.ReferenciaLocalizacaoAtivo">
+            <summary>
+            Referência adicional sobre a localização física do ativo.
+            Facilita a identificação do local exato onde a intervenção deve ocorrer.
+            </summary>
+            <example>"Setor A - Linha de Produção 2 - Próximo ao compressor principal"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Finalidade">
+            <summary>
+            Finalidade ou objetivo da nota.
+            Descreve de forma sucinta o propósito da intervenção ou registro.
+            </summary>
+            <example>"Corrigir vazamento de óleo", "Inspeção preventiva trimestral"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Prioridade">
+            <summary>
+            Nível de prioridade da nota para gestão de recursos e agendamento.
+            Valores menores indicam maior prioridade (ex: 1 = Crítica, 2 = Alta, 3 = Média, 4 = Baixa).
+            </summary>
+            <example>1</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.FimDesejado">
+            <summary>
+            Data e hora desejada para conclusão da intervenção.
+            Define o prazo esperado para resolução da ocorrência.
+            </summary>
+            <example>2024-01-20T18:00:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.DataAvaria">
+            <summary>
+            Data em que a avaria ou problema foi identificado.
+            Importante para cálculos de tempo de resposta e análise de tendências.
+            </summary>
+            <example>2024-01-15</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.HoraAvaria">
+            <summary>
+            Hora específica em que a avaria ocorreu.
+            Complementa a DataAvaria com informação de horário preciso.
+            </summary>
+            <example>14:30:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.StatusNota">
+            <summary>
+            Status atual da nota no fluxo de trabalho.
+            Permite rastreamento do ciclo de vida da ocorrência.
+            </summary>
+            <example>"Pendente", "Em Andamento", "Aguardando Peças", "Concluída", "Cancelada"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.EquipamentoDisponivel">
+            <summary>
+            Indicador de disponibilidade atual do equipamento afetado.
+            Auxilia no planejamento de recursos e impacto operacional.
+            </summary>
+            <example>"Disponível", "Indisponível", "Operação Limitada", "Em Manutenção"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.ConfiabilidadeRestaurada">
+            <summary>
+            Indica se a confiabilidade do equipamento foi restaurada após a intervenção.
+            Importante para métricas de eficácia de manutenção.
+            </summary>
+            <example>RestauraAtivo</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.AnomaliaObservada">
+            <summary>
+            Descrição detalhada da anomalia, problema ou situação observada.
+            Campo essencial para documentação técnica da ocorrência.
+            </summary>
+            <example>"Identificado vazamento de óleo na junta do compressor. Volume estimado: 200ml. Equipamento apresenta ruído anormal."</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.ObservacoesComplementares">
+            <summary>
+            Observações complementares, comentários adicionais ou informações contextuais.
+            Campo livre para documentação de detalhes relevantes não cobertos por outros campos.
+            </summary>
+            <example>"Verificar histórico de manutenções anteriores. Possível relação com troca de óleo realizada na semana passada."</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Classificacao">
+            <summary>
+            Categoria ou tipo atribuído à nota após análise.
+            Permite agrupamento e filtragem de notas por similaridade.
+            </summary>
+            <example>"Hidráulica", "Elétrica", "Mecânica", "Lubrificação"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.MetodoClassificacao">
+            <summary>
+            Método ou técnica utilizada para classificar a nota.
+            Pode indicar classificação manual, automática ou híbrida.
+            </summary>
+            <example>"Manual", "IA - Modelo v2.1", "Regras de Negócio", "Híbrido"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.ClassificadoPor">
+            <summary>
+            Identificação do responsável pela classificação.
+            Pode ser nome de usuário, algoritmo ou sistema que realizou a classificação.
+            </summary>
+            <example>"João Silva", "Sistema IA", "Supervisor Manutenção"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.DataClassificacao">
+            <summary>
+            Data e hora em que a classificação foi realizada.
+            Importante para auditoria e rastreamento de mudanças.
+            </summary>
+            <example>2024-01-15T15:00:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.CriadaPorUsuario">
+            <summary>
+            Identificação do usuário que criou a nota no sistema.
+            Utilizado para rastreamento e responsabilização.
+            </summary>
+            <example>"maria.santos@empresa.com", "João Silva"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.ModificadaPorUsuario">
+            <summary>
+            Identificação do usuário que realizou a última modificação na nota.
+            Mantém histórico de alterações para auditoria.
+            </summary>
+            <example>"pedro.oliveira@empresa.com", "Ana Costa"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.DataModificacao">
+            <summary>
+            Data e hora da última modificação realizada na nota.
+            Complementa a informação de quem modificou para controle temporal.
+            </summary>
+            <example>2024-01-16T10:30:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.IdPlano">
+            <summary>
+            Chave estrangeira para o plano de manutenção associado.
+            Vincula a nota a um contexto de planejamento específico.
+            </summary>
+            <example>2024</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.IdUsuario">
+            <summary>
+            Chave estrangeira para o usuário criador da nota.
+            Estabelece relacionamento com a entidade de usuário responsável.
+            </summary>
+            <example>42</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.IdAtivo">
+            <summary>
+            Chave estrangeira para o ativo associado à nota.
+            Identifica qual equipamento ou item está relacionado à ocorrência.
+            </summary>
+            <example>150</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.IdLi">
+            <summary>
+            Chave estrangeira para a localização de instalação do ativo.
+            Permite vincular a nota a um local específico de instalação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Plano">
+            <summary>
+            Propriedade de navegação para o plano de manutenção pai.
+            Permite acesso ao contexto completo do plano ao qual a nota pertence.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Usuario">
+            <summary>
+            Propriedade de navegação para o usuário criador.
+            Fornece acesso aos dados completos do usuário responsável pela criação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Variaveis">
+            <summary>
+            Coleção de variáveis customizadas associadas à nota.
+            Permite extensibilidade através de campos dinâmicos específicos por tipo de nota.
+            </summary>
+            <example>
+            Variaveis.Add(new VariavelNotaModel { Nome = "Temperatura", Valor = "85°C" });
+            </example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Itens">
+            <summary>
+            Coleção de itens de material ou serviço associados à nota.
+            Registra recursos necessários ou utilizados na resolução da ocorrência.
+            </summary>
+            <example>
+            Itens.Add(new ItemNotaModel { DescricaoBreve = "Junta de vedação", Quantidade = 2 });
+            </example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Anexos">
+            <summary>
+            Coleção de anexos (arquivos, fotos, documentos) vinculados à nota.
+            Permite documentação visual e complementar da ocorrência.
+            </summary>
+            <example>
+            Anexos.Add(new AnexoNotaModel { Nome = "foto_vazamento.jpg", TipoArquivo = "image/jpeg" });
+            </example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Ordens">
+            <summary>
+            Coleção de ordens de serviço geradas a partir desta nota.
+            Permite rastreamento da execução e desdobramentos da ocorrência.
+            </summary>
+            <example>
+            Ordens.Add(new OrdemModel { NumeroOrdem = "OS-2024-001", Status = "Aberta" });
+            </example>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.VariavelNotaModel">
+            <summary>
+            Representa uma variável associada a uma nota técnica.
+            Exemplo: ValorNumerico = 15.5, UnidadeMedida = "kg".
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.IdVariavel">
+            <summary>
+            Identificador único da variável.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.ValorNumerico">
+            <summary>
+            Valor numérico registrado. Exemplo: 10.5
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.UnidadeMedida">
+            <summary>
+            Unidade de medida do valor. Exemplo: "m", "kg", "°C".
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.Comentarios">
+            <summary>
+            Observações adicionais sobre a variável.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.IdNota">
+            <summary>
+            Chave estrangeira para a nota relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.Nota">
+            <summary>
+            Referência de navegação para o objeto Nota.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.AnexoOrdemModel">
+            <summary>
+            Representa um anexo associado a uma ordem de serviço.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.IdAnexoOrdem">
+            <summary>
+            Identificador único do anexo.
+            <example>123</example>
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.Nome">
+            <summary>
+            Nome do arquivo original com extensão.
+            <example>relatorio_manutencao.pdf</example>
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.TipoArquivo">
+            <summary>
+            Tipo MIME do arquivo (ex: image/jpeg, application/pdf).
+            <example>application/pdf</example>
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.TipoAnexo">
+            <summary>
+            Categoria ou classificação do anexo para fins de organização.
+            <example>Evidência Fotográfica</example>
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.Dados">
+            <summary>
+            Conteúdo binário do arquivo armazenado no banco de dados.
+            <example>[0x25, 0x50, 0x44, 0x46, ...]</example>
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.IdOrdem">
+            <summary>
+            Chave estrangeira para a ordem de serviço relacionada.
+            <example>5001</example>
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.Ordem">
+            <summary>
+            Propriedade de navegação para a entidade Ordem relacionada.
+            Permite o carregamento (Eager ou Lazy Loading) dos dados da ordem.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.DadosRenovacaoModel">
+            <summary>
+            Representa os dados de renovação de um ativo no sistema.
+            Esta entidade armazena o histórico e métricas de confiabilidade resultantes de processos de manutenção.
+            </summary>
+            <example>
+            <code>
+            var renovacao = new DadosRenovacaoModel { 
+                UltimaRenovacao = DateTime.Now, 
+                OrigemUR = "Sistema", 
+                Confiabilidade = 0.95 
+            };
+            </code>
+            </example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdDados">
+            <summary>
+            Identificador único do registro de renovação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.UltimaRenovacao">
+            <summary>
+            Data e hora da última renovação realizada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.OrigemUR">
+            <summary>
+            Origem da última renovação (ex: sistema, manual, integração).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Confiabilidade">
+            <summary>
+            Índice de confiabilidade calculado para o ativo (0 a 1 ou percentual).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdAtivo">
+            <summary>
+            Identificador do Ativo relacionado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdNota">
+            <summary>
+            Identificador da Nota relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdOrdem">
+            <summary>
+            Identificador da Ordem de Serviço relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdUsuario">
+            <summary>
+            Identificador do Usuário que processou a renovação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Nota">
+            <summary>
+            Referência à Nota relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Ordem">
+            <summary>
+            Referência à Ordem de Serviço relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Usuario">
+            <summary>
+            Referência ao Usuário que realizou a renovação.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.OrdemModel">
+            <summary>
+            Representa uma ordem de trabalho no sistema de manutenção.
+            Este modelo gerencia todo o ciclo de vida de uma ordem, desde sua criação até conclusão,
+            incluindo planejamento, execução, classificação e rastreamento de auditoria.
+            </summary>
+            <remarks>
+            A ordem de trabalho é a entidade central para gerenciamento de atividades de manutenção,
+            permitindo controle de prazos, recursos, criticidade e relacionamento com ativos e notas.
+            </remarks>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdOrdem">
+            <summary>
+            Identificador único da ordem de trabalho.
+            O ID da ordem é gerado externamente e deve ser fornecido ao criar uma nova ordem.
+            </summary>
+            <example>100001</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.NumeroOrdem">
+            <summary>
+            Número sequencial da ordem de trabalho para identificação visual.
+            Utilizado para facilitar a referência e comunicação sobre ordens específicas.
+            </summary>
+            <example>2024001</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.DataCriacao">
+            <summary>
+            Data e hora em que a ordem foi criada no sistema.
+            Utilizado para rastreamento temporal e relatórios de abertura.
+            </summary>
+            <example>2024-01-15T08:30:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.StatusOrdem">
+            <summary>
+            Status atual da ordem de trabalho no fluxo de execução.
+            Indica o estado operacional da ordem para controle de workflow.
+            </summary>
+            <example>Aberta, Em Andamento, Aguardando Peças, Concluída, Cancelada</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.Criticidade">
+            <summary>
+            Nível de criticidade da ordem para priorização de execução.
+            Define a urgência e impacto da ordem no contexto operacional.
+            </summary>
+            <example>Baixa, Média, Alta, Crítica, Emergencial</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.Classificacao">
+            <summary>
+            Classificação da ordem conforme a interface IClassifiable.
+            Permite categorização customizada da ordem segundo regras de negócio.
+            </summary>
+            <example>Preventiva, Corretiva, Preditiva, Melhoria</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.MetodoClassificacao">
+            <summary>
+            Método ou critério utilizado para classificar a ordem.
+            Documenta o algoritmo, regra ou processo de decisão utilizado na classificação.
+            </summary>
+            <example>Manual, Automático por IA, Baseado em Histórico, Por Template</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.ClassificadoPor">
+            <summary>
+            Identificação do usuário ou sistema que classificou a ordem.
+            Rastreia a origem da classificação para auditoria e responsabilização.
+            </summary>
+            <example>usuario@empresa.com, Sistema-AutoClassificador, Admin</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.DataClassificacao">
+            <summary>
+            Data e hora em que a ordem foi classificada.
+            Permite rastreamento temporal do processo de classificação.
+            </summary>
+            <example>2024-01-15T09:00:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.TipoOrdem">
+            <summary>
+            Tipo da ordem de trabalho conforme taxonomia do sistema.
+            Define a natureza da intervenção a ser realizada.
+            </summary>
+            <example>Manutenção Preventiva, Inspeção, Calibração, Retrofit</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.ConfiabilidadeRestaurada">
+            <summary>
+            Indica se a confiabilidade operacional do ativo foi restaurada após a execução da ordem.
+            Utilizado para análise de eficácia das intervenções e gestão de desempenho.
+            </summary>
+            <example>true, false</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.InicioPlanejado">
+            <summary>
+            Data e hora planejadas para o início da execução da ordem.
+            Define o cronograma inicial da intervenção para alocação de recursos.
+            </summary>
+            <example>2024-01-20T08:00:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.FimPlanejado">
+            <summary>
+            Data e hora planejadas para o término da execução da ordem.
+            Define a expectativa de conclusão para gestão de prazos e SLAs.
+            </summary>
+            <example>2024-01-20T17:00:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.InicioReal">
+            <summary>
+            Data e hora reais em que a execução da ordem foi efetivamente iniciada.
+            Registra o início efetivo da intervenção para cálculo de lead time real.
+            </summary>
+            <example>2024-01-20T08:15:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.FimReal">
+            <summary>
+            Data e hora reais em que a execução da ordem foi efetivamente concluída.
+            Registra a conclusão efetiva para análise de performance e aderência ao planejado.
+            </summary>
+            <example>2024-01-20T16:45:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.DescricaoBreve">
+            <summary>
+            Descrição detalhada da ordem de trabalho.
+            Contém informações sobre o problema, atividades necessárias e contexto da ordem.
+            </summary>
+            <example>Substituição do rolamento do motor principal devido a ruído anormal detectado durante inspeção de rotina.</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.CriadaPorUsuario">
+            <summary>
+            Identificação do usuário que criou a ordem no sistema.
+            Utilizado para rastreabilidade e responsabilização pela abertura da ordem.
+            </summary>
+            <example>joao.silva@empresa.com, Admin-Sistema, Usuario-123</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.ModificadaPorUsuario">
+            <summary>
+            Identificação do usuário que realizou a última modificação na ordem.
+            Mantém histórico de quem editou a ordem por último para auditoria.
+            </summary>
+            <example>maria.santos@empresa.com, Supervisor-Manutencao</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.DataModificacao">
+            <summary>
+            Data e hora da última modificação realizada na ordem.
+            Rastreia quando foi a última alteração para controle de versionamento.
+            </summary>
+            <example>2024-01-18T14:30:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdAtivo">
+            <summary>
+            Identificador do ativo relacionado à ordem (referência externa).
+            Vincula a ordem ao equipamento ou ativo que será objeto da intervenção.
+            Este campo armazena apenas o ID do ativo, sem relacionamento direto no EF.
+            </summary>
+            <example>5001, 10025</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdNota">
+            <summary>
+            Identificador da nota associada à ordem.
+            Chave estrangeira para vincular observações, comentários ou documentação adicional.
+            </summary>
+            <example>30001</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.Nota">
+            <summary>
+            Propriedade de navegação para a nota associada à ordem.
+            Permite carregar informações complementares e observações relacionadas à ordem.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.Anexos">
+            <summary>
+            Coleção de anexos (arquivos) associados à ordem.
+            Inclui documentos, imagens, relatórios e evidências relacionadas à execução da ordem.
+            Permite armazenamento de múltiplos arquivos para documentação completa.
+            </summary>
+            <example>Fotos do equipamento, laudos técnicos, certificados, desenhos técnicos</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.Operacoes">
+            <summary>
+            Coleção de operações vinculadas à ordem.
+            Representa as atividades específicas ou etapas que compõem a execução da ordem.
+            Permite decomposição da ordem em tarefas menores para melhor controle.
+            </summary>
+            <example>Desmontagem, Limpeza, Substituição de peças, Montagem, Teste funcional</example>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.AlmoxarifadoModel">
+            <summary>
+            Representa a entidade de Almoxarifado no sistema.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.IdAlmoxarifado">
+            <summary>
+            Identificador único do Almoxarifado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Nome">
+            <summary>
+            Nome do Almoxarifado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Organizacao">
+            <summary>
+            Nome da Organização à qual o almoxarifado pertence.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Status">
+            <summary>
+            Status atual do almoxarifado (ex: Ativo, Inativo).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Descricao">
+            <summary>
+            Descrição detalhada sobre o almoxarifado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.IdEscopo">
+            <summary>
+            Identificador do Escopo associado.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.FerramentaModel">
+            <summary>
+            Representa uma ferramenta no sistema.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.IdFerramenta">
+            <summary>
+            Identificador único da ferramenta.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.Categoria">
+            <summary>
+            Categoria da ferramenta (ex: Elétrica, Manual).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.Nome">
+            <summary>
+            Nome descritivo da ferramenta.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.Quantidade">
+            <summary>
+            Quantidade disponível em estoque.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.TipoFerramenta">
+            <summary>
+            Tipo específico da ferramenta.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.PesoBruto">
+            <summary>
+            Peso bruto da ferramenta.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.PesoLiquido">
+            <summary>
+            Peso líquido da ferramenta.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.UmPesoBruto">
+            <summary>
+            Unidade de medida do peso bruto (ex: kg, g).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.UmPesoLiquido">
+            <summary>
+            Unidade de medida do peso líquido (ex: kg, g).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.Volume">
+            <summary>
+            Volume ocupado pela ferramenta.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.UmVolume">
+            <summary>
+            Unidade de medida do volume (ex: m³, cm³).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.Dimensao">
+            <summary>
+            Dimensões da ferramenta (ex: 10x20x30).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.UmDimensao">
+            <summary>
+            Unidade de medida das dimensões (ex: mm, cm).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.Fabricante">
+            <summary>
+            Fabricante da ferramenta.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.ValorCompra">
+            <summary>
+            Valor de custo na aquisição.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.DataAquisicao">
+            <summary>
+            Data em que a ferramenta foi adquirida.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.Descricao">
+            <summary>
+            Descrição detalhada ou observações sobre a ferramenta.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.IdLI">
+            <summary>
+            Identificador do Local de Instalação (LI).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.IdEscopo">
+            <summary>
+            Identificador do Escopo associado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.IdAlmoxarifado">
+            <summary>
+            Identificador do Almoxarifado onde a ferramenta está alocada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.Almoxarifado">
+            <summary>
+            Propriedade de navegação para o Almoxarifado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.Operacoes">
+            <summary>
+            Lista de operações associadas a esta ferramenta.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.ImobilizadoModel">
+            <summary>
+            Representa um ativo imobilizado no sistema de patrimônio.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.IdImobilizado">
+            <summary>
+            Identificador único do imobilizado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.Nome">
+            <summary>
+            Nome descritivo do item.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.Denominacao">
+            <summary>
+            Denominação técnica ou contábil.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.Nserie">
+            <summary>
+            Número de série do fabricante.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.Quantidade">
+            <summary>
+            Quantidade física disponível.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.DataAquisicao">
+            <summary>
+            Data em que o item foi adquirido.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.DataIncorporacao">
+            <summary>
+            Data em que o item foi incorporado ao patrimônio.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.ValorCompra">
+            <summary>
+            Valor original de compra.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.Moeda">
+            <summary>
+            Código da moeda (ex: BRL, USD).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.Depreciacao">
+            <summary>
+            Taxa ou valor acumulado de depreciação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.ValorAtual">
+            <summary>
+            Valor contábil atual após depreciação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.InfoAdicionais">
+            <summary>
+            Observações ou informações complementares.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.CpmModel">
+            <summary>
+            Representa o modelo de domínio para um Centro de Planejamento e Manutenção (CPM).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.CpmModel.IdCPM">
+            <summary>
+            Identificador único do CPM.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.CpmModel.NomeCentro">
+            <summary>
+            Nome do centro de planejamento.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.CpmModel.Organizacao">
+            <summary>
+            Organização à qual o CPM pertence.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.CpmModel.Descricao">
+            <summary>
+            Descrição detalhada do CPM.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.CpmModel.IdEscopo">
+            <summary>
+            Identificador do escopo associado (armazena apenas o ID).
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.CtmModel">
+            <summary>
+            Representa o modelo de domínio para CTM (Centro de Trabalho Móvel).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.CtmModel.IdGPM">
+            <summary>
+            Identificador único do GPM associado ao CTM.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.CtmModel.Nome">
+            <summary>
+            Nome do CTM.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.CtmModel.AreaCTM">
+            <summary>
+            Nome ou identificação da área do CTM.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.CtmModel.Descricao">
+            <summary>
+            Descrição detalhada do CTM.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.CtmModel.IdCPM">
+            <summary>
+            Chave estrangeira para o modelo CPM relacionado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.CtmModel.CPM">
+            <summary>
+            Propriedade de navegação para o modelo CPM.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.GpmModel">
+            <summary>
+            Representa o modelo de domínio para o Gerenciamento de Planejamento Mensal (GPM).
+            Exemplo: IdGPM = 1, Nome = "Planejamento Q1"
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.GpmModel.IdGPM">
+            <summary> Identificador único do GPM. </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.GpmModel.Nome">
+            <summary> Nome descritivo do GPM. Exemplo: "GPM Operacional" </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.GpmModel.Descricao">
+            <summary> Detalhes adicionais sobre o planejamento. </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.GpmModel.IdCPM">
+            <summary> Chave estrangeira para o CPM relacionado. </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.GpmModel.CPM">
+            <summary>
+            Propriedade de navegação para o modelo CPM.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.GpmModel.Usuarios">
+            <summary>
+            Coleção de usuários vinculados a este GPM.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.UsuarioModel">
+            <summary>
+            Representa a entidade de Usuário no sistema.
+            Exemplo: IdUsuario: 1, Nome: "João Silva".
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.IdUsuario">
+            <summary>
+            Identificador único do usuário.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.Nome">
+            <summary>
+            Nome completo do usuário.
+            Exemplo: "Ana Costa".
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.CPF">
+            <summary>
+            Cadastro de Pessoa Física.
+            Exemplo: "123.456.789-00".
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.Permissoes">
+            <summary>
+            Lista de permissões serializada ou descrição de acessos.
+            Exemplo: "ADMIN,USER_READ".
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.IdEscopo">
+            <summary>
+            Identificador do escopo ao qual o usuário pertence.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.Notas">
+            <summary>
+            Coleção de notas associadas ao usuário.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.DadosRenovacao">
+            <summary>
+            Coleção de dados de renovação vinculados.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.Almoxarifados">
+            <summary>
+            Almoxarifados sob responsabilidade ou acesso do usuário.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.Gpms">
+            <summary>
+            Registros de GPM associados.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.Ctms">
+            <summary>
+            Registros de CTM associados.
+            </summary>
+        </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.ImobilizadoComgasDto">
             <summary>
             DTO de imobilizado da Comgas.
@@ -368,12 +1932,6 @@
             <summary>
             DTO de importacao de notas de manutencao Comgas.
             </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.ComgasDTO.NotaManutencaoComgasDto.HoraAvaria">
-            <summary>
-            Hora de início da avaria. No caso de notas sem avaria, ou com hora de início de avaria desconhecida, o valor será 00:00:00.
-            </summary>
-            <example>01:30:00</example>
         </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.VariavelNotaComgasDto">
             <summary>
@@ -435,9 +1993,14 @@
             DTO do cadastro de tipo de manutencao CEP.
             </summary>
         </member>
-        <member name="T:app_pm_back.DTO.ComgasDTO.TipoPlanoCongasDto">
+        <member name="T:app_pm_back.DTO.ComgasDTO.TipoManutencaoComgasDto">
             <summary>
             DTO de tipo de manutencao Comgas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ComgasDTO.TipoPlanoCongasDto">
+            <summary>
+            DTO de tipo de plano Comgas.
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto">
@@ -455,19 +2018,19 @@
             Nome do usuario.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto.Senha">
+        <member name="P:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto.Cpf">
             <summary>
-            Senha do usuario.
+            CPF do usuario.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto.Mandante">
+        <member name="P:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto.Permissoes">
             <summary>
-            Mandante SAP.
+            Permissoes (lista serializada ou descricao textual).
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto.Idioma">
+        <member name="P:app_pm_back.DTO.ComgasDTO.UsuarioSapComgasDto.IdEscopo">
             <summary>
-            Idioma padrao.
+            Escopo externo (apenas o ID).
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.UploadAnnexRequestDto">
@@ -527,599 +2090,65 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.InitialCreate">
+        <member name="T:app_pm_back.Migrations.IntialCreate">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.IntialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.IntialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.IntialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Migrations.AddNavigationProperties">
+        <member name="T:app_pm_back.Migrations.FixMigrate">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.AddNavigationProperties.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.FixMigrate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.AddNavigationProperties.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.FixMigrate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.AddNavigationProperties.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.FixMigrate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
-        <member name="P:app_pm_back.Models.BuscaOrdemNotaModel.StatusNota">
-            <summary>
-            Status da nota
-            </summary>
-            <example>Aberta</example>
+        <member name="T:app_pm_back.Migrations.DtoFix">
+            <inheritdoc />
         </member>
-        <member name="P:app_pm_back.Models.BuscaOrdemNotaModel.NotaIdInicio">
-            <summary>
-            Id de início da nota
-            </summary>
+        <member name="M:app_pm_back.Migrations.DtoFix.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
         </member>
-        <member name="P:app_pm_back.Models.BuscaOrdemNotaModel.NotaIdFim">
-            <summary>
-            Id de fim da nota
-            </summary>
+        <member name="M:app_pm_back.Migrations.DtoFix.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Models.Domain.Prioridade">
-            <summary>
-            Nivel de prioridade do plano.
-            </summary>
+        <member name="M:app_pm_back.Migrations.DtoFix.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Models.Domain.GerarAutomaticamente">
-            <summary>
-            Gerar automaticamente nota, ordem ou ambos.
-            </summary>
+        <member name="T:app_pm_back.Migrations.DtoFix2">
+            <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Models.Domain.AcoesFalha">
-            <summary>
-            Acoes selecionadas em caso de falha.
-            </summary>
+        <member name="M:app_pm_back.Migrations.DtoFix2.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Models.Domain.CategoriaAnexo">
-            <summary>
-            Categoria do anexo.
-            </summary>
+        <member name="M:app_pm_back.Migrations.DtoFix2.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Models.Domain.Visivel">
-            <summary>
-            Visibilidade do tipo de plano.
-            </summary>
+        <member name="M:app_pm_back.Migrations.DtoFix2.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Models.Domain.CategoriaTipoEstrategia">
-            <summary>
-            Categoria da estrategia.
-            </summary>
+        <member name="T:app_pm_back.Migrations.DtoFix3">
+            <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Models.Domain.TipoTipo">
-            <summary>
-            Tipo de tipo de manutencao/plano.
-            </summary>
+        <member name="M:app_pm_back.Migrations.DtoFix3.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Models.Domain.UnidadeCiclo">
-            <summary>
-            Unidade do ciclo.
-            </summary>
+        <member name="M:app_pm_back.Migrations.DtoFix3.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Models.Domain.AnexoNotaModel">
-            <summary>
-            Representa um anexo associado a uma nota no sistema.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.IdAnexoNota">
-            <summary>
-            Identificador único do anexo.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.Nome">
-            <summary>
-            Nome do arquivo anexo.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.TipoArquivo">
-            <summary>
-            Tipo MIME do arquivo (ex: application/pdf, image/png).
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.Dados">
-            <summary>
-            Conteúdo binário do arquivo.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.IdNota">
-            <summary>
-            Chave estrangeira para a nota relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoNotaModel.Nota">
-            <summary>
-            Propriedade de navegação para a nota pai.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.IdNota">
-            <summary>
-            O IdNota é gerado a partir do IdPlano e do NumeroNota para garantir unicidade e rastreabilidade.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.NumeroNota">
-            <summary>
-            O NumeroNota é um número sequencial que reinicia para cada novo plano.
-            Ele é usado para identificar a nota dentro do contexto do plano e facilitar a referência, sem expor o IdNota completo.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.DataNota">
-            <summary>
-            DataNota representa a data e hora em que a nota foi criada ou registrada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.ReferenciaLocalizacaoAtivo">
-            <summary>
-            ReferenciaLocalizacaoAtivo é um campo de texto que pode conter informações adicionais sobre a localização do ativo
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.Finalidade">
-            <summary>
-            A propriedade Finalidade descreve o propósito ou objetivo associado à nota,
-            permitindo identificar a intenção ou necessidade específica correlacionada a ela.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.Prioridade">
-            <summary>
-            A propriedade Prioridade indica a urgência ou importância da nota,
-            permitindo classificar e organizar as notas com base em sua relevância ou necessidade de atenção.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.FimDesejado">
-            <summary>
-            A propriedade FimDesejado representa a data e hora desejada para a conclusão ou atendimento da nota,
-            permitindo estabelecer um prazo ou expectativa para a realização das ações associadas a ela.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.DataAvaria">
-            <summary>
-            A propriedade DataAvaria representa a data em que ocorreu uma avaria ou falha relacionada à nota,
-            permitindo registrar o momento específico em que o problema foi identificado ou ocorreu
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.HoraAvaria">
-            <summary>
-            HoraAvaria representa a hora em que ocorreu uma avaria ou falha relacionada à nota,
-            permitindo registrar o momento específico em que o problema foi identificado ou ocorreu
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.StatusNota">
-            <summary>
-            A propriedade StatusNota indica o estado atual ou a situação da nota, permitindo acompanhar o progresso,
-            identificar se está pendente, em andamento ou concluída, e facilitar a gestão e o monitoramento das atividades associadas a ela.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.EquipamentoDisponivel">
-            <summary>
-            A propriedade EquipamentoDisponivel indica se um equipamento está disponível ou não, permitindo registrar a
-            disponibilidade de recursos relacionados à nota e facilitar a tomada de decisões com base nessa informação.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.AnomaliaObservada">
-            <summary>
-            A propriedade AnomaliaObservada descreve a anomalia ou problema identificado relacionado à nota,
-            permitindo registrar detalhes específicos sobre a natureza da anomalia para análise, diagnóstico e resolução
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.ObservacoesComplementares">
-            <summary>
-            A propriedade ObservacoesComplementares é um campo de texto que pode conter informações adicionais, comentários
-            ou detalhes relevantes relacionados à nota
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.Classificacao">
-            <summary>
-            A propriedade Classificacao indica a categoria ou tipo atribuído a um item,
-            permitindo a organização e identificação baseada em critérios pré-definidos.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.MetodoClassificacao">
-            <summary>
-            MetodoClassificacao representa a metodologia utilizada para classificar a nota,
-            permitindo a identificação do procedimento ou critério aplicado à categorização.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.ClassificadoPor">
-            <summary>
-            Por quem a nota foi classificada, no caso de um funcionário ou algortimo
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.DataClassificacao">
-            <summary>
-            DataClassificacao representa a data e hora em que a nota foi classificada
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.TipoNota">
-            <summary>
-            A propriedade TipoNota indica a natureza ou categoria específica da nota, permitindo a identificação e organização
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.ConfiabilidadeRestaurada">
-            <summary>
-            Se a confiabilidade foi restaurada
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.CriadaPorUsuario">
-            <summary>
-            Usuario que criou a nota 
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.ModificadaPorUsuario">
-            <summary>
-            Usuario que modificou a nota pela última vez, seja para atualizar informações, corrigir dados ou registrar alterações relevantes
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.DataModificacao">
-            <summary>
-            Data que a nota foi modificada pela última vez
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.IdPlano">
-            <summary>
-            A propriedade IdPlano é uma chave estrangeira que estabelece a relação entre a Nota e o Plano associado a ela,
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.IdUsuario">
-            <summary>
-            Id do usuario que criou a nota
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.IdAtivo">
-            <summary>
-            A propriedade IdAtivo é uma chave estrangeira que estabelece a relação entre a Nota e o Ativo associado a ela
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.Plano">
-            <summary>
-            A propriedade Plano estabelece a relação entre uma Nota e o Plano associado a ela, permitindo o gerenciamento
-            e rastreamento do plano responsável pelo agendamento ou organização das atividades representadas pela Nota.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.Variaveis">
-            <summary>
-            A coleção de Variáveis está associada a uma nota, permitindo o armazenamento e gerenciamento de variáveis relacionadas a essa nota.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.Itens">
-            <summary>
-            A coleção de Itens está associada a uma nota, permitindo o armazenamento e gerenciamento de itens relacionados a essa nota.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.Anexos">
-            <summary>
-            A coleção de Anexos está associada a uma nota, permitindo o armazenamento e gerenciamento
-            de arquivos ou informações adicionais vinculados a essa nota.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.Domain.AnexoOrdemModel">
-            <summary>
-            Representa um anexo associado a uma ordem de serviço.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.IdAnexoOrdem">
-            <summary>
-            Identificador único do anexo.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.Nome">
-            <summary>
-            Nome do arquivo original.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.TipoArquivo">
-            <summary>
-            Tipo MIME do arquivo (ex: image/jpeg, application/pdf).
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.TipoAnexo">
-            <summary>
-            Categoria ou classificação do anexo.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.Dados">
-            <summary>
-            Conteúdo binário do arquivo.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.IdOrdem">
-            <summary>
-            Chave estrangeira para a ordem de serviço relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AnexoOrdemModel.Ordem">
-            <summary>
-            Propriedade de navegação para a Ordem.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.Domain.DadosRenovacaoModel">
-            <summary>
-            Representa os dados de renovação de um ativo no sistema.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdDados">
-            <summary>
-            Identificador único do registro de renovação.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.UltimaRenovacao">
-            <summary>
-            Data e hora da última renovação realizada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.OrigemUR">
-            <summary>
-            Origem da última renovação (ex: sistema, manual, integração).
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Confiabilidade">
-            <summary>
-            Índice de confiabilidade calculado para o ativo.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdAtivo">
-            <summary>
-            Identificador do Ativo relacionado.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdNota">
-            <summary>
-            Identificador da Nota relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdOrdem">
-            <summary>
-            Identificador da Ordem de Serviço relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdUsuario">
-            <summary>
-            Identificador do Usuário que processou a renovação.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Nota">
-            <summary>
-            Referência à Nota relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Ordem">
-            <summary>
-            Referência à Ordem de Serviço relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Usuario">
-            <summary>
-            Referência ao Usuário que realizou a renovação.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.Domain.OrdemModel">
-            <summary>
-            Representa uma ordem de trabalho no sistema de manutenção
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdOrdem">
-            <summary>
-            O ID da ordem é gerado externamente e deve ser fornecido ao criar uma nova ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.NumeroOrdem">
-            <summary>
-            Número sequencial da ordem de trabalho
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.DataCriacao">
-            <summary>
-            Data e hora em que a ordem foi criada
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.StatusOrdem">
-            <summary>
-            Status atual da ordem (ex: Aberta, Em Andamento, Concluída, Cancelada)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.Criticidade">
-            <summary>
-            Nível de criticidade da ordem (ex: Baixa, Média, Alta, Crítica)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.Classificacao">
-            <summary>
-            Classificação da ordem conforme a interface IClassifiable
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.MetodoClassificacao">
-            <summary>
-            Método ou critério utilizado para classificar a ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.ClassificadoPor">
-            <summary>
-            Identificação do usuário ou sistema que classificou a ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.DataClassificacao">
-            <summary>
-            Data e hora em que a ordem foi classificada
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.TipoOrdem">
-            <summary>
-            Tipo da ordem 
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.ConfiabilidadeRestaurada">
-            <summary>
-            Indica se a confiabilidade do ativo foi restaurada após a execução da ordem (true/false)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.InicioPlanejado">
-            <summary>
-            Data e hora planejadas para o início da execução da ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.FimPlanejado">
-            <summary>
-            Data e hora planejadas para o término da execução da ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.InicioReal">
-            <summary>
-            Data e hora reais em que a execução da ordem foi iniciada
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.FimReal">
-            <summary>
-            Data e hora reais em que a execução da ordem foi concluída
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.Descricao">
-            <summary>
-            Descrição detalhada da ordem de trabalho
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.CriadaPorUsuario">
-            <summary>
-            Identificação do usuário que criou a ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.ModificadaPorUsuario">
-            <summary>
-            Identificação do usuário que realizou a última modificação na ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.DataModificacao">
-            <summary>
-            Data e hora da última modificação realizada na ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdAtivo">
-            <summary>
-            ID do ativo relacionado à ordem (referência externa)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdNota">
-            <summary>
-            ID da nota associada à ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.Nota">
-            <summary>
-            Nota associada à ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.Anexos">
-            <summary>
-            Coleção de anexos (arquivos) associados à ordem
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.Operacoes">
-            <summary>
-            Coleção de operações vinculadas à ordem
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.Domain.AlmoxarifadoModel">
-            <summary>
-            Representa a entidade de Almoxarifado no sistema.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.IdAlmoxarifado">
-            <summary>
-            Identificador único do Almoxarifado.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Nome">
-            <summary>
-            Nome do Almoxarifado.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Organizacao">
-            <summary>
-            Nome da Organização à qual o almoxarifado pertence.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Status">
-            <summary>
-            Status atual do almoxarifado (ex: Ativo, Inativo).
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Descricao">
-            <summary>
-            Descrição detalhada sobre o almoxarifado.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.IdEscopo">
-            <summary>
-            Identificador do Escopo associado.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.Domain.CpmModel">
-            <summary>
-            Representa o modelo de domínio para um Centro de Planejamento e Manutenção (CPM).
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.CpmModel.IdCPM">
-            <summary>
-            Identificador único do CPM.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.CpmModel.NomeCentro">
-            <summary>
-            Nome do centro de planejamento.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.CpmModel.Organizacao">
-            <summary>
-            Organização à qual o CPM pertence.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.CpmModel.Descricao">
-            <summary>
-            Descrição detalhada do CPM.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.CpmModel.IdEscopo">
-            <summary>
-            Identificador do escopo associado (armazena apenas o ID).
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.Domain.CtmModel">
-            <summary>
-            Representa o modelo de domínio para CTM (Centro de Trabalho Móvel).
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.CtmModel.IdGPM">
-            <summary>
-            Identificador único do GPM associado ao CTM.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.CtmModel.AreaCTM">
-            <summary>
-            Nome ou identificação da área do CTM.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.CtmModel.Descricao">
-            <summary>
-            Descrição detalhada do CTM.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.CtmModel.IdCPM">
-            <summary>
-            Chave estrangeira para o modelo CPM relacionado.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.CtmModel.CPM">
-            <summary>
-            Propriedade de navegação para o modelo CPM.
-            </summary>
+        <member name="M:app_pm_back.Migrations.DtoFix3.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
         </member>
         <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
             <summary>

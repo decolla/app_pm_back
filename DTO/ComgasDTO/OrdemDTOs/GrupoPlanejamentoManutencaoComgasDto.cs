@@ -11,9 +11,6 @@ public class GrupoPlanejamentoManutencaoComgasDto
     [SheetColumn("Id GPM")]
     public int IdGpm { get; set; }
 
-    [SheetColumn("Grp.plnj.PM")]
-    public string? Codigo { get; set; }
-
     [SheetColumn("Descrição GPM")]
     public string? Descricao { get; set; }
 
@@ -22,7 +19,4 @@ public class GrupoPlanejamentoManutencaoComgasDto
 
     [SheetColumn("Id CPM")]
     public int? IdCpm { get; set; }
-
-    [SheetColumn("Status")]
-    public string? Status { get; set; }
 }

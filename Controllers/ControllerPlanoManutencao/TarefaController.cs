@@ -28,7 +28,8 @@ public class TarefaController : ControllerBase
     public async Task<IActionResult> Criar([FromBody] TarefaComgasDto dto)
     {
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
-        if (dto.TipoManutencaoId <= 0) return BadRequest(new { message = "TipoManutencaoId obrigatorio." });
+        if (!dto.IdTipoManutencao.HasValue || dto.IdTipoManutencao <= 0)
+            return BadRequest(new { message = "IdTipoManutencao obrigatorio." });
         if (string.IsNullOrWhiteSpace(dto.Nome)) return BadRequest(new { message = "Nome da tarefa obrigatorio." });
 
         var model = _mapper.Map<OperacaoModel>(dto);
@@ -62,8 +63,8 @@ public class TarefaController : ControllerBase
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         if (id <= 0) return BadRequest(new { message = "Id invalido na rota." });
 
-        if (dto.IdTarefa <= 0) dto.IdTarefa = id;
-        if (dto.IdTarefa != id) return BadRequest(new { message = "Id da rota deve ser igual ao Id do corpo." });
+        if (dto.IdOperacao <= 0) dto.IdOperacao = id;
+        if (dto.IdOperacao != id) return BadRequest(new { message = "Id da rota deve ser igual ao Id do corpo." });
 
         var model = _mapper.Map<OperacaoModel>(dto);
         var atualizado = await _service.UpdateNotaAsync(model);

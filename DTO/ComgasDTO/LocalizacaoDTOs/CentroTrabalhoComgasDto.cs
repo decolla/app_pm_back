@@ -8,24 +8,20 @@ namespace app_pm_back.DTO.ComgasDTO;
 /// </summary>
 public class CentroTrabalhoComgasDto
 {
+    // Identificador usado como chave do CTM (corresponde ao IdGPM no modelo).
     [SheetColumn("Id Centro Trabalho")]
-    public int IdCentroTrabalho { get; set; }
+    public int IdGpm { get; set; }
 
+    // Area do CTM (normalmente codigo do centro de trabalho).
     [SheetColumn("Centro trabalho")]
-    public string? Codigo { get; set; }
+    public string? AreaCTM { get; set; }
 
     [SheetColumn("Denominação")]
     public string? Nome { get; set; }
 
-    [SheetColumn("Centro planej.")]
-    public string? CentroPlanejamento { get; set; }
-
     [SheetColumn("Id CPM")]
-    public int? CpmId { get; set; }
+    public int? IdCpm { get; set; }
 
-    [SheetColumn("Status")]
-    public string? Status { get; set; }
-
-    [SheetColumn("Descricao")]
+    [SheetColumn("DescricaoBreve")]
     public string? Descricao { get; set; }
 }

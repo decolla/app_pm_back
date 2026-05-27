@@ -130,14 +130,14 @@ public class PlanoManutencaoController : ControllerBase
                 return BadRequest(new { message = "CodigoPlano invalido na rota. Envie id maior que zero." });
             }
 
-            if (dto.CodigoPlano <= 0)
+            if (dto.IdPlano <= 0)
             {
-                dto.CodigoPlano = id;
+                dto.IdPlano = id;
             }
 
-            if (dto.CodigoPlano != id)
+            if (dto.IdPlano != id)
             {
-                return BadRequest(new { message = "Id da rota e CodigoPlano do corpo da requisição devem ser iguais." });
+                return BadRequest(new { message = "Id da rota e IdPlano do corpo da requisição devem ser iguais." });
             }
 
             var obj = _mapper.Map<PlanoModel>(dto);

@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO.ComgasDTO;
 
@@ -10,37 +11,35 @@ namespace app_pm_back.DTO.ComgasDTO;
 public class PlanoManutencaoComgasDto
 {
     [SheetColumn("Plano manut.")]
-    public long CodigoPlano { get; set; }
+    public long IdPlano { get; set; }
 
     [SheetColumn("Nome plano")]
-    public string? NomePlano { get; set; }
+    public string? Nome { get; set; }
     
     [SheetColumn("Ativo")]
     public string? NomeAtivo { get; set; }
 
-    [SheetColumn("Descrição")]
-    public string? Descricao { get; set; }
-
     [SheetColumn("Prioridade")]
-    public int? Prioridade { get; set; }
+    public Prioridade? Prioridade { get; set; }
 
     [SheetColumn("Gerar automaticamente")]
-    public int? GerarAutomaticamente { get; set; }
+    public GerarAutomaticamente? GerarAutomaticamente { get; set; }
 
     [SheetColumn("Dt.inicio")]
-    public DateTime? DataInicio { get; set; }
+    public DateTime? DataInicios { get; set; }
 
     [SheetColumn("Data conclusão")]
     public DateTime? DataConclusao { get; set; }
 
     [SheetColumn("Antecedência")]
-    public int Antencedencia { get; set; }
-
-    [SheetColumn("Última ordem")]
-    public long? UltimaOrdem { get; set; }
+    public int? Antecedencia { get; set; }
 
     [SheetColumn("Id Estratégia")]
-    public int? EstrategiaId { get; set; }
+    public int? IdEstrategia { get; set; }
+
+    // Ativo externo (apenas o ID).
+    [SheetColumn("Id Ativo")]
+    public int? IdAtivo { get; set; }
 }
 
 #pragma warning restore CS1591

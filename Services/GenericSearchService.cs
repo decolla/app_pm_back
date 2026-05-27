@@ -170,13 +170,15 @@ public class GenericSearchService
         string? prioridadeInicio = buscaType.GetProperty("PrioridadeInicio")?.GetValue(busca) as string;
         if (!string.IsNullOrWhiteSpace(prioridadeInicio) && int.TryParse(prioridadeInicio, out var priInicio))
         {
-            notasQuery = notasQuery.Where(n => n.Prioridade >= priInicio);
+            var prioridadeEnum = (Prioridade)priInicio;
+            notasQuery = notasQuery.Where(n => n.Prioridade >= prioridadeEnum);
         }
 
         string? prioridadeFim = buscaType.GetProperty("PrioridadeFim")?.GetValue(busca) as string;
         if (!string.IsNullOrWhiteSpace(prioridadeFim) && int.TryParse(prioridadeFim, out var priFim))
         {
-            notasQuery = notasQuery.Where(n => n.Prioridade <= priFim);
+            var prioridadeEnum = (Prioridade)priFim;
+            notasQuery = notasQuery.Where(n => n.Prioridade <= prioridadeEnum);
         }
 
         string? statusOrdem = buscaType.GetProperty("StatusOrdem")?.GetValue(busca) as string;

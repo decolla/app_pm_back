@@ -211,6 +211,8 @@ public class SpreadsheetService
 
     private static NotaModel MapNotaComgasDto(NotaManutencaoComgasDto dto)
     {
+        // converte string em tipo Prioridade
+        Enum.TryParse<Prioridade>(dto.Prioridade, out Prioridade prioridade);
         return new NotaModel
         {
             IdNota = dto.IdNota != 0 ? dto.IdNota : dto.NumeroNota,
@@ -219,15 +221,23 @@ public class SpreadsheetService
             MetodoClassificacao = dto.MetodoClassificacao,
             StatusNota = dto.StatusNota,
             DataNota = dto.DataNota,
-            Prioridade = dto.Prioridade,
-            FimDesejado = dto.DataFim,
+            Prioridade = prioridade,
+            FimDesejado = dto.FimDesejado,
             DataAvaria = dto.DataAvaria,
             HoraAvaria = dto.HoraAvaria,
             EquipamentoDisponivel = dto.EquipamentoDisponivel,
             AnomaliaObservada = dto.AnomaliaObservada,
             ObservacoesComplementares = dto.ObservacoesComplementares,
             ReferenciaLocalizacaoAtivo = dto.ReferenciaLocalizacaoAtivo,
-            Finalidade = string.IsNullOrWhiteSpace(dto.Finalidade) ? "N/A" : dto.Finalidade
+            Finalidade = string.IsNullOrWhiteSpace(dto.Finalidade) ? "N/A" : dto.Finalidade,
+            IdPlano = dto.IdPlano,
+            IdUsuario = dto.IdUsuario,
+            IdAtivo = dto.IdAtivo,
+            IdLi = dto.IdLi,
+            CriadaPorUsuario = dto.CriadaPorUsuario,
+            ModificadaPorUsuario = dto.ModificadaPorUsuario,
+            DataModificacao = dto.DataModificacao,
+            ConfiabilidadeRestaurada = dto.ConfiabilidadeRestaurada
         };
     }
 
@@ -239,9 +249,11 @@ public class SpreadsheetService
             Classificacao = dto.Classificacao,
             MetodoClassificacao = dto.MetodoClassificacao,
             StatusOrdem = dto.StatusOrdem,
-            IdNota = dto.NotaRelacionadaId,
-            Criticidade = dto.Prioridade?.ToString(),
-            DataCriacao = dto.DataEntrada ?? DateTime.UtcNow
+            IdNota = dto.IdNota,
+            Criticidade = dto.Prioridade?.ToString() ?? dto.Criticidade,
+            DataCriacao = dto.DataCriacao ?? DateTime.UtcNow,
+            ConfiabilidadeRestaurada = dto.ConfiabilidadeRestaurada ?? ConfiabilidadeRestaurada.NaoRestaura,
+            IdAtivo = dto.IdAtivo
         };
     }
 
@@ -250,8 +262,8 @@ public class SpreadsheetService
         return new ItemNotaModel
         {
             IdItemNota = dto.IdItemNota,
-            IdNota = dto.NotaId,
-            Componente = dto.ParteObjeto,
+            IdNota = dto.IdNota,
+            Componente = dto.Componente,
             Sintoma = dto.Sintoma,
             Causa = dto.Causa
         };

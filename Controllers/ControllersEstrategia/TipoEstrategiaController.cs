@@ -36,13 +36,13 @@ public class TipoEstrategiaController : ControllerBase
             return ValidationProblem(ModelState);
         }
 
-        if (!dto.EstrategiaId.HasValue || dto.EstrategiaId.Value <= 0)
+        if (!dto.IdEstrategia.HasValue || dto.IdEstrategia.Value <= 0)
         {
             return BadRequest(new { message = "IdEstrategia obrigatorio. Envie um Id maior que zero." });
         }
 
         var estrategiaExiste = await context.PM_Estrategias
-            .AnyAsync(e => e.IdEstrategia == dto.EstrategiaId.Value);
+            .AnyAsync(e => e.IdEstrategia == dto.IdEstrategia.Value);
 
         if (!estrategiaExiste)
         {

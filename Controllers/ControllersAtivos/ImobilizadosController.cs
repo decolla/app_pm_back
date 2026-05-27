@@ -101,14 +101,14 @@ public class ImobilizadosController : ControllerBase
                 return BadRequest(new { message = "IdImobilizado invalido na rota." });
             }
 
-            if (string.IsNullOrWhiteSpace(dto.TagImobilizado))
+            if (!dto.IdImobilizado.HasValue || dto.IdImobilizado <= 0)
             {
-                dto.TagImobilizado = id.ToString();
+                dto.IdImobilizado = id;
             }
 
-            if (!int.TryParse(dto.TagImobilizado, out var tagId) || tagId != id)
+            if (dto.IdImobilizado != id)
             {
-                return BadRequest(new { message = "Id da rota e TagImobilizado do corpo devem ser iguais." });
+                return BadRequest(new { message = "Id da rota e IdImobilizado do corpo devem ser iguais." });
             }
 
             var imobilizado = _mapper.Map<ImobilizadoModel>(dto);

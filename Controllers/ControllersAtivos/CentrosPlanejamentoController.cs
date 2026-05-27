@@ -101,12 +101,12 @@ public class CentrosPlanejamentoController : ControllerBase
                 return BadRequest(new { message = "IdCpm invalido na rota. Envie id maior que zero." });
             }
 
-            if (dto.IdCpm <= 0)
+            if (dto.IdCPM <= 0)
             {
-                dto.IdCpm = id;
+                dto.IdCPM = id;
             }
 
-            if (dto.IdCpm != id)
+            if (dto.IdCPM != id)
             {
                 return BadRequest(new { message = "Id da rota e IdCpm do corpo devem ser iguais." });
             }

@@ -68,7 +68,6 @@ public class EstrategiaModel
     /// <summary>
     /// Chave estrangeira para o Escopo de manutenção relacionado.
     /// </summary>
-    [Required(ErrorMessage = "O identificador do escopo é obrigatório.")]
     public int? IdEscopo { get; set; }
 
     /// <summary>

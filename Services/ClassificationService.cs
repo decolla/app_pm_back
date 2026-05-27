@@ -72,14 +72,14 @@ public class ClassificationService<T> where T : class, IClassifiable
         {
             { "Tipo de nota", "StatusNota" },
             { "Txt.grp.codific", "StatusNota" },
-            { "Descrição", "Descricao" },
+            { "Descrição", "DescricaoBreve" },
             { "Tipo prioridade", "Prioridade" },
             { "Txt.code codif.", "StatusNota" },
             { "Equipamento", "IdAtivo" }
         } : new Dictionary<string, string>()
         {
             { "Tipo de nota", "StatusOrdem" },
-            { "Descrição", "Descricao" },
+            { "Descrição", "DescricaoBreve" },
             { "Tipo prioridade", "Criticidade" },
             { "Equipamento", "IdAtivo" }
         };

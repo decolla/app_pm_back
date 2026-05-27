@@ -60,8 +60,8 @@ public class TipoManutencaoCepController : ControllerBase
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         if (id <= 0) return BadRequest(new { message = "Id invalido na rota." });
 
-        if (dto.IdTipoManutencaoCep <= 0) dto.IdTipoManutencaoCep = id;
-        if (dto.IdTipoManutencaoCep != id) return BadRequest(new { message = "Id da rota deve ser igual ao Id do corpo." });
+        if (dto.IdTipoCep <= 0) dto.IdTipoCep = id;
+        if (dto.IdTipoCep != id) return BadRequest(new { message = "Id da rota deve ser igual ao Id do corpo." });
 
         var model = _mapper.Map<TipoCepModel>(dto);
         var atualizado = await _service.UpdateNotaAsync(model);

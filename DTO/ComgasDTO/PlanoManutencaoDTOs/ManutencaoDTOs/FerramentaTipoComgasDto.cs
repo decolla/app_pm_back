@@ -12,21 +12,14 @@ public class FerramentaTipoComgasDto
     [SheetColumn("Id Ferramenta")]
     public int IdFerramenta { get; set; }
 
-    [SheetColumn("Selecionada")]
-    public bool Checkbox { get; set; }
-
     [SheetColumn("Nome Ferramenta")]
     public string? Nome { get; set; }
 
+    [SheetColumn("Categoria")]
     public string? Categoria { get; set; }
-
-    public string? TextoBreve { get; set; }
 
     [SheetColumn("Descrição Ferramenta")]
     public string? Descricao { get; set; }
-
-    [SheetColumn("Quantidade Disponível")]
-    public int QuantidadeDisp { get; set; }
 
     [SheetColumn("Tipo ferramenta")]
     public string? TipoFerramenta { get; set; }
@@ -35,35 +28,47 @@ public class FerramentaTipoComgasDto
     public int Quantidade { get; set; }
 
     [SheetColumn("Loc.instalacao")]
-    public int? IdLocalInstalacao { get; set; }
+    public int IdLI { get; set; }
 
     [SheetColumn("Fabricante")]
-    public int? FabricanteId { get; set; }
+    public string? Fabricante { get; set; }
 
     [SheetColumn("Peso bruto")]
     public decimal? PesoBruto { get; set; }
 
-    public string? PesoBrutoUnidade { get; set; }
+    [SheetColumn("Unidade peso bruto")]
+    public string? UmPesoBruto { get; set; }
 
     [SheetColumn("Peso liquido")]
     public decimal? PesoLiquido { get; set; }
 
-    public string? PesoLiquidoUnidade { get; set; }
+    [SheetColumn("Unidade peso liquido")]
+    public string? UmPesoLiquido { get; set; }
 
     [SheetColumn("Volume")]
     public decimal? Volume { get; set; }
 
-    public string? VolumeUnidade { get; set; }
+    [SheetColumn("Unidade volume")]
+    public string? UmVolume { get; set; }
 
     [SheetColumn("Dimensao")]
     public decimal? Dimensao { get; set; }
 
-    public string? DimensaoUnidade { get; set; }
+    [SheetColumn("Unidade dimensao")]
+    public string? UmDimensao { get; set; }
 
     [SheetColumn("Valor")]
     public decimal? ValorCompra { get; set; }
 
+    [SheetColumn("Data aquisição")]
     public DateTime? DataAquisicao { get; set; }
+
+    // Escopo externo (apenas o ID).
+    [SheetColumn("Id Escopo")]
+    public int IdEscopo { get; set; }
+
+    [SheetColumn("Id Almoxarifado")]
+    public int IdAlmoxarifado { get; set; }
     
 }
 

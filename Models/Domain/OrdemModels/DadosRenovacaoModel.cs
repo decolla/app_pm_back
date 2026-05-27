@@ -36,8 +36,7 @@ public class DadosRenovacaoModel
     /// Origem da última renovação (ex: sistema, manual, integração).
     /// </summary>
     [MaxLength(100)]
-    [Required(ErrorMessage = "A origem da renovação deve ser informada.")]
-    public required string OrigemUR { get; set; }
+    public OrigemUR OrigemUR { get; set; }
 
     /// <summary>
     /// Índice de confiabilidade calculado para o ativo (0 a 1 ou percentual).
@@ -63,7 +62,7 @@ public class DadosRenovacaoModel
     /// Identificador do Usuário que processou a renovação.
     /// </summary>
     public int? IdUsuario { get; set; }
-
+    
     /// <summary>
     /// Referência à Nota relacionada.
     /// </summary>

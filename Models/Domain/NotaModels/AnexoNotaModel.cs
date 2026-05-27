@@ -12,6 +12,7 @@ public class AnexoNotaModel
     /// Identificador único do anexo.
     /// </summary>
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int IdAnexoNota { get; set; }
 
     /// <summary>

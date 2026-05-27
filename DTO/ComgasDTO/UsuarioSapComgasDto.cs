@@ -22,22 +22,22 @@ public class UsuarioSapComgasDto
     public string? Nome { get; set; }
 
     /// <summary>
-    /// Senha do usuario.
+    /// CPF do usuario.
     /// </summary>
-    [SheetColumn("Senha")]
-    public string? Senha { get; set; }
+    [SheetColumn("CPF")]
+    public string? Cpf { get; set; }
 
     /// <summary>
-    /// Mandante SAP.
+    /// Permissoes (lista serializada ou descricao textual).
     /// </summary>
-    [SheetColumn("Mandante")]
-    public string? Mandante { get; set; }
+    [SheetColumn("Permissoes")]
+    public string? Permissoes { get; set; }
 
     /// <summary>
-    /// Idioma padrao.
+    /// Escopo externo (apenas o ID).
     /// </summary>
-    [SheetColumn("Idioma")]
-    public string? Idioma { get; set; }
+    [SheetColumn("Id Escopo")]
+    public int? IdEscopo { get; set; }
 }
 
 #pragma warning restore CS1591

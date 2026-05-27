@@ -1,67 +1,46 @@
 using app_pm_back.Attributes;
-using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO.ComgasDTO;
 
 #pragma warning disable CS1591
 
 /// <summary>
-/// DTO de tipo de manutencao Comgas.
+/// DTO de tipo de plano Comgas.
 /// </summary>
 public class TipoPlanoCongasDto
 {
-    [SheetColumn("Id Tipo Manutenção")]
-    public int IdTipoManutencao { get; set; }
+    [SheetColumn("Id Tipo Plano")]
+    public int IdTipoPlano { get; set; }
 
-    public Visivel Visivel { get; set; } = Visivel.Visivel;
+    [SheetColumn("Visivel")]
+    public bool? Visivel { get; set; }
 
-    public CategoriaTipoEstrategia Categoria { get; set; } = CategoriaTipoEstrategia.Manutencao;
+    [SheetColumn("Dias")]
+    public int? Dias { get; set; }
 
-    public int Dias { get; set; } = 80;
+    [SheetColumn("Tolerância positiva")]
+    public double? ToleranciaPositiva { get; set; }
 
-    public int ToleranciaPositiva { get; set; }
+    [SheetColumn("Tolerância negativa")]
+    public double? ToleranciaNegativa { get; set; }
 
-    public int ToleranciaNegativa { get; set; }
+    [SheetColumn("Continua")]
+    public bool? Continua { get; set; }
 
-    public bool Continua { get; set; }
+    [SheetColumn("Categoria")]
+    public string? Categoria { get; set; }
 
     [SheetColumn("Id Tipo Estratégia")]
-    public int? TipoEstrategiaId { get; set; }
+    public int? IdTipoEstrategia { get; set; }
 
     [SheetColumn("Plano manut.")]
-    public long? PlanoManutencaoId { get; set; }
+    public long? IdPlano { get; set; }
 
-    public int? TipoManutencaoCepId { get; set; }
+    [SheetColumn("Id Tipo Manutenção")]
+    public int? IdTipoManutencao { get; set; }
 
-    public int? TipoManutencaoId { get; set; }
-
-    public List<FerramentaTipoDto> Ferramentas { get; set; } = new();
-
-    public List<TarefaComgasDto> ListaTarefas { get; set; } = new();
-}
-
-public class FerramentaTipoDto
-{
-    public int? IdFerramenta { get; set; }
-    public required string Nome { get; set; }
-    public string? Descricao { get; set; }
-    public int QuantidadeDisp { get; set; }
-    public bool Checkbox { get; set; }
-}
-
-public class TipoManutencaoComgasDto
-{
-    public int IdTipoManutencao { get; set; }
-
-    public TipoTipo Categoria { get; set; } = TipoTipo.Manutencao;
-
-    public string Nome { get; set; } = string.Empty;
-
-    public string TipoAtivo { get; set; } = string.Empty;
-
-    public int Confiabilidade { get; set; }
-
-    public bool Habilitada { get; set; } = true;
+    [SheetColumn("Id Tipo CEP")]
+    public int? IdTipoCep { get; set; }
 }
 
 #pragma warning restore CS1591

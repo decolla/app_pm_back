@@ -10,22 +10,20 @@ namespace app_pm_back.DTO.ComgasDTO;
 public class CentroPlanejamentoManutencaoComgasDto
 {
     [SheetColumn("Id CPM")]
-    public int IdCpm { get; set; }
+    public int IdCPM { get; set; }
 
     [SheetColumn("Nome")]
-    public string? Nome { get; set; }
+    public string? NomeCentro { get; set; }
 
     [SheetColumn("Organizacao")]
     public string? Organizacao { get; set; }
 
-    [SheetColumn("Localizacao")]
-    public string? Localizacao { get; set; }
-
-    [SheetColumn("Localizacao Id")]
-    public int? LocalizacaoId { get; set; }
-
-    [SheetColumn("Descricao")]
+    [SheetColumn("DescricaoBreve")]
     public string? Descricao { get; set; }
+
+    // Escopo externo (apenas o ID)
+    [SheetColumn("Id Escopo")]
+    public int? IdEscopo { get; set; }
 }
 
 #pragma warning restore CS1591

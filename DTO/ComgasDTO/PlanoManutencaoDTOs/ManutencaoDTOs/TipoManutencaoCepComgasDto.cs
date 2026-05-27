@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO.ComgasDTO;
 
@@ -10,23 +11,23 @@ namespace app_pm_back.DTO.ComgasDTO;
 public class TipoManutencaoCepComgasDto
 {
     [SheetColumn("Id Tipo Manutenção CEP")]
-    public int IdTipoManutencaoCep { get; set; }
+    public int IdTipoCep { get; set; }
     
 
     [SheetColumn("Tipo Ativo")]
     public string? TipoAtivo { get; set; }
 
     [SheetColumn("Confiabilidade")]
-    public int Confiabilidade { get; set; }
+    public double? Confiabilidade { get; set; }
 
     [SheetColumn("Habilitada")]
-    public bool Habilitada { get; set; }
+    public bool? Habilitada { get; set; }
+
+    [SheetColumn("Campo indefinido")]
+    public string? CampoIndefinido { get; set; }
 
     [SheetColumn("Ações Falha")]
-    public List<int> AcoesFalha { get; set; } = new();
-
-    [SheetColumn("Plano Manutenção Código")]
-    public long? PlanoManutencaoCodigo { get; set; }
+    public List<AcoesFalha>? AcoesFalha { get; set; } = new();
 }
 
 #pragma warning restore CS1591

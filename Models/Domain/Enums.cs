@@ -65,6 +65,15 @@ public enum CategoriaTipoEstrategia
 /// <summary>
 /// Tipo de tipo de manutencao/plano.
 /// </summary>
+public enum CategoriaTipoManutencao
+{
+    Manutencao = 0,
+    Renovacao = 1
+}
+
+/// <summary>
+/// Tipo de tipo de manutencao/plano.
+/// </summary>
 public enum TipoTipo
 {
     Manutencao = 0,
@@ -80,4 +89,22 @@ public enum UnidadeCiclo
     Meses = 1,
     Anos = 2
 }
+/// <summary>
+/// Confiabilidade restaurada apos a manutencao.
+/// </summary>
+public enum ConfiabilidadeRestaurada
+{
+    NaoRestaura = 0,
+    RestauraAtivo = 1,
+    ReestauraLI = 2
+}
 
+/// <summary>
+/// Origem da UR, se a UR foi gerada a partir de uma nota, ordem ou usuario.
+/// </summary>
+public enum OrigemUR
+{
+    Nota = 0,
+    Ordem = 1,
+    Usuario = 2
+}

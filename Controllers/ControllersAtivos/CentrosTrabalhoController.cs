@@ -101,12 +101,12 @@ public class CentrosTrabalhoController : ControllerBase
                 return BadRequest(new { message = "IdCentroTrabalho/IdGPM invalido na rota. Envie id maior que zero." });
             }
 
-            if (dto.IdCentroTrabalho <= 0)
+            if (dto.IdGpm <= 0)
             {
-                dto.IdCentroTrabalho = id;
+                dto.IdGpm = id;
             }
 
-            if (dto.IdCentroTrabalho != id)
+            if (dto.IdGpm != id)
             {
                 return BadRequest(new { message = "Id da rota e IdCentroTrabalho/IdGPM do corpo devem ser iguais." });
             }

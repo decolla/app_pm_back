@@ -13,30 +13,30 @@ public class OperacaoOrdemComgasDto
     public int IdOperacao { get; set; }
 
     [SheetColumn("Ordem")]
-    public long OrdemId { get; set; }
+    public long? IdOrdem { get; set; }
 
     [SheetColumn("Operação")] 
-    public string? NomeOperacao { get; set; }
-
-    [SheetColumn("Tipo ativid.PM")]
-    public string? TipoAtividade { get; set; }
+    public string? Nome { get; set; }
 
     [SheetColumn("Duração")]
-    public decimal? DuracaoHoras { get; set; }
+    public double? Duracao { get; set; }
 
     [SheetColumn("Nº profissionais")]
-    public int? NumeroProfissionais { get; set; }
+    public int? NdeProfissionais { get; set; }
 
     [SheetColumn("Texto breve")]
-    public string? TextoBreve { get; set; }
-
-    public string? TextoDetalhado { get; set; }
+    public string? Descricao { get; set; }
 
     [SheetColumn("Data início")]
-    public DateTime? DataInicio { get; set; }
+    public DateTime? InicioEsperado { get; set; }
 
     [SheetColumn("Data fim")]
-    public DateTime? DataFim { get; set; }
+    public DateTime? FimEsperado { get; set; }
+
+    // Relacionamentos opcionais
+    public int? IdCTM { get; set; }
+
+    public int? IdTipoManutencao { get; set; }
 }
 
 #pragma warning restore CS1591

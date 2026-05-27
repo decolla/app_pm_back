@@ -12,29 +12,29 @@ public class TipoEstrategiaComgasDto
     [SheetColumn("Id Tipo Estratégia")]
     public int IdTipoEstrategia { get; set; }
 
-    [SheetColumn("Nome tipo")]
-    public string? NomeTipo { get; set; }
-
-    [SheetColumn("Descrição")]
-    public string? Descricao { get; set; }
-
     [SheetColumn("Dias")]
-    public int Meses { get; set; }
+    public int? Dias { get; set; }
 
     [SheetColumn("Tolerância positiva")]
-    public int ToleranciaPositiva { get; set; }
-
-    [SheetColumn("Unidade tolerância positiva")]
-    public string? UnidadeToleranciaPositiva { get; set; }
+    public double? ToleranciaPositiva { get; set; }
 
     [SheetColumn("Tolerância negativa")]
-    public int ToleranciaNegativa { get; set; }
+    public double? ToleranciaNegativa { get; set; }
 
-    [SheetColumn("Unidade tolerância negativa")]
-    public string? UnidadeToleranciaNegativa { get; set; }
+    [SheetColumn("Continua")]
+    public bool? Continua { get; set; }
+
+    [SheetColumn("Categoria")]
+    public string? Categoria { get; set; }
 
     [SheetColumn("Id Estratégia")]
-    public int? EstrategiaId { get; set; }
+    public int? IdEstrategia { get; set; }
+
+    [SheetColumn("Id Tipo Manutenção")]
+    public int? IdTipoManutencao { get; set; }
+
+    [SheetColumn("Id Tipo CEP")]
+    public int? IdTipoCep { get; set; }
 }
 
 #pragma warning restore CS1591
