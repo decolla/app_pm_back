@@ -29,6 +29,9 @@ public class NotaManutencaoComgasDto
     [SheetColumn("Classificado por")]
     public string? ClassificadoPor { get; set; }
     
+    [SheetColumn("Descrição")]
+    public string? DescricaoBreve { get; set; }
+    
     [SheetColumn("Plano manut.")]
     public long? IdPlano { get; set; }
 

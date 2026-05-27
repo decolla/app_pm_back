@@ -1074,6 +1074,12 @@
             </summary>
             <example>RestauraAtivo</example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.DescricaoBreve">
+            <summary>
+            Descrição breve ou título resumido da nota.
+            Fornece uma visão rápida do conteúdo da nota para listagens e resumos.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.AnomaliaObservada">
             <summary>
             Descrição detalhada da anomalia, problema ou situação observada.
@@ -2090,64 +2096,16 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.IntialCreate">
+        <member name="T:app_pm_back.Migrations.InitialCreate">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.IntialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.IntialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.IntialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.FixMigrate">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixMigrate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixMigrate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixMigrate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.DtoFix">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.DtoFix2">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix2.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix2.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix2.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.DtoFix3">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix3.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix3.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix3.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">

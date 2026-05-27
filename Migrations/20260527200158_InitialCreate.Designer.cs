@@ -14,8 +14,8 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260527182546_DtoFix3")]
-    partial class DtoFix3
+    [Migration("20260527200158_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -574,6 +574,10 @@ namespace app_pm_back.Migrations
 
                     b.Property<DateTime?>("DataNota")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("DescricaoBreve")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("EquipamentoDisponivel")
                         .HasMaxLength(50)

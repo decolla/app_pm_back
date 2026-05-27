@@ -144,6 +144,13 @@ public class NotaModel : IClassifiable
     #endregion
 
     #region Descrição e Observações
+    
+    /// <summary>
+    /// Descrição breve ou título resumido da nota.
+    /// Fornece uma visão rápida do conteúdo da nota para listagens e resumos.
+    /// </summary>
+    [MaxLength(100)]
+    public string? DescricaoBreve { get; set; }
 
     /// <summary>
     /// Descrição detalhada da anomalia, problema ou situação observada.
