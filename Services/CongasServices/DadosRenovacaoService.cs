@@ -240,7 +240,7 @@ public async Task<int> ImportarDadosOrdemAsync(
                 nota.IdAtivo,
                 nota.IdNota,
                 null,
-                nota.DataNota,          // passa data da nota
+                nota.DataNota ?? DateTime.UtcNow,          // passa data da nota
                 OrigemUR.Nota);         // origem é Nota
             registrosCriados += inseridos;
         }
@@ -265,7 +265,7 @@ public async Task<int> ImportarDadosOrdemAsync(
                 ordem.IdAtivo,
                 null,
                 ordem.IdOrdem,
-                ordem.DataCriacao,      // passa data da ordem
+                ordem.DataCriacao ?? DateTime.UtcNow,      // passa data da ordem
                 OrigemUR.Ordem);        // origem é Ordem
             registrosCriados += inseridos;
         }
