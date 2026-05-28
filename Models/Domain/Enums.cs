@@ -1,4 +1,4 @@
-﻿namespace app_pm_back.Models.Domain;
+namespace app_pm_back.Models.Domain;
 
 /// <summary>
 /// Nivel de prioridade do plano.

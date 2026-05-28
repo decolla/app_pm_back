@@ -572,6 +572,10 @@ namespace app_pm_back.Migrations
                     b.Property<DateTime?>("DataNota")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("DescricaoBreve")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<string>("EquipamentoDisponivel")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");

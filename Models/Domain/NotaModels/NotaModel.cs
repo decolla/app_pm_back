@@ -48,7 +48,7 @@ public class NotaModel : IClassifiable
     /// Registra quando a ocorrência foi reportada ou documentada.
     /// </summary>
     /// <example>2024-01-15T14:30:00</example>
-    public DateTime DataNota { get; set; }
+    public DateTime? DataNota { get; set; }
     
     /// <summary>
     /// Tipo da nota que define a natureza da manutenção ou ocorrência.
@@ -144,6 +144,13 @@ public class NotaModel : IClassifiable
     #endregion
 
     #region Descrição e Observações
+    
+    /// <summary>
+    /// Descrição breve ou título resumido da nota.
+    /// Fornece uma visão rápida do conteúdo da nota para listagens e resumos.
+    /// </summary>
+    [MaxLength(100)]
+    public string? DescricaoBreve { get; set; }
 
     /// <summary>
     /// Descrição detalhada da anomalia, problema ou situação observada.
@@ -160,12 +167,6 @@ public class NotaModel : IClassifiable
     /// <example>"Verificar histórico de manutenções anteriores. Possível relação com troca de óleo realizada na semana passada."</example>
     [MaxLength(2000, ErrorMessage = "As observações complementares não podem exceder 2000 caracteres.")]
     public string? ObservacoesComplementares { get; set; }
-    
-    /// <summary>
-    /// Campo de descrição breve, uma versão resumida das anomalias e observações complementares
-    /// </summary>
-   [MaxLength(200, ErrorMessage = "Descrição Breve excedeu limite")]
-    public string? DescricaoBreve { get; set; }
 
     #endregion
 
