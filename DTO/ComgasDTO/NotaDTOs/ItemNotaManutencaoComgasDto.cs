@@ -20,10 +20,10 @@ public class ItemNotaManutencaoComgasDto
     [SheetColumn("Code parte obj.")]
     public string? Componente { get; set; }
 
-    [SheetColumn("Sintoma")]
+    [SheetColumn("Descrição")]
     public string? Sintoma { get; set; }
 
-    [SheetColumn("Causa")]
+    [SheetColumn("Txt.code causa")]
     public string? Causa { get; set; }
 }
 

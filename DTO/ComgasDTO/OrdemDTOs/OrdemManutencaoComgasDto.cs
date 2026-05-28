@@ -52,7 +52,7 @@ public class OrdemManutencaoComgasDto
     [SheetColumn("Data modificacao")]
     public DateTime? DataModificacao { get; set; }
 
-    [SheetColumn("Texto breve")]
+    [SheetColumn("Campo ordenação")]
     public string? DescricaoBreve { get; set; }
 
     [SheetColumn("Início prog.")]
