@@ -19,7 +19,7 @@ public class DadosRenovacaoService
 //Faz tratamento em caso de notas +itens
 public async Task<int> ImportarDadosNotaAsync(
     List<long> idsNotas,
-    List<long> idsItensNota)
+    List<int> idsItensNota)
 {
     _logger.LogInformation("Iniciando ImportarDadosNotaAsync com {QtdNotas} notas e {QtdItens} itens", 
         idsNotas?.Count ?? 0, idsItensNota?.Count ?? 0);
@@ -27,13 +27,13 @@ public async Task<int> ImportarDadosNotaAsync(
     if (idsNotas == null || idsNotas.Count == 0)
     {
         _logger.LogWarning("Lista de ids notas vazia ou nula");
-        return 0;
+        //return 0;
     }
 
     if (idsItensNota == null || idsItensNota.Count == 0)
     {
         _logger.LogWarning("Lista de ids itens vazia ou nula");
-        return 0;
+        //return 0;
     }
 
     try
@@ -357,9 +357,9 @@ private async Task<int> InserirOuAtualizarPorAtivoAsync(
             OrigemUR = origem,
             Confiabilidade = 1.0,
             IdAtivo = idAtivo,
-            IdNota = idNota ?? 0,
-            IdOrdem = idOrdem ?? 0,
-            IdUsuario = 0
+            IdNota = idNota ?? null,
+            IdOrdem = idOrdem ?? null,
+            IdUsuario = null
         };
         _context.PM_DadosRenovacao.Add(novo);
         _logger.LogInformation("Criado novo registro de DadosRenovacao: IdAtivo={IdAtivo}, Origem={Origem}, Data={Data}", 

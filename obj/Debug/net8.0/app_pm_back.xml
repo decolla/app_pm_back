@@ -1088,6 +1088,11 @@
             </summary>
             <example>"Verificar histórico de manutenções anteriores. Possível relação com troca de óleo realizada na semana passada."</example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.DescricaoBreve">
+            <summary>
+            Campo de descrição breve, uma versão resumida das anomalias e observações complementares
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.Classificacao">
             <summary>
             Categoria ou tipo atribuído à nota após análise.
@@ -2089,54 +2094,6 @@
             <summary>
             Data de quando a classificacao ocorreu
             </summary>
-        </member>
-        <member name="T:app_pm_back.Migrations.IntialCreate">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.IntialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.IntialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.IntialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.FixMigrate">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixMigrate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixMigrate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixMigrate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.DtoFix">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.DtoFix2">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix2.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix2.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.DtoFix2.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
         </member>
         <member name="T:app_pm_back.Migrations.DtoFix3">
             <inheritdoc />

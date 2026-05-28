@@ -2,6 +2,7 @@ using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.CongasServices;
+using AutoMapper.Internal;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Routes;
@@ -15,13 +16,17 @@ public static class SpreadsheetEndpoints
     {
         var group = app.MapGroup("api/V1/planilhas");
 
+        List<long> IdNotas = new List<long>();
+        List<int> IdItens = new List<int>();
+
         group.MapPost("/upload", async (
             IFormFile file,
             AppDbContext dbContext,
             SpreadsheetService spreadsheetService,
             NotaManutencaoService notaManutencaoService,
             OrdemService orderCongasService,
-            ItemNotaService itemNoteCongasService
+            ItemNotaService itemNoteCongasService,
+            DadosRenovacaoService dadosRenovacaoService
             ) =>
         {
             try
@@ -38,9 +43,16 @@ public static class SpreadsheetEndpoints
 
                     var notasDeduplicadas = resultadoPlanilha.NotasCongas
                         .DistinctBy(o => o.NumeroNota).ToList();
-
+                    
                     await notaManutencaoService.ImportarNotasEmLoteSeguroAsync(notasDeduplicadas);
                     var inseridas = notasDeduplicadas.Count;
+
+                    IdNotas = notasDeduplicadas.Select(n => n.IdNota).ToList();
+                    if (IdItens.Count > 1)
+                    {
+                        await dadosRenovacaoService.ImportarDadosNotaAsync(IdNotas, IdItens);
+                    }
+
 
                     return Results.Ok(new { message = $"{inseridas} notas da CONGAS processadas com sucesso!" });
                 }
@@ -51,6 +63,9 @@ public static class SpreadsheetEndpoints
 
                     var ordensDeduplicadas = resultadoPlanilha.OrdensCongas
                         .DistinctBy(o => o.IdOrdem).ToList();
+                    
+                    var IdOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
+                    await dadosRenovacaoService.ImportarDadosOrdemAsync(IdOrdens);
 
                     await orderCongasService.ImportarOrdensEmLoteSeguroAsync(ordensDeduplicadas);
                     var inseridas = ordensDeduplicadas.Count;
@@ -92,6 +107,13 @@ public static class SpreadsheetEndpoints
                     if (itensValidos.Any())
                     {
                         await itemNoteCongasService.ImportarItensEmLoteSeguroAsync(itensValidos);
+                        
+                        IdItens = itensValidos.Select(i => i.IdItemNota).ToList();
+                        if (IdNotas.Count > 1 )
+                        {
+                            await dadosRenovacaoService.ImportarDadosNotaAsync(IdNotas, IdItens);
+                        }
+                        
                         return Results.Ok(new { message = $"{itensValidos.Count} itens da CONGAS vinculados e salvos!" });
                     }
 
