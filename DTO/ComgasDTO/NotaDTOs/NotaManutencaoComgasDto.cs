@@ -42,7 +42,7 @@ public class NotaManutencaoComgasDto
     public string? StatusNota { get; set; }
 
     [SheetColumn("Data da nota")]
-    public DateTime DataNota { get; set; }
+    public DateTime? DataNota { get; set; }
 
     [SheetColumn("Prioridade")]
     public string? Prioridade { get; set; }

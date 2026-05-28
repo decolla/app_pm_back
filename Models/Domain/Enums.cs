@@ -1,4 +1,4 @@
-﻿namespace app_pm_back.Models.Domain;
+namespace app_pm_back.Models.Domain;
 
 /// <summary>
 /// Nivel de prioridade do plano.
@@ -96,7 +96,7 @@ public enum ConfiabilidadeRestaurada
 {
     NaoRestaura = 0,
     RestauraAtivo = 1,
-    RestauraLI = 2
+    ReestauraLI = 2
 }
 
 /// <summary>
