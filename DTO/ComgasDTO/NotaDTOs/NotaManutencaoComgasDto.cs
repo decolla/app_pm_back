@@ -79,11 +79,14 @@ public class NotaManutencaoComgasDto
 
     public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
 
-    [SheetColumn("Txt.code codif.")]
+    [SheetColumn("Descrição")]
     public string? AnomaliaObservada { get; set; }
 
-    [SheetColumn("Txt.grp.codific")]
+    [SheetColumn("Txt.code codif.")]
     public string? ObservacoesComplementares { get; set; }
+    
+    [SheetColumn("Txt.grp.codific")]
+    public string? DescricaoBreve { get; set; }
 
     [SheetColumn("Id Usuario")]
     public int? IdUsuario { get; set; }

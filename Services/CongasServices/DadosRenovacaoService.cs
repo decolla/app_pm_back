@@ -285,7 +285,7 @@ public async Task<int> ImportarDadosOrdemAsync(
     }
     catch (Exception ex)
     {
-        _logger.LogError(ex, "Erro ao cadastrar dados de renovação para {Tipo}", tipo);
+        _logger.LogError(ex, "Erro ao cadastrar dados de renovação para {Tipo}", ehNota);
         throw;
     }
 }
