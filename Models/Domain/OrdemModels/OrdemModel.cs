@@ -40,7 +40,7 @@ public class OrdemModel : IClassifiable
     /// </summary>
     /// <example>2024-01-15T08:30:00</example>
     [Required(ErrorMessage = "A data de criação é obrigatória.")]
-    public DateTime? DataCriacao { get; set; }
+    public DateTime DataCriacao { get; set; }
 
     #endregion
 
