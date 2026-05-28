@@ -3,18 +3,34 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.Manutencao;
+/// <summary>
+/// Classe TipoManutencaoService.
+/// </summary>
 
 public class TipoManutencaoService : BaseCrudService<TipoManutencaoModel>
 {
+ /// <summary>
+ /// Inicializa uma nova instância da classe <see cref="TipoManutencaoService"/>.
+ /// </summary>
  public TipoManutencaoService(AppDbContext context) : base(context)
  {
  }
+ /// <summary>
+ /// Obtém um registro específico.
+ /// </summary>
+ /// <param name="id">Identificador do registro.</param>
+ /// <returns>Resultado da operação.</returns>
 
  public async Task<TipoManutencaoModel?> GetCompletoByIdAsync(int id)
  {
  return await _context.PM_TiposManutencao
  .FirstOrDefaultAsync(t => t.IdTipoManutencao == id);
  }
+ /// <summary>
+ /// Atualiza um registro existente.
+ /// </summary>
+ /// <param name="atualizado">Parâmetro do método.</param>
+ /// <returns>Resultado da operação.</returns>
 
  public async Task<TipoManutencaoModel> UpdateBasicoAsync(TipoManutencaoModel atualizado)
  {

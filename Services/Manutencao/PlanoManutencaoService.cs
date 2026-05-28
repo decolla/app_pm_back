@@ -3,12 +3,22 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.Manutencao;
+/// <summary>
+/// Classe PlanoManutencaoService.
+/// </summary>
 
 public class PlanoManutencaoService : BaseCrudService<PlanoModel>
 {
+ /// <summary>
+ /// Inicializa uma nova instância da classe <see cref="PlanoManutencaoService"/>.
+ /// </summary>
  public PlanoManutencaoService(AppDbContext context) : base(context)
  {
  }
+ /// <summary>
+ /// Cria um novo registro.
+ /// </summary>
+ /// <param name="planos">Parâmetro do método.</param>
  
  public async Task CreatePlanosEmMassaAsync(List<PlanoModel> planos)
  {
@@ -18,6 +28,11 @@ public class PlanoManutencaoService : BaseCrudService<PlanoModel>
  await _context.SaveChangesAsync();
  }
  }
+ /// <summary>
+ /// Cria um novo registro.
+ /// </summary>
+ /// <param name="novo">Parâmetro do método.</param>
+ /// <returns>Resultado da operação.</returns>
 
  public async Task<PlanoModel> CreateComTiposAsync(PlanoModel novo)
  {

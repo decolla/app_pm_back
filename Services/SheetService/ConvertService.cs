@@ -5,6 +5,9 @@ using System.Text;
 using ExcelDataReader;
 
 namespace api.Communications.Service.Impl.Data;
+/// <summary>
+/// Classe ConvertService.
+/// </summary>
 
 public class ConvertService
 {
@@ -12,6 +15,11 @@ public class ConvertService
     private static readonly SearchValues<char> SpecialChars = SearchValues.Create(new[] { ';', '"', '\n', '\r' });
 
     // Convete xlsx para csv
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="xlsxStream">Parâmetro do método.</param>
+    /// <param name="csvPath">Parâmetro do método.</param>
     public Task ConvertXlsxStreamToCsvFileAsync(
         Stream xlsxStream,
         string csvPath,
@@ -42,6 +50,12 @@ public class ConvertService
             maxDegreeOfParallelism,
             leaveOpen: false);
     }
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="xlsxStream">Parâmetro do método.</param>
+    /// <param name="outputStream">Parâmetro do método.</param>
+    /// <param name="encoding">Parâmetro do método.</param>
 
     public async Task ConvertXlsxStreamToCsvStreamAsync(
         Stream xlsxStream,
@@ -151,6 +165,11 @@ public class ConvertService
 
         await writer.FlushAsync();
     }
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="xlsxStream">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
 
     public async Task<MemoryStream> ConvertXlsxStreamToCsvMemoryAsync(
         Stream xlsxStream,

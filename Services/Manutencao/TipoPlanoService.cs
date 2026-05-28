@@ -3,12 +3,23 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.Manutencao;
+/// <summary>
+/// Classe TipoPlanoService.
+/// </summary>
 
 public class TipoPlanoService : BaseCrudService<TipoPlanoModel>
 {
+ /// <summary>
+ /// Inicializa uma nova instância da classe <see cref="TipoPlanoService"/>.
+ /// </summary>
  public TipoPlanoService(AppDbContext context) : base(context)
  {
  }
+ /// <summary>
+ /// Obtém um registro específico.
+ /// </summary>
+ /// <param name="id">Identificador do registro.</param>
+ /// <returns>Resultado da operação.</returns>
  
  public async Task<TipoPlanoModel?> GetCompletoByIdAsync(int id)
  {
@@ -18,6 +29,11 @@ public class TipoPlanoService : BaseCrudService<TipoPlanoModel>
  .Include(t => t.TipoManutencao)
  .FirstOrDefaultAsync(t => t.IdTipoPlano == id);
  }
+ /// <summary>
+ /// Obtém um registro específico.
+ /// </summary>
+ /// <param name="categoria">Parâmetro do método.</param>
+ /// <returns>Resultado da operação.</returns>
  
  public async Task<List<TipoPlanoModel>> GetTodosByTipo(string categoria)
  {
@@ -25,6 +41,11 @@ public class TipoPlanoService : BaseCrudService<TipoPlanoModel>
  .Where(t => t.Categoria == categoria)
  .ToListAsync();
  }
+ /// <summary>
+ /// Cria um novo registro.
+ /// </summary>
+ /// <param name="novo">Parâmetro do método.</param>
+ /// <returns>Resultado da operação.</returns>
 
  public async Task<TipoPlanoModel> CreateComCopiaAsync(TipoPlanoModel novo)
  {
@@ -52,6 +73,12 @@ public class TipoPlanoService : BaseCrudService<TipoPlanoModel>
  destino.IdTipoCep = origem.IdTipoCep;
  destino.IdTipoManutencao = origem.IdTipoManutencao;
  }
+ /// <summary>
+ /// Atualiza um registro existente.
+ /// </summary>
+ /// <param name="atualizado">Parâmetro do método.</param>
+ /// <returns>Resultado da operação.</returns>
+ /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
 
  public async Task<TipoPlanoModel> UpdateComListasAsync(TipoPlanoModel atualizado)
  {

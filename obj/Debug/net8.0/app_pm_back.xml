@@ -25,6 +25,313 @@
             Controller para anexos
             </summary>
         </member>
+        <member name="M:app_pm_back.Controllers.AnnexController.#ctor(app_pm_back.Services.AnnexService)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.AnnexController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.AnnexController.UploadArquivo(app_pm_back.DTO.UploadAnnexRequestDto)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="request">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.AnnexController.DownloadArquivo(System.Int64)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.AnnexController.BuscarArquivo(System.Int64,System.String)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="referenciaId">Parâmetro do método.</param>
+            <param name="tipoReferencia">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Controllers.CentrosPlanejamentoController">
+            <summary>
+            Classe CentrosPlanejamentoController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.#ctor(app_pm_back.Services.Manutencao.CpmService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.CentrosPlanejamentoController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Criar(app_pm_back.DTO.CentroPlanejamentoManutencaoDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Atualizar(System.Int32,app_pm_back.DTO.CentroPlanejamentoManutencaoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Deletar(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="T:app_pm_back.Controllers.CentrosTrabalhoController">
+            <summary>
+            Classe CentrosTrabalhoController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.#ctor(app_pm_back.Services.Manutencao.CtmService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.CentrosTrabalhoController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Criar(app_pm_back.DTO.CentroTrabalhoDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Atualizar(System.Int32,app_pm_back.DTO.CentroTrabalhoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Deletar(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="T:app_pm_back.Controllers.GruposPlanejamentoController">
+            <summary>
+            Classe GruposPlanejamentoController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.#ctor(app_pm_back.Services.Manutencao.GpmService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.GruposPlanejamentoController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Criar(app_pm_back.DTO.GrupoPlanejamentoManutencaoDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Atualizar(System.Int32,app_pm_back.DTO.GrupoPlanejamentoManutencaoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Deletar(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="T:app_pm_back.Controllers.ImobilizadosController">
+            <summary>
+            Classe ImobilizadosController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.#ctor(app_pm_back.Services.Manutencao.ImobilizadoService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.ImobilizadosController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Criar(app_pm_back.DTO.ImobilizadoDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Atualizar(System.Int32,app_pm_back.DTO.ImobilizadoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Deletar(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="T:app_pm_back.Controllers.UsuariosSapController">
+            <summary>
+            Classe UsuariosSapController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosSapController.#ctor(app_pm_back.Services.Manutencao.UsuarioService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.UsuariosSapController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosSapController.Criar(app_pm_back.DTO.UsuarioSapDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosSapController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosSapController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosSapController.Atualizar(System.Int32,app_pm_back.DTO.UsuarioSapDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosSapController.Deletar(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="T:app_pm_back.Controllers.BuscaController">
+            <summary>
+            Classe BuscaController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.#ctor(app_pm_back.Services.GenericSearchService)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.BuscaController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.ListarTabelasCampos">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscarPorCampo(System.String,System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="tabela">Parâmetro do método.</param>
+            <param name="campo">Parâmetro do método.</param>
+            <param name="valor">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscarPorNome(System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="tabela">Parâmetro do método.</param>
+            <param name="nome">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
         <member name="M:app_pm_back.Controllers.BuscaController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Busca notas ou ordens de manutenção por diversos critérios, retorna uma lista de objetos com os dados relevantes
@@ -51,6 +358,11 @@
         <member name="T:app_pm_back.Controllers.Estrategia.EstrategiaController">
             <summary>
             Endpoints de estrategia de manutencao .
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.#ctor(app_pm_back.Services.Manutencao.EstrategiaService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.Estrategia.EstrategiaController"/>.
             </summary>
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Criar(app_pm_back.DTO.EstrategiaManutencaoDto)">
@@ -91,6 +403,11 @@
         <member name="T:app_pm_back.Controllers.Estrategia.TipoEstrategiaController">
             <summary>
             Endpoints de tipo de estrategia .
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.#ctor(app_pm_back.Services.Manutencao.TipoEstrategiaService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.Estrategia.TipoEstrategiaController"/>.
             </summary>
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.Criar(app_pm_back.DTO.TipoEstrategiaDto,app_pm_back.Data.AppDbContext)">
@@ -141,9 +458,63 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:app_pm_back.Controllers.ItemsController">
+            <summary>
+            Classe ItemsController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ItemsController.#ctor(app_pm_back.Services.Manutencao.ItemNotaService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.ItemsController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ItemsController.CriarItem(app_pm_back.DTO.ItemNotaManutencaoDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.ItemsController.ListarItens(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.ItemsController.ContarItens">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.ItemsController.AtualizarItem(System.Int32,app_pm_back.DTO.ItemNotaManutencaoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.ItemsController.DeletarItem(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
         <member name="T:app_pm_back.Controllers.NotasController">
             <summary>
             Endpoints de notas .
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.#ctor(app_pm_back.Services.Manutencao.NotaManutencaoService,app_pm_back.Services.Manutencao.ItemNotaService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.NotaModel},AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.NotasController"/>.
             </summary>
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.CriarNota(app_pm_back.DTO.NotaManutencaoDto)">
@@ -201,6 +572,11 @@
             Endpoints de ordens .
             </summary>
         </member>
+        <member name="M:app_pm_back.Controllers.OrdersController.#ctor(app_pm_back.Services.Manutencao.OrdemService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.OrdemModel},AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.OrdersController"/>.
+            </summary>
+        </member>
         <member name="M:app_pm_back.Controllers.OrdersController.CriarOrdem(app_pm_back.DTO.OrdemManutencaoDto)">
             <summary>
             Cadastra uma ordem a partir de DTO.
@@ -246,10 +622,99 @@
             Classifica as ordens usando a IA catboost
             </summary>
         </member>
+        <member name="T:app_pm_back.Controllers.Organizacao.AlmoxarifadosController">
+            <summary>
+            Classe AlmoxarifadosController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.#ctor(app_pm_back.Services.Manutencao.AlmoxarifadoService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.Organizacao.AlmoxarifadosController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Criar(app_pm_back.DTO.AlmoxarifadoDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Atualizar(System.Int32,app_pm_back.DTO.AlmoxarifadoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Deletar(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController">
             <summary>
             Endpoints de ferramentas de tipo de manutencao.
             </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.#ctor(app_pm_back.Services.Manutencao.FerramentaService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Criar(app_pm_back.DTO.FerramentaTipoDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Listar(System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.BuscarPorId(System.Int32)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Atualizar(System.Int32,app_pm_back.DTO.FerramentaTipoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Deletar(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
         </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController">
             <summary>
@@ -285,11 +750,12 @@
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.Atualizar(System.Int64,app_pm_back.DTO.PlanoManutencaoDto)">
             <summary>
-            Atualiza um objeto do modelo
+            Atualiza um registro existente.
             </summary>
-            <param name="id">Id do plano na rota</param>
-            <param name="dto">Objeto a ser atualizado</param>
-            <returns>Novo objeto</returns>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.Deletar(System.Int32)">
             <summary>
@@ -307,20 +773,214 @@
             Endpoints de tarefas por tipo de manutencao.
             </summary>
         </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.#ctor(app_pm_back.Services.Manutencao.TarefaService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.TarefaController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Criar(app_pm_back.DTO.TarefaDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Listar(System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.BuscarPorId(System.Int32)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Atualizar(System.Int32,app_pm_back.DTO.TarefaDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Deletar(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController">
             <summary>
             Endpoints de cadastro de tipo de manutencao CEP.
             </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.#ctor(app_pm_back.Services.Manutencao.TipoManutencaoCepService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.Criar(app_pm_back.DTO.TipoManutencaoCepDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.Listar(System.String)">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.BuscarPorId(System.Int32)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.Atualizar(System.Int32,app_pm_back.DTO.TipoManutencaoCepDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.Deletar(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
         </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController">
             <summary>
             Endpoints de tipo de manutencao .
             </summary>
         </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.#ctor(app_pm_back.Services.Manutencao.TipoManutencaoService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Criar(app_pm_back.DTO.TipoManutencaoDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.BuscarPorId(System.Int32)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Atualizar(System.Int32,app_pm_back.DTO.TipoManutencaoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Deletar(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController">
             <summary>
             Endpoints de tipo de plano .
             </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.#ctor(app_pm_back.Services.Manutencao.TipoPlanoService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Criar(System.Int32,app_pm_back.DTO.TipoPlanoDto,app_pm_back.Data.AppDbContext)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="tipo">Parâmetro do método.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <param name="context">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.BuscarPorId(System.Int32)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.ListarPorTipo(System.Int32)">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <param name="tipo">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Atualizar(System.Int32,app_pm_back.DTO.TipoPlanoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Deletar(System.Int32)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
         <member name="T:app_pm_back.Data.AppDbContext">
             <summary>
@@ -502,6 +1162,11 @@
         <member name="P:app_pm_back.DTO.UsuarioSapDto.IdEscopo">
             <summary>
             Escopo externo (apenas o ID).
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.BuscaOrdemNotaDto">
+            <summary>
+            Classe BuscaOrdemNotaDto.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.BuscaOrdemNotaDto.StatusNota">
@@ -2074,6 +2739,66 @@
             Registros de CTM associados.
             </summary>
         </member>
+        <member name="T:app_pm_back.Models.ErrorReport.ExceptionInfo">
+            <summary>
+            Classe ExceptionInfo.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Models.ErrorReport.ExceptionInfo.IncrementLight">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="_light">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Models.ErrorReport.ExceptionInfo.IncrementModerate">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="_moderate">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Models.ErrorReport.ExceptionInfo.IncrementCritical">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="_critical">Parâmetro do método.</param>
+        </member>
+        <member name="T:app_pm_back.Models.ResetInfo">
+            <summary>
+            Classe ResetInfo.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.ResetInfo.Forced">
+            <summary>
+            Obtém ou define o valor de Forced.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.ResetInfo.NotFound">
+            <summary>
+            Obtém ou define o valor de NotFound.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.UnixMillisecondsDateTimeConverter">
+            <summary>
+            Classe UnixMillisecondsDateTimeConverter.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Models.UnixMillisecondsDateTimeConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="reader">Parâmetro do método.</param>
+            <param name="typeToConvert">Parâmetro do método.</param>
+            <param name="options">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Models.UnixMillisecondsDateTimeConverter.Write(System.Text.Json.Utf8JsonWriter,System.DateTime,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="writer">Parâmetro do método.</param>
+            <param name="value">Parâmetro do método.</param>
+            <param name="options">Parâmetro do método.</param>
+        </member>
         <member name="P:app_pm_back.Interfaces.IClassifiable.Classificacao">
             <summary>
             O resultado do tipo da nota
@@ -2111,6 +2836,35 @@
         <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
             <summary>
             Rotas para planilhas
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.AnnexService">
+            <summary>
+            Classe AnnexService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.AnnexService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.AnnexService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.AnnexService.UploadAnexo(Microsoft.AspNetCore.Http.IFormFile,System.Nullable{System.Int64},System.Nullable{System.Int64},System.String,app_pm_back.Models.Domain.CategoriaAnexo)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="file">Parâmetro do método.</param>
+            <param name="tipoReferencia">Parâmetro do método.</param>
+            <param name="categoria">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.BaseCrudService`1">
+            <summary>
+            Classe BaseCrudService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="!:BaseCrudService"/>.
             </summary>
         </member>
         <member name="M:app_pm_back.Services.BaseCrudService`1.CreateAsync(`0)">
@@ -2173,6 +2927,11 @@
             </summary>
             <typeparam name="T">Tipo genérico para qualquer parâmetro classificável (nota ou ordem)</typeparam>
         </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.#ctor(app_pm_back.Data.AppDbContext,teste_catboost_cs.Cbm,teste_catboost_cs.ModelMeta)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="!:ClassificationService"/>.
+            </summary>
+        </member>
         <member name="M:app_pm_back.Services.ClassificationService`1.HumanClassification(System.Int64,System.String,System.String)">
             <summary>
             Classificação manual de notas/ordens.
@@ -2188,15 +2947,117 @@
             Classificação de notas/ordens com base no modelo Catboost.
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.NormalizeAsciiLower(System.String,System.String)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="columnName">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
         <member name="T:app_pm_back.Services.GenericSearchService">
             <summary>
             Classe para busca genérica entre as tabelas do banco de dados 
             </summary>
         </member>
+        <member name="T:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="Notas">Parâmetro do método.</param>
+            <param name="Ordens">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.#ctor(System.Collections.Generic.IReadOnlyList{System.Object},System.Collections.Generic.IReadOnlyList{System.Object})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="Notas">Parâmetro do método.</param>
+            <param name="Ordens">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="P:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.Notas">
+            <summary>Parâmetro do método.</summary>
+        </member>
+        <member name="P:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.Ordens">
+            <summary>Parâmetro do método.</summary>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.GenericSearchService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarPorNomeAsync(System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="tabela">Parâmetro do método.</param>
+            <param name="campo">Parâmetro do método.</param>
+            <param name="nome">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarPorCampoAsync(System.String,System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="tabela">Parâmetro do método.</param>
+            <param name="campo">Parâmetro do método.</param>
+            <param name="valor">Parâmetro do método.</param>
+            <param name="parcial">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarNotaOrdemAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="busca">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.AtivoGerald(System.Int32)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="ativo">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
         <member name="T:app_pm_back.Services.ImportGhostHelper">
             <summary>
             Cria registros "fantasma" para referencias que ainda nao existem no banco.
             </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureUsuariosSapAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="context">Parâmetro do método.</param>
+            <param name="ids">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsurePlanosAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="context">Parâmetro do método.</param>
+            <param name="codigos">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureNotasAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="context">Parâmetro do método.</param>
+            <param name="ids">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureGpmAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="context">Parâmetro do método.</param>
+            <param name="ids">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureImobilizadosAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="context">Parâmetro do método.</param>
+            <param name="ids">Parâmetro do método.</param>
         </member>
         <member name="T:app_pm_back.Services.ImportMergeHelper">
             <summary>
@@ -2211,6 +3072,456 @@
             <param name="source"></param>
             <param name="ignoreProperties"></param>
             <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.ImobilizadoService">
+            <summary>
+            Classe ImobilizadoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.ImobilizadoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.ImobilizadoService"/>.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.UsuarioService">
+            <summary>
+            Classe UsuarioService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.UsuarioService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.UsuarioService"/>.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.CpmService">
+            <summary>
+            Classe CpmService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.CpmService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.CpmService"/>.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.CtmService">
+            <summary>
+            Classe CtmService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.CtmService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.CtmService"/>.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.GpmService">
+            <summary>
+            Classe GpmService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.GpmService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.GpmService"/>.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.DadosRenovacaoService">
+            <summary>
+            Classe DadosRenovacaoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.Manutencao.DadosRenovacaoService})">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.DadosRenovacaoService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.ImportarDadosNotaAsync(System.Collections.Generic.List{System.Int64},System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="idsNotas">Parâmetro do método.</param>
+            <param name="idsItensNota">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.ImportarDadosOrdemAsync(System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="idsOrdens">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.CadastraDadosRenovacaoAsync(System.Collections.Generic.List{System.Int64},System.Boolean)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="ids">Parâmetro do método.</param>
+            <param name="ehNota">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.EstrategiaService">
+            <summary>
+            Classe EstrategiaService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.EstrategiaService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.EstrategiaService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.EstrategiaService.BuscarAsync(System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.FerramentaService">
+            <summary>
+            Classe FerramentaService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.FerramentaService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.BuscarPorTipoManutencaoAsync(System.Int32)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="tipoManutencaoId">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.ItemNotaService">
+            <summary>
+            Classe ItemNotaService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.ItemNotaService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.ItemNotaService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.ItemNotaService.ImportarItensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.ItemNotaModel})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="itens">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.ItemNotaService.GetItemsByNotaIdAsync(System.Int64)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.NotaManutencaoService">
+            <summary>
+            Classe NotaManutencaoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.NotaManutencaoService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.ImportarNotasEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="notas">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.GetFichasPorAtivoAsync(System.Int32,System.String)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="ativo">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.OrdemService">
+            <summary>
+            Classe OrdemService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.OrdemService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ImportarOrdensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="ordens">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.GetFichasPorAtivoAsync(System.Int32,System.String)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="ativo">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.AlmoxarifadoService">
+            <summary>
+            Classe AlmoxarifadoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.AlmoxarifadoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.AlmoxarifadoService"/>.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.PlanoManutencaoService">
+            <summary>
+            Classe PlanoManutencaoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.PlanoManutencaoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.PlanoManutencaoService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.PlanoManutencaoService.CreatePlanosEmMassaAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.PlanoModel})">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="planos">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.PlanoManutencaoService.CreateComTiposAsync(app_pm_back.Models.Domain.PlanoModel)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="novo">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.TarefaService">
+            <summary>
+            Classe TarefaService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TarefaService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.TarefaService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TarefaService.BuscarPorTipoManutencaoAsync(System.Int32)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="tipoManutencaoId">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.TipoEstrategiaService">
+            <summary>
+            Classe TipoEstrategiaService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TipoEstrategiaService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.TipoEstrategiaService"/>.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.TipoManutencaoCepService">
+            <summary>
+            Classe TipoManutencaoCepService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TipoManutencaoCepService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.TipoManutencaoCepService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TipoManutencaoCepService.BuscarPorTipoAtivoAsync(System.String)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="tipoAtivo">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.TipoManutencaoService">
+            <summary>
+            Classe TipoManutencaoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TipoManutencaoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.TipoManutencaoService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TipoManutencaoService.GetCompletoByIdAsync(System.Int32)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TipoManutencaoService.UpdateBasicoAsync(app_pm_back.Models.Domain.TipoManutencaoModel)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="atualizado">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.TipoPlanoService">
+            <summary>
+            Classe TipoPlanoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TipoPlanoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.TipoPlanoService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TipoPlanoService.GetCompletoByIdAsync(System.Int32)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TipoPlanoService.GetTodosByTipo(System.String)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="categoria">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TipoPlanoService.CreateComCopiaAsync(app_pm_back.Models.Domain.TipoPlanoModel)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="novo">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TipoPlanoService.UpdateComListasAsync(app_pm_back.Models.Domain.TipoPlanoModel)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="atualizado">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Services.IReportService.CriticalException(app_pm_back.Models.Status)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="status">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.IReportService.ModerateException(app_pm_back.Models.Status)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="status">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.IReportService.LightException(app_pm_back.Models.Status)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="running">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.IReportService.Reset">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.IReportService.GetStatus">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.IReportService.GetReport">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.ReportService">
+            <summary>
+            Classe ReportService.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Services.ReportService.Last">
+            <summary>
+            Obtém ou define o valor de Last.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ReportService.GetReport">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.ReportService.CriticalException(app_pm_back.Models.Status)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="status">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.ReportService.ModerateException(app_pm_back.Models.Status)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="status">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.ReportService.LightException(app_pm_back.Models.Status)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="running">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.ReportService.Reset">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ReportService.GetStatus">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.SpreadsheetService">
+            <summary>
+            Classe SpreadsheetService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.SpreadsheetService.#ctor(api.Communications.Service.Impl.Data.ConvertService)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.SpreadsheetService"/>.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.SpreadsheetService.ResultadoPlanilha">
+            <summary>
+            Classe ResultadoPlanilha.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Services.SpreadsheetService.ResultadoPlanilha.TipoIdentificado">
+            <summary>
+            Obtém ou define o valor de TipoIdentificado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Services.SpreadsheetService.ResultadoPlanilha.Notas">
+            <summary>
+            Obtém ou define o valor de Notas.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Services.SpreadsheetService.ResultadoPlanilha.Ordens">
+            <summary>
+            Obtém ou define o valor de Ordens.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Services.SpreadsheetService.ResultadoPlanilha.Itens">
+            <summary>
+            Obtém ou define o valor de Itens.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.SpreadsheetService.ReadNotasSpreadSheetAsync(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="spreadSheet">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
         </member>
         <member name="T:teste_catboost_cs.Cbm">
             <summary>
@@ -2248,6 +3559,33 @@
             <summary>
             Classe interna para interoperação com a biblioteca nativa CatBoost.
             </summary>
+        </member>
+        <member name="T:api.Communications.Service.Impl.Data.ConvertService">
+            <summary>
+            Classe ConvertService.
+            </summary>
+        </member>
+        <member name="M:api.Communications.Service.Impl.Data.ConvertService.ConvertXlsxStreamToCsvFileAsync(System.IO.Stream,System.String,System.Int32,System.Char,System.Boolean,System.Boolean,System.Int32)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="xlsxStream">Parâmetro do método.</param>
+            <param name="csvPath">Parâmetro do método.</param>
+        </member>
+        <member name="M:api.Communications.Service.Impl.Data.ConvertService.ConvertXlsxStreamToCsvStreamAsync(System.IO.Stream,System.IO.Stream,System.Text.Encoding,System.Int32,System.Char,System.Boolean,System.Int32,System.Boolean)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="xlsxStream">Parâmetro do método.</param>
+            <param name="outputStream">Parâmetro do método.</param>
+            <param name="encoding">Parâmetro do método.</param>
+        </member>
+        <member name="M:api.Communications.Service.Impl.Data.ConvertService.ConvertXlsxStreamToCsvMemoryAsync(System.IO.Stream,System.Int32,System.Char,System.Boolean,System.Boolean,System.Int32)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="xlsxStream">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
         </member>
     </members>
 </doc>

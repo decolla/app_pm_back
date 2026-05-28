@@ -3,12 +3,22 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.Manutencao;
+/// <summary>
+/// Classe EstrategiaService.
+/// </summary>
 
 public class EstrategiaService : BaseCrudService<EstrategiaModel>
 {
+ /// <summary>
+ /// Inicializa uma nova instância da classe <see cref="EstrategiaService"/>.
+ /// </summary>
  public EstrategiaService(AppDbContext context) : base(context)
  {
  }
+ /// <summary>
+ /// Obtém um registro específico.
+ /// </summary>
+ /// <returns>Resultado da operação.</returns>
 
  public async Task<List<EstrategiaModel>> BuscarAsync(
  int? id,

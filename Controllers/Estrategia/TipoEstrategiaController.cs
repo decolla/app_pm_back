@@ -19,6 +19,9 @@ public class TipoEstrategiaController : ControllerBase
     private readonly TipoEstrategiaService _tipoEstrategiaService;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="TipoEstrategiaController"/>.
+    /// </summary>
     public TipoEstrategiaController(TipoEstrategiaService tipoEstrategiaService, IMapper mapper)
     {
         _tipoEstrategiaService = tipoEstrategiaService;

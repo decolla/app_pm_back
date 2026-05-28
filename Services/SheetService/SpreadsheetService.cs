@@ -8,23 +8,49 @@ using Microsoft.VisualBasic.FileIO;
 using api.Communications.Service.Impl.Data;
 
 namespace app_pm_back.Services;
+/// <summary>
+/// Classe SpreadsheetService.
+/// </summary>
 
 public class SpreadsheetService
 {
  private readonly ConvertService _convertService;
+ /// <summary>
+ /// Inicializa uma nova instância da classe <see cref="SpreadsheetService"/>.
+ /// </summary>
 
  public SpreadsheetService(ConvertService convertService)
  {
  _convertService = convertService;
  }
+ /// <summary>
+ /// Classe ResultadoPlanilha.
+ /// </summary>
 
  public class ResultadoPlanilha
  {
+ /// <summary>
+ /// Obtém ou define o valor de TipoIdentificado.
+ /// </summary>
  public string TipoIdentificado { get; set; } = "DESCONHECIDO";
+ /// <summary>
+ /// Obtém ou define o valor de Notas.
+ /// </summary>
  public List<NotaModel> Notas { get; set; } = new();
+ /// <summary>
+ /// Obtém ou define o valor de Ordens.
+ /// </summary>
  public List<OrdemModel> Ordens { get; set; } = new();
+ /// <summary>
+ /// Obtém ou define o valor de Itens.
+ /// </summary>
  public List<ItemNotaModel> Itens { get; set; } = new();
  }
+ /// <summary>
+ /// Executa a ação correspondente.
+ /// </summary>
+ /// <param name="spreadSheet">Parâmetro do método.</param>
+ /// <returns>Resultado da operação.</returns>
 
  public async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(IFormFile spreadSheet)
  {

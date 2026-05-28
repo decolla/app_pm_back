@@ -3,12 +3,22 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.Manutencao;
+/// <summary>
+/// Classe OrdemService.
+/// </summary>
 
 public class OrdemService : BaseCrudService<OrdemModel>
 {
+ /// <summary>
+ /// Inicializa uma nova instância da classe <see cref="OrdemService"/>.
+ /// </summary>
  public OrdemService(AppDbContext context) : base(context)
  {
  }
+ /// <summary>
+ /// Executa a ação correspondente.
+ /// </summary>
+ /// <param name="ordens">Parâmetro do método.</param>
 
  public async Task ImportarOrdensEmLoteSeguroAsync(List<OrdemModel> ordens)
  {
@@ -47,6 +57,11 @@ public class OrdemService : BaseCrudService<OrdemModel>
 
  await _context.SaveChangesAsync();
  }
+ /// <summary>
+ /// Obtém um registro específico.
+ /// </summary>
+ /// <param name="ativo">Parâmetro do método.</param>
+ /// <returns>Resultado da operação.</returns>
  
  public async Task<object> GetFichasPorAtivoAsync(int ativo, string? tipoOrdem)
  {

@@ -17,10 +17,19 @@ public class GenericSearchService
     private readonly DbSet<OrdemModel> _ordemModels;
     private readonly DbSet<PlanoModel> _planoModels;
     private static readonly Dictionary<string, Type> Tabelas = BuildTabelas();
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="Notas">Parâmetro do método.</param>
+    /// <param name="Ordens">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
 
     public record NotaOrdemSearchResult(
         IReadOnlyList<object> Notas,
         IReadOnlyList<object> Ordens);
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="GenericSearchService"/>.
+    /// </summary>
 
     public GenericSearchService(AppDbContext context)
     {
@@ -29,6 +38,13 @@ public class GenericSearchService
         _ordemModels = context.PM_Ordens;
         _planoModels = context.PM_Planos;
     }
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <param name="tabela">Parâmetro do método.</param>
+    /// <param name="campo">Parâmetro do método.</param>
+    /// <param name="nome">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
     
     public Task<IReadOnlyList<object>> BuscarPorNomeAsync(
         string tabela,
@@ -52,6 +68,14 @@ public class GenericSearchService
                 .ToList(),
             StringComparer.OrdinalIgnoreCase);
     }
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <param name="tabela">Parâmetro do método.</param>
+    /// <param name="campo">Parâmetro do método.</param>
+    /// <param name="valor">Parâmetro do método.</param>
+    /// <param name="parcial">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
 
     public async Task<IReadOnlyList<object>> BuscarPorCampoAsync(
         string tabela,
@@ -82,6 +106,11 @@ public class GenericSearchService
 
         return await task.ConfigureAwait(false);
     }
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <param name="busca">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
 
     public async Task<NotaOrdemSearchResult> BuscarNotaOrdemAsync(
         dynamic busca,
@@ -345,6 +374,11 @@ public class GenericSearchService
                 p => p.PropertyType.GetGenericArguments()[0],
                 StringComparer.OrdinalIgnoreCase);
     }
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="ativo">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
     
     public async Task<object?> AtivoGerald(int ativo)
     {

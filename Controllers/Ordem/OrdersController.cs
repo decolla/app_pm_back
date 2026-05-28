@@ -18,6 +18,9 @@ public class OrdersController : ControllerBase
     private readonly ClassificationService<OrdemModel> _classificationService;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="OrdersController"/>.
+    /// </summary>
     public OrdersController(
         OrdemService ordemService,
         ClassificationService<OrdemModel> classificationService,

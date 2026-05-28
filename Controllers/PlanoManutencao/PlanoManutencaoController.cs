@@ -115,6 +115,13 @@ public class PlanoManutencaoController : ControllerBase
     /// <param name="dto">Objeto a ser atualizado</param>
     /// <returns>Novo objeto</returns>
     // [HttpPut]
+    /// <summary>
+    /// Atualiza um registro existente.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpPut("{id:long}")]
     public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] PlanoManutencaoDto dto)
     {

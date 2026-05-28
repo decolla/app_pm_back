@@ -3,12 +3,18 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 namespace app_pm_back.Services.Manutencao;
+/// <summary>
+/// Classe DadosRenovacaoService.
+/// </summary>
 
 
 public class DadosRenovacaoService
 {
  private readonly AppDbContext _context;
  private readonly ILogger<DadosRenovacaoService> _logger;
+ /// <summary>
+ /// Inicializa uma nova instância da classe <see cref="DadosRenovacaoService"/>.
+ /// </summary>
 
  public DadosRenovacaoService(AppDbContext context, ILogger<DadosRenovacaoService> logger)
  {
@@ -17,6 +23,13 @@ public class DadosRenovacaoService
  }
  
 //Faz tratamento em caso de notas +itens
+/// <summary>
+/// Executa a ação correspondente.
+/// </summary>
+/// <param name="idsNotas">Parâmetro do método.</param>
+/// <param name="idsItensNota">Parâmetro do método.</param>
+/// <returns>Resultado da operação.</returns>
+/// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
 public async Task<int> ImportarDadosNotaAsync(
  List<long> idsNotas,
  List<int> idsItensNota)
@@ -147,6 +160,12 @@ private static bool ContemPalavraChaveItem(string? causa, string? sintoma)
 }
 
 //Faz tratamento em caso de ordem
+/// <summary>
+/// Executa a ação correspondente.
+/// </summary>
+/// <param name="idsOrdens">Parâmetro do método.</param>
+/// <returns>Resultado da operação.</returns>
+/// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
 public async Task<int> ImportarDadosOrdemAsync(
  List<long> idsOrdens)
  {
@@ -205,6 +224,13 @@ public async Task<int> ImportarDadosOrdemAsync(
  }
 
  }
+ /// <summary>
+ /// Executa a ação correspondente.
+ /// </summary>
+ /// <param name="ids">Parâmetro do método.</param>
+ /// <param name="ehNota">Parâmetro do método.</param>
+ /// <returns>Resultado da operação.</returns>
+ /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
  
  public async Task<int> CadastraDadosRenovacaoAsync(
  List<long> ids,

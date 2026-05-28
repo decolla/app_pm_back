@@ -9,6 +9,11 @@ namespace app_pm_back.Services;
 /// </summary>
 public static class ImportGhostHelper
 {
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="context">Parâmetro do método.</param>
+    /// <param name="ids">Parâmetro do método.</param>
     public static async Task EnsureUsuariosSapAsync(AppDbContext context, IEnumerable<int?> ids)
     {
         var idsList = ids.Where(id => id.HasValue).Select(id => id!.Value).Distinct().ToList();
@@ -33,6 +38,11 @@ public static class ImportGhostHelper
         await context.PM_Usuarios.AddRangeAsync(novos);
         await context.SaveChangesAsync();
     }
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="context">Parâmetro do método.</param>
+    /// <param name="codigos">Parâmetro do método.</param>
 
     public static async Task EnsurePlanosAsync(AppDbContext context, IEnumerable<long?> codigos)
     {
@@ -71,6 +81,11 @@ public static class ImportGhostHelper
         await context.PM_Planos.AddRangeAsync(novos);
         await context.SaveChangesAsync();
     }
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="context">Parâmetro do método.</param>
+    /// <param name="ids">Parâmetro do método.</param>
 
     public static async Task EnsureNotasAsync(AppDbContext context, IEnumerable<long?> ids)
     {
@@ -95,6 +110,11 @@ public static class ImportGhostHelper
         await context.PM_Notas.AddRangeAsync(novos);
         await context.SaveChangesAsync();
     }
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="context">Parâmetro do método.</param>
+    /// <param name="ids">Parâmetro do método.</param>
 
     public static async Task EnsureGpmAsync(AppDbContext context, IEnumerable<int?> ids)
     {
@@ -133,6 +153,11 @@ public static class ImportGhostHelper
         await context.PM_Gpms.AddRangeAsync(novos);
         await context.SaveChangesAsync();
     }
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="context">Parâmetro do método.</param>
+    /// <param name="ids">Parâmetro do método.</param>
 
     public static async Task EnsureImobilizadosAsync(AppDbContext context, IEnumerable<int?> ids)
     {

@@ -6,12 +6,23 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace app_pm_back.Services.Manutencao;
+/// <summary>
+/// Classe FerramentaService.
+/// </summary>
 
 public class FerramentaService : BaseCrudService<FerramentaModel>
 {
+ /// <summary>
+ /// Inicializa uma nova instância da classe <see cref="FerramentaService"/>.
+ /// </summary>
  public FerramentaService(AppDbContext context) : base(context)
  {
  }
+ /// <summary>
+ /// Obtém um registro específico.
+ /// </summary>
+ /// <param name="tipoManutencaoId">Parâmetro do método.</param>
+ /// <returns>Resultado da operação.</returns>
 
  public async Task<List<FerramentaModel>> BuscarPorTipoManutencaoAsync(int tipoManutencaoId)
  {

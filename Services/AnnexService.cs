@@ -3,15 +3,28 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services;
+/// <summary>
+/// Classe AnnexService.
+/// </summary>
 
 public class AnnexService
 {
     private readonly AppDbContext _context;
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="AnnexService"/>.
+    /// </summary>
 
     public AnnexService(AppDbContext context)
     {
         _context = context;
     }
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="file">Parâmetro do método.</param>
+    /// <param name="tipoReferencia">Parâmetro do método.</param>
+    /// <param name="categoria">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
 
     public async Task<object> UploadAnexo(IFormFile file, long? notaId, long? ordemId, string tipoReferencia, CategoriaAnexo categoria)
     {

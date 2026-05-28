@@ -18,12 +18,20 @@ public class TarefaController : ControllerBase
     private readonly TarefaService _service;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="TarefaController"/>.
+    /// </summary>
     public TarefaController(TarefaService service, IMapper mapper)
     {
         _service = service;
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Cria um novo registro.
+    /// </summary>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>Resultado da operação.</returns>
     [HttpPost]
     public async Task<IActionResult> Criar([FromBody] TarefaDto dto)
     {
@@ -37,6 +45,10 @@ public class TarefaController : ControllerBase
         return Ok(criado);
     }
 
+    /// <summary>
+    /// Lista os registros cadastrados com paginação.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
     [HttpGet]
     public async Task<IActionResult> Listar([FromQuery] int? tipoManutencaoId)
     {
@@ -49,6 +61,11 @@ public class TarefaController : ControllerBase
         return Ok(await _service.GetAllNotasAsync());
     }
 
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> BuscarPorId([FromRoute] int id)
     {
@@ -57,6 +74,12 @@ public class TarefaController : ControllerBase
         return Ok(obj);
     }
 
+    /// <summary>
+    /// Atualiza um registro existente.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>Resultado da operação.</returns>
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TarefaDto dto)
     {
@@ -71,6 +94,11 @@ public class TarefaController : ControllerBase
         return Ok(atualizado);
     }
 
+    /// <summary>
+    /// Exclui um registro pelo seu identificador.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Deletar([FromRoute] int id)
     {

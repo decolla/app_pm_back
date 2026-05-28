@@ -19,12 +19,21 @@ public class TipoManutencaoController : ControllerBase
     private readonly TipoManutencaoService _tipoManutencaoService;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="TipoManutencaoController"/>.
+    /// </summary>
     public TipoManutencaoController(TipoManutencaoService tipoManutencaoService, IMapper mapper)
     {
         _tipoManutencaoService = tipoManutencaoService;
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Cria um novo registro.
+    /// </summary>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpPost]
     public async Task<IActionResult> Criar([FromBody] TipoManutencaoDto dto)
     {
@@ -45,6 +54,11 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Lista os registros cadastrados com paginação.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet]
     public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
@@ -72,6 +86,11 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém o total de registros cadastrados.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet("count")]
     public async Task<IActionResult> Contar()
     {
@@ -86,6 +105,12 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> BuscarPorId(int id)
     {
@@ -102,6 +127,13 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Atualiza um registro existente.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TipoManutencaoDto dto)
     {
@@ -140,6 +172,12 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Exclui um registro pelo seu identificador.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Deletar(int id)
     {
@@ -173,12 +211,23 @@ public class TipoPlanoController : ControllerBase
     private readonly TipoPlanoService _tipoPlanoService;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="TipoPlanoController"/>.
+    /// </summary>
     public TipoPlanoController(TipoPlanoService tipoPlanoService, IMapper mapper)
     {
         _tipoPlanoService = tipoPlanoService;
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Cria um novo registro.
+    /// </summary>
+    /// <param name="tipo">Parâmetro do método.</param>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <param name="context">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpPost("{tipo:int}")]
     public async Task<IActionResult> Criar(
         [FromRoute] int tipo,
@@ -248,6 +297,11 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Lista os registros cadastrados com paginação.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet]
     public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
@@ -275,6 +329,11 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém o total de registros cadastrados.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet("count")]
     public async Task<IActionResult> Contar()
     {
@@ -289,6 +348,12 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet("{id:int}")]
     public async Task<IActionResult> BuscarPorId(int id)
     {
@@ -305,6 +370,12 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Lista os registros cadastrados com paginação.
+    /// </summary>
+    /// <param name="tipo">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet("tipado/{tipo:int}")]
     public async Task<IActionResult> ListarPorTipo([FromRoute] int tipo)
     {
@@ -326,6 +397,13 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Atualiza um registro existente.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TipoPlanoDto dto)
     {
@@ -378,6 +456,12 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Exclui um registro pelo seu identificador.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Deletar(int id)
     {

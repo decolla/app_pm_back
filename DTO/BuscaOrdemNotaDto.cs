@@ -2,6 +2,9 @@ using System;
 using app_pm_back.Models.Domain;
 
 namespace app_pm_back.Models;
+/// <summary>
+/// Classe BuscaOrdemNotaDto.
+/// </summary>
 
 public class BuscaOrdemNotaDto
 {

@@ -19,6 +19,9 @@ public class ClassificationService<T> where T : class, IClassifiable
     protected readonly DbSet<T> _dbSet;
     protected readonly Cbm? _cbm;
     protected readonly ModelMeta? _meta;
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="ClassificationService"/>.
+    /// </summary>
 
     public ClassificationService(AppDbContext context, Cbm? modeloCatboost = null, ModelMeta? meta = null)
     {
@@ -165,6 +168,11 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         return notasAtualizadas;
     }
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="columnName">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
 
     public static string NormalizeAsciiLower(string? s, string columnName)
     {

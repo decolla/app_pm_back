@@ -4,10 +4,16 @@ using Microsoft.EntityFrameworkCore;
 namespace app_pm_back.Services;
 
 // O <T> significa que essa classe aceita qualquer tipo de entidade (NotaModel, OrdemModel, etc)
+/// <summary>
+/// Classe BaseCrudService.
+/// </summary>
 public abstract class BaseCrudService<T> where T : class
 {
     protected readonly AppDbContext _context;
     protected readonly DbSet<T> _dbSet;
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="BaseCrudService"/>.
+    /// </summary>
 
     public BaseCrudService(AppDbContext context)
     {

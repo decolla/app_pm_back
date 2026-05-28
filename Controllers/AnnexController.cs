@@ -14,11 +14,19 @@ public class AnnexController : ControllerBase
 {
     private readonly AnnexService _annexService;
 
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="AnnexController"/>.
+    /// </summary>
     public AnnexController(AnnexService annexService)
     {
         _annexService = annexService;
     }
 
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="request">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
     [HttpPost("upload")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadArquivo([FromForm] UploadAnnexRequestDto request)
@@ -33,10 +41,16 @@ public class AnnexController : ControllerBase
             return BadRequest(new { message = error });
         }
 
-        dynamic result = await _annexService.UploadAnexo(request.Arquivo, notaId, ordemId, request.TipoReferencia, request.Categoria);
+        dynamic result = await _annexService.UploadAnexo(request.Arquivo, notaId, ordemId, request.TipoReferencia,
+            request.Categoria);
         return Ok(new { message = $"Arquivo enviado com sucesso {result.IdAnexo}" });
     }
 
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
     [HttpGet("{id:long}")]
     public async Task<IActionResult> DownloadArquivo([FromRoute] long id)
     {
@@ -50,7 +64,13 @@ public class AnnexController : ControllerBase
 
         return File(anexo.Value.Dados, anexo.Value.MimeType, anexo.Value.Nome);
     }
-    
+
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <param name="referenciaId">Parâmetro do método.</param>
+    /// <param name="tipoReferencia">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
     [HttpGet("referencia/{referenciaId:long}/{tipoReferencia}")]
     public async Task<IActionResult> BuscarArquivo([FromRoute] long referenciaId, [FromRoute] string tipoReferencia)
     {
@@ -71,7 +91,8 @@ public class AnnexController : ControllerBase
         return Ok(list);
     }
 
-    private static bool TryResolveReferencia(UploadAnnexRequestDto request, out long? notaId, out long? ordemId, out string? error)
+    private static bool TryResolveReferencia(UploadAnnexRequestDto request, out long? notaId, out long? ordemId,
+        out string? error)
     {
         notaId = request.NotaId;
         ordemId = request.OrdemId;
@@ -88,7 +109,8 @@ public class AnnexController : ControllerBase
             return true;
         }
 
-        if (request.ReferenciaId.HasValue && request.ReferenciaId > 0 && !string.IsNullOrWhiteSpace(request.TipoReferencia))
+        if (request.ReferenciaId.HasValue && request.ReferenciaId > 0 &&
+            !string.IsNullOrWhiteSpace(request.TipoReferencia))
         {
             if (Enum.TryParse<TipoReferencia>(request.TipoReferencia, true, out var tipo))
             {
@@ -109,7 +131,7 @@ public class AnnexController : ControllerBase
         error = "Informe NotaId, OrdemId ou um par de ReferenciaId/TipoReferencia valido.";
         return false;
     }
-    
+
     public enum TipoReferencia
     {
         Nota,

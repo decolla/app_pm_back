@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
 
+/// <summary>
+/// Classe ImobilizadosController.
+/// </summary>
 [ApiController]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/imobilizados")]
 public class ImobilizadosController : ControllerBase
@@ -14,12 +17,21 @@ public class ImobilizadosController : ControllerBase
     private readonly IMapper _mapper;
     private readonly string _operador = "imobilizado";
 
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="ImobilizadosController"/>.
+    /// </summary>
     public ImobilizadosController(ImobilizadoService service, IMapper mapper)
     {
         _service = service;
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Cria um novo registro.
+    /// </summary>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpPost]
     public async Task<IActionResult> Criar([FromBody] ImobilizadoDto dto)
     {
@@ -45,6 +57,11 @@ public class ImobilizadosController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Lista os registros cadastrados com paginação.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet]
     public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
@@ -72,6 +89,11 @@ public class ImobilizadosController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém o total de registros cadastrados.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet("count")]
     public async Task<IActionResult> Contar()
     {
@@ -86,6 +108,13 @@ public class ImobilizadosController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Atualiza um registro existente.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] ImobilizadoDto dto)
     {
@@ -121,6 +150,12 @@ public class ImobilizadosController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Exclui um registro pelo seu identificador.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Deletar([FromRoute] int id)
     {

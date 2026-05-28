@@ -3,12 +3,22 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.Manutencao;
+/// <summary>
+/// Classe ItemNotaService.
+/// </summary>
 
 public class ItemNotaService : BaseCrudService<ItemNotaModel>
 {
+ /// <summary>
+ /// Inicializa uma nova instância da classe <see cref="ItemNotaService"/>.
+ /// </summary>
  public ItemNotaService(AppDbContext context) : base(context)
  {
  }
+ /// <summary>
+ /// Executa a ação correspondente.
+ /// </summary>
+ /// <param name="itens">Parâmetro do método.</param>
 
  public async Task ImportarItensEmLoteSeguroAsync(List<ItemNotaModel> itens)
  {
@@ -42,6 +52,11 @@ public class ItemNotaService : BaseCrudService<ItemNotaModel>
 
  await _context.SaveChangesAsync();
  }
+ /// <summary>
+ /// Obtém um registro específico.
+ /// </summary>
+ /// <param name="id">Identificador do registro.</param>
+ /// <returns>Resultado da operação.</returns>
  
  public async Task<List<ItemNotaModel>> GetItemsByNotaIdAsync(long id)
  {

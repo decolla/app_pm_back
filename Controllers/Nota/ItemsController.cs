@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
 
+/// <summary>
+/// Classe ItemsController.
+/// </summary>
 [ApiController]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/items")]
 public class ItemsController : ControllerBase
@@ -13,12 +16,21 @@ public class ItemsController : ControllerBase
     private readonly ItemNotaService _itemNotaService;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="ItemsController"/>.
+    /// </summary>
     public ItemsController(ItemNotaService itemNotaService, IMapper mapper)
     {
         _itemNotaService = itemNotaService;
         _mapper = mapper;
     }
 
+    /// <summary>
+    /// Cria um novo registro.
+    /// </summary>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpPost]
     public async Task<IActionResult> CriarItem([FromBody] ItemNotaManutencaoDto dto)
     {
@@ -44,6 +56,11 @@ public class ItemsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Lista os registros cadastrados com paginação.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet]
     public async Task<IActionResult> ListarItens([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
@@ -71,6 +88,11 @@ public class ItemsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém o total de registros cadastrados.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet("count")]
     public async Task<IActionResult> ContarItens()
     {
@@ -85,6 +107,13 @@ public class ItemsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Atualiza um registro existente.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpPut("{id:int}")]
     public async Task<IActionResult> AtualizarItem([FromRoute] int id, [FromBody] ItemNotaManutencaoDto dto)
     {
@@ -120,6 +149,12 @@ public class ItemsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Exclui um registro pelo seu identificador.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeletarItem(int id)
     {

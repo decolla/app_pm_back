@@ -21,6 +21,9 @@ public class NotasController : ControllerBase
     private readonly ClassificationService<NotaModel> _classificationService;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="NotasController"/>.
+    /// </summary>
     public NotasController(
         NotaManutencaoService notaService,
         ItemNotaService itemNotaService,

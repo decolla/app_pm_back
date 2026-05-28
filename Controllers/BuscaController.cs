@@ -4,17 +4,27 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
 
+/// <summary>
+/// Classe BuscaController.
+/// </summary>
 [ApiController]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/busca")]
 public class BuscaController : ControllerBase
 {
     private readonly GenericSearchService _searchService;
 
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="BuscaController"/>.
+    /// </summary>
     public BuscaController(GenericSearchService searchService)
     {
         _searchService = searchService;
     }
 
+    /// <summary>
+    /// Lista os registros cadastrados com paginação.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
     [HttpGet("tabelas")]
     public IActionResult ListarTabelasCampos()
     {
@@ -22,6 +32,14 @@ public class BuscaController : ControllerBase
         return Ok(tabelas);
     }
 
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <param name="tabela">Parâmetro do método.</param>
+    /// <param name="campo">Parâmetro do método.</param>
+    /// <param name="valor">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet]
     public async Task<IActionResult> BuscarPorCampo(
         [FromQuery] string tabela,
@@ -64,6 +82,13 @@ public class BuscaController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <param name="tabela">Parâmetro do método.</param>
+    /// <param name="nome">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet("nome")]
     public async Task<IActionResult> BuscarPorNome(
         [FromQuery] string tabela,

@@ -3,12 +3,22 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.Manutencao;
+/// <summary>
+/// Classe NotaManutencaoService.
+/// </summary>
 
 public class NotaManutencaoService : BaseCrudService<NotaModel>
 {
+ /// <summary>
+ /// Inicializa uma nova instância da classe <see cref="NotaManutencaoService"/>.
+ /// </summary>
  public NotaManutencaoService(AppDbContext context) : base(context)
  {
  }
+ /// <summary>
+ /// Executa a ação correspondente.
+ /// </summary>
+ /// <param name="notas">Parâmetro do método.</param>
  
  public async Task ImportarNotasEmLoteSeguroAsync(List<NotaModel> notas)
  {
@@ -61,6 +71,11 @@ public class NotaManutencaoService : BaseCrudService<NotaModel>
 
  await _context.SaveChangesAsync();
  }
+ /// <summary>
+ /// Obtém um registro específico.
+ /// </summary>
+ /// <param name="ativo">Parâmetro do método.</param>
+ /// <returns>Resultado da operação.</returns>
 
  public async Task<object> GetFichasPorAtivoAsync(int ativo, string? tipoNota)
  {
