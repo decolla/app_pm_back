@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace app_pm_back.Controllers;
 
 [ApiController]
-[Route("api/V1/Comgas/busca")]
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/busca")]
 public class BuscaController : ControllerBase
 {
     private readonly GenericSearchService _searchService;
@@ -163,7 +163,7 @@ public class BuscaController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar para este ativo: {e.Message}." });
         }
     }
-    
+
     /// <summary>
     /// Busca um plano de manuntenção associado a uma lista de ativos, retorna um objeto com os dados relevantes
     /// </summary>
@@ -195,7 +195,7 @@ public class BuscaController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar para os ativos informados: {e.Message}." });
         }
     }
-    
+
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);

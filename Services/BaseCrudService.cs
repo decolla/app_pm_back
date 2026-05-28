@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services;
 
-// O <T> significa que essa classe aceita qualquer tipo (NotaPetroModel, NoteCongasModel, etc)
+// O <T> significa que essa classe aceita qualquer tipo de entidade (NotaModel, OrdemModel, etc)
 public abstract class BaseCrudService<T> where T : class
 {
     protected readonly AppDbContext _context;
