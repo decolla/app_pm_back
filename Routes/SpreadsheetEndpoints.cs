@@ -16,8 +16,8 @@ public static class SpreadsheetEndpoints
     {
         var group = app.MapGroup("api/V1/planilhas");
 
-        List<long> IdNotas = new List<long>();
-        List<int> IdItens = new List<int>();
+        List<long> idNotas = new List<long>();
+        List<int> idItens = new List<int>();
 
         group.MapPost("/upload", async (
             IFormFile file,
@@ -47,10 +47,10 @@ public static class SpreadsheetEndpoints
                     await notaManutencaoService.ImportarNotasEmLoteSeguroAsync(notasDeduplicadas);
                     var inseridas = notasDeduplicadas.Count;
 
-                    IdNotas = notasDeduplicadas.Select(n => n.IdNota).ToList();
-                    if (IdItens.Count > 1)
+                    idNotas = notasDeduplicadas.Select(n => n.IdNota).ToList();
+                    if (idItens.Count > 1)
                     {
-                        await dadosRenovacaoService.ImportarDadosNotaAsync(IdNotas, IdItens);
+                        await dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
                     }
 
 
@@ -64,8 +64,8 @@ public static class SpreadsheetEndpoints
                     var ordensDeduplicadas = resultadoPlanilha.OrdensCongas
                         .DistinctBy(o => o.IdOrdem).ToList();
                     
-                    var IdOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
-                    await dadosRenovacaoService.ImportarDadosOrdemAsync(IdOrdens);
+                    var idOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
+                    await dadosRenovacaoService.ImportarDadosOrdemAsync(idOrdens);
 
                     await orderCongasService.ImportarOrdensEmLoteSeguroAsync(ordensDeduplicadas);
                     var inseridas = ordensDeduplicadas.Count;
@@ -108,10 +108,10 @@ public static class SpreadsheetEndpoints
                     {
                         await itemNoteCongasService.ImportarItensEmLoteSeguroAsync(itensValidos);
                         
-                        IdItens = itensValidos.Select(i => i.IdItemNota).ToList();
-                        if (IdNotas.Count > 1 )
+                        idItens = itensValidos.Select(i => i.IdItemNota).ToList();
+                        if (idNotas.Count > 1 )
                         {
-                            await dadosRenovacaoService.ImportarDadosNotaAsync(IdNotas, IdItens);
+                            await dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
                         }
                         
                         return Results.Ok(new { message = $"{itensValidos.Count} itens da CONGAS vinculados e salvos!" });
