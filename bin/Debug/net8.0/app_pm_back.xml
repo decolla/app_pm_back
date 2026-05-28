@@ -1074,6 +1074,12 @@
             </summary>
             <example>RestauraAtivo</example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.DescricaoBreve">
+            <summary>
+            Descrição breve ou título resumido da nota.
+            Fornece uma visão rápida do conteúdo da nota para listagens e resumos.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.AnomaliaObservada">
             <summary>
             Descrição detalhada da anomalia, problema ou situação observada.
@@ -1087,11 +1093,6 @@
             Campo livre para documentação de detalhes relevantes não cobertos por outros campos.
             </summary>
             <example>"Verificar histórico de manutenções anteriores. Possível relação com troca de óleo realizada na semana passada."</example>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.DescricaoBreve">
-            <summary>
-            Campo de descrição breve, uma versão resumida das anomalias e observações complementares
-            </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.Classificacao">
             <summary>
@@ -2095,16 +2096,16 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.DtoFix3">
+        <member name="T:app_pm_back.Migrations.InitialCreate">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.DtoFix3.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.DtoFix3.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.DtoFix3.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
