@@ -442,7 +442,70 @@ public class GenericSearchService
             UnidadeCiclo = "Dias",
             DataInicio = ultimoPlano?.DataInicios,
             DataConclusao = ultimoPlano?.DataConclusao,
-            Confiabilidade = 0
+            Confiabilidade = 100
+        };
+    }
+    
+    public async Task<object?> AtivoLucas(int ativo)
+    {
+        OrdemModel? ultimaOrdem = await _ordemModels
+            .Where(o => o.IdAtivo == ativo)
+            .OrderByDescending(o => o.DataCriacao)
+            .FirstOrDefaultAsync();
+        
+        NotaModel? ultimaNota = await _notaModels
+            .Where(o => o.IdAtivo == ativo)
+            .OrderByDescending(o => o.DataAvaria)
+            .FirstOrDefaultAsync();
+        
+        if (ultimaOrdem == null && ultimaNota == null)
+            return null;
+        
+        DateTime? ultimaData = null;
+        long? codigoPlanoParaBuscar = null;
+        
+        if (ultimaOrdem != null && ultimaNota != null)
+        {
+            if (ultimaOrdem.DataCriacao > ultimaNota.DataNota)
+            {
+                ultimaData = ultimaOrdem.DataCriacao;
+                codigoPlanoParaBuscar = ultimaOrdem.IdNota.HasValue ? (long?)ultimaOrdem.IdNota.Value : null; // search using NotaId
+            }
+            else
+            {
+                ultimaData = ultimaNota.DataNota;
+                codigoPlanoParaBuscar = ultimaNota.IdPlano;
+            }
+        }
+        else if (ultimaOrdem != null)
+        {
+            ultimaData = ultimaOrdem.DataCriacao;
+            codigoPlanoParaBuscar = ultimaOrdem.IdNota.HasValue ? (long?)ultimaOrdem.IdNota.Value : null;
+        }
+        else if (ultimaNota != null)
+        {
+            ultimaData = ultimaNota.DataNota;
+            codigoPlanoParaBuscar = ultimaNota.IdPlano; 
+        }
+        
+        PlanoModel? ultimoPlano = null;
+        if (codigoPlanoParaBuscar.HasValue)
+        {
+            ultimoPlano = await _planoModels
+                .Include(p => p.Estrategia)
+                .Where(p => p.IdPlano == codigoPlanoParaBuscar.Value)
+                .FirstOrDefaultAsync();
+        }
+
+        // retornar tipos c do plano, invés das estatégias
+        // ultima data puxar da tabela do lucas
+        return new
+        {
+            Ativo = ativo,
+            UltimaData = ultimaData,
+            ListaRenovacao = new List<int>(),
+            TempoCiclo = ultimoPlano?.Estrategia?.Ciclos,
+            UnidadeCiclo = "Dias",
         };
     }
 }
