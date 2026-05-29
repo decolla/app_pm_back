@@ -108,3 +108,46 @@ public enum OrigemUR
     Ordem = 1,
     Usuario = 2
 }
+
+// ========================= APM ============================
+
+/// <summary>
+/// Tipo de componente do ativo/LI. Usado para requisições no APM específica para ativos/LI
+/// </summary>
+public enum ComponentType
+{
+    // --- Erp ---
+    FlowSensor = 0,                  
+    Shutoff = 1,                    
+    PilotValve = 2,                 
+    Regulator = 3,                  
+
+    // --- Odorant ---
+    FillValveV9 = 4,            
+    ManifoldIn = 5,                  
+    Verometer = 6,                
+    OdorantPump = 7,             
+    OdorantTank = 8,               
+    ManifoldDischarge = 9,          
+    GasFilter = 10,                  
+    ManifoldPneumaticRelay = 11,     
+    Ventsorv = 12,                   
+    ExpansionTank = 13,              
+    RegulatorValve = 14,             
+    AlimentationPanel = 15,          
+    Battery = 16,                    
+    SolarPanel = 17,                 
+    CommunicationInterface = 18,    
+    Controller = 19,                 
+    ChargeControllerPanel = 20,      
+    Plc = 21                        
+}
+
+/// <summary>
+/// Usado para requisições no APM específica para ativos/LI
+/// </summary>
+public enum OriginType
+{
+    GAS = 0,
+    ELETRICO = 1,
+}

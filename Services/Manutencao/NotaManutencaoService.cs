@@ -3,98 +3,98 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.Manutencao;
+
 /// <summary>
 /// Classe NotaManutencaoService.
 /// </summary>
-
 public class NotaManutencaoService : BaseCrudService<NotaModel>
 {
- /// <summary>
- /// Inicializa uma nova instância da classe <see cref="NotaManutencaoService"/>.
- /// </summary>
- public NotaManutencaoService(AppDbContext context) : base(context)
- {
- }
- /// <summary>
- /// Executa a ação correspondente.
- /// </summary>
- /// <param name="notas">Parâmetro do método.</param>
- 
- public async Task ImportarNotasEmLoteSeguroAsync(List<NotaModel> notas)
- {
- if (notas == null || !notas.Any()) return;
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="NotaManutencaoService"/>.
+    /// </summary>
+    public NotaManutencaoService(AppDbContext context) : base(context)
+    {
+    }
 
- var usuariosCriadoresExcel = notas
- .Where(n => n.IdUsuario.HasValue)
- .Select(n => n.IdUsuario!.Value)
- .Distinct()
- .ToList();
+    /// <summary>
+    /// Executa a ação correspondente.
+    /// </summary>
+    /// <param name="notas">Parâmetro do método.</param>
+    public async Task ImportarNotasEmLoteSeguroAsync(List<NotaModel> notas)
+    {
+        if (notas == null || !notas.Any()) return;
 
- var planosExcel = notas
- .Where(n => n.IdPlano.HasValue)
- .Select(n => n.IdPlano!.Value)
- .Distinct()
- .ToList();
+        var usuariosCriadoresExcel = notas
+            .Where(n => n.IdUsuario.HasValue)
+            .Select(n => n.IdUsuario!.Value)
+            .Distinct()
+            .ToList();
 
- await ImportGhostHelper.EnsureUsuariosSapAsync(_context, usuariosCriadoresExcel.Select(id => (int?)id));
- await ImportGhostHelper.EnsurePlanosAsync(_context, planosExcel.Select(id => (long?)id));
+        var planosExcel = notas
+            .Where(n => n.IdPlano.HasValue)
+            .Select(n => n.IdPlano!.Value)
+            .Distinct()
+            .ToList();
 
- var idsNotas = notas.Select(n => n.IdNota).Distinct().ToList();
- var numerosNotas = notas.Select(n => n.NumeroNota).Distinct().ToList();
+        await ImportGhostHelper.EnsureUsuariosSapAsync(_context, usuariosCriadoresExcel.Select(id => (int?)id));
+        await ImportGhostHelper.EnsurePlanosAsync(_context, planosExcel.Select(id => (long?)id));
 
- var existentesPorId = await _context.PM_Notas
- .Where(n => idsNotas.Contains(n.IdNota))
- .ToDictionaryAsync(n => n.IdNota);
+        var idsNotas = notas.Select(n => n.IdNota).Distinct().ToList();
+        var numerosNotas = notas.Select(n => n.NumeroNota).Distinct().ToList();
 
- var existentesPorNumero = await _context.PM_Notas
- .Where(n => numerosNotas.Contains(n.NumeroNota))
- .ToDictionaryAsync(n => n.NumeroNota);
+        var existentesPorId = await _context.PM_Notas
+            .Where(n => idsNotas.Contains(n.IdNota))
+            .ToDictionaryAsync(n => n.IdNota);
 
- var novasNotas = new List<NotaModel>();
- foreach (var nota in notas)
- {
- if (existentesPorId.TryGetValue(nota.IdNota, out var existente) ||
- existentesPorNumero.TryGetValue(nota.NumeroNota, out existente))
- {
- ImportMergeHelper.MergeNonEmpty(existente, nota);
- }
- else
- {
- novasNotas.Add(nota);
- }
- }
+        var existentesPorNumero = await _context.PM_Notas
+            .Where(n => numerosNotas.Contains(n.NumeroNota))
+            .ToDictionaryAsync(n => n.NumeroNota);
 
- if (novasNotas.Any())
- {
- await _dbSet.AddRangeAsync(novasNotas);
- }
+        var novasNotas = new List<NotaModel>();
+        foreach (var nota in notas)
+        {
+            if (existentesPorId.TryGetValue(nota.IdNota, out var existente) ||
+                existentesPorNumero.TryGetValue(nota.NumeroNota, out existente))
+            {
+                ImportMergeHelper.MergeNonEmpty(existente, nota);
+            }
+            else
+            {
+                novasNotas.Add(nota);
+            }
+        }
 
- await _context.SaveChangesAsync();
- }
- /// <summary>
- /// Obtém um registro específico.
- /// </summary>
- /// <param name="ativo">Parâmetro do método.</param>
- /// <returns>Resultado da operação.</returns>
+        if (novasNotas.Any())
+        {
+            await _dbSet.AddRangeAsync(novasNotas);
+        }
 
- public async Task<object> GetFichasPorAtivoAsync(int ativo, string? tipoNota)
- {
- var query = _dbSet.AsQueryable(); 
- 
- query = query.Where(n => n.IdAtivo == ativo);
- 
- var fichas = await query.Select(n => new
- {
- NumerFicha = n.IdNota,
- Data = n.DataNota,
- Tipo = "MG" // default or mock value
- }).ToListAsync();
- 
- return new
- {
- Ativo = ativo,
- Quantidade = fichas.Count,
- Fichas = fichas
- };
- }
+        await _context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <param name="ativo">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
+    public async Task<object> GetFichasPorAtivoAsync(int ativo, string? tipoNota)
+    {
+        var query = _dbSet.AsQueryable();
+
+        query = query.Where(n => n.IdAtivo == ativo);
+
+        var fichas = await query.Select(n => new
+        {
+            NumerFicha = n.IdNota,
+            Data = n.DataNota,
+            Tipo = "MG" // default or mock value
+        }).ToListAsync();
+
+        return new
+        {
+            Ativo = ativo,
+            Quantidade = fichas.Count,
+            Fichas = fichas
+        };
+    }
 }

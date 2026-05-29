@@ -3,71 +3,71 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.Manutencao;
+
 /// <summary>
 /// Classe PlanoManutencaoService.
 /// </summary>
-
 public class PlanoManutencaoService : BaseCrudService<PlanoModel>
 {
- /// <summary>
- /// Inicializa uma nova instância da classe <see cref="PlanoManutencaoService"/>.
- /// </summary>
- public PlanoManutencaoService(AppDbContext context) : base(context)
- {
- }
- /// <summary>
- /// Cria um novo registro.
- /// </summary>
- /// <param name="planos">Parâmetro do método.</param>
- 
- public async Task CreatePlanosEmMassaAsync(List<PlanoModel> planos)
- {
- if (planos.Any())
- {
- await _context.PM_Planos.AddRangeAsync(planos);
- await _context.SaveChangesAsync();
- }
- }
- /// <summary>
- /// Cria um novo registro.
- /// </summary>
- /// <param name="novo">Parâmetro do método.</param>
- /// <returns>Resultado da operação.</returns>
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="PlanoManutencaoService"/>.
+    /// </summary>
+    public PlanoManutencaoService(AppDbContext context) : base(context)
+    {
+    }
 
- public async Task<PlanoModel> CreateComTiposAsync(PlanoModel novo)
- {
- var criado = await CreateAsync(novo);
+    /// <summary>
+    /// Cria um novo registro.
+    /// </summary>
+    /// <param name="planos">Parâmetro do método.</param>
+    public async Task CreatePlanosEmMassaAsync(List<PlanoModel> planos)
+    {
+        if (planos.Any())
+        {
+            await _context.PM_Planos.AddRangeAsync(planos);
+            await _context.SaveChangesAsync();
+        }
+    }
 
- var estrategia = await _context.PM_Estrategias
- .FirstOrDefaultAsync(e => e.IdEstrategia == criado.IdEstrategia);
+    /// <summary>
+    /// Cria um novo registro.
+    /// </summary>
+    /// <param name="novo">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
+    public async Task<PlanoModel> CreateComTiposAsync(PlanoModel novo)
+    {
+        var criado = await CreateAsync(novo);
 
- if (estrategia == null)
- {
- throw new Exception("Estrategia informada nao encontrada.");
- }
+        var estrategia = await _context.PM_Estrategias
+            .FirstOrDefaultAsync(e => e.IdEstrategia == criado.IdEstrategia);
 
- // Get TipoEstrategias for this strategy
- var tiposEstrategias = await _context.PM_TiposEstrategia
- .Where(te => te.IdEstrategia == estrategia.IdEstrategia)
- .ToListAsync();
+        if (estrategia == null)
+        {
+            throw new Exception("Estrategia informada nao encontrada.");
+        }
 
- var tiposPlanos = tiposEstrategias.Select(te => new TipoPlanoModel
- {
- IdPlano = criado.IdPlano,
- IdTipoEstrategia = te.IdTipoEstrategia,
- Dias = te.Dias,
- ToleranciaPositiva = te.ToleranciaPositiva,
- ToleranciaNegativa = te.ToleranciaNegativa,
- Continua = te.Continua,
- Categoria = te.Categoria,
- IdTipoCep = te.IdTipoCep,
- IdTipoManutencao = te.IdTipoManutencao,
- Visivel = true
- }).ToList();
+        // Get TipoEstrategias for this strategy
+        var tiposEstrategias = await _context.PM_TiposEstrategia
+            .Where(te => te.IdEstrategia == estrategia.IdEstrategia)
+            .ToListAsync();
 
- await _context.PM_TiposPlano.AddRangeAsync(tiposPlanos);
- await _context.SaveChangesAsync();
+        var tiposPlanos = tiposEstrategias.Select(te => new TipoPlanoModel
+        {
+            IdPlano = criado.IdPlano,
+            IdTipoEstrategia = te.IdTipoEstrategia,
+            Dias = te.Dias,
+            ToleranciaPositiva = te.ToleranciaPositiva,
+            ToleranciaNegativa = te.ToleranciaNegativa,
+            Continua = te.Continua,
+            Categoria = te.Categoria,
+            IdTipoCep = te.IdTipoCep,
+            IdTipoManutencao = te.IdTipoManutencao,
+            Visivel = true
+        }).ToList();
 
- return criado;
- }
+        await _context.PM_TiposPlano.AddRangeAsync(tiposPlanos);
+        await _context.SaveChangesAsync();
+
+        return criado;
+    }
 }

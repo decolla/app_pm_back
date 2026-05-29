@@ -15,6 +15,12 @@ public class VariavelNotaModel
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int IdVariavel { get; set; }
+    
+    /// <summary>
+    /// Nome da variável registrada. Exemplo: "Temperatura", "Pressão", "Vibração".
+    /// </summary>
+    [MaxLength(200, ErrorMessage = "O nome da variável não pode exceder 200 caracteres.")]
+    public string NomeVariavel { get; set; }
 
     /// <summary>
     /// Valor numérico registrado. Exemplo: 10.5

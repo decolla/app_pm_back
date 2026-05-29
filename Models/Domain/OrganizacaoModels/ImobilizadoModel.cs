@@ -59,7 +59,7 @@ public class ImobilizadoModel
     /// Código da moeda (ex: BRL, USD).
     /// </summary>
     [MaxLength(10)]
-    public required string Moeda { get; set; } = "Real";
+    public required string Moeda { get; set; } 
 
     /// <summary>
     /// Taxa ou valor acumulado de depreciação.

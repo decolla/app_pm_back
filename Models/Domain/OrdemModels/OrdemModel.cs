@@ -197,6 +197,12 @@ public class OrdemModel : IClassifiable
     /// </summary>
     /// <example>30001</example>
     public long? IdNota { get; set; }
+    
+    /// <summary>
+    /// Identificador do plano de manutenção associado à ordem.
+    /// Permite relacionar a ordem a um plano específico para análise de aderência e planejamento estratégico.
+    /// </summary>
+    public int IdPlano { get; set; }
 
     /// <summary>
     /// Propriedade de navegação para a nota associada à ordem.
@@ -204,6 +210,12 @@ public class OrdemModel : IClassifiable
     /// </summary>
     [ForeignKey(nameof(IdNota))]
     public virtual NotaModel? Nota { get; set; }
+    
+    /// <summary>
+    /// Plano de manutenção associado
+    /// </summary>
+    [ForeignKey(nameof(IdPlano))]
+    public virtual PlanoModel? Plano { get; set; }
 
     /// <summary>
     /// Coleção de anexos (arquivos) associados à ordem.

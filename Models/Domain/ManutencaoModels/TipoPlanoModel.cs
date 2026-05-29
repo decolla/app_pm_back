@@ -69,7 +69,17 @@ public class TipoPlanoModel
     public int? IdTipoManutencao { get; set; }
 
     /// <summary>
-    /// FK para o Tipo de CEP.
+    /// FK para a Nota associada, se aplicável.
+    /// </summary>
+    public long? IdNota { get; set; }
+    
+    /// <summary>
+    /// FK para a Ordem associada, se aplicável.
+    /// </summary>
+    public long? IdOrdem { get; set; }
+    
+    /// <summary>
+    /// FK para o Tipo de CEP associado, se aplicável.
     /// </summary>
     public int? IdTipoCep { get; set; }
 
@@ -90,10 +100,23 @@ public class TipoPlanoModel
     /// </summary>
     [ForeignKey(nameof(IdTipoManutencao))]
     public virtual TipoManutencaoModel? TipoManutencao { get; set; }
-
+    
     /// <summary>
-    /// Objeto de navegação para o Tipo de CEP vinculado.
+    /// Objeto de navegação para a Nota vinculada, se aplicável.
+    /// </summary>
+    [ForeignKey(nameof(IdNota))]
+    public virtual NotaModel? Nota { get; set; }
+    
+    /// <summary>
+    /// Objeto de navegação para a Ordem vinculada, se aplicável.
+    /// </summary>
+    [ForeignKey(nameof(IdOrdem))]
+    public virtual OrdemModel? Ordem { get; set; }
+    
+    /// <summary>
+    /// Objeto de navegação para o Tipo de CEP vinculado, se aplicável.
     /// </summary>
     [ForeignKey(nameof(IdTipoCep))]
     public virtual TipoCepModel? TipoCep { get; set; }
+    
 }

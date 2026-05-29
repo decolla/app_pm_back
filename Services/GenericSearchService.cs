@@ -430,6 +430,8 @@ public class GenericSearchService
                 .Where(p => p.IdPlano == codigoPlanoParaBuscar.Value)
                 .FirstOrDefaultAsync();
         }
+        // retornar tipos c do plano, invés das estatégias
+        // ultima data puxar da tabela do lucas
         
         return new
         {

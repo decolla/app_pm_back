@@ -92,6 +92,11 @@ public class FerramentaModel
     /// Valor de custo na aquisição.
     /// </summary>
     public decimal ValorCompra { get; set; }
+    
+    /// <summary>
+    /// Moeda do valor de compra (ex: BRL, USD).
+    /// </summary>
+    public string? Moeda { get; set; }
 
     /// <summary>
     /// Data em que a ferramenta foi adquirida.

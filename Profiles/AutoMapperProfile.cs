@@ -32,10 +32,12 @@ public class AutoMapperProfile : Profile
  .ForMember(dest => dest.Estrategia, opt => opt.Ignore());
 
  CreateMap<TipoPlanoDto, TipoPlanoModel>()
- .ForMember(dest => dest.TipoEstrategia, opt => opt.Ignore())
- .ForMember(dest => dest.Plano, opt => opt.Ignore())
- .ForMember(dest => dest.TipoManutencao, opt => opt.Ignore())
- .ForMember(dest => dest.TipoCep, opt => opt.Ignore());
+  .ForMember(dest => dest.TipoEstrategia, opt => opt.Ignore())
+  .ForMember(dest => dest.Plano, opt => opt.Ignore())
+  .ForMember(dest => dest.TipoManutencao, opt => opt.Ignore())
+  .ForMember(dest => dest.TipoCep, opt => opt.Ignore())
+  .ForMember(dest => dest.Ordem, opt => opt.Ignore())
+  .ForMember(dest => dest.Nota, opt => opt.Ignore());
 
  CreateMap<TipoManutencaoDto, TipoManutencaoModel>();
 
