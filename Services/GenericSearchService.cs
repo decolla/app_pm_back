@@ -446,66 +446,51 @@ public class GenericSearchService
         };
     }
     
-    public async Task<object?> AtivoLucas(int ativo)
+    public async Task<object?> AtivoDatas(int ativo)
     {
-        OrdemModel? ultimaOrdem = await _ordemModels
-            .Where(o => o.IdAtivo == ativo)
-            .OrderByDescending(o => o.DataCriacao)
+        //Busca a data da última renovação daquele ativo
+        DadosRenovacaoModel? ultimaRenovacao = await _context.PM_DadosRenovacao
+            .Where(d => d.IdAtivo == ativo)
+            .OrderByDescending(d => d.UltimaRenovacao)
+            .FirstOrDefaultAsync();
+
+        //Busca o plano relacionado ao ativo
+        PlanoModel? plano = await _planoModels
+            .Where(p => p.IdAtivo == ativo)
             .FirstOrDefaultAsync();
         
-        NotaModel? ultimaNota = await _notaModels
-            .Where(o => o.IdAtivo == ativo)
-            .OrderByDescending(o => o.DataAvaria)
-            .FirstOrDefaultAsync();
-        
-        if (ultimaOrdem == null && ultimaNota == null)
-            return null;
-        
-        DateTime? ultimaData = null;
-        long? codigoPlanoParaBuscar = null;
-        
-        if (ultimaOrdem != null && ultimaNota != null)
+        //Se plano não existe, apenas retorna data
+        if (plano == null)
         {
-            if (ultimaOrdem.DataCriacao > ultimaNota.DataNota)
+            return new
             {
-                ultimaData = ultimaOrdem.DataCriacao;
-                codigoPlanoParaBuscar = ultimaOrdem.IdNota.HasValue ? (long?)ultimaOrdem.IdNota.Value : null; // search using NotaId
-            }
-            else
-            {
-                ultimaData = ultimaNota.DataNota;
-                codigoPlanoParaBuscar = ultimaNota.IdPlano;
-            }
-        }
-        else if (ultimaOrdem != null)
-        {
-            ultimaData = ultimaOrdem.DataCriacao;
-            codigoPlanoParaBuscar = ultimaOrdem.IdNota.HasValue ? (long?)ultimaOrdem.IdNota.Value : null;
-        }
-        else if (ultimaNota != null)
-        {
-            ultimaData = ultimaNota.DataNota;
-            codigoPlanoParaBuscar = ultimaNota.IdPlano; 
-        }
-        
-        PlanoModel? ultimoPlano = null;
-        if (codigoPlanoParaBuscar.HasValue)
-        {
-            ultimoPlano = await _planoModels
-                .Include(p => p.Estrategia)
-                .Where(p => p.IdPlano == codigoPlanoParaBuscar.Value)
-                .FirstOrDefaultAsync();
+                UltimaData = ultimaRenovacao?.UltimaRenovacao,
+                ListaRenovacao = new List<object>(),
+                TempoCiclo = 120
+            };
         }
 
-        // retornar tipos c do plano, invés das estatégias
-        // ultima data puxar da tabela do lucas
+        // Buscar todos os TipoPlano relacionados ao Plano com categoria "renovação"
+        var tiposPlanoRenovacao = await _context.PM_TiposPlano
+            .Where(tp => tp.IdPlano == plano.IdPlano && tp.Categoria == "renovação")
+            .Include(tp => tp.TipoManutencao)
+            .ToListAsync();
+
+        //Monta lista com meses, se é continua ou não e o valor da confibailidade
+        var listaRenovacao = tiposPlanoRenovacao
+            .Select(tp => new
+            {
+                Meses = (double?)(tp.Dias / 30.0),
+                Continua = tp.Continua,
+                Confiabilidade = tp.TipoManutencao?.Confiabilidade
+            })
+            .ToList();
+
         return new
         {
-            Ativo = ativo,
-            UltimaData = ultimaData,
-            ListaRenovacao = new List<int>(),
-            TempoCiclo = ultimoPlano?.Estrategia?.Ciclos,
-            UnidadeCiclo = "Dias",
+            UltimaData = ultimaRenovacao?.UltimaRenovacao,
+            ListaRenovacao = listaRenovacao,
+            TempoCiclo = plano.Estrategia?.Ciclos
         };
     }
 }
