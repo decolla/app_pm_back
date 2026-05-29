@@ -87,6 +87,23 @@ builder.Services.AddScoped<ClassificationService<OrdemModel>>();
 builder.Services.AddScoped<AnnexService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 
+// configuração de clientes http
+builder.Services.AddHttpClient<ExternIntegrationService>(client =>
+    {
+        // busca a URL do APM
+        var urlBase = builder.Configuration.GetValue<string>("APIs:APM");
+        
+        if (string.IsNullOrEmpty(urlBase))
+        {
+            throw new InvalidOperationException("A URL do APM não está configurada. Verifique as configurações de 'APIs:APM'.");
+        }
+        client.BaseAddress = new Uri(urlBase);
+        
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+        client.Timeout = TimeSpan.FromSeconds(30); // aborta se demorar mais de 30seg
+    }
+);
+
 var modelPath = Path.Combine(AppContext.BaseDirectory, "Data", "catboost_model.cbm");
 var metaPath = Path.Combine(AppContext.BaseDirectory, "Data", "model_meta.json");
 
