@@ -1,5 +1,7 @@
-﻿using app_pm_back.Data;
+﻿using System.Text.Json;
+using app_pm_back.Data;
 using app_pm_back.Models.Domain;
+using app_pm_back.DTO.Restauracao;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -14,14 +16,23 @@ public class DadosRenovacaoService
     private readonly ILogger<DadosRenovacaoService> _logger;
     private List<string> _liParaRestaurar = new List<string>();
     private const int TAMANHO_LOTE_LI = 50;
+    private readonly HttpClient _httpClient;
+    private readonly string _apmBaseUrl;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="DadosRenovacaoService"/>.
     /// </summary>
-    public DadosRenovacaoService(AppDbContext context, ILogger<DadosRenovacaoService> logger)
+    public DadosRenovacaoService(
+        AppDbContext context, 
+        ILogger<DadosRenovacaoService> logger,
+        IConfiguration configuration,
+        HttpClient httpClient) // Injetar HttpClient
     {
         _context = context;
         _logger = logger;
+        _httpClient = httpClient;
+        // Lê a URL base da APM do appsettings.json
+        _apmBaseUrl = configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
     }
 
 //Faz tratamento em caso de notas +itens
@@ -401,29 +412,132 @@ public class DadosRenovacaoService
 
         return inseridos;
     }
-    private async Task<int> ProcessarLoteLiAsync(List<string> lis)
+private async Task<int> ProcessarLoteLiAsync(List<string> lis)
+{
+    if (!lis.Any())
     {
-        if (!lis.Any())
+        _logger.LogDebug("Lista de LI's vazia, nenhum processamento realizado");
+        return 0;
+    }
+
+    _logger.LogInformation("Iniciando processamento de lote com {QtdLI} LI's", lis.Count);
+
+    try
+    {
+        // Chama a API da APM para obter os ativos associados às LI's
+        var ativosDoLote = await ObterAtivosDoLoteLiAsync(lis);
+
+        if (!ativosDoLote.Any())
         {
-            _logger.LogDebug("Lista de LI's vazia, nenhum processamento realizado");
+            _logger.LogWarning("Nenhum ativo foi retornado para o lote de LI's");
             return 0;
         }
 
-        _logger.LogInformation("Iniciando processamento de lote com {QtdLI} LI's", lis.Count);
+        int registrosProcessados = 0;
 
+        // Para cada LI (Name) e seus ativos (ComponentTypes)
+        foreach (var assetComponent in ativosDoLote)
+        {
+            if (string.IsNullOrWhiteSpace(assetComponent.Name) || assetComponent.ComponentTypes == null)
+            {
+                _logger.LogWarning("AssetComponent inválido: Name={Name}", assetComponent.Name);
+                continue;
+            }
+
+            _logger.LogDebug("Processando {QtdAtivos} ativos da LI {IdLi}", 
+                assetComponent.ComponentTypes.Count, 
+                assetComponent.Name);
+
+            // Para cada ativo associado à LI, inserir/atualizar em DadosRenovacao
+            foreach (var idAtivo in assetComponent.ComponentTypes)
+            {
+                registrosProcessados += await InserirOuAtualizarPorAtivoAsync(
+                    idAtivo,
+                    idNota: null,
+                    idOrdem: null,
+                    dataSource: DateTime.UtcNow,
+                    origem: OrigemUR.Nota); // Usar Nota como origem padrão para LI restaurada
+            }
+        }
+
+        _logger.LogInformation("Lote de LI's processado com sucesso. {QtdRegistros} ativos adicionados", 
+            registrosProcessados);
+        
+        return registrosProcessados;
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Erro ao processar lote de LI's");
+        throw;
+    }
+}
+
+/// <summary>
+/// Chama a API da APM (PUT) para obter os ativos (ComponentTypes) associados às LI's.
+/// </summary>
+/// <param name="lis">Lista de LocalInstalacoes (LI's)</param>
+/// <returns>Lista de AssetComponentTypesDTO com os ativos para cada LI</returns>
+private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<string> lis)
+{
+    try
+    {
+        // Construir a query string com todas as LI's
+        // Exemplo: ?names=LI001&names=LI002&names=LI003
+        var queryString = string.Join("&", lis.Select(li => $"names={Uri.EscapeDataString(li)}"));
+        
+        var url = $"{_apmBaseUrl}/api/V1/Asset/Components?{queryString}";
+        
+        _logger.LogInformation("Chamando API APM: PUT {Url}", url);
+
+        // Fazer requisição PUT (sem body)
+        var request = new HttpRequestMessage(HttpMethod.Put, url);
+        var response = await _httpClient.SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogError("Erro ao chamar API APM. StatusCode: {StatusCode}, ReasonPhrase: {ReasonPhrase}", 
+                response.StatusCode, 
+                response.ReasonPhrase);
+            response.EnsureSuccessStatusCode();
+        }
+
+        var responseContent = await response.Content.ReadAsStringAsync();
+        _logger.LogDebug("Resposta recebida da APM: {Response}", responseContent);
+
+        // Desserializar a resposta
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        
+        // A resposta pode ser um array ou um único objeto, vamos tratar como array
+        List<AssetComponentTypesDTO> resultado;
+        
         try
         {
-            // TODO: IMPLEMENTAR CHAMADA HTTP PARA ROTA DE RESTAURAÇÃO
-        
-            _logger.LogInformation("Lote de LI's processado com sucesso");
-            return 0; // TODO: retornar a quantidade real de ativos processados
+            // Tentar desserializar como array primeiro
+            resultado = JsonSerializer.Deserialize<List<AssetComponentTypesDTO>>(responseContent, options) 
+                ?? new List<AssetComponentTypesDTO>();
         }
-        catch (Exception ex)
+        catch
         {
-            _logger.LogError(ex, "Erro ao processar lote de LI's");
-            throw;
+            // Se não for array, tentar como objeto único
+            var singleResult = JsonSerializer.Deserialize<AssetComponentTypesDTO>(responseContent, options);
+            resultado = singleResult != null ? new List<AssetComponentTypesDTO> { singleResult } : new List<AssetComponentTypesDTO>();
         }
+
+        _logger.LogInformation("Obtidos {QtdResultados} conjuntos de ativos da API APM", resultado.Count);
+        
+        return resultado;
     }
+    catch (HttpRequestException ex)
+    {
+        _logger.LogError(ex, "Erro na requisição HTTP para API APM");
+        throw;
+    }
+    catch (JsonException ex)
+    {
+        _logger.LogError(ex, "Erro ao desserializar resposta da API APM");
+        throw;
+    }
+}
 
 //Dado o ativo que será restaurado, verifica se ele já existe ou não na tabela DadosRenovacao
     private async Task<int> InserirOuAtualizarPorAtivoAsync(
