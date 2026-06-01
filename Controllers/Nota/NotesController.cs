@@ -120,7 +120,7 @@ public class NotasController : ControllerBase
     /// Retorna as Fichas de uma nota e suas ocorrências de mesmo tipo
     /// </summary>
     [HttpGet("ativo/{dnsIoT}")]
-    public async Task<IActionResult> ListarFichasPorAtivo([FromRoute] int dnsIoT, [FromQuery] string? type)
+    public async Task<IActionResult> ListarFichasPorAtivo([FromRoute] ComponentType dnsIoT, [FromQuery] string? type)
     {
         try
         {
