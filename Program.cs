@@ -79,6 +79,7 @@ builder.Services.AddScoped<FerramentaService>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<CpmService>();
 builder.Services.AddScoped<CtmService>();
+builder.Services.AddHttpClient<DadosRenovacaoService>();
 builder.Services.AddScoped<GpmService>();
 builder.Services.AddScoped<ImobilizadoService>();
 builder.Services.AddScoped<AlmoxarifadoService>();
