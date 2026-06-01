@@ -209,7 +209,7 @@ public class OrdemModel : IClassifiable
     /// Identificador do plano de manutenção associado à ordem.
     /// Permite relacionar a ordem a um plano específico para análise de aderência e planejamento estratégico.
     /// </summary>
-    public int IdPlano { get; set; }
+    public long? IdPlano { get; set; }
 
     /// <summary>
     /// Propriedade de navegação para a nota associada à ordem.

@@ -341,14 +341,14 @@
             <param name="tamanho">Número de elementos presente na página</param>
             <returns>Lista de Nota e Ordens com base nos filtros</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscaGerald(System.Int32)">
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscaGerald(app_pm_back.Models.Domain.ComponentType)">
             <summary>
             Busca um plano de mantuenção associado a um ativo, retorna um objeto com os dados relevantes
             </summary>
             <param name="ativo">Ativo a ser procurado</param>
             <returns>Objeto com informações relevantes</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscaGeraldList(System.Collections.Generic.List{System.Int32})">
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscaGeraldList(System.Collections.Generic.List{app_pm_back.Models.Domain.ComponentType})">
             <summary>
             Busca um plano de manuntenção associado a uma lista de ativos, retorna um objeto com os dados relevantes
             </summary>
@@ -524,7 +524,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.ListarNotas(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
-            Retorna todas as notas , com paginacao opcional.
+            Retorna todas as notas com paginacao opcional.
             </summary>
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.ContarNotas">
@@ -532,7 +532,7 @@
             Conta o número total de notas salvas no banco
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.NotasController.ListarFichasPorAtivo(System.Int32,System.String)">
+        <member name="M:app_pm_back.Controllers.NotasController.ListarFichasPorAtivo(app_pm_back.Models.Domain.ComponentType,System.String)">
             <summary>
             Retorna as Fichas de uma nota e suas ocorrências de mesmo tipo
             </summary>
@@ -592,7 +592,7 @@
             Conta o número total de notas salvas no banco
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ListarFichasPorAtivo(System.Int32,System.String)">
+        <member name="M:app_pm_back.Controllers.OrdersController.ListarFichasPorAtivo(app_pm_back.Models.Domain.ComponentType,System.String)">
             <summary>
             Retorna as Fichas de uma nota e suas ocorrências de mesmo tipo
             </summary>
@@ -1240,6 +1240,16 @@
             Origem da UR, se a UR foi gerada a partir de uma nota, ordem ou usuario.
             </summary>
         </member>
+        <member name="T:app_pm_back.Models.Domain.ComponentType">
+            <summary>
+            Tipo de componente do ativo/LI. Usado para requisições no APM específica para ativos/LI
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.OriginType">
+            <summary>
+            Usado para requisições no APM específica para ativos/LI
+            </summary>
+        </member>
         <member name="T:app_pm_back.Models.Domain.EstrategiaModel">
             <summary>
             Representa a definição de uma estratégia de manutenção (ex: Preventiva, Preditiva) e suas regras de periodicidade.
@@ -1673,9 +1683,19 @@
             FK para o Tipo de Manutenção.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.IdNota">
+            <summary>
+            FK para a Nota associada, se aplicável.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.IdOrdem">
+            <summary>
+            FK para a Ordem associada, se aplicável.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.IdTipoCep">
             <summary>
-            FK para o Tipo de CEP.
+            FK para o Tipo de CEP associado, se aplicável.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.TipoEstrategia">
@@ -1693,9 +1713,19 @@
             Objeto de navegação para o Tipo de Manutenção vinculado.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.Nota">
+            <summary>
+            Objeto de navegação para a Nota vinculada, se aplicável.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.Ordem">
+            <summary>
+            Objeto de navegação para a Ordem vinculada, se aplicável.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.TipoCep">
             <summary>
-            Objeto de navegação para o Tipo de CEP vinculado.
+            Objeto de navegação para o Tipo de CEP vinculado, se aplicável.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.AnexoNotaModel">
@@ -2049,6 +2079,11 @@
             Identificador único da variável.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.NomeVariavel">
+            <summary>
+            Nome da variável registrada. Exemplo: "Temperatura", "Pressão", "Vibração".
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.VariavelNotaModel.ValorNumerico">
             <summary>
             Valor numérico registrado. Exemplo: 10.5
@@ -2343,6 +2378,12 @@
             </summary>
             <example>5001, 10025</example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdLi">
+            <summary>
+            Chave estrangeira para a localização de instalação do ativo.
+            Permite vincular a nota a um local específico de instalação.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.IdNota">
             <summary>
             Identificador da nota associada à ordem.
@@ -2350,10 +2391,21 @@
             </summary>
             <example>30001</example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdPlano">
+            <summary>
+            Identificador do plano de manutenção associado à ordem.
+            Permite relacionar a ordem a um plano específico para análise de aderência e planejamento estratégico.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.Nota">
             <summary>
             Propriedade de navegação para a nota associada à ordem.
             Permite carregar informações complementares e observações relacionadas à ordem.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.Plano">
+            <summary>
+            Plano de manutenção associado
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.Anexos">
@@ -2485,6 +2537,11 @@
         <member name="P:app_pm_back.Models.Domain.FerramentaModel.ValorCompra">
             <summary>
             Valor de custo na aquisição.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.Moeda">
+            <summary>
+            Moeda do valor de compra (ex: BRL, USD).
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.FerramentaModel.DataAquisicao">
@@ -2954,6 +3011,27 @@
             <param name="columnName">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
+        <member name="M:app_pm_back.Services.ExternIntegrationService.#ctor(System.Net.Http.HttpClient)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ExternIntegrationService"/>.
+            </summary>
+            <param name="httpClient"></param>
+        </member>
+        <member name="M:app_pm_back.Services.ExternIntegrationService.GetDataAsync(System.String)">
+            <summary>
+            Obtém dados de uma rota externa.
+            </summary>
+            <param name="rota">Rota externa de requisição</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.ExternIntegrationService.PostDataAsync(System.String,System.Object)">
+            <summary>
+            Envia dados para uma rota externa.
+            </summary>
+            <param name="rota">Rota externa</param>
+            <param name="payload">O que será enviado</param>
+            <returns></returns>
+        </member>
         <member name="T:app_pm_back.Services.GenericSearchService">
             <summary>
             Classe para busca genérica entre as tabelas do banco de dados 
@@ -3012,7 +3090,7 @@
             <param name="busca">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.AtivoGerald(System.Int32)">
+        <member name="M:app_pm_back.Services.GenericSearchService.AtivoGerald(app_pm_back.Models.Domain.ComponentType)">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -3231,7 +3309,7 @@
             </summary>
             <param name="notas">Parâmetro do método.</param>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.GetFichasPorAtivoAsync(System.Int32,System.String)">
+        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.GetFichasPorAtivoAsync(app_pm_back.Models.Domain.ComponentType,System.String)">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -3254,7 +3332,7 @@
             </summary>
             <param name="ordens">Parâmetro do método.</param>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.GetFichasPorAtivoAsync(System.Int32,System.String)">
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.GetFichasPorAtivoAsync(app_pm_back.Models.Domain.ComponentType,System.String)">
             <summary>
             Obtém um registro específico.
             </summary>

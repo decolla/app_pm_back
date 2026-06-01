@@ -110,17 +110,17 @@ public class OrdersController : ControllerBase
     /// <summary>
     /// Retorna as Fichas de uma nota e suas ocorrências de mesmo tipo
     /// </summary>
-    [HttpGet("ativo/{dnsIoT}")]
-    public async Task<IActionResult> ListarFichasPorAtivo([FromRoute] int dnsIoT, [FromQuery] string? type)
+    [HttpGet("ativo/{ativo}")]
+    public async Task<IActionResult> ListarFichasPorAtivo([FromRoute] ComponentType ativo, [FromQuery] string? type)
     {
         try
         {
-            if (dnsIoT <= 0)
+            if (!Enum.IsDefined(typeof(ComponentType), ativo))
             {
-                return BadRequest(new { message = "Parametro dnsIoT invalido." });
+                return BadRequest(new { message = "Parametro ativo invalido." });
             }
 
-            var resultado = await _ordemService.GetFichasPorAtivoAsync(dnsIoT, type);
+            var resultado = await _ordemService.GetFichasPorAtivoAsync(ativo, type);
             return Ok(resultado);
         }
         catch (Exception)

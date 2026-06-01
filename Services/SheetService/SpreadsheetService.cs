@@ -14,6 +14,31 @@ namespace app_pm_back.Services;
 /// </summary>
 public class SpreadsheetService
 {
+    private static readonly (ComponentType Type, string[] Terms)[] ComponentTypeMatchers =
+    [
+        (ComponentType.Shutoff, new[] { "shut-off", "shutoff", "shut off", "sbr", "sdv", "bloqueio remoto", "sistema bloqueio remoto" }),
+        (ComponentType.PilotValve, new[] { "valvula piloto", "pilot valve", "pilot" }),
+        (ComponentType.RegulatorValve, new[] { "valvula reguladora", "regulator valve" }),
+        (ComponentType.Regulator, new[] { "regulador", "regulator" }),
+        (ComponentType.FlowSensor, new[] { "flow", "flowtrail", "flow trail", "sensor de vazao", "sensor de fluxo", "medidor" }),
+        (ComponentType.FillValveV9, new[] { "abastecimento de odorante", "valvula de abastecimento", "fill valve", "v9" }),
+        (ComponentType.OdorantPump, new[] { "bomba odorante", "bomba de odorante", "odorante bomba" }),
+        (ComponentType.OdorantTank, new[] { "tanque de odorante", "tanque odorante", "reservatorio de odorante" }),
+        (ComponentType.ManifoldIn, new[] { "manifold in", "manifold entrada" }),
+        (ComponentType.ManifoldDischarge, new[] { "manifold discharge", "manifold saida" }),
+        (ComponentType.GasFilter, new[] { "filtro", "filtrante", "filtro de gas" }),
+        (ComponentType.ManifoldPneumaticRelay, new[] { "rele pneumatico", "pneumatic relay" }),
+        (ComponentType.Ventsorv, new[] { "venteio", "vent" }),
+        (ComponentType.ExpansionTank, new[] { "tanque de expansao", "expansion tank" }),
+        (ComponentType.AlimentationPanel, new[] { "painel de alimentacao", "nobreak" }),
+        (ComponentType.Battery, new[] { "bateria", "baterias" }),
+        (ComponentType.SolarPanel, new[] { "painel solar", "solar" }),
+        (ComponentType.CommunicationInterface, new[] { "comunicacao", "telemetria", "modem", "vsat", "antena", "chip", "ethernet", "serial" }),
+        (ComponentType.Controller, new[] { "controlador", "scada", "ihm", "datalogger", "data logger" }),
+        (ComponentType.ChargeControllerPanel, new[] { "controlador de carga", "painel controlador de carga" }),
+        (ComponentType.Plc, new[] { "plc" })
+    ];
+
     private readonly ConvertService _convertService;
 
     /// <summary>
@@ -192,7 +217,12 @@ public class SpreadsheetService
                             Type tipo = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
                             object? valorConvertido = null;
 
-                            if (tipo == typeof(long) || tipo == typeof(int))
+                            if (tipo == typeof(ComponentType) &&
+                                string.Equals(property.Name, "IdAtivo", StringComparison.OrdinalIgnoreCase))
+                            {
+                                valorConvertido = TryTranslateComponentType(valor);
+                            }
+                            else if (tipo == typeof(long) || tipo == typeof(int))
                             {
                                 string numerosApenas = new string(valor.Where(char.IsDigit).ToArray());
                                 if (!string.IsNullOrEmpty(numerosApenas))
@@ -236,6 +266,38 @@ public class SpreadsheetService
         }
 
         return model;
+    }
+
+    private static ComponentType? TryTranslateComponentType(string rawValue)
+    {
+        var normalized = NormalizeText(rawValue);
+        if (string.IsNullOrEmpty(normalized))
+            return null;
+
+        foreach (var (type, terms) in ComponentTypeMatchers)
+        {
+            if (terms.Any(term => normalized.Contains(term)))
+                return type;
+        }
+
+        return null;
+    }
+
+    private static string NormalizeText(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        var normalized = value.Trim().ToLowerInvariant().Normalize(NormalizationForm.FormD);
+        var builder = new StringBuilder(normalized.Length);
+
+        foreach (var character in normalized)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark)
+                builder.Append(character);
+        }
+
+        return builder.ToString().Normalize(NormalizationForm.FormC);
     }
 
     private static NotaModel MapNotaDto(NotaManutencaoDto dto)
