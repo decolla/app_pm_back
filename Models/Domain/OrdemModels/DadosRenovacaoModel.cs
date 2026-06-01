@@ -46,7 +46,7 @@ public class DadosRenovacaoModel
     /// <summary>
     /// Identificador do Ativo relacionado.
     /// </summary>
-    public int? IdAtivo { get; set; }
+    public ComponentType? IdAtivo { get; set; }
 
     /// <summary>
     /// Identificador da Nota relacionada.

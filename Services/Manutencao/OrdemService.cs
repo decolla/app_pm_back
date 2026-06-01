@@ -63,7 +63,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
     /// </summary>
     /// <param name="ativo">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<object> GetFichasPorAtivoAsync(int ativo, string? tipoOrdem)
+    public async Task<object> GetFichasPorAtivoAsync(ComponentType ativo, string? tipoOrdem)
     {
         var query = _dbSet.AsQueryable();
 

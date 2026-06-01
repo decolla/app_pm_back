@@ -158,14 +158,14 @@ public class GenericSearchService
             ordensQuery = ordensQuery.Where(o => o.IdOrdem <= ordemIdFim.Value);
         }
 
-        int? localInstalacaoInicio = buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca) as int?;
+        ComponentType? localInstalacaoInicio = buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca) as ComponentType?;
         if (localInstalacaoInicio.HasValue)
         {
             notasQuery = notasQuery.Where(n => n.IdAtivo >= localInstalacaoInicio.Value);
             ordensQuery = ordensQuery.Where(o => o.IdAtivo >= localInstalacaoInicio.Value);
         }
 
-        int? localInstalacaoFim = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca) as int?;
+        ComponentType? localInstalacaoFim = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca) as ComponentType?;
         if (localInstalacaoFim.HasValue)
         {
             notasQuery = notasQuery.Where(n => n.IdAtivo <= localInstalacaoFim.Value);
@@ -380,7 +380,7 @@ public class GenericSearchService
     /// <param name="ativo">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
     
-    public async Task<object?> AtivoGerald(int ativo)
+    public async Task<object?> AtivoGerald(ComponentType ativo)
     {
         OrdemModel? ultimaOrdem = await _ordemModels
             .Where(o => o.IdAtivo == ativo)
@@ -446,7 +446,7 @@ public class GenericSearchService
         };
     }
     
-    public async Task<object?> AtivoDatas(int ativo)
+    public async Task<object?> AtivoDatas(ComponentType ativo)
     {
         //Busca a data da última renovação daquele ativo
         DadosRenovacaoModel? ultimaRenovacao = await _context.PM_DadosRenovacao
@@ -476,7 +476,7 @@ public class GenericSearchService
             .Include(tp => tp.TipoManutencao)
             .ToListAsync();
 
-        //Monta lista com meses, se é continua ou não e o valor da confibailidade
+        //Monta lista com meses, se é contínua ou não e o valor da confibailidade
         var listaRenovacao = tiposPlanoRenovacao
             .Select(tp => new
             {

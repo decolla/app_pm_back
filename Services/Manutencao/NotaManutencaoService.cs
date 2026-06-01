@@ -77,7 +77,7 @@ public class NotaManutencaoService : BaseCrudService<NotaModel>
     /// </summary>
     /// <param name="ativo">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<object> GetFichasPorAtivoAsync(int ativo, string? tipoNota)
+    public async Task<object> GetFichasPorAtivoAsync(ComponentType ativo, string? tipoNota)
     {
         var query = _dbSet.AsQueryable();
 

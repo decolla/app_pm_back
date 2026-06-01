@@ -49,7 +49,9 @@ public class OrdemManutencaoDto
 
     [SheetColumn("Dt.real fim")] public DateTime? FimReal { get; set; }
 
-    public int? IdAtivo { get; set; }
+    [SheetColumn("Texto breve")] public ComponentType? IdAtivo { get; set; }
+
+    [SheetColumn("Loc.instalação")] public string? IdLi { get; set; }
 
     [SheetColumn("Nota")] public long? IdNota { get; set; }
 

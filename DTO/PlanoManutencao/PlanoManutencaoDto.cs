@@ -29,7 +29,7 @@ public class PlanoManutencaoDto
     [SheetColumn("Id Estratégia")] public int? IdEstrategia { get; set; }
 
     // Ativo externo (apenas o ID).
-    [SheetColumn("Id Ativo")] public int? IdAtivo { get; set; }
+    [SheetColumn("Id Ativo")] public ComponentType? IdAtivo { get; set; }
 }
 
 #pragma warning restore CS1591

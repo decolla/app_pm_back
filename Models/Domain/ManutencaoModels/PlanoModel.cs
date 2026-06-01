@@ -57,7 +57,7 @@ public class PlanoModel
     /// <summary>
     /// Identificador do Ativo vinculado.
     /// </summary>
-    public int? IdAtivo { get; set; }
+    public ComponentType? IdAtivo { get; set; }
 
     /// <summary>
     /// Chave estrangeira para a Estratégia de manutenção.

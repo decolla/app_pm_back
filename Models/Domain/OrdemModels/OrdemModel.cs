@@ -189,7 +189,14 @@ public class OrdemModel : IClassifiable
     /// Este campo armazena apenas o ID do ativo, sem relacionamento direto no EF.
     /// </summary>
     /// <example>5001, 10025</example>
-    public int? IdAtivo { get; set; }
+    public ComponentType? IdAtivo { get; set; }
+    
+    /// <summary>
+    /// Chave estrangeira para a localização de instalação do ativo.
+    /// Permite vincular a nota a um local específico de instalação.
+    /// </summary>
+    [MaxLength(100)]
+    public string? IdLi { get; set; }
 
     /// <summary>
     /// Identificador da nota associada à ordem.

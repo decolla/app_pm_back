@@ -253,13 +253,14 @@ public class NotaModel : IClassifiable
     /// Identifica qual equipamento ou item está relacionado à ocorrência.
     /// </summary>
     /// <example>150</example>
-    public int? IdAtivo { get; set; }
+    public ComponentType? IdAtivo { get; set; }
     
     /// <summary>
     /// Chave estrangeira para a localização de instalação do ativo.
     /// Permite vincular a nota a um local específico de instalação.
     /// </summary>
-    public int? IdLi { get; set; }
+    [MaxLength(100)]
+    public string? IdLi { get; set; }
 
     #endregion
 

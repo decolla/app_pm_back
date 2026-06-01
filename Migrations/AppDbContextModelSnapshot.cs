@@ -271,7 +271,7 @@ namespace app_pm_back.Migrations
                     b.Property<double?>("Confiabilidade")
                         .HasColumnType("double precision");
 
-                    b.Property<int?>("IdAtivo")
+                    b.Property<ComponentType?>("IdAtivo")
                         .HasColumnType("integer");
 
                     b.Property<long?>("IdNota")
@@ -374,8 +374,9 @@ namespace app_pm_back.Migrations
                     b.Property<int>("IdEscopo")
                         .HasColumnType("integer");
 
-                    b.Property<int>("IdLI")
-                        .HasColumnType("integer");
+                    b.Property<string>("IdLI")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -590,11 +591,12 @@ namespace app_pm_back.Migrations
                     b.Property<TimeSpan?>("HoraAvaria")
                         .HasColumnType("interval");
 
-                    b.Property<int?>("IdAtivo")
+                    b.Property<ComponentType?>("IdAtivo")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("IdLi")
-                        .HasColumnType("integer");
+                    b.Property<string?>("IdLi")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<long?>("IdPlano")
                         .HasColumnType("bigint");
@@ -733,7 +735,7 @@ namespace app_pm_back.Migrations
                     b.Property<DateTime?>("FimReal")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int?>("IdAtivo")
+                    b.Property<ComponentType?>("IdAtivo")
                         .HasColumnType("integer");
 
                     b.Property<long?>("IdNota")
@@ -792,7 +794,7 @@ namespace app_pm_back.Migrations
                     b.Property<int?>("GerarAutomaticamente")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("IdAtivo")
+                    b.Property<ComponentType?>("IdAtivo")
                         .HasColumnType("integer");
 
                     b.Property<int?>("IdEstrategia")

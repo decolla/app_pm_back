@@ -12,6 +12,8 @@ public class DadosRenovacaoService
 {
     private readonly AppDbContext _context;
     private readonly ILogger<DadosRenovacaoService> _logger;
+    private List<string> _liParaRestaurar = new List<string>();
+    private const int TAMANHO_LOTE_LI = 50;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="DadosRenovacaoService"/>.
@@ -87,14 +89,14 @@ public class DadosRenovacaoService
             //para cada nota indentificada, verifica se ela renova ativo ou LI
             foreach (var nota in notasParaAtualizar)
             {
-                if (nota.IdAtivo.HasValue && nota.IdAtivo.Value > 0)
+                if (nota.IdAtivo.HasValue)
                 {
                     // Se IdAtivo está preenchido → RestauraAtivo
                     nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
                     _logger.LogDebug("Nota {IdNota} marcada como RestauraAtivo (IdAtivo={IdAtivo})",
                         nota.IdNota, nota.IdAtivo);
                 }
-                else if (nota.IdLi.HasValue && nota.IdLi.Value > 0)
+                else if (!string.IsNullOrWhiteSpace(nota.IdLi))
                 {
                     // Se IdAtivo vazio mas IdLI preenchido → RestauraLI
                     nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraLI;
@@ -123,7 +125,7 @@ public class DadosRenovacaoService
                     nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraLI;
                     _logger.LogDebug("Nota {IdNota} marcada como RestauraLI por texto (renovação)", nota.IdNota);
                 }
-                else if (temTroca && nota.IdAtivo.HasValue && nota.IdAtivo.Value > 0)
+                else if (temTroca && nota.IdAtivo.HasValue)
                 {
                     nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
                     _logger.LogDebug("Nota {IdNota} marcada como RestauraAtivo por texto (troca)", nota.IdNota);
@@ -201,7 +203,7 @@ public class DadosRenovacaoService
                     ordem.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraLI;
                     _logger.LogDebug("Ordem {IdOrdem} marcada como RestauraLI", ordem.IdOrdem);
                 }
-                else if (temTroca && ordem.IdAtivo.HasValue && ordem.IdAtivo.Value > 0)
+                else if (temTroca && ordem.IdAtivo.HasValue)
                 {
                     ordem.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
                     _logger.LogDebug("Ordem {IdOrdem} marcada como RestauraAtivo", ordem.IdOrdem);
@@ -245,6 +247,7 @@ public class DadosRenovacaoService
             return 0;
         }
 
+        _liParaRestaurar.Clear(); // Limpar lista no início
         var registrosCriados = 0;
         try
         {
@@ -267,9 +270,18 @@ public class DadosRenovacaoService
                         nota.IdAtivo,
                         nota.IdNota,
                         null,
-                        nota.DataNota ?? DateTime.UtcNow, // passa data da nota
-                        OrigemUR.Nota); // origem é Nota
+                        nota.DataNota ?? DateTime.UtcNow,
+                        OrigemUR.Nota,
+                        nota.IdLi); // NOVO PARÂMETRO
                     registrosCriados += inseridos;
+                    
+                    if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
+                    {
+                        _logger.LogInformation("Atingido tamanho de lote ({TamanhoLote}). Processando lote de LI's...", TAMANHO_LOTE_LI);
+                        var lotePorProcessar = _liParaRestaurar.Take(TAMANHO_LOTE_LI).Distinct().ToList();
+                        registrosCriados += await ProcessarLoteLiAsync(lotePorProcessar);
+                        _liParaRestaurar.RemoveRange(0, Math.Min(TAMANHO_LOTE_LI, _liParaRestaurar.Count));
+                    }
                 }
             }
             else
@@ -293,10 +305,25 @@ public class DadosRenovacaoService
                         ordem.IdAtivo,
                         null,
                         ordem.IdOrdem,
-                        ordem.DataCriacao ?? DateTime.UtcNow, // passa data da ordem
-                        OrigemUR.Ordem); // origem é Ordem
+                        ordem.DataCriacao ?? DateTime.UtcNow,
+                        OrigemUR.Ordem,
+                        ordem.IdLi); // NOVO PARÂMETRO
                     registrosCriados += inseridos;
+                    
+                    if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
+                    {
+                        _logger.LogInformation("Atingido tamanho de lote ({TamanhoLote}). Processando lote de LI's...", TAMANHO_LOTE_LI);
+                        var lotePorProcessar = _liParaRestaurar.Take(TAMANHO_LOTE_LI).Distinct().ToList();
+                        registrosCriados += await ProcessarLoteLiAsync(lotePorProcessar);
+                        _liParaRestaurar.RemoveRange(0, Math.Min(TAMANHO_LOTE_LI, _liParaRestaurar.Count));
+                    }
                 }
+            }
+            if (_liParaRestaurar.Any())
+            {
+                _logger.LogInformation("Processando {QtdLI} LI's restantes", _liParaRestaurar.Count);
+                registrosCriados += await ProcessarLoteLiAsync(_liParaRestaurar.Distinct().ToList());
+                _liParaRestaurar.Clear();
             }
 
             if (registrosCriados > 0)
@@ -308,7 +335,7 @@ public class DadosRenovacaoService
             {
                 _logger.LogWarning("Nenhum registro de dados de renovação foi criado ou atualizado");
             }
-
+            
             return registrosCriados;
         }
         catch (Exception ex)
@@ -321,11 +348,12 @@ public class DadosRenovacaoService
     //Trata dois casos, se a nota restaura apenas um ativo especifico ou toda a LI
     private async Task<int> ProcessarPorConfiabilidadeAsync(
         ConfiabilidadeRestaurada? confiabilidade,
-        int? idAtivo,
+        ComponentType? idAtivo,
         long? idNota,
         long? idOrdem,
-        DateTime dataSource, // data da nota ou ordem
-        OrigemUR origem) // Nota ou Ordem
+        DateTime dataSource,
+        OrigemUR origem,
+        string? idLi = null)
     {
         if (confiabilidade == null)
         {
@@ -337,7 +365,7 @@ public class DadosRenovacaoService
 
         if (confiabilidade == ConfiabilidadeRestaurada.RestauraAtivo)
         {
-            if (idAtivo.HasValue && idAtivo.Value > 0)
+            if (idAtivo.HasValue)
             {
                 _logger.LogDebug("Processando RestauraAtivo para IdAtivo={IdAtivo}", idAtivo.Value);
                 inseridos = await InserirOuAtualizarPorAtivoAsync(
@@ -354,18 +382,52 @@ public class DadosRenovacaoService
         }
         else if (confiabilidade == ConfiabilidadeRestaurada.RestauraLI)
         {
-            _logger.LogDebug("RestauraLI identificado - TODO: buscar ativos da LI");
-            // TODO
-            //Busca todos os Ativos daquele LI
-            //For each ativo await InserirOuAtualizarPorAtivoAsync
+            if (!string.IsNullOrWhiteSpace(idLi))
+            {
+                _logger.LogDebug("RestauraLI identificado - adicionando IdLi={IdLi} à fila de processamento", idLi);
+        
+                // Adicionar à lista se ainda não estiver
+                if (!_liParaRestaurar.Contains(idLi))
+                {
+                    _liParaRestaurar.Add(idLi);
+                    _logger.LogDebug("IdLi {IdLi} adicionado à fila. Total na fila: {Total}", idLi, _liParaRestaurar.Count);
+                }
+            }
+            else
+            {
+                _logger.LogWarning("RestauraLI marcado mas IdLi nulo ou vazio para Nota={IdNota}, Ordem={IdOrdem}", idNota, idOrdem);
+            }
         }
 
         return inseridos;
     }
+    private async Task<int> ProcessarLoteLiAsync(List<string> lis)
+    {
+        if (!lis.Any())
+        {
+            _logger.LogDebug("Lista de LI's vazia, nenhum processamento realizado");
+            return 0;
+        }
+
+        _logger.LogInformation("Iniciando processamento de lote com {QtdLI} LI's", lis.Count);
+
+        try
+        {
+            // TODO: IMPLEMENTAR CHAMADA HTTP PARA ROTA DE RESTAURAÇÃO
+        
+            _logger.LogInformation("Lote de LI's processado com sucesso");
+            return 0; // TODO: retornar a quantidade real de ativos processados
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao processar lote de LI's");
+            throw;
+        }
+    }
 
 //Dado o ativo que será restaurado, verifica se ele já existe ou não na tabela DadosRenovacao
     private async Task<int> InserirOuAtualizarPorAtivoAsync(
-        int idAtivo,
+        ComponentType idAtivo,
         long? idNota,
         long? idOrdem,
         DateTime dataSource,

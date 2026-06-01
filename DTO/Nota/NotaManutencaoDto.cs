@@ -35,9 +35,9 @@ public class NotaManutencaoDto
 
     [SheetColumn("Concl.desejada")] public DateTime? FimDesejado { get; set; }
 
-    [SheetColumn("Equipamento")] public int? IdAtivo { get; set; }
+    [SheetColumn("Txt.code codif.")] public ComponentType? IdAtivo { get; set; }
 
-    [SheetColumn("Loc.instalação")] public int? IdLi { get; set; }
+    [SheetColumn("Loc.instalação")] public string? IdLi { get; set; }
 
     [SheetColumn("Criado por")] public string? CriadaPorUsuario { get; set; }
 

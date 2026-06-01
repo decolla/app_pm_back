@@ -1,5 +1,8 @@
 using app_pm_back.Services;
 using app_pm_back.Models;
+using app_pm_back.Data;
+using app_pm_back.Models.Domain;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
@@ -169,7 +172,7 @@ public class BuscaController : ControllerBase
     /// <param name="ativo">Ativo a ser procurado</param>
     /// <returns>Objeto com informações relevantes</returns>
     [HttpGet("ativo")]
-    public async Task<IActionResult> BuscaGerald([FromQuery] int ativo)
+    public async Task<IActionResult> BuscaGerald([FromQuery] ComponentType ativo)
     {
         try
         {
@@ -195,7 +198,7 @@ public class BuscaController : ControllerBase
     /// <param name="ativos"></param>
     /// <returns></returns>
     [HttpGet("ativo/list")]
-    public async Task<IActionResult> BuscaGeraldList([FromQuery] List<int> ativos)
+    public async Task<IActionResult> BuscaGeraldList([FromQuery] List<ComponentType> ativos)
     {
         try
         {
