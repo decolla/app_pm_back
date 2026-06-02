@@ -195,6 +195,9 @@ public class DadosRenovacaoService
             var ordens = await _context.PM_Ordens
                 .Where(n => idsOrdens.Contains(n.IdOrdem))
                 .ToListAsync();
+            
+            ordens = ordens.Where(o => o.Classificacao != "NÃO CLASSIFICADA").ToList();
+
 
             _logger.LogInformation("Carregadas {QtdOrdens} ordens do banco", ordens.Count);
 
@@ -268,6 +271,8 @@ public class DadosRenovacaoService
                 var notas = await _context.PM_Notas
                     .Where(n => ids.Contains(n.IdNota))
                     .ToListAsync();
+
+                notas = notas.Where(n => n.Classificacao != "NÃO CLASSIFICADA").ToList();
 
                 _logger.LogInformation("Carregadas {QtdNotas} notas para cadastro de dados de renovação", notas.Count);
 
@@ -371,6 +376,7 @@ public class DadosRenovacaoService
             _logger.LogDebug("ConfiabilidadeRestaurada é nula, nenhum processamento realizado");
             return 0;
         }
+        
 
         var inseridos = 0;
 
