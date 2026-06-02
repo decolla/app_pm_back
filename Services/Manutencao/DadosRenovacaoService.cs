@@ -15,7 +15,8 @@ public class DadosRenovacaoService
 {
     private readonly AppDbContext _context;
     private readonly ILogger<DadosRenovacaoService> _logger;
-    private List<string> _liParaRestaurar = new List<string>();
+    private List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem)> _liParaRestaurar 
+        = new List<(string, long?, long?, DateTime, OrigemUR)>();
     private const int TAMANHO_LOTE_LI = 50;
     private readonly HttpClient _httpClient;
     private readonly string _apmBaseUrl;
@@ -295,7 +296,10 @@ public class DadosRenovacaoService
                     if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
                     {
                         _logger.LogInformation("Atingido tamanho de lote ({TamanhoLote}). Processando lote de LI's...", TAMANHO_LOTE_LI);
-                        var lotePorProcessar = _liParaRestaurar.Take(TAMANHO_LOTE_LI).Distinct().ToList();
+                        var lotePorProcessar = _liParaRestaurar
+                            .Take(TAMANHO_LOTE_LI)
+                            .DistinctBy(li => li.IdLi)  // ← Remover duplicatas por IdLi
+                            .ToList();
                         registrosCriados += await ProcessarLoteLiAsync(lotePorProcessar);
                         _liParaRestaurar.RemoveRange(0, Math.Min(TAMANHO_LOTE_LI, _liParaRestaurar.Count));
                     }
@@ -339,7 +343,10 @@ public class DadosRenovacaoService
             if (_liParaRestaurar.Any())
             {
                 _logger.LogInformation("Processando {QtdLI} LI's restantes", _liParaRestaurar.Count);
-                registrosCriados += await ProcessarLoteLiAsync(_liParaRestaurar.Distinct().ToList());
+                var restantes = _liParaRestaurar
+                    .DistinctBy(li => li.IdLi)  // ← Remover duplicatas
+                    .ToList();
+                registrosCriados += await ProcessarLoteLiAsync(restantes);
                 _liParaRestaurar.Clear();
             }
 
@@ -404,33 +411,43 @@ public class DadosRenovacaoService
             if (!string.IsNullOrWhiteSpace(idLi))
             {
                 _logger.LogDebug("RestauraLI identificado - adicionando IdLi={IdLi} à fila de processamento", idLi);
+
+                // ← VERIFICAR SE JÁ EXISTE NA FILA
+                var existente = _liParaRestaurar.FirstOrDefault(li => li.IdLi == idLi);
         
-                // Adicionar à lista se ainda não estiver
-                if (!_liParaRestaurar.Contains(idLi))
+                if (existente == default)
                 {
-                    _liParaRestaurar.Add(idLi);
-                    _logger.LogDebug("IdLi {IdLi} adicionado à fila. Total na fila: {Total}", idLi, _liParaRestaurar.Count);
+                    // ← ADICIONAR COM CONTEXTO COMPLETO
+                    _liParaRestaurar.Add((idLi, idNota, idOrdem, dataSource, origem));
+                    _logger.LogDebug("IdLi {IdLi} adicionado à fila com origem. Total na fila: {Total}", 
+                        idLi, _liParaRestaurar.Count);
+                }
+                else
+                {
+                    _logger.LogDebug("IdLi {IdLi} já existe na fila, mantendo primeira ocorrência", idLi);
                 }
             }
             else
             {
-                _logger.LogWarning("RestauraLI marcado mas IdLi nulo ou vazio para Nota={IdNota}, Ordem={IdOrdem}", idNota, idOrdem);
+                _logger.LogWarning("RestauraLI marcado mas IdLi nulo ou vazio para Nota={IdNota}, Ordem={IdOrdem}", 
+                    idNota, idOrdem);
             }
         }
 
         return inseridos;
     }
-private async Task<int> ProcessarLoteLiAsync(List<string> lis)
-{
-    if (!lis.Any())
+    private async Task<int> ProcessarLoteLiAsync(
+        List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem)> liComContexto)
+    {
+    if (!liComContexto.Any())
     {
         _logger.LogDebug("Lista de LI's vazia, nenhum processamento realizado");
         return 0;
     }
-
+    var lis = liComContexto.Select(li => li.IdLi).ToList();
     _logger.LogInformation("Iniciando processamento de lote com {QtdLI} LI's", lis.Count);
 
-    try
+     try
     {
         // Chama a API da APM para obter os ativos associados às LI's
         var ativosDoLote = await ObterAtivosDoLoteLiAsync(lis);
@@ -452,20 +469,25 @@ private async Task<int> ProcessarLoteLiAsync(List<string> lis)
                 continue;
             }
 
-            _logger.LogDebug("Processando {QtdAtivos} ativos da LI {IdLi}", 
+            // ← BUSCAR O CONTEXTO ORIGINAL DESSA LI
+            var contextoDaLi = liComContexto.FirstOrDefault(li => li.IdLi == assetComponent.Name);
+
+            _logger.LogDebug("Processando {QtdAtivos} ativos da LI {IdLi} (Origem: Nota={IdNota}, Ordem={IdOrdem})", 
                 assetComponent.ComponentTypes.Count, 
-                assetComponent.Name);
+                assetComponent.Name,
+                contextoDaLi.IdNota,
+                contextoDaLi.IdOrdem);
 
             // Para cada ativo associado à LI, inserir/atualizar em DadosRenovacao
             foreach (var idAtivo in assetComponent.ComponentTypes)
             {
                 registrosProcessados += await InserirOuAtualizarPorAtivoAsync(
                     idAtivo,
-                    idNota: null,
-                    idOrdem: null,
-                    dataSource: DateTime.UtcNow,
-                    origem: OrigemUR.Nota,
-                    idLi: assetComponent.Name); 
+                    idNota: contextoDaLi.IdNota,  // ← USAR DO CONTEXTO
+                    idOrdem: contextoDaLi.IdOrdem,  // ← USAR DO CONTEXTO
+                    dataSource: contextoDaLi.DataOrigem,  // ← USAR DATA ORIGINAL
+                    origem: contextoDaLi.Origem,  // ← USAR ORIGEM ORIGINAL
+                    idLi: assetComponent.Name);
             }
         }
 
