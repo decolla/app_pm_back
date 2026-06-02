@@ -391,7 +391,8 @@ public class DadosRenovacaoService
                     idNota,
                     idOrdem,
                     dataSource,
-                    origem);
+                    origem,
+                    idLi);
             }
             else
             {
@@ -463,7 +464,8 @@ private async Task<int> ProcessarLoteLiAsync(List<string> lis)
                     idNota: null,
                     idOrdem: null,
                     dataSource: DateTime.UtcNow,
-                    origem: OrigemUR.Nota); // Usar Nota como origem padrão para LI restaurada
+                    origem: OrigemUR.Nota,
+                    idLi: assetComponent.Name); 
             }
         }
 
@@ -558,12 +560,14 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
         long? idNota,
         long? idOrdem,
         DateTime dataSource,
-        OrigemUR origem)
+        OrigemUR origem,
+        string idLi)
     {
         try
         {
             var existente = await _context.PM_DadosRenovacao
-                .FirstOrDefaultAsync(d => d.IdAtivo == idAtivo);
+                .FirstOrDefaultAsync(d => d.IdAtivo == idAtivo && d.IdLi == idLi);
+
 
             //se não existir adiciona
             if (existente == null)
@@ -576,6 +580,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
                     IdAtivo = idAtivo,
                     IdNota = idNota ?? null,
                     IdOrdem = idOrdem ?? null,
+                    IdLi = idLi, 
                     IdUsuario = null
                 };
                 _context.PM_DadosRenovacao.Add(novo);
@@ -591,12 +596,13 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
                 {
                     existente.UltimaRenovacao = dataSource;
                     existente.OrigemUR = origem;
+                    existente.IdLi = idLi;  // ← Manter/Atualizar IdLi
                     if (idNota.HasValue) existente.IdNota = idNota.Value;
                     if (idOrdem.HasValue) existente.IdOrdem = idOrdem.Value;
                     _context.PM_DadosRenovacao.Update(existente);
                     _logger.LogInformation(
-                        "Atualizado registro de DadosRenovacao: IdAtivo={IdAtivo}, NovaData={NovaData}",
-                        idAtivo, dataSource);
+                        "Atualizado registro de DadosRenovacao: IdAtivo={IdAtivo}, IdLi={IdLi}, NovaData={NovaData}",
+                        idAtivo, idLi, dataSource);
                     return 1;
                 }
                 else

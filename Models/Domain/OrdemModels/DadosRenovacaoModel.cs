@@ -47,6 +47,13 @@ public class DadosRenovacaoModel
     /// Identificador do Ativo relacionado.
     /// </summary>
     public ComponentType? IdAtivo { get; set; }
+    
+    /// <summary>
+    /// Chave estrangeira para a localização de instalação do ativo.
+    /// Permite vincular a nota a um local específico de instalação.
+    /// </summary>
+    [MaxLength(100)]
+    public string? IdLi { get; set; }
 
     /// <summary>
     /// Identificador da Nota relacionada.
