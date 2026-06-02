@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using app_pm_back.DTO.Restauracao;
@@ -502,6 +503,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
             Content = content
         };
         
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
         var response = await _httpClient.SendAsync(request);
 
         if (!response.IsSuccessStatusCode)
