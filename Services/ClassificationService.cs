@@ -151,11 +151,11 @@ public class ClassificationService<T> where T : class, IClassifiable
                 var nota = lote[i];
                 var chanceDeSerCorretiva = probabilidades[i];
 
-                if (chanceDeSerCorretiva > 0.9)
+                if (chanceDeSerCorretiva > 0.8)
                     nota.Classificacao = "CORRETIVA";
-                else if (chanceDeSerCorretiva < 0.6)
+                else if (chanceDeSerCorretiva < 0.7)
                     nota.Classificacao = "PREVENTIVA";
-                else nota.Classificacao = "NÃO CLASSIFICADA";
+                else nota.Classificacao = "NAO CLASSIFICADA";
 
                 nota.MetodoClassificacao = "IA_CATBOOST";
                 nota.DataClassificacao = DateTime.UtcNow;
