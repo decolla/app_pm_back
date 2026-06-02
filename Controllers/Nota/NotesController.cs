@@ -275,7 +275,7 @@ public class NotasController : ControllerBase
         try
         {
             var result = await _classificationService.CatboostClassification();
-            return Ok(result);
+            return Ok("Notas classificadas com sucesso");
         }
         catch (Exception e)
         {

@@ -252,7 +252,7 @@ public class OrdersController : ControllerBase
         try
         {
             var result = await _classificationService.CatboostClassification();
-            return Ok(result);
+            return Ok("Ordens classificadas com sucesso");
         }
         catch (Exception e)
         {

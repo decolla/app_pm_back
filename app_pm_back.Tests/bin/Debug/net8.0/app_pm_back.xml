@@ -524,7 +524,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.ListarNotas(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
-            Retorna todas as notas com paginacao opcional.
+            Retorna todas as notas , com paginacao opcional.
             </summary>
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.ContarNotas">
@@ -1008,6 +1008,22 @@
             Inicializa o banco de dados.
             </summary>
             <param name="app"></param>
+        </member>
+        <member name="T:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO">
+            <summary>
+            DTO para resposta da API de Ativos da APM.
+            Representa um conjunto de componentes/ativos associados a uma LocalInstalacao (LI).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.Name">
+            <summary>
+            Nome da LocalInstalacao (LI/Name)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.ComponentTypes">
+            <summary>
+            Lista de ComponentTypes (IdAtivos) associados a esta LI
+            </summary>
         </member>
         <member name="T:app_pm_back.DTO.ImobilizadoDto">
             <summary>
@@ -3206,7 +3222,7 @@
             Classe DadosRenovacaoService.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.Manutencao.DadosRenovacaoService})">
+        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.Manutencao.DadosRenovacaoService},Microsoft.Extensions.Configuration.IConfiguration,System.Net.Http.HttpClient)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.DadosRenovacaoService"/>.
             </summary>
@@ -3236,6 +3252,13 @@
             <param name="ehNota">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.ObterAtivosDoLoteLiAsync(System.Collections.Generic.List{System.String})">
+            <summary>
+            Chama a API da APM (PUT) para obter os ativos (ComponentTypes) associados às LI's.
+            </summary>
+            <param name="lis">Lista de LocalInstalacoes (LI's)</param>
+            <returns>Lista de AssetComponentTypesDTO com os ativos para cada LI</returns>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.EstrategiaService">
             <summary>
@@ -3303,7 +3326,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.NotaManutencaoService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.ImportarNotasEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel})">
+        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.ImportarNotasEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel},System.Boolean,System.Boolean)">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -3326,7 +3349,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.OrdemService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ImportarOrdensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel})">
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ImportarOrdensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel},System.Boolean,System.Boolean)">
             <summary>
             Executa a ação correspondente.
             </summary>

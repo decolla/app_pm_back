@@ -20,7 +20,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
     /// Executa a ação correspondente.
     /// </summary>
     /// <param name="ordens">Parâmetro do método.</param>
-    public async Task ImportarOrdensEmLoteSeguroAsync(List<OrdemModel> ordens)
+    public async Task ImportarOrdensEmLoteSeguroAsync(List<OrdemModel> ordens, bool sobrescrever, bool adicionarNovas)
     {
         if (ordens == null || !ordens.Any()) return;
 
@@ -32,19 +32,52 @@ public class OrdemService : BaseCrudService<OrdemModel>
 
         await ImportGhostHelper.EnsureNotasAsync(_context, notaIds.Select(id => (long?)id));
 
-        var idsOrdens = ordens.Select(o => o.IdOrdem).Distinct().ToList();
-        var existentes = await _context.PM_Ordens
-            .Where(o => idsOrdens.Contains(o.IdOrdem))
-            .ToDictionaryAsync(o => o.IdOrdem);
+        var numerosOrdens = ordens
+            .Where(o => o.NumeroOrdem.HasValue)
+            .Select(o => o.NumeroOrdem!.Value)
+            .Distinct()
+            .ToList();
+
+        var idsOrdens = ordens
+            .Where(o => !o.NumeroOrdem.HasValue)
+            .Select(o => o.IdOrdem)
+            .Distinct()
+            .ToList();
+
+        var existentesPorNumero = numerosOrdens.Any()
+            ? await _context.PM_Ordens
+                .Where(o => o.NumeroOrdem.HasValue && numerosOrdens.Contains(o.NumeroOrdem.Value))
+                .ToDictionaryAsync(o => o.NumeroOrdem!.Value)
+            : new Dictionary<long, OrdemModel>();
+
+        var existentesPorId = idsOrdens.Any()
+            ? await _context.PM_Ordens
+                .Where(o => idsOrdens.Contains(o.IdOrdem))
+                .ToDictionaryAsync(o => o.IdOrdem)
+            : new Dictionary<long, OrdemModel>();
 
         var novasOrdens = new List<OrdemModel>();
         foreach (var ordem in ordens)
         {
-            if (existentes.TryGetValue(ordem.IdOrdem, out var existente))
+            OrdemModel? existente = null;
+
+            if (ordem.NumeroOrdem.HasValue)
             {
-                ImportMergeHelper.MergeNonEmpty(existente, ordem);
+                existentesPorNumero.TryGetValue(ordem.NumeroOrdem.Value, out existente);
             }
             else
+            {
+                existentesPorId.TryGetValue(ordem.IdOrdem, out existente);
+            }
+
+            if (existente != null)
+            {
+                if (sobrescrever)
+                {
+                    _context.Entry(existente).CurrentValues.SetValues(ordem);
+                }
+            }
+            else if (adicionarNovas)
             {
                 novasOrdens.Add(ordem);
             }

@@ -20,7 +20,7 @@ public class NotaManutencaoService : BaseCrudService<NotaModel>
     /// Executa a ação correspondente.
     /// </summary>
     /// <param name="notas">Parâmetro do método.</param>
-    public async Task ImportarNotasEmLoteSeguroAsync(List<NotaModel> notas)
+    public async Task ImportarNotasEmLoteSeguroAsync(List<NotaModel> notas, bool sobrescrever, bool adicionarNovas)
     {
         if (notas == null || !notas.Any()) return;
 
@@ -39,12 +39,10 @@ public class NotaManutencaoService : BaseCrudService<NotaModel>
         await ImportGhostHelper.EnsureUsuariosSapAsync(_context, usuariosCriadoresExcel.Select(id => (int?)id));
         await ImportGhostHelper.EnsurePlanosAsync(_context, planosExcel.Select(id => (long?)id));
 
-        var idsNotas = notas.Select(n => n.IdNota).Distinct().ToList();
-        var numerosNotas = notas.Select(n => n.NumeroNota).Distinct().ToList();
-
-        var existentesPorId = await _context.PM_Notas
-            .Where(n => idsNotas.Contains(n.IdNota))
-            .ToDictionaryAsync(n => n.IdNota);
+        var numerosNotas = notas
+            .Select(n => n.NumeroNota)
+            .Distinct()
+            .ToList();
 
         var existentesPorNumero = await _context.PM_Notas
             .Where(n => numerosNotas.Contains(n.NumeroNota))
@@ -53,12 +51,14 @@ public class NotaManutencaoService : BaseCrudService<NotaModel>
         var novasNotas = new List<NotaModel>();
         foreach (var nota in notas)
         {
-            if (existentesPorId.TryGetValue(nota.IdNota, out var existente) ||
-                existentesPorNumero.TryGetValue(nota.NumeroNota, out existente))
+            if (existentesPorNumero.TryGetValue(nota.NumeroNota, out var existente))
             {
-                ImportMergeHelper.MergeNonEmpty(existente, nota);
+                if (sobrescrever)
+                {
+                    _context.Entry(existente).CurrentValues.SetValues(nota);
+                }
             }
-            else
+            else if (adicionarNovas)
             {
                 novasNotas.Add(nota);
             }
