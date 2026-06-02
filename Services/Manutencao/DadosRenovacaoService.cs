@@ -493,8 +493,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
         _logger.LogInformation("Chamando API APM: PUT {Url} com {QtdLI} LI's no body", url, lis.Count);
 
         // Criar o body com a lista de nomes
-        var requestBody = new { names = lis };
-        var jsonContent = System.Text.Json.JsonSerializer.Serialize(requestBody);
+        var jsonContent = System.Text.Json.JsonSerializer.Serialize(lis);  
         var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
 
         // Fazer requisição PUT com body
