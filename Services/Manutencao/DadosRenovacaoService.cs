@@ -487,16 +487,21 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
 {
     try
     {
-        // Construir a query string com todas as LI's
-        // Exemplo: ?names=LI001&names=LI002&names=LI003
-        var queryString = string.Join("&", lis.Select(li => $"names={Uri.EscapeDataString(li)}"));
+        var url = $"{_apmBaseUrl}/api/V1/Asset/Components";
         
-        var url = $"{_apmBaseUrl}/api/V1/Asset/Components?{queryString}";
-        
-        _logger.LogInformation("Chamando API APM: PUT {Url}", url);
+        _logger.LogInformation("Chamando API APM: PUT {Url} com {QtdLI} LI's no body", url, lis.Count);
 
-        // Fazer requisição PUT (sem body)
-        var request = new HttpRequestMessage(HttpMethod.Put, url);
+        // Criar o body com a lista de nomes
+        var requestBody = new { names = lis };
+        var jsonContent = System.Text.Json.JsonSerializer.Serialize(requestBody);
+        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+        // Fazer requisição PUT com body
+        var request = new HttpRequestMessage(HttpMethod.Put, url)
+        {
+            Content = content
+        };
+        
         var response = await _httpClient.SendAsync(request);
 
         if (!response.IsSuccessStatusCode)
