@@ -511,6 +511,8 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
             _logger.LogError("Erro ao chamar API APM. StatusCode: {StatusCode}, ReasonPhrase: {ReasonPhrase}", 
                 response.StatusCode, 
                 response.ReasonPhrase);
+            _logger.LogError("Conteudo enviado: {content}", 
+                content);
             response.EnsureSuccessStatusCode();
         }
 
