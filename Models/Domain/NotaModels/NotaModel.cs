@@ -135,6 +135,11 @@ public class NotaModel : IClassifiable
     public string? EquipamentoDisponivel { get; set; }
 
     /// <summary>
+    /// Corresponde se o ativo existe no APM
+    /// </summary>
+    public bool ativoAPM { get; set; } = false;
+
+    /// <summary>
     /// Indica se a confiabilidade do equipamento foi restaurada após a intervenção.
     /// Importante para métricas de eficácia de manutenção.
     /// </summary>
