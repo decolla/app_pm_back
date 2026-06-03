@@ -35,7 +35,7 @@ public class TipoPlanoService : BaseCrudService<TipoPlanoModel>
     /// </summary>
     /// <param name="categoria">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<List<TipoPlanoModel>> GetTodosByTipo(string categoria)
+    public async Task<List<TipoPlanoModel>> GetTodosByTipo(CategoriaTipoManutencao categoria)
     {
         return await _context.PM_TiposPlano
             .Where(t => t.Categoria == categoria)

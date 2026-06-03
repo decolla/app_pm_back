@@ -48,10 +48,9 @@ public class TipoPlanoModel
 
     /// <summary>
     /// Categoria descritiva do plano.
-    /// Exemplo: "Preventiva"
+    /// Exemplo: "Manutenção ou renovação ou cep"
     /// </summary>
-    [MaxLength(100)]
-    public string? Categoria { get; set; }
+    public CategoriaTipoManutencao Categoria { get; set; }
 
     /// <summary>
     /// FK para o Tipo de Estratégia.

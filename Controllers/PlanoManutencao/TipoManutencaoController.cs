@@ -387,8 +387,8 @@ public class TipoPlanoController : ControllerBase
                     { message = "Rota inválida. Use /tipo-plano/tipado/0 ou /tipo-plano/tipado/1" });
             }
 
-            CategoriaTipoEstrategia tipagem = (CategoriaTipoEstrategia)tipo;
-            var acoes = await _tipoPlanoService.GetTodosByTipo(tipagem.ToString());
+            CategoriaTipoManutencao tipagem = (CategoriaTipoManutencao)tipo;
+            var acoes = await _tipoPlanoService.GetTodosByTipo(tipagem);
             return Ok(acoes);
         }
         catch (Exception e)

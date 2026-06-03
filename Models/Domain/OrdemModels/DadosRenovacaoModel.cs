@@ -33,10 +33,15 @@ public class DadosRenovacaoModel
     public DateTime UltimaRenovacao { get; set; }
 
     /// <summary>
-    /// Origem da última renovação (ex: sistema, manual, integração).
+    /// Origem da última renovação (nota, ordem, usuario).
     /// </summary>
-    [MaxLength(100)]
     public OrigemUR OrigemUR { get; set; }
+    
+    /// <summary>
+    /// Se a renovação é corretiva/preventiva e de usuario/catboost
+    /// </summary>
+    
+    public TipoDados TipoDados { get; set; }
 
     /// <summary>
     /// Índice de confiabilidade calculado para o ativo (0 a 1 ou percentual).
@@ -47,6 +52,13 @@ public class DadosRenovacaoModel
     /// Identificador do Ativo relacionado.
     /// </summary>
     public ComponentType? IdAtivo { get; set; }
+    
+    /// <summary>
+    /// Chave estrangeira para a localização de instalação do ativo.
+    /// Permite vincular a nota a um local específico de instalação.
+    /// </summary>
+    [MaxLength(100)]
+    public string? IdLi { get; set; }
 
     /// <summary>
     /// Identificador da Nota relacionada.

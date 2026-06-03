@@ -76,7 +76,7 @@ public class AutoMapperProfile : Profile
  .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao));
 
  CreateMap<CentroTrabalhoDto, CtmModel>()
- .ForMember(dest => dest.IdGPM, opt => opt.MapFrom(src => src.IdGpm))
+ .ForMember(dest => dest.IdCTM, opt => opt.MapFrom(src => src.IdCtm))
  .ForMember(dest => dest.AreaCTM, opt => opt.MapFrom(src => src.AreaCTM))
  .ForMember(dest => dest.IdCPM, opt => opt.MapFrom(src => src.IdCpm ?? 0))
  .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao));

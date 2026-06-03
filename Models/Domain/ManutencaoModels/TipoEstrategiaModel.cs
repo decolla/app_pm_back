@@ -37,10 +37,9 @@ public class TipoEstrategiaModel
     public bool? Continua { get; set; }
 
     /// <summary>
-    /// Categoria da estratégia. Exemplo: "Preventiva"
+    /// Categoria da estratégia. Exemplo: "renovação, "
     /// </summary>
-    [MaxLength(100)]
-    public string? Categoria { get; set; }
+    public CategoriaTipoManutencao Categoria { get; set; }
 
     /// <summary>
     /// Chave estrangeira para a Estratégia pai.

@@ -13,7 +13,7 @@ public class CtmModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public int IdGPM { get; set; }
+    public int IdCTM { get; set; }
     
     /// <summary>
     /// Nome do CTM.

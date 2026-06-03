@@ -56,11 +56,11 @@ public enum Visivel
 /// <summary>
 /// Categoria da estrategia.
 /// </summary>
-public enum CategoriaTipoEstrategia
-{
-    Manutencao = 0,
-    Renovacao = 1
-}
+/// public enum CategoriaTipoEstrategia
+/// {
+    ///Manutencao = 0,
+    ///Renovacao = 1
+///}
 
 /// <summary>
 /// Tipo de tipo de manutencao/plano.
@@ -74,11 +74,11 @@ public enum CategoriaTipoManutencao
 /// <summary>
 /// Tipo de tipo de manutencao/plano.
 /// </summary>
-public enum TipoTipo
-{
-    Manutencao = 0,
-    Renovacao = 1
-}
+/// public enum TipoTipo
+/// {
+    /// Manutencao = 0,
+    /// Renovacao = 1
+/// }
 
 /// <summary>
 /// Unidade do ciclo.
@@ -150,4 +150,16 @@ public enum OriginType
 {
     GAS = 0,
     ELETRICO = 1,
+}
+
+/// <summary>
+/// Usado para classificar os tipos de fichas em dados renovação
+/// </summary>
+public enum TipoDados
+{
+    PREVENTIVACAT = 0,
+    CORRETIVACAT = 1,
+    PREVENTIVAHUM = 2,
+    CORRETIVAHUM = 3,
+    NAOCLASSIFICADA =4
 }

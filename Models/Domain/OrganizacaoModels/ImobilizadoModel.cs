@@ -80,4 +80,19 @@ public class ImobilizadoModel
     /// </summary>
     [MaxLength(1000)]
     public string? InfoAdicionais { get; set; }
+    
+    /// <summary>
+    /// Chave estrangeira para o ativo associado.
+    /// Identifica qual equipamento ou item está relacionado à ocorrência.
+    /// </summary>
+    /// <example>150</example>
+    public ComponentType? IdAtivo { get; set; }
+    
+    /// <summary>
+    /// Chave estrangeira para a localização de instalação do ativo.
+    /// Permite vincular a um local específico de instalação.
+    /// </summary>
+    [MaxLength(100)]
+    public string? IdLi { get; set; }
+
 }

@@ -49,15 +49,16 @@ public class PlanoModel
     public DateTime? DataConclusao { get; set; }
 
     /// <summary>
-    /// Nome do ativo relacionado, para fins de exibição ou histórico.
-    /// </summary>
-    [StringLength(150, ErrorMessage = "O Nome do Ativo não pode exceder 150 caracteres.")]
-    public string? NomeAtivo { get; set; }
-
-    /// <summary>
     /// Identificador do Ativo vinculado.
     /// </summary>
     public ComponentType? IdAtivo { get; set; }
+    
+    /// <summary>
+    /// Chave estrangeira para a localização de instalação do ativo.
+    /// Permite vincular a um local específico de instalação.
+    /// </summary>
+    [MaxLength(100)]
+    public string? IdLi { get; set; }
 
     /// <summary>
     /// Chave estrangeira para a Estratégia de manutenção.

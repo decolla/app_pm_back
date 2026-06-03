@@ -14,8 +14,6 @@ public class PlanoManutencaoDto
 
     [SheetColumn("Nome plano")] public string? Nome { get; set; }
 
-    [SheetColumn("Ativo")] public string? NomeAtivo { get; set; }
-
     [SheetColumn("Prioridade")] public Prioridade? Prioridade { get; set; }
 
     [SheetColumn("Gerar automaticamente")] public GerarAutomaticamente? GerarAutomaticamente { get; set; }
@@ -30,6 +28,9 @@ public class PlanoManutencaoDto
 
     // Ativo externo (apenas o ID).
     [SheetColumn("Id Ativo")] public ComponentType? IdAtivo { get; set; }
+
+    // Local de instalação (LI) vinculado ao ativo.
+    [SheetColumn("Id Li")] public string? IdLi { get; set; }
 }
 
 #pragma warning restore CS1591

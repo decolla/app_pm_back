@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO;
 
@@ -19,7 +20,7 @@ public class TipoEstrategiaDto
 
     [SheetColumn("Continua")] public bool? Continua { get; set; }
 
-    [SheetColumn("Categoria")] public string? Categoria { get; set; }
+    [SheetColumn("Categoria")] public CategoriaTipoManutencao Categoria { get; set; }
 
     [SheetColumn("Id Estratégia")] public int? IdEstrategia { get; set; }
 

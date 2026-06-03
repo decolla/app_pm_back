@@ -224,6 +224,44 @@ public class BuscaController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Busca as datas de renovação associadas ao conjunto LI + ativo, retorna um objeto com os dados relevantes
+    /// </summary>
+    /// <param name="ativo">Ativo a ser procurado</param>
+    /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
+    /// <param name="tipoDados">Tipo de dados da renovação</param>
+    /// <returns>Objeto com informações relevantes</returns>
+    [HttpGet("ativo/datas")]
+    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] ComponentType ativo, [FromQuery] string idLi, [FromQuery] TipoDados tipoDados)
+    {
+        try
+        {
+            if (!Enum.IsDefined(typeof(ComponentType), ativo))
+            {
+                return BadRequest(new { message = "Parametro ativo invalido." });
+            }
+
+            if (string.IsNullOrWhiteSpace(idLi))
+            {
+                return BadRequest(new { message = "Parametro idLi obrigatorio." });
+            }
+
+            if (!Enum.IsDefined(typeof(TipoDados), tipoDados))
+            {
+                return BadRequest(new { message = "Parametro tipoDados invalido." });
+            }
+
+            var obj = await _searchService.AtivoDatas(ativo, idLi, tipoDados);
+            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o conjunto LI + ativo informado." });
+
+            return Ok(obj);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
+        }
+    }
+
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
