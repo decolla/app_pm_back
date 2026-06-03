@@ -4,6 +4,7 @@ using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace app_pm_back.Controllers;
 
@@ -271,8 +272,8 @@ public class BuscaController : ControllerBase
     /// <returns>Lista com id, classificação, descrição e data de criação.</returns>
     [HttpGet("timeline")]
     public async Task<IActionResult> BuscarTimeline(
-        [FromQuery] DateTime dataInicio,
-        [FromQuery] DateTime dataFim,
+        [FromQuery] string dataInicio,
+        [FromQuery] string dataFim,
         [FromQuery] string idLi)
     {
         try
@@ -282,23 +283,40 @@ public class BuscaController : ControllerBase
                 return BadRequest(new { message = "Parametro idLi obrigatorio." });
             }
 
-            if (dataInicio == default || dataFim == default)
+            if (string.IsNullOrWhiteSpace(dataInicio) || string.IsNullOrWhiteSpace(dataFim))
             {
                 return BadRequest(new { message = "Parametros dataInicio e dataFim obrigatorios." });
             }
 
-            if (dataInicio > dataFim)
+            if (!TryParseTimelineDate(dataInicio, out var inicio) ||
+                !TryParseTimelineDate(dataFim, out var fim))
+            {
+                return BadRequest(new { message = "Formato de data invalido. Use yyyy-MM-dd ou yyyy-MM-ddTHH:mm:ss." });
+            }
+
+            if (inicio > fim)
             {
                 return BadRequest(new { message = "Parametro dataInicio deve ser menor ou igual a dataFim." });
             }
 
-            var resultados = await _searchService.BuscarTimelineAsync(dataInicio, dataFim, idLi);
+            var resultados = await _searchService.BuscarTimelineAsync(inicio, fim, idLi);
             return Ok(resultados);
         }
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao buscar timeline: {e.Message}." });
         }
+    }
+
+    private static bool TryParseTimelineDate(string value, out DateTime parsed)
+    {
+        var styles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal;
+        if (DateTime.TryParse(value, CultureInfo.InvariantCulture, styles, out parsed))
+        {
+            return true;
+        }
+
+        return DateTime.TryParse(value, CultureInfo.GetCultureInfo("pt-BR"), styles, out parsed);
     }
 
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
