@@ -58,6 +58,13 @@ public class PlanoModel
     /// Identificador do Ativo vinculado.
     /// </summary>
     public ComponentType? IdAtivo { get; set; }
+    
+    /// <summary>
+    /// Chave estrangeira para a localização de instalação do ativo.
+    /// Permite vincular a um local específico de instalação.
+    /// </summary>
+    [MaxLength(100)]
+    public string? IdLi { get; set; }
 
     /// <summary>
     /// Chave estrangeira para a Estratégia de manutenção.

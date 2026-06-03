@@ -224,6 +224,32 @@ public class BuscaController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Busca as datas de renovação associadas a um ativo, retorna um objeto com os dados relevantes
+    /// </summary>
+    /// <param name="ativo">Ativo a ser procurado</param>
+    /// <returns>Objeto com informações relevantes</returns>
+    [HttpGet("ativo/datas")]
+    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] ComponentType ativo)
+    {
+        try
+        {
+            if (ativo <= 0)
+            {
+                return BadRequest(new { message = "Parametro ativo obrigatorio." });
+            }
+
+            var obj = await _searchService.AtivoDatas(ativo);
+            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o ativo informado." });
+
+            return Ok(obj);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
+        }
+    }
+
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
