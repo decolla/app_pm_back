@@ -229,9 +229,10 @@ public class BuscaController : ControllerBase
     /// </summary>
     /// <param name="ativo">Ativo a ser procurado</param>
     /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
+    /// <param name="tipoDados">Tipo de dados da renovação</param>
     /// <returns>Objeto com informações relevantes</returns>
     [HttpGet("ativo/datas")]
-    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] ComponentType ativo, [FromQuery] string idLi)
+    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] ComponentType ativo, [FromQuery] string idLi, [FromQuery] TipoDados tipoDados)
     {
         try
         {
@@ -245,7 +246,12 @@ public class BuscaController : ControllerBase
                 return BadRequest(new { message = "Parametro idLi obrigatorio." });
             }
 
-            var obj = await _searchService.AtivoDatas(ativo, idLi);
+            if (!Enum.IsDefined(typeof(TipoDados), tipoDados))
+            {
+                return BadRequest(new { message = "Parametro tipoDados invalido." });
+            }
+
+            var obj = await _searchService.AtivoDatas(ativo, idLi, tipoDados);
             if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o conjunto LI + ativo informado." });
 
             return Ok(obj);

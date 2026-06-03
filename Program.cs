@@ -44,6 +44,8 @@ builder.WebHost.ConfigureKestrel(serverOptions => { serverOptions.Limits.MaxRequ
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    // mostra os nomes dos enums (ao invés dos números) no Swagger e na serialização JSON
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

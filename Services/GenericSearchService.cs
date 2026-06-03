@@ -446,11 +446,11 @@ public class GenericSearchService
         };
     }
     
-    public async Task<object?> AtivoDatas(ComponentType ativo, string idLi)
+    public async Task<object?> AtivoDatas(ComponentType ativo, string idLi, TipoDados tipoDados)
     {
         //Busca a data da última renovação daquele conjunto LI + ativo
         DadosRenovacaoModel? ultimaRenovacao = await _context.PM_DadosRenovacao
-            .Where(d => d.IdAtivo == ativo && d.IdLi == idLi)
+            .Where(d => d.IdAtivo == ativo && d.IdLi == idLi && d.TipoDados == tipoDados)
             .OrderByDescending(d => d.UltimaRenovacao)
             .FirstOrDefaultAsync();
 
