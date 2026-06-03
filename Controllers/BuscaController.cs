@@ -311,6 +311,20 @@ public class BuscaController : ControllerBase
     private static bool TryParseTimelineDate(string value, out DateTime parsed)
     {
         var styles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal;
+        var formats = new[]
+        {
+            "yyyy-MM-dd",
+            "yyyy-MM-dd'T'HH:mm:ss",
+            "yyyy-MM-dd'T'HH:mm:ss.fff",
+            "yyyy-MM-dd'T'HH:mm:ss'Z'",
+            "yyyy-MM-dd'T'HH:mm:ss.fff'Z'"
+        };
+
+        if (DateTime.TryParseExact(value, formats, CultureInfo.InvariantCulture, styles, out parsed))
+        {
+            return true;
+        }
+
         if (DateTime.TryParse(value, CultureInfo.InvariantCulture, styles, out parsed))
         {
             return true;
