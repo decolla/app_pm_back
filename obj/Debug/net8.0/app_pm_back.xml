@@ -2979,6 +2979,18 @@
         <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:app_pm_back.Migrations.FixedAtivoId">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.FixedAtivoId.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.FixedAtivoId.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.FixedAtivoId.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
             <summary>
             Rotas para planilhas
@@ -3203,6 +3215,15 @@
             </summary>
             <param name="ativo">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarTimelineAsync(System.DateTime,System.DateTime,System.String)">
+            <summary>
+            Obtém uma timeline de fichas de um ativo para um range de data específico
+            </summary>
+            <param name="dataInicio">Data de início</param>
+            <param name="dataFim">Data de fim</param>
+            <param name="idLi">Nome do ativo/LI</param>
+            <returns></returns>
         </member>
         <member name="T:app_pm_back.Services.ImportGhostHelper">
             <summary>

@@ -653,9 +653,6 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<bool>("ativoAPM")
-                        .HasColumnType("boolean");
-
                     b.HasKey("IdNota");
 
                     b.HasIndex("IdPlano");
@@ -799,9 +796,6 @@ namespace app_pm_back.Migrations
                     b.Property<string>("TipoOrdem")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
-
-                    b.Property<bool>("ativoAPM")
-                        .HasColumnType("boolean");
 
                     b.HasKey("IdOrdem");
 
