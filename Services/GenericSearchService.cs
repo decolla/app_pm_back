@@ -504,41 +504,53 @@ public class GenericSearchService
     /// <summary>
     /// Obtém uma timeline de fichas de um ativo para um range de data específico
     /// </summary>
-    /// <param name="dataInicio">Data de início</param>
-    /// <param name="dataFim">Data de fim</param>
-    /// <param name="idLi">Nome do ativo/LI</param>
-    /// <returns></returns>
     public async Task<IReadOnlyList<TimelineItem>> BuscarTimelineAsync(
         DateTime dataInicio,
         DateTime dataFim,
         string idLi)
     {
+        // 1. Projeção usando Tipo Anônimo (Nomes e tipos devem ser IDÊNTICOS nas duas queries)
         var notas = _notaModels.AsNoTracking()
             .Where(n => n.IdLi == idLi
-                    && n.DataNota.HasValue
-                    && n.DataNota.Value >= dataInicio
-                    && n.DataNota.Value <= dataFim)
-            .Select(n => new TimelineItem(
-                n.IdNota,
-                n.Classificacao,
-                n.DescricaoBreve ?? n.AnomaliaObservada,
-                n.DataNota));
+                        && n.DataNota.HasValue
+                        && n.DataNota.Value >= dataInicio
+                        && n.DataNota.Value <= dataFim)
+            .Select(n => new 
+            {
+                Id = n.IdNota,
+                Classificacao = n.Classificacao,
+                Descricao = n.DescricaoBreve ?? n.AnomaliaObservada,
+                Data = n.DataNota
+            });
 
         var ordens = _ordemModels.AsNoTracking()
             .Where(o => o.IdLi == idLi
-                    && o.DataCriacao.HasValue
-                    && o.DataCriacao.Value >= dataInicio
-                    && o.DataCriacao.Value <= dataFim)
-            .Select(o => new TimelineItem(
-                o.IdOrdem,
-                o.Classificacao,
-                o.DescricaoBreve,
-                o.DataCriacao));
+                        && o.DataCriacao.HasValue
+                        && o.DataCriacao.Value >= dataInicio
+                        && o.DataCriacao.Value <= dataFim)
+            .Select(o => new 
+            {
+                Id = o.IdOrdem, // Assumindo que IdNota e IdOrdem são do mesmo tipo (ex: long)
+                Classificacao = o.Classificacao,
+                Descricao = o.DescricaoBreve,
+                Data = o.DataCriacao
+            });
 
-        return await notas
+        // 2. O Concat agora acontece 100% no banco de dados (SQL UNION ALL)
+        var combinadosDb = await notas
             .Concat(ordens)
-            .OrderBy(r => r.DataCriacao)
+            .OrderBy(r => r.Data)
             .ToListAsync()
             .ConfigureAwait(false);
+
+        // 3. Conversão em memória para o seu DTO final (TimelineItem)
+        var timeline = combinadosDb.Select(x => new TimelineItem(
+            x.Id,
+            x.Classificacao,
+            x.Descricao,
+            x.Data
+        )).ToList();
+
+        return timeline;
     }
 }
