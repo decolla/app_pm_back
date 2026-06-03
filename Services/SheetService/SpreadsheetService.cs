@@ -16,13 +16,13 @@ public class SpreadsheetService
 {
     private static readonly (ComponentType Type, string[] Terms)[] ComponentTypeMatchers =
     [
-        (ComponentType.Shutoff, new[] { "shut-off", "shutoff", "shut off", "sbr", "sdv", "bloqueio remoto", "sistema bloqueio remoto" }),
-        (ComponentType.PilotValve, new[] { "valvula piloto", "pilot valve", "pilot" }),
+        (ComponentType.Shutoff, new[] { "shut-off", "shutoff", "shut off", "sbr", "sdv", "bloqueio remoto", "sistema bloqueio remoto", "valvula saida"}),
+        (ComponentType.PilotValve, new[] { "valvula piloto", "pilot valve", "pilot", "piloto" }),
         (ComponentType.RegulatorValve, new[] { "valvula reguladora", "regulator valve" }),
-        (ComponentType.Regulator, new[] { "regulador", "regulator" }),
-        (ComponentType.FlowSensor, new[] { "flow", "flowtrail", "flow trail", "sensor de vazao", "sensor de fluxo", "medidor" }),
+        (ComponentType.Regulator, new[] { "regulador", "regulator", "reguladores" }),
+        (ComponentType.FlowSensor, new[] { "flow", "flowtrail", "flow sensor", "flow trail", "sensor de vazao", "sensor de fluxo", "medidor" }),
         (ComponentType.FillValveV9, new[] { "abastecimento de odorante", "valvula de abastecimento", "fill valve", "v9" }),
-        (ComponentType.OdorantPump, new[] { "bomba odorante", "bomba de odorante", "odorante bomba" }),
+        (ComponentType.OdorantPump, new[] { "bomba odorante", "bomba de odorante", "odorante bomba", "pump", "bomba" }),
         (ComponentType.OdorantTank, new[] { "tanque de odorante", "tanque odorante", "reservatorio de odorante" }),
         (ComponentType.ManifoldIn, new[] { "manifold in", "manifold entrada" }),
         (ComponentType.ManifoldDischarge, new[] { "manifold discharge", "manifold saida" }),
@@ -219,6 +219,11 @@ public class SpreadsheetService
 
                             if (tipo == typeof(ComponentType) &&
                                 string.Equals(property.Name, "IdAtivo", StringComparison.OrdinalIgnoreCase))
+                            {
+                                valorConvertido = TryTranslateComponentType(valor);
+                            }
+                            else if (tipo == typeof(string) &&
+                                        string.Equals(property.Name, "AnomaliaObservada", StringComparison.OrdinalIgnoreCase))
                             {
                                 valorConvertido = TryTranslateComponentType(valor);
                             }

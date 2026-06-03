@@ -228,21 +228,14 @@ public class TipoPlanoController : ControllerBase
     /// <param name="context">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
     /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-    [HttpPost("{tipo:int}")]
+    [HttpPost]
     public async Task<IActionResult> Criar(
-        [FromRoute] int tipo,
         [FromBody] TipoPlanoDto dto,
         [FromServices] AppDbContext context)
     {
         if (!ModelState.IsValid)
         {
             return ValidationProblem(ModelState);
-        }
-
-        if (tipo != 0 && tipo != 1)
-        {
-            return BadRequest(new
-                { message = "Rota inválida. Use /tipo-plano/0 ou /tipo-plano/1" });
         }
 
         if (!dto.IdTipoEstrategia.HasValue && !dto.IdPlano.HasValue)

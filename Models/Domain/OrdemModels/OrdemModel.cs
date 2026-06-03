@@ -92,11 +92,6 @@ public class OrdemModel : IClassifiable
     /// </summary>
     /// <example>2024-01-15T09:00:00</example>
     public DateTime? DataClassificacao { get; set; }
-    
-    /// <summary>
-    /// Corresponde se o ativo existe no APM
-    /// </summary>
-    public bool ativoAPM { get; set; } = false;
 
     /// <summary>
     /// Tipo da ordem de trabalho conforme taxonomia do sistema.

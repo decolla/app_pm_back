@@ -95,13 +95,15 @@ builder.Services.AddHttpClient<ExternIntegrationService>(client =>
     {
         // busca a URL do APM
         var urlBase = builder.Configuration.GetValue<string>("APIs:APM");
-        
+
         if (string.IsNullOrEmpty(urlBase))
         {
-            throw new InvalidOperationException("A URL do APM não está configurada. Verifique as configurações de 'APIs:APM'.");
+            throw new InvalidOperationException(
+                "A URL do APM não está configurada. Verifique as configurações de 'APIs:APM'.");
         }
+
         client.BaseAddress = new Uri(urlBase);
-        
+
         client.DefaultRequestHeaders.Add("Accept", "application/json");
         client.Timeout = TimeSpan.FromSeconds(30); // aborta se demorar mais de 30seg
     }
@@ -142,7 +144,7 @@ using (var scope = app.Services.CreateScope())
         var dbContext = services.GetRequiredService<AppDbContext>();
         Console.WriteLine("A tentar aplicar as migrations no banco de dados...");
         // REMOVER DEPOIS: APAGA TODAS AS TABELAS
-        dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
+        // dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
         dbContext.Database.Migrate();
         Console.WriteLine("Migrations aplicadas com sucesso!");
     }

@@ -1,8 +1,10 @@
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using app_pm_back.Services.ExternIntegationsServices;
 using app_pm_back.Services.Manutencao;
 using AutoMapper.Internal;
+using ExcelDataReader.Log;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Routes;
@@ -28,7 +30,8 @@ public static class SpreadsheetEndpoints
             NotaManutencaoService notaManutencaoService,
             OrdemService ordemService,
             ItemNotaService itemNotaService,
-            DadosRenovacaoService dadosRenovacaoService
+            DadosRenovacaoService dadosRenovacaoService,
+            SynchronizeAPMService synchronizeApmService
         ) =>
         {
             try
@@ -52,6 +55,9 @@ public static class SpreadsheetEndpoints
                     idNotas = notasDeduplicadas.Select(n => n.IdNota).ToList();
                     if (idItens.Count > 1)
                     {
+                        bool sinc = await synchronizeApmService.SynchronizeAPMAsync(); // sincroniza com o dnsIot do APM
+                        Console.WriteLine($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                        // adicionar logs
                         await dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
                     }
                     
@@ -68,6 +74,9 @@ public static class SpreadsheetEndpoints
                         .ToList();
 
                     var idOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
+                    bool sinc = await synchronizeApmService.SynchronizeAPMAsync(); // sincroniza com o dnsIot do APM
+                    Console.WriteLine($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                    // add log dps
                     await dadosRenovacaoService.ImportarDadosOrdemAsync(idOrdens);
 
                     await ordemService.ImportarOrdensEmLoteSeguroAsync(ordensDeduplicadas, sobrescrever, adicionarNovas);
