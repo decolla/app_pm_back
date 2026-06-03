@@ -472,7 +472,7 @@ public class GenericSearchService
 
         // Buscar todos os TipoPlano relacionados ao Plano com categoria "renovação"
         var tiposPlanoRenovacao = await _context.PM_TiposPlano
-            .Where(tp => tp.IdPlano == plano.IdPlano && tp.Categoria == "renovação")
+            .Where(tp => tp.IdPlano == plano.IdPlano && tp.Categoria == CategoriaTipoManutencao.Renovacao)
             .Include(tp => tp.TipoManutencao)
             .ToListAsync();
 

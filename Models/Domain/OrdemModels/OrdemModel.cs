@@ -197,6 +197,12 @@ public class OrdemModel : IClassifiable
     /// </summary>
     [MaxLength(100)]
     public string? IdLi { get; set; }
+    
+    /// <summary>
+    /// Nomeclatura alternativa para o ativo, também usada para verificar se existe no APM
+    /// </summary>
+    [MaxLength(100)]
+    public string? DnsIot { get; set; }
 
     /// <summary>
     /// Identificador da nota associada à ordem.

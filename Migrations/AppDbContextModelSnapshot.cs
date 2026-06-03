@@ -318,9 +318,8 @@ namespace app_pm_back.Migrations
                     b.Property<bool?>("CicloContinuo")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Ciclos")
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
+                    b.Property<int?>("Ciclos")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("Habilitada")
                         .HasColumnType("boolean");
@@ -593,6 +592,10 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("DnsIot")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<string>("EquipamentoDisponivel")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
@@ -745,6 +748,10 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.Property<string>("DnsIot")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<DateTime?>("FimPlanejado")
                         .HasColumnType("timestamp without time zone");
 
@@ -834,10 +841,6 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<string>("NomeAtivo")
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
                     b.Property<int?>("Prioridade")
                         .HasColumnType("integer");
 
@@ -885,9 +888,8 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoEstrategia"));
 
-                    b.Property<string>("Categoria")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                    b.Property<int>("Categoria")
+                        .HasColumnType("integer");
 
                     b.Property<bool?>("Continua")
                         .HasColumnType("boolean");
@@ -962,9 +964,8 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoPlano"));
 
-                    b.Property<string>("Categoria")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                    b.Property<int>("Categoria")
+                        .HasColumnType("integer");
 
                     b.Property<bool?>("Continua")
                         .HasColumnType("boolean");

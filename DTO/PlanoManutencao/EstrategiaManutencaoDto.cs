@@ -11,7 +11,7 @@ public class EstrategiaManutencaoDto
 
     [SheetColumn("Estratégia")] public string? Nome { get; set; }
 
-    [SheetColumn("Ciclos")] public string? Ciclos { get; set; }
+    [SheetColumn("Ciclos")] public int? Ciclos { get; set; }
 
     [SheetColumn("Habilitada")] public bool Habilitada { get; set; }
 

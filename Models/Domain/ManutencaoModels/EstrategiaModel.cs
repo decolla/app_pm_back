@@ -34,11 +34,9 @@ public class EstrategiaModel
     public required string Nome { get; set; }
 
     /// <summary>
-    /// Descrição detalhada ou definição técnica dos ciclos associados (ex: "500h, 1000h").
+    /// Descrição detalhada ou definição técnica dos ciclos associados em dias.
     /// </summary>
-    /// <example>A cada 6 meses ou 1000 horas de operação.</example>
-    [StringLength(150, ErrorMessage = "A descrição dos ciclos não pode exceder 150 caracteres.")]
-    public string? Ciclos { get; set; }
+    public int? Ciclos { get; set; }
 
     /// <summary>
     /// Define se a estratégia está disponível para novos planos de manutenção.
