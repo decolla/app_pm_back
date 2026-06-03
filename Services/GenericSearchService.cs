@@ -27,6 +27,13 @@ public class GenericSearchService
     public record NotaOrdemSearchResult(
         IReadOnlyList<object> Notas,
         IReadOnlyList<object> Ordens);
+
+    public record TimelineItem(
+        long Id,
+        string? Classificacao,
+        string? Descricao,
+        DateTime? DataCriacao);
+
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="GenericSearchService"/>.
     /// </summary>
@@ -492,5 +499,46 @@ public class GenericSearchService
             ListaRenovacao = listaRenovacao,
             TempoCiclo = plano.Estrategia?.Ciclos
         };
+    }
+
+    /// <summary>
+    /// Obtém uma timeline de fichas de um ativo para um range de data específico
+    /// </summary>
+    /// <param name="dataInicio">Data de início</param>
+    /// <param name="dataFim">Data de fim</param>
+    /// <param name="idLi">Nome do ativo/LI</param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<TimelineItem>> BuscarTimelineAsync(
+        DateTime dataInicio,
+        DateTime dataFim,
+        string idLi)
+    {
+        var notas = _notaModels.AsNoTracking()
+            .Where(n => n.IdLi == idLi
+                    && n.DataNota.HasValue
+                    && n.DataNota.Value >= dataInicio
+                    && n.DataNota.Value <= dataFim)
+            .Select(n => new TimelineItem(
+                n.IdNota,
+                n.Classificacao,
+                string.IsNullOrWhiteSpace(n.DescricaoBreve) ? n.AnomaliaObservada : n.DescricaoBreve,
+                n.DataNota));
+
+        var ordens = _ordemModels.AsNoTracking()
+            .Where(o => o.IdLi == idLi
+                    && o.DataCriacao.HasValue
+                    && o.DataCriacao.Value >= dataInicio
+                    && o.DataCriacao.Value <= dataFim)
+            .Select(o => new TimelineItem(
+                o.IdOrdem,
+                o.Classificacao,
+                o.DescricaoBreve,
+                o.DataCriacao));
+
+        return await notas
+            .Concat(ordens)
+            .OrderBy(r => r.DataCriacao)
+            .ToListAsync()
+            .ConfigureAwait(false);
     }
 }

@@ -262,6 +262,45 @@ public class BuscaController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Busca notas e ordens por intervalo de data e IdLi.
+    /// </summary>
+    /// <param name="dataInicio">Data inicial do intervalo.</param>
+    /// <param name="dataFim">Data final do intervalo.</param>
+    /// <param name="idLi">Local de instalação.</param>
+    /// <returns>Lista com id, classificação, descrição e data de criação.</returns>
+    [HttpGet("timeline")]
+    public async Task<IActionResult> BuscarTimeline(
+        [FromQuery] DateTime dataInicio,
+        [FromQuery] DateTime dataFim,
+        [FromQuery] string idLi)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(idLi))
+            {
+                return BadRequest(new { message = "Parametro idLi obrigatorio." });
+            }
+
+            if (dataInicio == default || dataFim == default)
+            {
+                return BadRequest(new { message = "Parametros dataInicio e dataFim obrigatorios." });
+            }
+
+            if (dataInicio > dataFim)
+            {
+                return BadRequest(new { message = "Parametro dataInicio deve ser menor ou igual a dataFim." });
+            }
+
+            var resultados = await _searchService.BuscarTimelineAsync(dataInicio, dataFim, idLi);
+            return Ok(resultados);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar timeline: {e.Message}." });
+        }
+    }
+
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);

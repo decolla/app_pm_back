@@ -364,6 +364,15 @@
             <param name="tipoDados">Tipo de dados da renovação</param>
             <returns>Objeto com informações relevantes</returns>
         </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscarTimeline(System.DateTime,System.DateTime,System.String)">
+            <summary>
+            Busca notas e ordens por intervalo de data e IdLi.
+            </summary>
+            <param name="dataInicio">Data inicial do intervalo.</param>
+            <param name="dataFim">Data final do intervalo.</param>
+            <param name="idLi">Local de instalação.</param>
+            <returns>Lista com id, classificação, descrição e data de criação.</returns>
+        </member>
         <member name="T:app_pm_back.Controllers.Estrategia.EstrategiaController">
             <summary>
             Endpoints de estrategia de manutencao .
@@ -934,7 +943,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Criar(System.Int32,app_pm_back.DTO.TipoPlanoDto,app_pm_back.Data.AppDbContext)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Criar(app_pm_back.DTO.TipoPlanoDto,app_pm_back.Data.AppDbContext)">
             <summary>
             Cria um novo registro.
             </summary>
@@ -1027,6 +1036,16 @@
         <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.Name">
             <summary>
             Nome da LocalInstalacao (LI/Name)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.DnsIot">
+            <summary>
+            DNS do IoT associado a esta LI (LI/DnsIot)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.Exists">
+            <summary>
+            Indica se a LI existe ou não na APM. Se false, os campos DnsIot e ComponentTypes podem ser ignorados.
             </summary>
         </member>
         <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.ComponentTypes">
@@ -1953,11 +1972,6 @@
             </summary>
             <example>"Disponível", "Indisponível", "Operação Limitada", "Em Manutenção"</example>
         </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.ativoAPM">
-            <summary>
-            Corresponde se o ativo existe no APM
-            </summary>
-        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.ConfiabilidadeRestaurada">
             <summary>
             Indica se a confiabilidade do equipamento foi restaurada após a intervenção.
@@ -2356,11 +2370,6 @@
             Permite rastreamento temporal do processo de classificação.
             </summary>
             <example>2024-01-15T09:00:00</example>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.ativoAPM">
-            <summary>
-            Corresponde se o ativo existe no APM
-            </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.TipoOrdem">
             <summary>
@@ -3111,6 +3120,24 @@
             <param name="rota">Rota externa</param>
             <param name="payload">O que será enviado</param>
             <returns></returns>
+        </member>
+        <member name="T:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService">
+            <summary>
+            Sincroniza os dados de APM com as notas e ordens de serviço do sistema.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ExternIntegrationService)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService"/>.
+            </summary>
+            <param name="context"></param>
+            <param name="externIntegrationService"></param>
+        </member>
+        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.SynchronizeAPMAsync">
+            <summary>
+            Sincroniza os dados de APM (Asset Performance Management) com as notas e ordens de serviço do sistema.
+            </summary>
+            <returns>bool se a operação ocorreu corretamente</returns>
         </member>
         <member name="T:app_pm_back.Services.GenericSearchService">
             <summary>

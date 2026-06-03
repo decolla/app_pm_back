@@ -355,6 +355,24 @@
             <param name="ativos"></param>
             <returns></returns>
         </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscaAtivoDatas(app_pm_back.Models.Domain.ComponentType,System.String,app_pm_back.Models.Domain.TipoDados)">
+            <summary>
+            Busca as datas de renovação associadas ao conjunto LI + ativo, retorna um objeto com os dados relevantes
+            </summary>
+            <param name="ativo">Ativo a ser procurado</param>
+            <param name="idLi">LI (Local de Instalação) a ser procurada</param>
+            <param name="tipoDados">Tipo de dados da renovação</param>
+            <returns>Objeto com informações relevantes</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscarTimeline(System.DateTime,System.DateTime,System.String)">
+            <summary>
+            Busca notas e ordens por intervalo de data e IdLi.
+            </summary>
+            <param name="dataInicio">Data inicial do intervalo.</param>
+            <param name="dataFim">Data final do intervalo.</param>
+            <param name="idLi">Local de instalação.</param>
+            <returns>Lista com id, classificação, descrição e data de criação.</returns>
+        </member>
         <member name="T:app_pm_back.Controllers.Estrategia.EstrategiaController">
             <summary>
             Endpoints de estrategia de manutencao .
@@ -925,7 +943,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Criar(System.Int32,app_pm_back.DTO.TipoPlanoDto,app_pm_back.Data.AppDbContext)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Criar(app_pm_back.DTO.TipoPlanoDto,app_pm_back.Data.AppDbContext)">
             <summary>
             Cria um novo registro.
             </summary>
@@ -1018,6 +1036,16 @@
         <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.Name">
             <summary>
             Nome da LocalInstalacao (LI/Name)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.DnsIot">
+            <summary>
+            DNS do IoT associado a esta LI (LI/DnsIot)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.Exists">
+            <summary>
+            Indica se a LI existe ou não na APM. Se false, os campos DnsIot e ComponentTypes podem ser ignorados.
             </summary>
         </member>
         <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.ComponentTypes">
@@ -1226,22 +1254,28 @@
             Visibilidade do tipo de plano.
             </summary>
         </member>
-        <member name="T:app_pm_back.Models.Domain.CategoriaTipoEstrategia">
-            <summary>
-            Categoria da estrategia.
-            </summary>
-        </member>
         <member name="T:app_pm_back.Models.Domain.CategoriaTipoManutencao">
-            <summary>
-            Tipo de tipo de manutencao/plano.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.Domain.TipoTipo">
+             <summary>
+             Categoria da estrategia.
+             </summary>
+             public enum CategoriaTipoEstrategia
+             {
+            Manutencao = 0,
+            Renovacao = 1
+            }
             <summary>
             Tipo de tipo de manutencao/plano.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.UnidadeCiclo">
+            <summary>
+            Tipo de tipo de manutencao/plano.
+            </summary>
+            public enum TipoTipo
+            {
+            Manutencao = 0,
+            Renovacao = 1
+            }
             <summary>
             Unidade do ciclo.
             </summary>
@@ -1264,6 +1298,11 @@
         <member name="T:app_pm_back.Models.Domain.OriginType">
             <summary>
             Usado para requisições no APM específica para ativos/LI
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.TipoDados">
+            <summary>
+            Usado para classificar os tipos de fichas em dados renovação
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.EstrategiaModel">
@@ -1293,9 +1332,8 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.EstrategiaModel.Ciclos">
             <summary>
-            Descrição detalhada ou definição técnica dos ciclos associados (ex: "500h, 1000h").
+            Descrição detalhada ou definição técnica dos ciclos associados em dias.
             </summary>
-            <example>A cada 6 meses ou 1000 horas de operação.</example>
         </member>
         <member name="P:app_pm_back.Models.Domain.EstrategiaModel.Habilitada">
             <summary>
@@ -1452,14 +1490,15 @@
             Data em que o plano foi ou deve ser concluído.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.PlanoModel.NomeAtivo">
-            <summary>
-            Nome do ativo relacionado, para fins de exibição ou histórico.
-            </summary>
-        </member>
         <member name="P:app_pm_back.Models.Domain.PlanoModel.IdAtivo">
             <summary>
             Identificador do Ativo vinculado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.PlanoModel.IdLi">
+            <summary>
+            Chave estrangeira para a localização de instalação do ativo.
+            Permite vincular a um local específico de instalação.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.PlanoModel.IdEstrategia">
@@ -1559,7 +1598,7 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.Categoria">
             <summary>
-            Categoria da estratégia. Exemplo: "Preventiva"
+            Categoria da estratégia. Exemplo: "renovação, "
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.IdEstrategia">
@@ -1681,7 +1720,7 @@
         <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.Categoria">
             <summary>
             Categoria descritiva do plano.
-            Exemplo: "Preventiva"
+            Exemplo: "Manutenção ou renovação ou cep"
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.IdTipoEstrategia">
@@ -2036,6 +2075,11 @@
             Permite vincular a nota a um local específico de instalação.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.DnsIot">
+            <summary>
+            Nomeclatura alternativa para o ativo, também usada para verificar se existe no APM
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.Plano">
             <summary>
             Propriedade de navegação para o plano de manutenção pai.
@@ -2199,7 +2243,12 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.OrigemUR">
             <summary>
-            Origem da última renovação (ex: sistema, manual, integração).
+            Origem da última renovação (nota, ordem, usuario).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.TipoDados">
+            <summary>
+            Se a renovação é corretiva/preventiva e de usuario/catboost
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Confiabilidade">
@@ -2210,6 +2259,12 @@
         <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdAtivo">
             <summary>
             Identificador do Ativo relacionado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdLi">
+            <summary>
+            Chave estrangeira para a localização de instalação do ativo.
+            Permite vincular a nota a um local específico de instalação.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdNota">
@@ -2398,6 +2453,11 @@
             <summary>
             Chave estrangeira para a localização de instalação do ativo.
             Permite vincular a nota a um local específico de instalação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.DnsIot">
+            <summary>
+            Nomeclatura alternativa para o ativo, também usada para verificar se existe no APM
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.IdNota">
@@ -2660,6 +2720,19 @@
             Observações ou informações complementares.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.IdAtivo">
+            <summary>
+            Chave estrangeira para o ativo associado.
+            Identifica qual equipamento ou item está relacionado à ocorrência.
+            </summary>
+            <example>150</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ImobilizadoModel.IdLi">
+            <summary>
+            Chave estrangeira para a localização de instalação do ativo.
+            Permite vincular a um local específico de instalação.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Models.Domain.CpmModel">
             <summary>
             Representa o modelo de domínio para um Centro de Planejamento e Manutenção (CPM).
@@ -2695,7 +2768,7 @@
             Representa o modelo de domínio para CTM (Centro de Trabalho Móvel).
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.CtmModel.IdGPM">
+        <member name="P:app_pm_back.Models.Domain.CtmModel.IdCTM">
             <summary>
             Identificador único do GPM associado ao CTM.
             </summary>
@@ -3048,6 +3121,24 @@
             <param name="payload">O que será enviado</param>
             <returns></returns>
         </member>
+        <member name="T:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService">
+            <summary>
+            Sincroniza os dados de APM com as notas e ordens de serviço do sistema.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ExternIntegrationService)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService"/>.
+            </summary>
+            <param name="context"></param>
+            <param name="externIntegrationService"></param>
+        </member>
+        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.SynchronizeAPMAsync">
+            <summary>
+            Sincroniza os dados de APM (Asset Performance Management) com as notas e ordens de serviço do sistema.
+            </summary>
+            <returns>bool se a operação ocorreu corretamente</returns>
+        </member>
         <member name="T:app_pm_back.Services.GenericSearchService">
             <summary>
             Classe para busca genérica entre as tabelas do banco de dados 
@@ -3259,6 +3350,11 @@
             </summary>
             <param name="lis">Lista de LocalInstalacoes (LI's)</param>
             <returns>Lista de AssetComponentTypesDTO com os ativos para cada LI</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.MapearParaTipoDados(System.String,System.String)">
+            <summary>
+            Mapeia Classificacao + MetodoClassificacao para TipoDados
+            </summary>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.EstrategiaService">
             <summary>
@@ -3480,7 +3576,7 @@
             <param name="id">Identificador do registro.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.TipoPlanoService.GetTodosByTipo(System.String)">
+        <member name="M:app_pm_back.Services.Manutencao.TipoPlanoService.GetTodosByTipo(app_pm_back.Models.Domain.CategoriaTipoManutencao)">
             <summary>
             Obtém um registro específico.
             </summary>

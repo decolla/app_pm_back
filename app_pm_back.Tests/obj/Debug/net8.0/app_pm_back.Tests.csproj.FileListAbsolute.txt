@@ -134,3 +134,10 @@
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.pdb
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.genruntimeconfig.cache
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/ref/app_pm_back.Tests.dll
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/Microsoft.Bcl.Cryptography.dll
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/Microsoft.IdentityModel.Abstractions.dll
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/Microsoft.IdentityModel.Logging.dll
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/System.Formats.Asn1.dll
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
