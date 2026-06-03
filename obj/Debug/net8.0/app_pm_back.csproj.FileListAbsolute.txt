@@ -202,3 +202,10 @@
 /home/decolla/Documentos/Códigos/app_pm_back/obj/Debug/net8.0/app_pm_back.pdb
 /home/decolla/Documentos/Códigos/app_pm_back/obj/Debug/net8.0/app_pm_back.genruntimeconfig.cache
 /home/decolla/Documentos/Códigos/app_pm_back/obj/Debug/net8.0/ref/app_pm_back.dll
+/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/Microsoft.Bcl.Cryptography.dll
+/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/Microsoft.IdentityModel.Abstractions.dll
+/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/Microsoft.IdentityModel.Logging.dll
+/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
+/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/System.Formats.Asn1.dll
+/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
