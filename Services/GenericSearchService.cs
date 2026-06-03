@@ -521,7 +521,7 @@ public class GenericSearchService
             .Select(n => new TimelineItem(
                 n.IdNota,
                 n.Classificacao,
-                string.IsNullOrWhiteSpace(n.DescricaoBreve) ? n.AnomaliaObservada : n.DescricaoBreve,
+                n.DescricaoBreve ?? n.AnomaliaObservada,
                 n.DataNota));
 
         var ordens = _ordemModels.AsNoTracking()
