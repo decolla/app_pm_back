@@ -233,7 +233,7 @@ namespace app_pm_back.Migrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.CtmModel", b =>
                 {
-                    b.Property<int>("IdGPM")
+                    b.Property<int>("IdCTM")
                         .HasColumnType("integer");
 
                     b.Property<string>("AreaCTM")
@@ -253,7 +253,7 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.HasKey("IdGPM");
+                    b.HasKey("IdCTM");
 
                     b.HasIndex("IdCPM");
 
@@ -274,6 +274,10 @@ namespace app_pm_back.Migrations
                     b.Property<int?>("IdAtivo")
                         .HasColumnType("integer");
 
+                    b.Property<string>("IdLi")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<long?>("IdNota")
                         .HasColumnType("bigint");
 
@@ -284,7 +288,9 @@ namespace app_pm_back.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("OrigemUR")
-                        .HasMaxLength(100)
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TipoDados")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("UltimaRenovacao")
@@ -476,6 +482,13 @@ namespace app_pm_back.Migrations
 
                     b.Property<decimal?>("Depreciacao")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("IdAtivo")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("IdLi")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("InfoAdicionais")
                         .HasMaxLength(1000)
@@ -811,6 +824,10 @@ namespace app_pm_back.Migrations
 
                     b.Property<int?>("IdEstrategia")
                         .HasColumnType("integer");
+
+                    b.Property<string>("IdLi")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -1168,7 +1185,7 @@ namespace app_pm_back.Migrations
 
                     b.HasOne("app_pm_back.Models.Domain.GpmModel", null)
                         .WithOne()
-                        .HasForeignKey("app_pm_back.Models.Domain.CtmModel", "IdGPM")
+                        .HasForeignKey("app_pm_back.Models.Domain.CtmModel", "IdCTM")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

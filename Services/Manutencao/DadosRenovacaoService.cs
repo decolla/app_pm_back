@@ -15,8 +15,8 @@ public class DadosRenovacaoService
 {
     private readonly AppDbContext _context;
     private readonly ILogger<DadosRenovacaoService> _logger;
-    private List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem)> _liParaRestaurar 
-        = new List<(string, long?, long?, DateTime, OrigemUR)>();
+    private List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, TipoDados TipoDados)> _liParaRestaurar 
+        = new List<(string, long?, long?, DateTime, OrigemUR, TipoDados)>();
     private const int TAMANHO_LOTE_LI = 50;
     private readonly HttpClient _httpClient;
     private readonly string _apmBaseUrl;
@@ -55,13 +55,7 @@ public class DadosRenovacaoService
         if (idsNotas == null || idsNotas.Count == 0)
         {
             _logger.LogWarning("Lista de ids notas vazia ou nula");
-            //return 0;
-        }
-
-        if (idsItensNota == null || idsItensNota.Count == 0)
-        {
-            _logger.LogWarning("Lista de ids itens vazia ou nula");
-            //return 0;
+            return 0;
         }
 
         try
@@ -283,6 +277,8 @@ public class DadosRenovacaoService
                 {
                     _logger.LogDebug("Processando nota {IdNota} com ConfiabilidadeRestaurada={Conf}",
                         nota.IdNota, nota.ConfiabilidadeRestaurada);
+                    var tipoDados = MapearParaTipoDados(nota.Classificacao, nota.MetodoClassificacao);
+
                     var inseridos = await ProcessarPorConfiabilidadeAsync(
                         nota.ConfiabilidadeRestaurada,
                         nota.IdAtivo,
@@ -290,7 +286,8 @@ public class DadosRenovacaoService
                         null,
                         nota.DataNota ?? DateTime.UtcNow,
                         OrigemUR.Nota,
-                        nota.IdLi); // NOVO PARÂMETRO
+                        nota.IdLi,
+                        tipoDados);
                     registrosCriados += inseridos;
                     
                     if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
@@ -321,6 +318,8 @@ public class DadosRenovacaoService
                     _logger.LogDebug("Processando ordem {IdOrdem} com ConfiabilidadeRestaurada={Conf}",
                         ordem.IdOrdem, ordem.ConfiabilidadeRestaurada);
 
+                    var tipoDados = MapearParaTipoDados(ordem.Classificacao, ordem.MetodoClassificacao);
+
                     var inseridos = await ProcessarPorConfiabilidadeAsync(
                         ordem.ConfiabilidadeRestaurada,
                         ordem.IdAtivo,
@@ -328,7 +327,8 @@ public class DadosRenovacaoService
                         ordem.IdOrdem,
                         ordem.DataCriacao ?? DateTime.UtcNow,
                         OrigemUR.Ordem,
-                        ordem.IdLi); // NOVO PARÂMETRO
+                        ordem.IdLi,
+                        tipoDados);
                     registrosCriados += inseridos;
                     
                     if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
@@ -377,7 +377,8 @@ public class DadosRenovacaoService
         long? idOrdem,
         DateTime dataSource,
         OrigemUR origem,
-        string? idLi = null)
+        string idLi,
+        TipoDados tipoDados)
     {
         if (confiabilidade == null)
         {
@@ -399,7 +400,9 @@ public class DadosRenovacaoService
                     idOrdem,
                     dataSource,
                     origem,
-                    idLi);
+                    idLi,
+                    tipoDados
+                    ); 
             }
             else
             {
@@ -412,13 +415,11 @@ public class DadosRenovacaoService
             {
                 _logger.LogDebug("RestauraLI identificado - adicionando IdLi={IdLi} à fila de processamento", idLi);
 
-                // ← VERIFICAR SE JÁ EXISTE NA FILA
                 var existente = _liParaRestaurar.FirstOrDefault(li => li.IdLi == idLi);
-        
+
                 if (existente == default)
                 {
-                    // ← ADICIONAR COM CONTEXTO COMPLETO
-                    _liParaRestaurar.Add((idLi, idNota, idOrdem, dataSource, origem));
+                    _liParaRestaurar.Add((idLi, idNota, idOrdem, dataSource, origem, tipoDados));  // ← INCLUIR tipoDados
                     _logger.LogDebug("IdLi {IdLi} adicionado à fila com origem. Total na fila: {Total}", 
                         idLi, _liParaRestaurar.Count);
                 }
@@ -437,7 +438,7 @@ public class DadosRenovacaoService
         return inseridos;
     }
     private async Task<int> ProcessarLoteLiAsync(
-        List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem)> liComContexto)
+        List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, TipoDados TipoDados)> liComContexto)
     {
     if (!liComContexto.Any())
     {
@@ -487,7 +488,8 @@ public class DadosRenovacaoService
                     idOrdem: contextoDaLi.IdOrdem,  // ← USAR DO CONTEXTO
                     dataSource: contextoDaLi.DataOrigem,  // ← USAR DATA ORIGINAL
                     origem: contextoDaLi.Origem,  // ← USAR ORIGEM ORIGINAL
-                    idLi: assetComponent.Name);
+                    idLi: assetComponent.Name,
+                    tipoDados: contextoDaLi.TipoDados);
             }
         }
 
@@ -583,7 +585,8 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
         long? idOrdem,
         DateTime dataSource,
         OrigemUR origem,
-        string idLi)
+        string idLi,
+        TipoDados tipoDados)
     {
         try
         {
@@ -592,12 +595,13 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
 
 
             //se não existir adiciona
-            if (existente == null)
+            if (existente == null || dataSource != existente.UltimaRenovacao)
             {
                 var novo = new DadosRenovacaoModel
                 {
                     UltimaRenovacao = dataSource,
                     OrigemUR = origem,
+                    TipoDados = tipoDados,
                     Confiabilidade = 1.0,
                     IdAtivo = idAtivo,
                     IdNota = idNota ?? null,
@@ -611,30 +615,6 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
                     idAtivo, origem, dataSource);
                 return 1;
             }
-            else
-                //se existir, verifica se a data nova é mais recente
-            {
-                if (dataSource > existente.UltimaRenovacao)
-                {
-                    existente.UltimaRenovacao = dataSource;
-                    existente.OrigemUR = origem;
-                    existente.IdLi = idLi;  // ← Manter/Atualizar IdLi
-                    if (idNota.HasValue) existente.IdNota = idNota.Value;
-                    if (idOrdem.HasValue) existente.IdOrdem = idOrdem.Value;
-                    _context.PM_DadosRenovacao.Update(existente);
-                    _logger.LogInformation(
-                        "Atualizado registro de DadosRenovacao: IdAtivo={IdAtivo}, IdLi={IdLi}, NovaData={NovaData}",
-                        idAtivo, idLi, dataSource);
-                    return 1;
-                }
-                else
-                {
-                    _logger.LogDebug(
-                        "Registro de DadosRenovacao não atualizado: data anterior ou igual (IdAtivo={IdAtivo})",
-                        idAtivo);
-                }
-            }
-
             return 0;
         }
         catch (Exception ex)
@@ -642,5 +622,43 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
             _logger.LogError(ex, "Erro ao inserir/atualizar DadosRenovacao para IdAtivo={IdAtivo}", idAtivo);
             throw;
         }
+    }
+    /// <summary>
+    /// Mapeia Classificacao + MetodoClassificacao para TipoDados
+    /// </summary>
+    private TipoDados MapearParaTipoDados(string? classificacao, string? metodoClassificacao)
+    {
+        // Normalizar valores
+        var classif = (classificacao ?? "").ToUpperInvariant().Trim();
+        var metodo = (metodoClassificacao ?? "").ToUpperInvariant().Trim();
+
+        // Verificar combinações
+        if (classif.Contains("CORRETIVA") || classif.Contains("CORRETIVO"))
+        {
+            if (metodo.Contains("CATBOOST") || metodo.Contains("IA"))
+            {
+                return TipoDados.CORRETIVACAT;
+            }
+            else
+            {
+                return TipoDados.CORRETIVAHUM;
+            }
+        }
+        else if (classif.Contains("PREVENTIVA") || classif.Contains("PREVENTIVO"))
+        {
+            if (metodo.Contains("CATBOOST") || metodo.Contains("IA"))
+            {
+                return TipoDados.PREVENTIVACAT;
+            }
+            else
+            {
+                return TipoDados.PREVENTIVAHUM;
+            }
+        }
+
+        // Fallback padrão
+        _logger.LogWarning("Classificacao={Classificacao}, MetodoClassificacao={Metodo} não reconhecidos. Usando padrão NAOCLASSIFICADA",
+            classificacao, metodoClassificacao);
+        return TipoDados.NAOCLASSIFICADA;
     }
 }

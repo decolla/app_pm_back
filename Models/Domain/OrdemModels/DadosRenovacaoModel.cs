@@ -33,10 +33,15 @@ public class DadosRenovacaoModel
     public DateTime UltimaRenovacao { get; set; }
 
     /// <summary>
-    /// Origem da última renovação (ex: sistema, manual, integração).
+    /// Origem da última renovação (nota, ordem, usuario).
     /// </summary>
-    [MaxLength(100)]
     public OrigemUR OrigemUR { get; set; }
+    
+    /// <summary>
+    /// Se a renovação é corretiva/preventiva e de usuario/catboost
+    /// </summary>
+    
+    public TipoDados TipoDados { get; set; }
 
     /// <summary>
     /// Índice de confiabilidade calculado para o ativo (0 a 1 ou percentual).

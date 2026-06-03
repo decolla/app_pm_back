@@ -43,9 +43,9 @@ public class CentrosTrabalhoController : ControllerBase
             }
 
             var centro = _mapper.Map<CtmModel>(dto);
-            if (centro.IdGPM <= 0)
+            if (centro.IdCTM <= 0)
             {
-                return BadRequest(new { message = "IdGPM/IdCentroTrabalho invalido. Envie maior que zero." });
+                return BadRequest(new { message = "IdCTM/IdCentroTrabalho invalido. Envie maior que zero." });
             }
 
             var criado = await _service.CreateAsync(centro);
@@ -131,19 +131,19 @@ public class CentrosTrabalhoController : ControllerBase
                     { message = "IdCentroTrabalho/IdGPM invalido na rota. Envie id maior que zero." });
             }
 
-            if (dto.IdGpm <= 0)
+            if (dto.IdCtm <= 0)
             {
-                dto.IdGpm = id;
+                dto.IdCtm = id;
             }
 
-            if (dto.IdGpm != id)
+            if (dto.IdCtm != id)
             {
                 return BadRequest(new { message = "Id da rota e IdCentroTrabalho/IdGPM do corpo devem ser iguais." });
             }
 
             var centro = _mapper.Map<CtmModel>(dto);
             var result = await _service.UpdateNotaAsync(centro);
-            return Ok(new { message = $"{_operador} atualizado com sucesso: {result.IdGPM}" });
+            return Ok(new { message = $"{_operador} atualizado com sucesso: {result.IdCTM}" });
         }
         catch (Exception)
         {

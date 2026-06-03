@@ -151,3 +151,15 @@ public enum OriginType
     GAS = 0,
     ELETRICO = 1,
 }
+
+/// <summary>
+/// Usado para classificar os tipos de fichas em dados renovação
+/// </summary>
+public enum TipoDados
+{
+    PREVENTIVACAT = 0,
+    CORRETIVACAT = 1,
+    PREVENTIVAHUM = 2,
+    CORRETIVAHUM = 3,
+    NAOCLASSIFICADA =4
+}

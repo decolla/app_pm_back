@@ -29,7 +29,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<UsuarioModel>().HasKey(e => e.IdUsuario);
         modelBuilder.Entity<GpmModel>().HasKey(e => e.IdGPM);
         modelBuilder.Entity<CpmModel>().HasKey(e => e.IdCPM);
-        modelBuilder.Entity<CtmModel>().HasKey(e => e.IdGPM);
+        modelBuilder.Entity<CtmModel>().HasKey(e => e.IdCTM);
         modelBuilder.Entity<FerramentaModel>().HasKey(e => e.IdFerramenta);
         modelBuilder.Entity<ImobilizadoModel>().HasKey(e => e.IdImobilizado);
         modelBuilder.Entity<NotaModel>().HasKey(e => e.IdNota);
@@ -44,7 +44,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<CtmModel>()
             .HasOne<GpmModel>()
             .WithOne()
-            .HasForeignKey<CtmModel>(c => c.IdGPM)
+            .HasForeignKey<CtmModel>(c => c.IdCTM)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Configure many-to-many associations
