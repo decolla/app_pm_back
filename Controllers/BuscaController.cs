@@ -225,22 +225,28 @@ public class BuscaController : ControllerBase
     }
 
     /// <summary>
-    /// Busca as datas de renovação associadas a um ativo, retorna um objeto com os dados relevantes
+    /// Busca as datas de renovação associadas ao conjunto LI + ativo, retorna um objeto com os dados relevantes
     /// </summary>
     /// <param name="ativo">Ativo a ser procurado</param>
+    /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
     /// <returns>Objeto com informações relevantes</returns>
     [HttpGet("ativo/datas")]
-    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] ComponentType ativo)
+    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] ComponentType ativo, [FromQuery] string idLi)
     {
         try
         {
-            if (ativo <= 0)
+            if (!Enum.IsDefined(typeof(ComponentType), ativo))
             {
-                return BadRequest(new { message = "Parametro ativo obrigatorio." });
+                return BadRequest(new { message = "Parametro ativo invalido." });
             }
 
-            var obj = await _searchService.AtivoDatas(ativo);
-            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o ativo informado." });
+            if (string.IsNullOrWhiteSpace(idLi))
+            {
+                return BadRequest(new { message = "Parametro idLi obrigatorio." });
+            }
+
+            var obj = await _searchService.AtivoDatas(ativo, idLi);
+            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o conjunto LI + ativo informado." });
 
             return Ok(obj);
         }
