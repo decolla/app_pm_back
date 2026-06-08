@@ -64,7 +64,7 @@ public static class SpreadsheetEndpoints
                         await dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
                     }
                     
-                    return Results.Ok(new { message = $"{inseridas} notas processadas com sucesso!" });
+                    return Results.Ok(new { message = inseridas });
                 }
                 else if (resultadoPlanilha.TipoIdentificado == "ORDEM")
                 {
@@ -85,7 +85,7 @@ public static class SpreadsheetEndpoints
                     await ordemService.ImportarOrdensEmLoteSeguroAsync(ordensDeduplicadas, sobrescrever, adicionarNovas);
                     var inseridas = ordensDeduplicadas.Count;
 
-                    return Results.Ok(new { message = $"{inseridas} ordens processadas com sucesso!" });
+                    return Results.Ok(new { message = inseridas});
                 }
                 else if (resultadoPlanilha.TipoIdentificado == "ITEM")
                 {
@@ -130,10 +130,7 @@ public static class SpreadsheetEndpoints
                             await dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
                         }
                         
-                        if(!sobrescrever && adicionarNovas) 
-                            return Results.Ok(new { message = new object[] {itensValidos.Count, $"{itensValidos.Count} itens novos e sobrescritos foram salvos!"} });
-                        
-                        return Results.Ok(new { message = new object[] {itensValidos.Count, sobrescrever ? $"{itensValidos.Count} itens sobrescritos e salvos!" : $"{itensValidos.Count} itens adicionados e salvos!"} });
+                        return Results.Ok(new { message = itensValidos.Count });
                     }
 
                     return Results.BadRequest(new
