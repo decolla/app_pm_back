@@ -36,6 +36,9 @@ public static class SpreadsheetEndpoints
         {
             try
             {
+                if (!sobrescrever && !adicionarNovas) 
+                    return Results.BadRequest(new { message = "Nenhuma ação selecionada. Marque 'sobrescrever' ou 'adicionarNovas'." });
+                
                 if (file == null || file.Length == 0)
                     return Results.BadRequest(new { message = "Arquivo inválido ou vazio." });
 
@@ -126,8 +129,11 @@ public static class SpreadsheetEndpoints
                         {
                             await dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
                         }
-
-                        return Results.Ok(new { message = $"{itensValidos.Count} itens vinculados e salvos!" });
+                        
+                        if(!sobrescrever && adicionarNovas) 
+                            return Results.Ok(new { message = new object[] {itensValidos.Count, $"{itensValidos.Count} itens novos e sobrescritos foram salvos!"} });
+                        
+                        return Results.Ok(new { message = new object[] {itensValidos.Count, sobrescrever ? $"{itensValidos.Count} itens sobrescritos e salvos!" : $"{itensValidos.Count} itens adicionados e salvos!"} });
                     }
 
                     return Results.BadRequest(new

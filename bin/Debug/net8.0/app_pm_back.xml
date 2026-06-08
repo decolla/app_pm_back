@@ -476,6 +476,13 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:app_pm_back.Controllers.LinhaTemporalController.ObterLinhaTemporal(app_pm_back.DTO.Restauracao.LinhaTemporalRequestDTO)">
+            <summary>
+            Obtém a linha temporal das LIs consultando API externa e cruzando com notas/ordens locais
+            </summary>
+            <param name="request">Lista de IDs das LIs (Localizações de Instalação)</param>
+            <returns>Lista de itens da linha temporal com eventos (notas/ordens)</returns>
+        </member>
         <member name="T:app_pm_back.Controllers.ItemsController">
             <summary>
             Classe ItemsController.
@@ -584,6 +591,59 @@
             <summary>
             Classifica as notas usando a IA catboost
             </summary>
+        </member>
+        <member name="T:app_pm_back.Controllers.Ordem.DadosRenovacaoController">
+            <summary>
+            Endpoints de dado renovação
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.#ctor(app_pm_back.Services.Manutencao.DadosRenovacaoService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.Ordem.DadosRenovacaoController"/>.
+            </summary>
+            <param name="dadosRenovacaoService"></param>
+            <param name="mapper"></param>
+        </member>
+        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.CriarDadosRenovacao(app_pm_back.DTO.DadosRenovacaoDto)">
+            <summary>
+            Cria um dado de renovação a partir de DTO.
+            </summary>
+            <param name="dto">DTO de dados renovação</param>
+            <returns>IActionResult</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.ListarDadosRenovacao">
+            <summary>
+            Lista os dados de renovação em formato de página
+            </summary>
+            <returns>Lista Paginada</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.ContarDadosRenovacao">
+            <summary>
+            Conta a quantidade total de dados de renovação cadastrados.
+            </summary>
+            <returns>Número de dados renovação cadastrados</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.ObterDadosRenovacaoPorId(System.Int32)">
+            <summary>
+            Obtém um dado de renovação específico a partir do id na rota.
+            </summary>
+            <param name="id">Id do Dado</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.AtualizarDadosRenovacao(System.Int32,app_pm_back.DTO.DadosRenovacaoDto)">
+            <summary>
+            Atualiza um dado de renovação existente a partir de DTO e id na rota.
+            </summary>
+            <param name="id">Id do dado a ser atulaizado</param>
+            <param name="dto">Dto com os dados atualizados</param>
+            <returns>IActionResult</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.DeletarDadosRenovacao(System.Int32)">
+            <summary>
+            Deleta um dado de renovação existente a partir do id na rota.
+            </summary>
+            <param name="id">Id do dado a ser deletado</param>
+            <returns>IActionResult</returns>
         </member>
         <member name="T:app_pm_back.Controllers.OrdersController">
             <summary>
@@ -1053,6 +1113,81 @@
             Lista de ComponentTypes (IdAtivos) associados a esta LI
             </summary>
         </member>
+        <member name="T:app_pm_back.DTO.Restauracao.LinhaTemporalDTO">
+            <summary>
+            Item da linha temporal retornado para o frontend
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.LinhaTemporalDTO.IdLi">
+            <summary>
+            ID da Localização de Instalação (LI)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.LinhaTemporalDTO.DnsIot">
+            <summary>
+            DNS IoT do ativo (nome alternativo)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.LinhaTemporalDTO.Data">
+            <summary>
+            Data de referência do ativo (vinda da API externa)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.LinhaTemporalDTO.Eventos">
+            <summary>
+            Lista de eventos (notas e ordens) relacionados a esta LI
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO">
+            <summary>
+            Evento individual na linha temporal (nota ou ordem)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.Numero">
+            <summary>
+            Número da nota ou ordem (ex: "123" ou "OS-2024-001")
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.Data">
+            <summary>
+            Data do evento (DataNota para notas, DataCriacao para ordens)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.Tipo">
+            <summary>
+            Tipo do evento: "Nota" ou "Ordem"
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.IdReferencia">
+            <summary>
+            ID de referência (IdNota ou IdOrdem)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.Descricao">
+            <summary>
+            Descrição breve do evento
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.Classificacao">
+            <summary>
+            Classificação do evento (Preventiva, Corretiva, etc.)
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.ConfiabilidadeRestaurada">
+            <summary>
+            Se a confiabilidade foi restaurada
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.Restauracao.LinhaTemporalRequestDTO">
+            <summary>
+            Request para buscar linha temporal
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.Restauracao.LinhaTemporalRequestDTO.IdsLi">
+            <summary>
+            Lista de IDs das LIs (Localizações de Instalação)
+            </summary>
+        </member>
         <member name="T:app_pm_back.DTO.ImobilizadoDto">
             <summary>
             DTO de imobilizado .
@@ -1081,6 +1216,72 @@
         <member name="T:app_pm_back.DTO.CentroPlanejamentoManutencaoDto">
             <summary>
             DTO de centro de planejamento de manutencao .
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.IdDados">
+            <summary>
+            Identificador único do registro de renovação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.UltimaRenovacao">
+            <summary>
+            Data e hora da última renovação realizada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.OrigemUR">
+            <summary>
+            Origem da última renovação (nota, ordem, usuario).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.TipoDados">
+            <summary>
+            Se a renovação é corretiva/preventiva e de usuario/catboost
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.Confiabilidade">
+            <summary>
+            Índice de confiabilidade calculado para o ativo (0 a 1 ou percentual).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.IdAtivo">
+            <summary>
+            Identificador do Ativo relacionado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.IdLi">
+            <summary>
+            Chave estrangeira para a localização de instalação do ativo.
+            Permite vincular a nota a um local específico de instalação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.IdNota">
+            <summary>
+            Identificador da Nota relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.IdOrdem">
+            <summary>
+            Identificador da Ordem de Serviço relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.IdUsuario">
+            <summary>
+            Identificador do Usuário que processou a renovação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.Nota">
+            <summary>
+            Referência à Nota relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.Ordem">
+            <summary>
+            Referência à Ordem de Serviço relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.Usuario">
+            <summary>
+            Referência ao Usuário que realizou a renovação.
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.GrupoPlanejamentoManutencaoDto">
@@ -3220,10 +3421,6 @@
             <summary>
             Obtém uma timeline de fichas de um ativo para um range de data específico
             </summary>
-            <param name="dataInicio">Data de início</param>
-            <param name="dataFim">Data de fim</param>
-            <param name="idLi">Nome do ativo/LI</param>
-            <returns></returns>
         </member>
         <member name="T:app_pm_back.Services.ImportGhostHelper">
             <summary>
@@ -3278,6 +3475,34 @@
             <param name="source"></param>
             <param name="ignoreProperties"></param>
             <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.LinhaTemporalService">
+            <summary>
+            Serviço para obter linha temporal de LIs consultando API externa
+            e cruzando com notas/ordens do banco de dados local
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.ObterLinhaTemporalAsync(System.Collections.Generic.List{System.String})">
+            <summary>
+            Obtém a linha temporal completa para um conjunto de LIs
+            </summary>
+            <param name="idsLi">Lista de IDs das Localizações de Instalação (LIs)</param>
+            <returns>Lista de itens da linha temporal</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.ObterLisDaApiExternaAsync(System.Collections.Generic.List{System.String})">
+            <summary>
+            Chama a API externa (APM) para obter lista de LIs com IdLi, DnsIot e Data
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.BuscarNotasDaLiAsync(System.String)">
+            <summary>
+            Busca notas associadas a uma LI (por IdLi)
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.BuscarOrdensDaLiAsync(System.String)">
+            <summary>
+            Busca ordens associadas a uma LI (por IdLi)
+            </summary>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.ImobilizadoService">
             <summary>

@@ -11,7 +11,7 @@ namespace app_pm_back.Services.Manutencao;
 /// <summary>
 /// Classe DadosRenovacaoService.
 /// </summary>
-public class DadosRenovacaoService
+public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 {
     private readonly AppDbContext _context;
     private readonly ILogger<DadosRenovacaoService> _logger;
@@ -29,8 +29,8 @@ public class DadosRenovacaoService
         ILogger<DadosRenovacaoService> logger,
         IConfiguration configuration,
         HttpClient httpClient) // Injetar HttpClient
+        : base(context)
     {
-        _context = context;
         _logger = logger;
         _httpClient = httpClient;
         // Lê a URL base da APM do appsettings.json

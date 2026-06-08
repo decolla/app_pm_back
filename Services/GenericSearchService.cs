@@ -509,7 +509,7 @@ public class GenericSearchService
         DateTime dataFim,
         string idLi)
     {
-        // 1. Projeção usando Tipo Anônimo (Nomes e tipos devem ser IDÊNTICOS nas duas queries)
+        // projeção usando Tipo Anônimo (Nomes e tipos devem ser IDÊNTICOS nas duas queries)
         var notas = _notaModels.AsNoTracking()
             .Where(n => n.IdLi == idLi
                         && n.DataNota.HasValue
@@ -530,20 +530,18 @@ public class GenericSearchService
                         && o.DataCriacao.Value <= dataFim)
             .Select(o => new 
             {
-                Id = o.IdOrdem, // Assumindo que IdNota e IdOrdem são do mesmo tipo (ex: long)
+                Id = o.IdOrdem,
                 Classificacao = o.Classificacao,
                 Descricao = o.DescricaoBreve,
                 Data = o.DataCriacao
             });
 
-        // 2. O Concat agora acontece 100% no banco de dados (SQL UNION ALL)
         var combinadosDb = await notas
             .Concat(ordens)
             .OrderBy(r => r.Data)
             .ToListAsync()
             .ConfigureAwait(false);
 
-        // 3. Conversão em memória para o seu DTO final (TimelineItem)
         var timeline = combinadosDb.Select(x => new TimelineItem(
             x.Id,
             x.Classificacao,

@@ -82,20 +82,25 @@ public abstract class BaseCrudService<T> where T : class
     /// <param name="pagina"></param>
     /// <param name="tamanho"></param>
     /// <returns></returns>
-    public async Task<List<T>> GetNotasPaginadasAsync(int pagina, int tamanho)
+    public async Task<Object> GetNotasPaginadasAsync(int pagina, int tamanho)
     {
         var entityType = _context.Model.FindEntityType(typeof(T));
         var primaryKey = entityType?.FindPrimaryKey();
         if (primaryKey == null || primaryKey.Properties.Count != 1)
-            throw new InvalidOperationException($"A entidade {typeof(T).Name} deve possuir chave primária simples para paginação.");
+            throw new InvalidOperationException(
+                $"A entidade {typeof(T).Name} deve possuir chave primária simples para paginação.");
 
         var keyName = primaryKey.Properties[0].Name;
 
-        return await _dbSet
-            .OrderBy(e => EF.Property<object>(e, keyName))
-            .Skip((pagina - 1) * tamanho)
-            .Take(tamanho)
-            .ToListAsync();
+        int count = await _dbSet.CountAsync(); 
+        
+        var result = await _dbSet 
+            .OrderBy(e => EF.Property<object>(e, keyName)) 
+            .Skip((pagina - 1) * tamanho) 
+            .Take(tamanho) 
+            .ToListAsync(); 
+        
+        return new { Total = count, Result = result }; 
     }
 
     /// <summary>
