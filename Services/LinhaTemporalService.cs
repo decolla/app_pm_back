@@ -122,7 +122,7 @@ public class LinhaTemporalService
     {
         try
         {
-            var url = $"{_apmBaseUrl}/api/V1/Asset/Installation/Date";
+            var url = $"{_apmBaseUrl}/api/V1/Asset/InstallationDate";
             _logger.LogInformation("Chamando API APM: GET {Url}", url);
 
             var request = new HttpRequestMessage(HttpMethod.Get, url);

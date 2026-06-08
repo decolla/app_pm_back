@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace app_pm_back.Controllers;
 
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/restauracao-externa")]
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/LinhaTemporal")]
 public class LinhaTemporalController : ControllerBase
 {
     private readonly LinhaTemporalService _linhaTemporalService;
@@ -19,7 +19,7 @@ public class LinhaTemporalController : ControllerBase
     /// Primeira chamada busca do APM (asset/installation/date) e cacheia.
     /// Chamadas subsequentes usam cache + paginação local.
     /// </summary>
-    [HttpGet("linha-temporal")]
+    [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -110,7 +110,7 @@ public class LinhaTemporalController : ControllerBase
     /// <summary>
     /// Força refresh do cache do APM
     /// </summary>
-    [HttpPost("linha-temporal/refresh-cache")]
+    [HttpPost("refresh-cache")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status502BadGateway)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
