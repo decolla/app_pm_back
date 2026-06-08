@@ -65,14 +65,12 @@ public class LinhaTemporalService
     /// </summary>
     public async Task<LinhaTemporalItem> ObterItensDaLiAsync(string idLi)
     {
-        var notasTask = BuscarNotasDaLiAsync(idLi);
-        var ordensTask = BuscarOrdensDaLiAsync(idLi);
-
-        await Task.WhenAll(notasTask, ordensTask);
+        var notasTask = await BuscarNotasDaLiAsync(idLi);
+        var ordensTask =  await BuscarOrdensDaLiAsync(idLi);
 
         var eventos = new List<EventoLinhaTemporal>();
 
-        foreach (var nota in notasTask.Result)
+        foreach (var nota in notasTask)
         {
             eventos.Add(new EventoLinhaTemporal(
                 Numero: nota.NumeroNota.ToString(),
@@ -85,7 +83,7 @@ public class LinhaTemporalService
             ));
         }
 
-        foreach (var ordem in ordensTask.Result)
+        foreach (var ordem in ordensTask)
         {
             eventos.Add(new EventoLinhaTemporal
             (
@@ -145,13 +143,13 @@ public class LinhaTemporalService
 
     private Task<List<NotaModel>> BuscarNotasDaLiAsync(string idLi) =>
         _context.PM_Notas
-            .Where(n => n.IdLi == idLi && n.Classificacao != "NÃO CLASSIFICADA")
+            .Where(n => n.IdLi == idLi)
             .OrderByDescending(n => n.DataNota)
             .ToListAsync();
 
     private Task<List<OrdemModel>> BuscarOrdensDaLiAsync(string idLi) =>
         _context.PM_Ordens
-            .Where(o => o.IdLi == idLi && o.Classificacao != "NÃO CLASSIFICADA")
+            .Where(o => o.IdLi == idLi)
             .OrderByDescending(o => o.DataCriacao)
             .ToListAsync();
 }
