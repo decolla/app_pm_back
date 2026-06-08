@@ -49,6 +49,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 });
 
+//  Memory Cache para LinhaTemporal
+builder.Services.AddMemoryCache();
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 // criar o construtor da fonte de dados do PostgreSQL
@@ -82,7 +85,6 @@ builder.Services.AddScoped<FerramentaService>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<CpmService>();
 builder.Services.AddScoped<CtmService>();
-builder.Services.AddHttpClient<DadosRenovacaoService>();
 builder.Services.AddScoped<ReportService>();
 builder.Services.AddScoped<SynchronizeAPMService>();
 builder.Services.AddScoped<GpmService>();
@@ -92,6 +94,8 @@ builder.Services.AddScoped<ClassificationService<NotaModel>>();
 builder.Services.AddScoped<ClassificationService<OrdemModel>>();
 builder.Services.AddScoped<AnnexService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddHttpClient<DadosRenovacaoService>();
+builder.Services.AddHttpClient<LinhaTemporalService>();
 
 // configuração de clientes http
 builder.Services.AddHttpClient<ExternIntegrationService>(client =>
