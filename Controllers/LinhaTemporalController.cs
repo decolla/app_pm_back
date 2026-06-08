@@ -1,11 +1,10 @@
 ﻿using app_pm_back.Services.Manutencao;
-using app_pm_back.DTO.Restauracao;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
 
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/restauracao-externa")]
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/LinhaTemporal")]
 public class LinhaTemporalController : ControllerBase
 {
     private readonly LinhaTemporalService _linhaTemporalService;
@@ -16,36 +15,119 @@ public class LinhaTemporalController : ControllerBase
     }
 
     /// <summary>
-    /// Obtém a linha temporal das LIs consultando API externa e cruzando com notas/ordens locais
+    /// Obtém a linha temporal paginada das LIs.
+    /// Primeira chamada busca do APM (asset/installation/date) e cacheia.
+    /// Chamadas subsequentes usam cache + paginação local.
     /// </summary>
-    /// <param name="request">Lista de IDs das LIs (Localizações de Instalação)</param>
-    /// <returns>Lista de itens da linha temporal com eventos (notas/ordens)</returns>
-    [HttpPost("linha-temporal")]
-    [ProducesResponseType(typeof(List<LinhaTemporalDTO>), StatusCodes.Status200OK)]
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ObterLinhaTemporal([FromBody] LinhaTemporalRequestDTO request)
+    [ProducesResponseType(StatusCodes.Status502BadGateway)]
+    public async Task<IActionResult> ObterLinhaTemporal(
+        [FromQuery] int pagina = 1,
+        [FromQuery] int tamanho = 20)
     {
-        if (request?.IdsLi == null || request.IdsLi.Count == 0)
-        {
-            return BadRequest("Lista de IDs das LIs é obrigatória");
-        }
+        if (pagina <= 0) pagina = 1;
+        if (tamanho <= 0) tamanho = 20;
+        if (tamanho > 100) tamanho = 100;
 
         try
         {
-            var resultado = await _linhaTemporalService.ObterLinhaTemporalAsync(request.IdsLi);
+            // 1. Busca todas as LIs do APM (cache ou API)
+            var todasLis = await _linhaTemporalService.ObterTodasLisDoApmAsync();
             
-            return Ok(resultado);
+            if (!todasLis.Any())
+            {
+                return Ok(new
+                {
+                    itens = new List<object>(),
+                    pagina,
+                    tamanho,
+                    totalItens = 0,
+                    totalPaginas = 0,
+                    temProxima = false,
+                    temAnterior = false
+                });
+            }
+
+            // 2. Paginação no nível das LIs
+            var totalItens = todasLis.Count;
+            var totalPaginas = (int)Math.Ceiling((double)totalItens / tamanho);
+            var lisPagina = todasLis
+                .Skip((pagina - 1) * tamanho)
+                .Take(tamanho)
+                .ToList();
+
+            // 3. Para cada LI da página, busca notas/ordens no banco
+            var resultado = new List<object>();
+
+            foreach (var li in lisPagina)
+            {
+                var itens = await _linhaTemporalService.ObterItensDaLiAsync(li.IdLi);
+                
+                resultado.Add(new
+                {
+                    idLi = li.IdLi,
+                    dnsIot = li.DnsIot,
+                    data = li.Data,
+                    eventos = itens.Eventos.Select(e => new
+                    {
+                        numero = e.Numero,
+                        data = e.Data,
+                        tipo = e.Tipo,
+                        idReferencia = e.IdReferencia,
+                        descricao = e.Descricao,
+                        classificacao = e.Classificacao,
+                        confiabilidadeRestaurada = e.ConfiabilidadeRestaurada
+                    })
+                });
+            }
+
+            return Ok(new
+            {
+                itens = resultado,
+                pagina,
+                tamanho,
+                totalItens,
+                totalPaginas,
+                temProxima = pagina < totalPaginas,
+                temAnterior = pagina > 1
+            });
         }
         catch (HttpRequestException ex)
         {
             return StatusCode(StatusCodes.Status502BadGateway, 
-                $"Erro ao comunicar com serviço externo: {ex.Message}");
+                $"Erro ao comunicar com APM: {ex.Message}");
         }
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError, 
                 $"Erro interno: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Força refresh do cache do APM
+    /// </summary>
+    [HttpPost("refresh-cache")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status502BadGateway)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> AtualizarCache()
+    {
+        try
+        {
+            var qtd = await _linhaTemporalService.AtualizarCacheAsync();
+            return Ok(new { message = "Cache atualizado", totalLis = qtd });
+        }
+        catch (HttpRequestException ex)
+        {
+            return StatusCode(StatusCodes.Status502BadGateway, $"Erro no APM: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 }
