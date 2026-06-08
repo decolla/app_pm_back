@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -155,7 +156,11 @@ public class LinhaTemporalService
 }
 
 // Classes internas simples (não são DTOs de banco, apenas transport)
-public record LiApmInfo(string IdLi, string? DnsIot, DateTime Data);
+public record LiApmInfo(
+    [property: JsonPropertyName("sapName")] string IdLi,
+    [property: JsonPropertyName("dnsIot")] string? DnsIot,
+    [property: JsonPropertyName("installationDate")] DateTime Data
+);
 
 public record LinhaTemporalItem(string IdLi, List<EventoLinhaTemporal> Eventos);
 
