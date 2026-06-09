@@ -257,6 +257,33 @@ public class BuscaController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
         }
     }
+    
+    /// <summary>
+    /// Busca Todas as datas de notas e ordens daquele LI
+    /// </summary>
+    /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
+    /// <returns>idLi+ lista de datas</returns>
+    [HttpGet("reliability/LiData")]
+    public async Task<IActionResult> BuscaReliability([FromQuery] string idLi)
+    {
+        try
+        {
+
+            if (string.IsNullOrWhiteSpace(idLi))
+            {
+                return BadRequest(new { message = "Parametro idLi obrigatorio." });
+            }
+
+            var obj = await _searchService.DatasReliability(idLi);
+            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
+
+            return Ok(obj);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
+        }
+    }
 
     /// <summary>
     /// Busca notas e ordens por intervalo de data e IdLi.
