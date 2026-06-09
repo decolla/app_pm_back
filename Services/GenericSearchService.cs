@@ -453,17 +453,17 @@ public class GenericSearchService
         };
     }
     
-    public async Task<object?> AtivoDatas(ComponentType ativo, string idLi, TipoDados tipoDados)
+    public async Task<object?> AtivoDatas(string idLi, TipoDados tipoDados)
     {
-        //Busca a data da última renovação daquele conjunto LI + ativo
+        //Busca a data da última renovação daquele conjunto LI 
         DadosRenovacaoModel? ultimaRenovacao = await _context.PM_DadosRenovacao
-            .Where(d => d.IdAtivo == ativo && d.IdLi == idLi && d.TipoDados == tipoDados)
+            .Where(d => d.IdLi == idLi && d.TipoDados == tipoDados)
             .OrderByDescending(d => d.UltimaRenovacao)
             .FirstOrDefaultAsync();
 
-        //Busca o plano relacionado ao conjunto LI + ativo
+        //Busca o plano relacionado ao LI
         PlanoModel? plano = await _planoModels
-            .Where(p => p.IdAtivo == ativo && p.IdLi == idLi)
+            .Where(p => p.IdLi == idLi)
             .FirstOrDefaultAsync();
         
         //Se plano não existe, apenas retorna data

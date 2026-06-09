@@ -226,21 +226,16 @@ public class BuscaController : ControllerBase
     }
 
     /// <summary>
-    /// Busca as datas de renovação associadas ao conjunto LI + ativo, retorna um objeto com os dados relevantes
+    /// Busca as datas de renovação associadas ao LI, retorna um objeto com os dados relevantes
     /// </summary>
-    /// <param name="ativo">Ativo a ser procurado</param>
     /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
     /// <param name="tipoDados">Tipo de dados da renovação</param>
     /// <returns>Objeto com informações relevantes</returns>
     [HttpGet("ativo/datas")]
-    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] ComponentType ativo, [FromQuery] string idLi, [FromQuery] TipoDados tipoDados)
+    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] string idLi, [FromQuery] TipoDados tipoDados)
     {
         try
         {
-            if (!Enum.IsDefined(typeof(ComponentType), ativo))
-            {
-                return BadRequest(new { message = "Parametro ativo invalido." });
-            }
 
             if (string.IsNullOrWhiteSpace(idLi))
             {
@@ -252,8 +247,8 @@ public class BuscaController : ControllerBase
                 return BadRequest(new { message = "Parametro tipoDados invalido." });
             }
 
-            var obj = await _searchService.AtivoDatas(ativo, idLi, tipoDados);
-            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o conjunto LI + ativo informado." });
+            var obj = await _searchService.AtivoDatas(idLi, tipoDados);
+            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
 
             return Ok(obj);
         }
