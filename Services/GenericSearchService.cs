@@ -17,13 +17,13 @@ public class GenericSearchService
     private readonly DbSet<OrdemModel> _ordemModels;
     private readonly DbSet<PlanoModel> _planoModels;
     private static readonly Dictionary<string, Type> Tabelas = BuildTabelas();
+
     /// <summary>
     /// Executa a ação correspondente.
     /// </summary>
     /// <param name="Notas">Parâmetro do método.</param>
     /// <param name="Ordens">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-
     public record NotaOrdemSearchResult(
         IReadOnlyList<object> Notas,
         IReadOnlyList<object> Ordens);
@@ -37,7 +37,6 @@ public class GenericSearchService
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="GenericSearchService"/>.
     /// </summary>
-
     public GenericSearchService(AppDbContext context)
     {
         _context = context;
@@ -45,6 +44,7 @@ public class GenericSearchService
         _ordemModels = context.PM_Ordens;
         _planoModels = context.PM_Planos;
     }
+
     /// <summary>
     /// Obtém um registro específico.
     /// </summary>
@@ -52,7 +52,6 @@ public class GenericSearchService
     /// <param name="campo">Parâmetro do método.</param>
     /// <param name="nome">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    
     public Task<IReadOnlyList<object>> BuscarPorNomeAsync(
         string tabela,
         string campo,
@@ -75,6 +74,7 @@ public class GenericSearchService
                 .ToList(),
             StringComparer.OrdinalIgnoreCase);
     }
+
     /// <summary>
     /// Obtém um registro específico.
     /// </summary>
@@ -83,7 +83,6 @@ public class GenericSearchService
     /// <param name="valor">Parâmetro do método.</param>
     /// <param name="parcial">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-
     public async Task<IReadOnlyList<object>> BuscarPorCampoAsync(
         string tabela,
         string campo,
@@ -113,13 +112,13 @@ public class GenericSearchService
 
         return await task.ConfigureAwait(false);
     }
+
     /// <summary>
     /// Obtém um registro específico.
     /// </summary>
     /// <param name="busca">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-
-    public async Task<NotaOrdemSearchResult> BuscarNotaOrdemAsync(
+    public async Task<object> BuscarNotaOrdemAsync(
         dynamic busca,
         int? pagina,
         int? tamanho)
@@ -165,14 +164,16 @@ public class GenericSearchService
             ordensQuery = ordensQuery.Where(o => o.IdOrdem <= ordemIdFim.Value);
         }
 
-        ComponentType? localInstalacaoInicio = buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca) as ComponentType?;
+        ComponentType? localInstalacaoInicio =
+            buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca) as ComponentType?;
         if (localInstalacaoInicio.HasValue)
         {
             notasQuery = notasQuery.Where(n => n.IdAtivo >= localInstalacaoInicio.Value);
             ordensQuery = ordensQuery.Where(o => o.IdAtivo >= localInstalacaoInicio.Value);
         }
 
-        ComponentType? localInstalacaoFim = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca) as ComponentType?;
+        ComponentType? localInstalacaoFim =
+            buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca) as ComponentType?;
         if (localInstalacaoFim.HasValue)
         {
             notasQuery = notasQuery.Where(n => n.IdAtivo <= localInstalacaoFim.Value);
@@ -237,10 +238,12 @@ public class GenericSearchService
         var notas = await notasQuery.Cast<object>().ToListAsync().ConfigureAwait(false);
         var ordens = await ordensQuery.Cast<object>().ToListAsync().ConfigureAwait(false);
 
-        return new NotaOrdemSearchResult(notas, ordens);
+        var result = new NotaOrdemSearchResult(notas, ordens);
+        
+        return new { Total = notas.Count() + ordens.Count(), Result = result };
     }
 
-    private async Task<IReadOnlyList<object>> BuscarInternoAsync<T>(
+    private async Task<object> BuscarInternoAsync<T>(
         string campo,
         string valor,
         bool parcial,
@@ -287,6 +290,7 @@ public class GenericSearchService
         var lambda = Expression.Lambda<Func<T, bool>>(filtro, parametro);
         var query = _context.Set<T>().AsNoTracking().Where(lambda);
         query = AplicarOrdenacao(query);
+        int count = query.Count();
 
         if (pagina.HasValue || tamanho.HasValue)
         {
@@ -295,7 +299,8 @@ public class GenericSearchService
             query = query.Skip((p - 1) * t).Take(t);
         }
 
-        return await query.Cast<object>().ToListAsync().ConfigureAwait(false);
+        var result = await query.Cast<object>().ToListAsync().ConfigureAwait(false);
+        return new {Total = count ,Result = result};
     }
 
     private static PropertyInfo BuscarPropriedade(Type tipo, string campo)
@@ -381,36 +386,37 @@ public class GenericSearchService
                 p => p.PropertyType.GetGenericArguments()[0],
                 StringComparer.OrdinalIgnoreCase);
     }
+
     /// <summary>
     /// Executa a ação correspondente.
     /// </summary>
     /// <param name="ativo">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    
     public async Task<object?> AtivoGerald(ComponentType ativo)
     {
         OrdemModel? ultimaOrdem = await _ordemModels
             .Where(o => o.IdAtivo == ativo)
             .OrderByDescending(o => o.DataCriacao)
             .FirstOrDefaultAsync();
-        
+
         NotaModel? ultimaNota = await _notaModels
             .Where(o => o.IdAtivo == ativo)
             .OrderByDescending(o => o.DataAvaria)
             .FirstOrDefaultAsync();
-        
+
         if (ultimaOrdem == null && ultimaNota == null)
             return null;
-        
+
         DateTime? ultimaData = null;
         long? codigoPlanoParaBuscar = null;
-        
+
         if (ultimaOrdem != null && ultimaNota != null)
         {
             if (ultimaOrdem.DataCriacao > ultimaNota.DataNota)
             {
                 ultimaData = ultimaOrdem.DataCriacao;
-                codigoPlanoParaBuscar = ultimaOrdem.IdNota.HasValue ? (long?)ultimaOrdem.IdNota.Value : null; // search using NotaId
+                codigoPlanoParaBuscar =
+                    ultimaOrdem.IdNota.HasValue ? (long?)ultimaOrdem.IdNota.Value : null; // search using NotaId
             }
             else
             {
@@ -426,9 +432,9 @@ public class GenericSearchService
         else if (ultimaNota != null)
         {
             ultimaData = ultimaNota.DataNota;
-            codigoPlanoParaBuscar = ultimaNota.IdPlano; 
+            codigoPlanoParaBuscar = ultimaNota.IdPlano;
         }
-        
+
         PlanoModel? ultimoPlano = null;
         if (codigoPlanoParaBuscar.HasValue)
         {
@@ -439,7 +445,7 @@ public class GenericSearchService
         }
         // retornar tipos c do plano, invés das estatégias
         // ultima data puxar da tabela do lucas
-        
+
         return new
         {
             Ativo = ativo,
@@ -452,7 +458,7 @@ public class GenericSearchService
             Confiabilidade = 100
         };
     }
-    
+
     public async Task<object?> AtivoDatas(string idLi, TipoDados tipoDados)
     {
         //Busca a data da última renovação daquele conjunto LI 
@@ -465,7 +471,7 @@ public class GenericSearchService
         PlanoModel? plano = await _planoModels
             .Where(p => p.IdLi == idLi)
             .FirstOrDefaultAsync();
-        
+
         //Se plano não existe, apenas retorna data
         if (plano == null)
         {
@@ -515,7 +521,7 @@ public class GenericSearchService
                         && n.DataNota.HasValue
                         && n.DataNota.Value >= dataInicio
                         && n.DataNota.Value <= dataFim)
-            .Select(n => new 
+            .Select(n => new
             {
                 Id = n.IdNota,
                 Classificacao = n.Classificacao,
@@ -528,7 +534,7 @@ public class GenericSearchService
                         && o.DataCriacao.HasValue
                         && o.DataCriacao.Value >= dataInicio
                         && o.DataCriacao.Value <= dataFim)
-            .Select(o => new 
+            .Select(o => new
             {
                 Id = o.IdOrdem,
                 Classificacao = o.Classificacao,

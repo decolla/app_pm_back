@@ -82,7 +82,7 @@ public abstract class BaseCrudService<T> where T : class
     /// <param name="pagina"></param>
     /// <param name="tamanho"></param>
     /// <returns></returns>
-    public async Task<Object> GetNotasPaginadasAsync(int pagina, int tamanho)
+    public async Task<object> GetNotasPaginadasAsync(int pagina, int tamanho)
     {
         var entityType = _context.Model.FindEntityType(typeof(T));
         var primaryKey = entityType?.FindPrimaryKey();
