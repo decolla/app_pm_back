@@ -355,11 +355,10 @@
             <param name="ativos"></param>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscaAtivoDatas(app_pm_back.Models.Domain.ComponentType,System.String,app_pm_back.Models.Domain.TipoDados)">
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscaAtivoDatas(System.String,app_pm_back.Models.Domain.TipoDados)">
             <summary>
-            Busca as datas de renovação associadas ao conjunto LI + ativo, retorna um objeto com os dados relevantes
+            Busca as datas de renovação associadas ao LI, retorna um objeto com os dados relevantes
             </summary>
-            <param name="ativo">Ativo a ser procurado</param>
             <param name="idLi">LI (Local de Instalação) a ser procurada</param>
             <param name="tipoDados">Tipo de dados da renovação</param>
             <returns>Objeto com informações relevantes</returns>

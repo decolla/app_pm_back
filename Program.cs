@@ -9,6 +9,8 @@ using app_pm_back.Routes;
 using app_pm_back.Services;
 using app_pm_back.Services.ExternIntegationsServices;
 using app_pm_back.Services.Manutencao;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
@@ -81,6 +83,18 @@ else
         options.UseNpgsql(dataSource));
 }
 
+// config hangfire
+builder.Services.AddHangfire(config => config
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UsePostgreSqlStorage(c => 
+        c.UseNpgsqlConnection(builder.Configuration.GetConnectionString("DefaultConnection"))));
+
+builder.Services.AddHangfireServer();
+
+builder.Services.AddTransient<app_pm_back.Jobs.ManutencaoGeneratorJob>();
+
 builder.Services.AddScoped<ConvertService>();
 builder.Services.AddScoped<SpreadsheetService>();
 builder.Services.AddScoped<GenericSearchService>();
@@ -108,8 +122,8 @@ builder.Services.AddScoped<ClassificationService<NotaModel>>();
 builder.Services.AddScoped<ClassificationService<OrdemModel>>();
 builder.Services.AddScoped<AnnexService>();
 builder.Services.AddScoped<IReportService, ReportService>();
-builder.Services.AddHttpClient<DadosRenovacaoService>();
-builder.Services.AddHttpClient<LinhaTemporalService>();
+builder.Services.AddScoped<DadosRenovacaoService>();
+builder.Services.AddScoped<LinhaTemporalService>();
 
 // configuração de clientes http
 builder.Services.AddHttpClient<ExternIntegrationService>(client =>
@@ -189,6 +203,15 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
+
+// dashboard do hangfire
+app.UseHangfireDashboard();
+
+// rotina de verificação nos planos de manutenção
+RecurringJob.AddOrUpdate<app_pm_back.Jobs.ManutencaoGeneratorJob>(
+    "gerador-fichas",
+    service => service.RunDailyRoutine(),
+    Cron.Daily(2,0));
 
 // captura erros
 app.UseMiddleware<GlobalExceptionMiddleware>();
