@@ -10,7 +10,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:60135
       ASPNETCORE_HTTPS_PORT: 60135
-      SCHEMA: ${SCHEMA}
+      DATABASE_SCHEMA: ${SCHEMA}
       TWINS_KEY: ${TWINS_KEY}
       ConnectionStrings__DefaultConnection: ${PHYSIS_POSTGRESQL}; Include Error Detail=True
 #    depends_on:

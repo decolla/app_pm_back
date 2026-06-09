@@ -52,20 +52,34 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 //  Memory Cache para LinhaTemporal
 builder.Services.AddMemoryCache();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var databaseSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
 
-// criar o construtor da fonte de dados do PostgreSQL
-var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+if (databaseSchema == "cg")
+{
+    var connectionString = builder.Configuration.GetConnectionString("DBConnection") 
+                           ?? builder.Configuration.GetConnectionString("DefaultConnection");
+                           
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlServer(connectionString));
+}
+else
+{
+    var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION") 
+                           ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
-// dar permissão para JSON dinâmico
-dataSourceBuilder.EnableDynamicJson();
+    // criar o construtor da fonte de dados do PostgreSQL
+    var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
 
-// criar a fonte de dados
-var dataSource = dataSourceBuilder.Build();
+    // dar permissão para JSON dinâmico
+    dataSourceBuilder.EnableDynamicJson();
 
-// adicionar o contexto do PostgreSQL
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(dataSource));
+    // criar a fonte de dados
+    var dataSource = dataSourceBuilder.Build();
+
+    // adicionar o contexto do PostgreSQL
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseNpgsql(dataSource));
+}
 
 builder.Services.AddScoped<ConvertService>();
 builder.Services.AddScoped<SpreadsheetService>();
@@ -149,11 +163,22 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = services.GetRequiredService<AppDbContext>();
-        Console.WriteLine("A tentar aplicar as migrations no banco de dados...");
-        // REMOVER DEPOIS: APAGA TODAS AS TABELAS
-        // dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
-        dbContext.Database.Migrate();
-        Console.WriteLine("Migrations aplicadas com sucesso!");
+        var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+        
+        if (dbSchema == "cg")
+        {
+            Console.WriteLine("Ambiente 'cg' detectado (SQL Server). A tentar criar o banco de dados e as tabelas...");
+            dbContext.Database.EnsureCreated();
+            Console.WriteLine("Banco de dados e tabelas criados/verificados com sucesso!");
+        }
+        else
+        {
+            Console.WriteLine("PostgreSQL detectado. A tentar aplicar as migrations no banco de dados...");
+            // REMOVER DEPOIS: APAGA TODAS AS TABELAS
+            // dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
+            dbContext.Database.Migrate();
+            Console.WriteLine("Migrations aplicadas com sucesso!");
+        }
     }
     catch (Exception ex)
     {
@@ -166,7 +191,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // captura erros
-app.UseMiddleware<app_pm_back.Middlewares.GlobalExceptionMiddleware>();
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

@@ -1,10 +1,12 @@
+using System.Text.Json;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace app_pm_back.Data;
 
 /// <summary>
-/// Mapeamento EF Core para PostgreSQL.
+/// Mapeamento EF Core dinâmico para PostgreSQL ou SQL Server.
 /// </summary>
 public class AppDbContext : DbContext
 {
@@ -14,7 +16,25 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("public");   
+        if (Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer")
+        {
+            modelBuilder.HasDefaultSchema("dbo");
+
+            var converter = new ValueConverter<List<AcoesFalha>?, string>(
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                v => JsonSerializer.Deserialize<List<AcoesFalha>>(v, (JsonSerializerOptions)null) ?? new List<AcoesFalha>()
+            );
+
+            modelBuilder.Entity<TipoCepModel>()
+                .Property(e => e.AcoesFalha)
+                .HasConversion(converter)
+                .HasColumnType("nvarchar(max)");
+        }
+        else
+        {
+            modelBuilder.HasDefaultSchema("public");
+        }
+
         base.OnModelCreating(modelBuilder);
 
         // Configure Primary Keys and Auto-increment

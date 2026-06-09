@@ -36,9 +36,10 @@ public static class SpreadsheetEndpoints
         {
             try
             {
-                if (!sobrescrever && !adicionarNovas) 
-                    return Results.BadRequest(new { message = "Nenhuma ação selecionada. Marque 'sobrescrever' ou 'adicionarNovas'." });
-                
+                if (!sobrescrever && !adicionarNovas)
+                    return Results.BadRequest(new
+                        { message = "Nenhuma ação selecionada. Marque 'sobrescrever' ou 'adicionarNovas'." });
+
                 if (file == null || file.Length == 0)
                     return Results.BadRequest(new { message = "Arquivo inválido ou vazio." });
 
@@ -48,22 +49,24 @@ public static class SpreadsheetEndpoints
                 {
                     if (!resultadoPlanilha.Notas.Any())
                         return Results.BadRequest(new { message = "Planilha reconhecida, mas sem dados válidos." });
-                    
+
                     List<NotaModel> notasDeduplicadas = resultadoPlanilha.Notas
                         .DistinctBy(o => o.NumeroNota).ToList();
 
-                    await notaManutencaoService.ImportarNotasEmLoteSeguroAsync(notasDeduplicadas, sobrescrever, adicionarNovas);
+                    await notaManutencaoService.ImportarNotasEmLoteSeguroAsync(notasDeduplicadas, sobrescrever,
+                        adicionarNovas);
                     var inseridas = notasDeduplicadas.Count;
 
                     idNotas = notasDeduplicadas.Select(n => n.IdNota).ToList();
                     if (idItens.Count > 1)
                     {
                         bool sinc = await synchronizeApmService.SynchronizeAPMAsync(); // sincroniza com o dnsIot do APM
-                        Console.WriteLine($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                        Console.WriteLine(
+                            $"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
                         // adicionar logs
                         await dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
                     }
-                    
+
                     return Results.Ok(new { message = inseridas });
                 }
                 else if (resultadoPlanilha.TipoIdentificado == "ORDEM")
@@ -78,14 +81,16 @@ public static class SpreadsheetEndpoints
 
                     var idOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
                     bool sinc = await synchronizeApmService.SynchronizeAPMAsync(); // sincroniza com o dnsIot do APM
-                    Console.WriteLine($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                    Console.WriteLine(
+                        $"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
                     // add log dps
                     await dadosRenovacaoService.ImportarDadosOrdemAsync(idOrdens);
 
-                    await ordemService.ImportarOrdensEmLoteSeguroAsync(ordensDeduplicadas, sobrescrever, adicionarNovas);
+                    await ordemService.ImportarOrdensEmLoteSeguroAsync(ordensDeduplicadas, sobrescrever,
+                        adicionarNovas);
                     var inseridas = ordensDeduplicadas.Count;
 
-                    return Results.Ok(new { message = inseridas});
+                    return Results.Ok(new { message = inseridas });
                 }
                 else if (resultadoPlanilha.TipoIdentificado == "ITEM")
                 {
@@ -129,7 +134,7 @@ public static class SpreadsheetEndpoints
                         {
                             await dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
                         }
-                        
+
                         return Results.Ok(new { message = itensValidos.Count });
                     }
 

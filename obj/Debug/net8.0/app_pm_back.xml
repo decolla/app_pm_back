@@ -476,12 +476,17 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Controllers.LinhaTemporalController.ObterLinhaTemporal(app_pm_back.DTO.Restauracao.LinhaTemporalRequestDTO)">
+        <member name="M:app_pm_back.Controllers.LinhaTemporalController.ObterLinhaTemporal(System.Int32,System.Int32)">
             <summary>
-            Obtém a linha temporal das LIs consultando API externa e cruzando com notas/ordens locais
+            Obtém a linha temporal paginada das LIs.
+            Primeira chamada busca do APM (asset/installation/date) e cacheia.
+            Chamadas subsequentes usam cache + paginação local.
             </summary>
-            <param name="request">Lista de IDs das LIs (Localizações de Instalação)</param>
-            <returns>Lista de itens da linha temporal com eventos (notas/ordens)</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.LinhaTemporalController.AtualizarCache">
+            <summary>
+            Força refresh do cache do APM
+            </summary>
         </member>
         <member name="T:app_pm_back.Controllers.ItemsController">
             <summary>
@@ -1062,7 +1067,7 @@
         </member>
         <member name="T:app_pm_back.Data.AppDbContext">
             <summary>
-            Mapeamento EF Core para PostgreSQL.
+            Mapeamento EF Core dinâmico para PostgreSQL ou SQL Server.
             </summary>
         </member>
         <member name="T:app_pm_back.Data.DatabaseExceptionInterceptor">
@@ -1111,81 +1116,6 @@
         <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.ComponentTypes">
             <summary>
             Lista de ComponentTypes (IdAtivos) associados a esta LI
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.Restauracao.LinhaTemporalDTO">
-            <summary>
-            Item da linha temporal retornado para o frontend
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.LinhaTemporalDTO.IdLi">
-            <summary>
-            ID da Localização de Instalação (LI)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.LinhaTemporalDTO.DnsIot">
-            <summary>
-            DNS IoT do ativo (nome alternativo)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.LinhaTemporalDTO.Data">
-            <summary>
-            Data de referência do ativo (vinda da API externa)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.LinhaTemporalDTO.Eventos">
-            <summary>
-            Lista de eventos (notas e ordens) relacionados a esta LI
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO">
-            <summary>
-            Evento individual na linha temporal (nota ou ordem)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.Numero">
-            <summary>
-            Número da nota ou ordem (ex: "123" ou "OS-2024-001")
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.Data">
-            <summary>
-            Data do evento (DataNota para notas, DataCriacao para ordens)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.Tipo">
-            <summary>
-            Tipo do evento: "Nota" ou "Ordem"
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.IdReferencia">
-            <summary>
-            ID de referência (IdNota ou IdOrdem)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.Descricao">
-            <summary>
-            Descrição breve do evento
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.Classificacao">
-            <summary>
-            Classificação do evento (Preventiva, Corretiva, etc.)
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.EventoLinhaTemporalDTO.ConfiabilidadeRestaurada">
-            <summary>
-            Se a confiabilidade foi restaurada
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.Restauracao.LinhaTemporalRequestDTO">
-            <summary>
-            Request para buscar linha temporal
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.Restauracao.LinhaTemporalRequestDTO.IdsLi">
-            <summary>
-            Lista de IDs das LIs (Localizações de Instalação)
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.ImobilizadoDto">
@@ -3478,30 +3408,23 @@
         </member>
         <member name="T:app_pm_back.Services.Manutencao.LinhaTemporalService">
             <summary>
-            Serviço para obter linha temporal de LIs consultando API externa
-            e cruzando com notas/ordens do banco de dados local
+            Serviço para obter linha temporal de LIs consultando API externa (APM)
+            e cruzando com notas/ordens do banco de dados local com cache
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.ObterLinhaTemporalAsync(System.Collections.Generic.List{System.String})">
+        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.ObterTodasLisDoApmAsync">
             <summary>
-            Obtém a linha temporal completa para um conjunto de LIs
-            </summary>
-            <param name="idsLi">Lista de IDs das Localizações de Instalação (LIs)</param>
-            <returns>Lista de itens da linha temporal</returns>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.ObterLisDaApiExternaAsync(System.Collections.Generic.List{System.String})">
-            <summary>
-            Chama a API externa (APM) para obter lista de LIs com IdLi, DnsIot e Data
+            Obtém todas as LIs do APM (do cache ou da API)
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.BuscarNotasDaLiAsync(System.String)">
+        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.ObterItensDaLiAsync(System.String)">
             <summary>
-            Busca notas associadas a uma LI (por IdLi)
+            Obtém notas e ordens para uma LI específica
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.BuscarOrdensDaLiAsync(System.String)">
+        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.AtualizarCacheAsync">
             <summary>
-            Busca ordens associadas a uma LI (por IdLi)
+            Força atualização do cache
             </summary>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.ImobilizadoService">
