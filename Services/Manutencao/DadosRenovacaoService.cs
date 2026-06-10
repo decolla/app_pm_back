@@ -683,7 +683,11 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
         int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
 
         //Pega os 'n' primeiros itens dependendo da página
-        var itensPaginados = renovacoesQuery.Skip((p - 1) * t).Take(t).ToList();
+        var itensPaginados = await renovacoesQuery
+            .Skip((p - 1) * t)
+            .Take(t)
+            .ToListAsync()
+            .ConfigureAwait(false);
 
         return new 
         { 
