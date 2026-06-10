@@ -12,7 +12,7 @@ public class BuscaOrdemNotaDto
     /// Status da nota
     /// </summary>
     /// <example>Aberta</example>
-    public string? StatusNota { get; set; }
+    public Status? StatusNota { get; set; }
 
     /// <summary>
     /// Id de início da nota
@@ -51,5 +51,5 @@ public class BuscaOrdemNotaDto
     public string? TipoNota { get; set; }
     public string? TipoOrdem { get; set; }
 
-    public string? StatusOrdem { get; set; }
+    public Status? StatusOrdem { get; set; }
 }
