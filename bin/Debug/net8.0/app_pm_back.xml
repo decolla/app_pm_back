@@ -3128,6 +3128,18 @@
         <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:app_pm_back.Migrations.FixedComponentType">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.FixedComponentType.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.FixedComponentType.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.FixedComponentType.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
             <summary>
             Rotas para planilhas

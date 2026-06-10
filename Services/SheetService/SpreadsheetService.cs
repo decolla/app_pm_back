@@ -222,11 +222,6 @@ public class SpreadsheetService
                             {
                                 valorConvertido = TryTranslateComponentType(valor);
                             }
-                            else if (tipo == typeof(string) &&
-                                        string.Equals(property.Name, "AnomaliaObservada", StringComparison.OrdinalIgnoreCase))
-                            {
-                                valorConvertido = TryTranslateComponentType(valor);
-                            }
                             else if (tipo == typeof(long) || tipo == typeof(int))
                             {
                                 string numerosApenas = new string(valor.Where(char.IsDigit).ToArray());

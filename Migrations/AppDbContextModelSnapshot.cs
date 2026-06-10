@@ -645,8 +645,9 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<int?>("StatusNota")
-                        .HasColumnType("integer");
+                    b.Property<string>("StatusNota")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("TipoNota")
                         .HasMaxLength(100)
@@ -788,8 +789,9 @@ namespace app_pm_back.Migrations
                         .IsRequired()
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("StatusOrdem")
-                        .HasColumnType("integer");
+                    b.Property<string>("StatusOrdem")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<string>("TipoOrdem")
                         .HasMaxLength(100)
