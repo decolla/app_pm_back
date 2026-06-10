@@ -18,7 +18,7 @@ using Npgsql;
 using teste_catboost_cs;
 
 // apagar depois essa gambiarra aqui
-// AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://+:60135");
