@@ -363,6 +363,13 @@
             <param name="tipoDados">Tipo de dados da renovação</param>
             <returns>Objeto com informações relevantes</returns>
         </member>
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscaReliability(System.String)">
+            <summary>
+            Busca Todas as datas de notas e ordens daquele LI
+            </summary>
+            <param name="idLi">LI (Local de Instalação) a ser procurada</param>
+            <returns>idLi+ lista de datas</returns>
+        </member>
         <member name="M:app_pm_back.Controllers.BuscaController.BuscarTimeline(System.String,System.String,System.String)">
             <summary>
             Busca notas e ordens por intervalo de data e IdLi.
@@ -615,7 +622,7 @@
             <param name="dto">DTO de dados renovação</param>
             <returns>IActionResult</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.ListarDadosRenovacao">
+        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.ListarDadosRenovacao(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os dados de renovação em formato de página
             </summary>
@@ -3248,19 +3255,21 @@
             </summary>
             <param name="httpClient"></param>
         </member>
-        <member name="M:app_pm_back.Services.ExternIntegrationService.GetDataAsync(System.String)">
+        <member name="M:app_pm_back.Services.ExternIntegrationService.GetDataAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Obtém dados de uma rota externa.
             </summary>
             <param name="rota">Rota externa de requisição</param>
+            <param name="cancellationToken">Token de cancelamento</param>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Services.ExternIntegrationService.PostDataAsync(System.String,System.Object)">
+        <member name="M:app_pm_back.Services.ExternIntegrationService.PostDataAsync(System.String,System.Object,System.Threading.CancellationToken)">
             <summary>
             Envia dados para uma rota externa.
             </summary>
             <param name="rota">Rota externa</param>
             <param name="payload">O que será enviado</param>
+            <param name="cancellationToken">Token de cancelamento</param>
             <returns></returns>
         </member>
         <member name="T:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService">
@@ -3268,12 +3277,13 @@
             Sincroniza os dados de APM com as notas e ordens de serviço do sistema.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ExternIntegrationService)">
+        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ExternIntegrationService,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService})">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService"/>.
             </summary>
             <param name="context"></param>
             <param name="externIntegrationService"></param>
+            <param name="logger"></param>
         </member>
         <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.SynchronizeAPMAsync">
             <summary>
@@ -3523,6 +3533,13 @@
             <summary>
             Mapeia Classificacao + MetodoClassificacao para TipoDados
             </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.BuscarRenovacaoAsync(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Obtém lista de renovações com paginação
+            </summary>
+            <param name="busca">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.EstrategiaService">
             <summary>
