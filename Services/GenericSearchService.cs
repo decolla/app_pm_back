@@ -135,46 +135,51 @@ public class GenericSearchService
         // Safe check for properties of dynamic/anonymous object
         var buscaType = (Type)busca.GetType();
 
-        Status? statusNota = buscaType.GetProperty("StatusNota")?.GetValue(busca);
-        if (statusNota != null)
+        string? statusNotaStr = buscaType.GetProperty("StatusNota")?.GetValue(busca) as string;
+        Status? statusNota = !string.IsNullOrEmpty(statusNotaStr) && Enum.TryParse<Status>(statusNotaStr, true, out var parsedStatusNota) ? parsedStatusNota : null;
+        if (statusNota.HasValue)
         {
-            notasQuery = notasQuery.Where(n => n.StatusNota == statusNota);
+            notasQuery = notasQuery.Where(n => n.StatusNota == statusNota.Value);
         }
 
-        long? notaIdInicio = buscaType.GetProperty("NotaIdInicio")?.GetValue(busca) as long?;
+        var notaIdInicioVal = buscaType.GetProperty("NotaIdInicio")?.GetValue(busca);
+        long? notaIdInicio = notaIdInicioVal != null ? Convert.ToInt64(notaIdInicioVal) : null;
         if (notaIdInicio.HasValue)
         {
             notasQuery = notasQuery.Where(n => n.NumeroNota >= notaIdInicio.Value);
         }
 
-        long? notaIdFim = buscaType.GetProperty("NotaIdFim")?.GetValue(busca) as long?;
+        var notaIdFimVal = buscaType.GetProperty("NotaIdFim")?.GetValue(busca);
+        long? notaIdFim = notaIdFimVal != null ? Convert.ToInt64(notaIdFimVal) : null;
         if (notaIdFim.HasValue)
         {
             notasQuery = notasQuery.Where(n => n.NumeroNota <= notaIdFim.Value);
         }
 
-        long? ordemIdInicio = buscaType.GetProperty("OrdemIdInicio")?.GetValue(busca) as long?;
+        var ordemIdInicioVal = buscaType.GetProperty("OrdemIdInicio")?.GetValue(busca);
+        long? ordemIdInicio = ordemIdInicioVal != null ? Convert.ToInt64(ordemIdInicioVal) : null;
         if (ordemIdInicio.HasValue)
         {
             ordensQuery = ordensQuery.Where(o => o.IdOrdem >= ordemIdInicio.Value);
         }
 
-        long? ordemIdFim = buscaType.GetProperty("OrdemIdFim")?.GetValue(busca) as long?;
+        var ordemIdFimVal = buscaType.GetProperty("OrdemIdFim")?.GetValue(busca);
+        long? ordemIdFim = ordemIdFimVal != null ? Convert.ToInt64(ordemIdFimVal) : null;
         if (ordemIdFim.HasValue)
         {
             ordensQuery = ordensQuery.Where(o => o.IdOrdem <= ordemIdFim.Value);
         }
 
-        ComponentType? localInstalacaoInicio =
-            buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca) as ComponentType?;
+        var localInstalacaoInicioVal = buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca);
+        ComponentType? localInstalacaoInicio = localInstalacaoInicioVal != null ? (ComponentType)Convert.ToInt32(localInstalacaoInicioVal) : null;
         if (localInstalacaoInicio.HasValue)
         {
             notasQuery = notasQuery.Where(n => n.IdAtivo >= localInstalacaoInicio.Value);
             ordensQuery = ordensQuery.Where(o => o.IdAtivo >= localInstalacaoInicio.Value);
         }
 
-        ComponentType? localInstalacaoFim =
-            buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca) as ComponentType?;
+        var localInstalacaoFimVal = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca);
+        ComponentType? localInstalacaoFim = localInstalacaoFimVal != null ? (ComponentType)Convert.ToInt32(localInstalacaoFimVal) : null;
         if (localInstalacaoFim.HasValue)
         {
             notasQuery = notasQuery.Where(n => n.IdAtivo <= localInstalacaoFim.Value);
@@ -205,24 +210,25 @@ public class GenericSearchService
             ordensQuery = ordensQuery.Where(o => o.DataCriacao <= ordemDataFim.Value);
         }
 
-        string? prioridadeInicio = buscaType.GetProperty("PrioridadeInicio")?.GetValue(busca) as string;
-        if (!string.IsNullOrWhiteSpace(prioridadeInicio) && int.TryParse(prioridadeInicio, out var priInicio))
+        var prioridadeInicioVal = buscaType.GetProperty("PrioridadeInicio")?.GetValue(busca);
+        Prioridade? prioridadeInicio = prioridadeInicioVal as Prioridade?;
+        if (prioridadeInicio.HasValue)
         {
-            var prioridadeEnum = (Prioridade)priInicio;
-            notasQuery = notasQuery.Where(n => n.Prioridade >= prioridadeEnum);
+            notasQuery = notasQuery.Where(n => n.Prioridade >= prioridadeInicio.Value);
         }
 
-        string? prioridadeFim = buscaType.GetProperty("PrioridadeFim")?.GetValue(busca) as string;
-        if (!string.IsNullOrWhiteSpace(prioridadeFim) && int.TryParse(prioridadeFim, out var priFim))
+        var prioridadeFimVal = buscaType.GetProperty("PrioridadeFim")?.GetValue(busca);
+        Prioridade? prioridadeFim = prioridadeFimVal as Prioridade?;
+        if (prioridadeFim.HasValue)
         {
-            var prioridadeEnum = (Prioridade)priFim;
-            notasQuery = notasQuery.Where(n => n.Prioridade <= prioridadeEnum);
+            notasQuery = notasQuery.Where(n => n.Prioridade <= prioridadeFim.Value);
         }
 
-        Status? statusOrdem = buscaType.GetProperty("StatusOrdem")?.GetValue(busca);
-        if (statusOrdem != null)
+        string? statusOrdemStr = buscaType.GetProperty("StatusOrdem")?.GetValue(busca) as string;
+        Status? statusOrdem = !string.IsNullOrEmpty(statusOrdemStr) && Enum.TryParse<Status>(statusOrdemStr, true, out var parsedStatusOrdem) ? parsedStatusOrdem : null;
+        if (statusOrdem.HasValue)
         {
-            ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem);
+            ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem.Value);
         }
 
         notasQuery = notasQuery.AplicarOrdenacao(_context);

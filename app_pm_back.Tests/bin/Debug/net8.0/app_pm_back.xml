@@ -608,7 +608,7 @@
             Endpoints de dado renovação
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.#ctor(app_pm_back.Services.Manutencao.DadosRenovacaoService,AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.Manutencao.DadosRenovacaoService,AutoMapper.IMapper)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.Ordem.DadosRenovacaoController"/>.
             </summary>
@@ -655,6 +655,18 @@
             </summary>
             <param name="id">Id do dado a ser deletado</param>
             <returns>IActionResult</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.GerarRenovacaoNota">
+            <summary>
+            Lista os dados de renovação em formato de página
+            </summary>
+            <returns>Lista Paginada</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.GerarRenovacaoOrdem">
+            <summary>
+            Lista os dados de renovação em formato de página
+            </summary>
+            <returns>Lista Paginada</returns>
         </member>
         <member name="T:app_pm_back.Controllers.OrdersController">
             <summary>
@@ -3116,18 +3128,6 @@
         <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Migrations.FixedAtivoId">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixedAtivoId.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixedAtivoId.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixedAtivoId.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
         <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
             <summary>
             Rotas para planilhas
@@ -3289,7 +3289,7 @@
             <summary>
             Sincroniza os dados de APM (Asset Performance Management) com as notas e ordens de serviço do sistema.
             </summary>
-            <returns>bool se a operação ocorreu corretamente</returns>
+            <returns> Bool se a operação ocorreu corretamente</returns>
         </member>
         <member name="T:app_pm_back.Services.GenericSearchService">
             <summary>

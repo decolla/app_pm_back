@@ -60,6 +60,22 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<AnexoOrdemModel>().HasKey(e => e.IdAnexoOrdem);
         modelBuilder.Entity<DadosRenovacaoModel>().HasKey(e => e.IdDados);
 
+        // Value conversions for enums to strings in database (retains varchar type in existing DBs)
+        var statusConverter = new ValueConverter<Status?, string>(
+            v => StatusToString(v)!,
+            v => ParseStatus(v)
+        );
+
+        modelBuilder.Entity<NotaModel>()
+            .Property(e => e.StatusNota)
+            .HasConversion(statusConverter)
+            .HasMaxLength(50);
+
+        modelBuilder.Entity<OrdemModel>()
+            .Property(e => e.StatusOrdem)
+            .HasConversion(statusConverter)
+            .HasMaxLength(150);
+
         // 1-to-1: CTM and GPM share same primary key or relate 1-to-1
         modelBuilder.Entity<CtmModel>()
             .HasOne<GpmModel>()
@@ -160,4 +176,15 @@ public class AppDbContext : DbContext
     public DbSet<OrdemModel> PM_Ordens { get; set; }
     public DbSet<AnexoOrdemModel> PM_AnexosOrdem { get; set; }
     public DbSet<DadosRenovacaoModel> PM_DadosRenovacao { get; set; }
+
+    public static string? StatusToString(Status? value)
+    {
+        return value?.ToString();
+    }
+
+    public static Status? ParseStatus(string? value)
+    {
+        if (string.IsNullOrEmpty(value)) return null;
+        return Enum.TryParse<Status>(value, true, out var result) ? result : Status.Aberta;
+    }
 }
