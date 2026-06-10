@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Threading;
 using app_pm_back.Data;
 using app_pm_back.DTO.Restauracao;
+using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -33,7 +34,7 @@ public class SynchronizeAPMService
     /// <summary>
     /// Sincroniza os dados de APM (Asset Performance Management) com as notas e ordens de serviço do sistema.
     /// </summary>
-    /// <returns>bool se a operação ocorreu corretamente</returns>
+    /// <returns> Bool se a operação ocorreu corretamente</returns>
     public async Task<bool> SynchronizeAPMAsync()
     {
         _logger.LogInformation("Iniciando a sincronização dos dados do APM com as Notas e Ordens.");
@@ -68,10 +69,10 @@ public class SynchronizeAPMService
             _logger.LogInformation("Desserializados {Count} ativos do APM.", ativos.Count);
 
             // gera um dicionário com nome e dnsIot
-            Dictionary<string, string?> dicionarioDns = ativos
-                .Where(a => !string.IsNullOrEmpty(a.Name) && !string.IsNullOrEmpty(a.DnsIot))
+            Dictionary<string, (string?, List<ComponentType>?)> dicionarioDns = ativos
+                .Where(a => !string.IsNullOrEmpty(a.Name) && !string.IsNullOrEmpty(a.DnsIot) && a.ComponentTypes != null)
                 .DistinctBy(a => a.Name)
-                .ToDictionary(a => a.Name, a => a.DnsIot);
+                .ToDictionary(a => a.Name, a => (a.DnsIot, a.ComponentTypes));
             
             _logger.LogInformation("Dicionário DNS gerado com {Count} chaves únicas após filtragem e remoção de duplicados.", dicionarioDns.Count);
 
@@ -103,11 +104,15 @@ public class SynchronizeAPMService
             // atualiza cada uma delas 
             foreach (var nota in notasEncontradas)
             {
-                if (dicionarioDns.TryGetValue(nota.IdLi!, out var dnsIot))
+                if (dicionarioDns.TryGetValue(nota.IdLi!, out var duple))
                 {
-                    if (nota.DnsIot != dnsIot)
+                    if (duple.Item2 != null && !duple.Item2.Any(a => a == nota.IdAtivo))
                     {
-                        nota.DnsIot = dnsIot;
+                        nota.IdAtivo = null;
+                    }
+                    if (nota.DnsIot != duple.Item1)
+                    {
+                        nota.DnsIot = duple.Item1;
                         notasAtualizadas++;
                     }
                 }
@@ -115,12 +120,16 @@ public class SynchronizeAPMService
             
             foreach (var ordem in ordensEncontradas)
             {
-                if (dicionarioDns.TryGetValue(ordem.IdLi!, out var dnsIotExterno))
+                if (dicionarioDns.TryGetValue(ordem.IdLi!, out var duple))
                 {
-                    if (ordem.DnsIot != dnsIotExterno)
+                    if (duple.Item2 != null && !duple.Item2.Any(a => a == ordem.IdAtivo))
                     {
-                        ordem.DnsIot = dnsIotExterno;
-                        ordensAtualizadas++;
+                        ordem.IdAtivo = null;
+                    }
+                    if (ordem.DnsIot != duple.Item1)
+                    {
+                        ordem.DnsIot = duple.Item1;
+                        notasAtualizadas++;
                     }
                 }
             }
