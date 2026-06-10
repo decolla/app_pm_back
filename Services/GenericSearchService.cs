@@ -225,8 +225,8 @@ public class GenericSearchService
             ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem);
         }
 
-        notasQuery = notasQuery.AplicarOrdenacao();
-        ordensQuery = ordensQuery.AplicarOrdenacao();
+        notasQuery = notasQuery.AplicarOrdenacao(_context);
+        ordensQuery = ordensQuery.AplicarOrdenacao(_context);
         
         var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
         var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
@@ -305,7 +305,7 @@ public class GenericSearchService
 
         var lambda = Expression.Lambda<Func<T, bool>>(filtro, parametro);
         var query = _context.Set<T>().AsNoTracking().Where(lambda);
-        query = query.AplicarOrdenacao();
+        query = query.AplicarOrdenacao(_context);
         int count = query.Count();
 
         if (pagina.HasValue || tamanho.HasValue)

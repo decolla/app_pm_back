@@ -5,7 +5,6 @@ using app_pm_back.Services.Extensions;
 using app_pm_back.Models.Domain;
 using app_pm_back.DTO.Restauracao;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace app_pm_back.Services.Manutencao;
 
@@ -674,7 +673,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
     {
         var renovacoesQuery = _dadosRenovacao.AsNoTracking().AsQueryable();
 
-        renovacoesQuery = renovacoesQuery.AplicarOrdenacao();
+        renovacoesQuery = renovacoesQuery.AplicarOrdenacao(_context);
         
         //Cálculos da paginação
         int totalGeral = await renovacoesQuery.CountAsync().ConfigureAwait(false);

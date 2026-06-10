@@ -8,11 +8,10 @@ using System.Linq;
 
 public static class QueryExtensions
 {
-    private readonly static AppDbContext _context;
     
-    public static IQueryable<T> AplicarOrdenacao<T>(this IQueryable<T> query) where T : class
+    public static IQueryable<T> AplicarOrdenacao<T>(this IQueryable<T> query, DbContext context) where T : class
     {
-        var entityType = _context.Model.FindEntityType(typeof(T));
+        var entityType = context.Model.FindEntityType(typeof(T));
         var primaryKey = entityType?.FindPrimaryKey();
         if (primaryKey == null || primaryKey.Properties.Count != 1)
         {
