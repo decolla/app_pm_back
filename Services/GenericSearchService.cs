@@ -4,6 +4,7 @@ using System.Reflection;
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
+using app_pm_back.Services.Extensions;
 
 namespace app_pm_back.Services;
 
@@ -224,8 +225,8 @@ public class GenericSearchService
             ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem);
         }
 
-        notasQuery = AplicarOrdenacao(notasQuery);
-        ordensQuery = AplicarOrdenacao(ordensQuery);
+        notasQuery = notasQuery.AplicarOrdenacao();
+        ordensQuery = ordensQuery.AplicarOrdenacao();
         
         var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
         var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
@@ -304,7 +305,7 @@ public class GenericSearchService
 
         var lambda = Expression.Lambda<Func<T, bool>>(filtro, parametro);
         var query = _context.Set<T>().AsNoTracking().Where(lambda);
-        query = AplicarOrdenacao(query);
+        query = query.AplicarOrdenacao();
         int count = query.Count();
 
         if (pagina.HasValue || tamanho.HasValue)
@@ -367,27 +368,6 @@ public class GenericSearchService
         }
 
         return Convert.ChangeType(valor, tipo, CultureInfo.InvariantCulture);
-    }
-
-    private IQueryable<T> AplicarOrdenacao<T>(IQueryable<T> query) where T : class
-    {
-        var entityType = _context.Model.FindEntityType(typeof(T));
-        var primaryKey = entityType?.FindPrimaryKey();
-        if (primaryKey == null || primaryKey.Properties.Count != 1)
-        {
-            return query;
-        }
-
-        var keyName = primaryKey.Properties[0].Name;
-        var parametro = Expression.Parameter(typeof(T), "e");
-        var keyExpr = Expression.Call(
-            typeof(EF),
-            nameof(EF.Property),
-            new[] { typeof(object) },
-            parametro,
-            Expression.Constant(keyName));
-        var lambda = Expression.Lambda<Func<T, object>>(keyExpr, parametro);
-        return query.OrderBy(lambda);
     }
 
     private static Dictionary<string, Type> BuildTabelas()

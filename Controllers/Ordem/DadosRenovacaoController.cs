@@ -56,12 +56,19 @@ public class DadosRenovacaoController : ControllerBase
     /// Lista os dados de renovação em formato de página
     /// </summary>
     /// <returns>Lista Paginada</returns>
-    [HttpGet]
-    public async Task<IActionResult> ListarDadosRenovacao()
+    [HttpPost("busca")]
+    public async Task<IActionResult> ListarDadosRenovacao(        
+        [FromQuery] int? pagina = null,
+        [FromQuery] int? tamanho = null)
     {
         try
         {
-            var dadosRenovacao = await _dadosRenovacaoService.GetAllNotasAsync();
+            if (pagina != null && tamanho != null && (pagina <= 0 || tamanho <= 0))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+            var dadosRenovacao = await _dadosRenovacaoService.BuscarRenovacaoAsync(pagina,
+                tamanho);
             return new ObjectResult(dadosRenovacao);
         }
         catch (Exception e)

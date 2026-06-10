@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Text.Json;
 using app_pm_back.Data;
+using app_pm_back.Services.Extensions;
 using app_pm_back.Models.Domain;
 using app_pm_back.DTO.Restauracao;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     private const int TAMANHO_LOTE_LI = 50;
     private readonly HttpClient _httpClient;
     private readonly string _apmBaseUrl;
+    private readonly DbSet<DadosRenovacaoModel> _dadosRenovacao;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="DadosRenovacaoService"/>.
@@ -661,4 +663,36 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
             classificacao, metodoClassificacao);
         return TipoDados.NAOCLASSIFICADA;
     }
+    /// <summary>
+    /// Obtém lista de renovações com paginação
+    /// </summary>
+    /// <param name="busca">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
+    public async Task<object> BuscarRenovacaoAsync(
+        int? pagina,
+        int? tamanho)
+    {
+        var renovacoesQuery = _dadosRenovacao.AsNoTracking().AsQueryable();
+
+        renovacoesQuery = renovacoesQuery.AplicarOrdenacao();
+        
+        //Cálculos da paginação
+        int totalGeral = await renovacoesQuery.CountAsync().ConfigureAwait(false);
+        int p = pagina ?? 1;
+        int t = tamanho ?? 20;
+        int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
+
+        //Pega os 'n' primeiros itens dependendo da página
+        var itensPaginados = renovacoesQuery.Skip((p - 1) * t).Take(t).ToList();
+
+        return new 
+        { 
+            Total = totalGeral, 
+            TotalPaginas = totalPaginas,
+            pagina = p, 
+            Tamanho = t,
+            Result = itensPaginados 
+        };
+    }
+
 }
