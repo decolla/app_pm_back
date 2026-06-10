@@ -32,7 +32,8 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         HttpClient httpClient)
         : base(context)
     {
-        _context = context; // <- adicione esta linha
+        _context = context;
+        _dadosRenovacao = _context.Set<DadosRenovacaoModel>();
         _logger = logger;
         _httpClient = httpClient;
         _apmBaseUrl = configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
