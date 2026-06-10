@@ -29,12 +29,12 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         AppDbContext context, 
         ILogger<DadosRenovacaoService> logger,
         IConfiguration configuration,
-        HttpClient httpClient) // Injetar HttpClient
+        HttpClient httpClient)
         : base(context)
     {
+        _context = context; // <- adicione esta linha
         _logger = logger;
         _httpClient = httpClient;
-        // Lê a URL base da APM do appsettings.json
         _apmBaseUrl = configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
     }
 
