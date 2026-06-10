@@ -18,7 +18,7 @@ using Npgsql;
 using teste_catboost_cs;
 
 // apagar depois essa gambiarra aqui
-AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+// AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("http://+:60135");
@@ -181,7 +181,7 @@ using (var scope = app.Services.CreateScope())
         
         if (dbSchema == "cg")
         {
-            Console.WriteLine("Ambiente 'cg' detectado (SQL Server). A tentar criar o banco de dados e as tabelas...");
+            Console.WriteLine("Ambiente 'cg' detectado. A tentar criar o banco de dados e as tabelas...");
             dbContext.Database.EnsureCreated();
             Console.WriteLine("Banco de dados e tabelas criados/verificados com sucesso!");
         }
