@@ -73,7 +73,7 @@ public class ManutencaoGeneratorJob
                             IdOrdem = tipo.IdOrdem.Value,
                             IdPlano = plano.IdPlano,
                             DataCriacao = dataAtual,
-                            StatusOrdem = "PENDENTE",
+                            StatusOrdem = Status.Aberta,
                             CriadaPorUsuario = "System",
                         };
                         _context.PM_Ordens.Add(ordem);
@@ -88,7 +88,7 @@ public class ManutencaoGeneratorJob
                             IdNota = tipo.IdNota.Value,
                             IdPlano = plano.IdPlano,
                             DataNota = dataAtual,
-                            StatusNota = "PENDENTE",
+                            StatusNota = Status.Aberta,
                             CriadaPorUsuario = "System",
                         };
                         _context.PM_Notas.Add(nota);

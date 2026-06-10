@@ -51,8 +51,7 @@ public class OrdemModel : IClassifiable
     /// Indica o estado operacional da ordem para controle de workflow.
     /// </summary>
     /// <example>Aberta, Em Andamento, Aguardando Peças, Concluída, Cancelada</example>
-    [MaxLength(150, ErrorMessage = "O status da ordem não pode exceder 150 caracteres.")]
-    public string? StatusOrdem { get; set; }
+    public Status? StatusOrdem { get; set; }
 
     /// <summary>
     /// Nível de criticidade da ordem para priorização de execução.

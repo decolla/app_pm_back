@@ -163,3 +163,11 @@ public enum TipoDados
     CORRETIVAHUM = 3,
     NAOCLASSIFICADA =4
 }
+
+public enum Status
+{
+    Aberta = 0,
+    Adiada = 1,
+    EmAndamento = 2,
+    Concluida = 3
+}

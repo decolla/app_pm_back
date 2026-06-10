@@ -3,6 +3,8 @@ using app_pm_back.Models.Domain;
 using app_pm_back.Services.Manutencao;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using app_pm_back.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Controllers.Ordem;
 
@@ -14,6 +16,7 @@ namespace app_pm_back.Controllers.Ordem;
 public class DadosRenovacaoController : ControllerBase
 {
     private readonly DadosRenovacaoService _dadosRenovacaoService;
+    private readonly AppDbContext _context;
     private readonly IMapper _mapper;
     
     /// <summary>
@@ -21,8 +24,9 @@ public class DadosRenovacaoController : ControllerBase
     /// </summary>
     /// <param name="dadosRenovacaoService"></param>
     /// <param name="mapper"></param>
-    public DadosRenovacaoController(DadosRenovacaoService dadosRenovacaoService, IMapper mapper)
+    public DadosRenovacaoController(AppDbContext context, DadosRenovacaoService dadosRenovacaoService, IMapper mapper)
     {
+        _context = context;
         _dadosRenovacaoService = dadosRenovacaoService;
         _mapper = mapper;
     }
@@ -181,6 +185,51 @@ public class DadosRenovacaoController : ControllerBase
         catch (Exception)
         {
             return BadRequest(new { message = "Erro ao deletar dados de renovação ." });
+        }
+    }
+    
+    /// <summary>
+    /// Lista os dados de renovação em formato de página
+    /// </summary>
+    /// <returns>Lista Paginada</returns>
+    [HttpPost("RenovacaoNotas")]
+    public async Task<IActionResult> GerarRenovacaoNota()
+    {
+        try
+        {
+            var idNotas = await _context.PM_Notas
+                .Select(n => n.IdNota)
+                .ToListAsync();
+            var idItens = await _context.PM_ItensNota
+                .Select(n => n.IdItemNota)
+                .ToListAsync();
+            var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
+            return Ok("Notas classificadas com sucesso");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao listar dados de renovação: {e.Message}." });
+        }
+    }
+        
+    /// <summary>
+    /// Lista os dados de renovação em formato de página
+    /// </summary>
+    /// <returns>Lista Paginada</returns>
+    [HttpPost("RenovacaoOrdens")]
+    public async Task<IActionResult> GerarRenovacaoOrdem()
+    {
+        try
+        {
+            var idsOrdens = await _context.PM_Ordens
+                .Select(n => n.IdOrdem)
+                .ToListAsync();
+            var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosOrdemAsync(idsOrdens);
+            return Ok("Notas classificadas com sucesso");
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao listar dados de renovação: {e.Message}." });
         }
     }
 }

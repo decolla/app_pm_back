@@ -123,8 +123,7 @@ public class NotaModel : IClassifiable
     /// Permite rastreamento do ciclo de vida da ocorrência.
     /// </summary>
     /// <example>"Pendente", "Em Andamento", "Aguardando Peças", "Concluída", "Cancelada"</example>
-    [MaxLength(50, ErrorMessage = "O status da nota não pode exceder 50 caracteres.")]
-    public string? StatusNota { get; set; }
+    public Status? StatusNota { get; set; }
 
     /// <summary>
     /// Indicador de disponibilidade atual do equipamento afetado.
