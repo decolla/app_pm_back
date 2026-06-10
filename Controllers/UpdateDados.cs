@@ -1,26 +1,23 @@
 using app_pm_back.Services.ExternIntegationsServices;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
 
 namespace app_pm_back.Controllers;
 
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/synchronize-apm")]
-public class SynchronizeApmController : ControllerBase
+[Route(Config.RouteConfig.BaseRoute + "/update-dados")]
+public class UpdateDados : ControllerBase
 {
     private readonly SynchronizeAPMService _synchronizeApmService;
-    private readonly ILogger<SynchronizeApmController> _logger;
+    private readonly ILogger<UpdateDados> _logger;
     
-    public SynchronizeApmController(SynchronizeAPMService synchronizeApmService, ILogger<SynchronizeApmController> logger)
+    public UpdateDados(SynchronizeAPMService synchronizeApmService, ILogger<UpdateDados> logger)
     {
         _synchronizeApmService = synchronizeApmService;
         _logger = logger;
     }
     
-    [HttpGet]
-    public async Task<IActionResult> Synchronize()
+    [HttpGet("synchronize-apm")]
+    public async Task<IActionResult> SynchronizeAPM()
     {
         _logger.LogInformation("Recebida requisição GET em /synchronize-apm.");
         try
