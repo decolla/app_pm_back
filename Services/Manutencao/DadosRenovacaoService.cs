@@ -672,12 +672,6 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
         int? pagina,
         int? tamanho)
     {
-        if (_context == null) throw new Exception("_context é null");
-        if (_dadosRenovacao == null) throw new Exception("_dadosRenovacao é null");
-    
-        var entityType = _context.Model.FindEntityType(typeof(DadosRenovacaoModel));
-        if (entityType == null) throw new Exception($"Tipo {typeof(DadosRenovacaoModel).FullName} não encontrado no modelo EF");
-
         var renovacoesQuery = _dadosRenovacao.AsNoTracking().AsQueryable();
 
         renovacoesQuery = renovacoesQuery.AplicarOrdenacao(_context);
