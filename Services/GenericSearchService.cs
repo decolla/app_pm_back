@@ -226,21 +226,36 @@ public class GenericSearchService
 
         notasQuery = AplicarOrdenacao(notasQuery);
         ordensQuery = AplicarOrdenacao(ordensQuery);
+        
+        var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
+        var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
 
-        if (pagina.HasValue || tamanho.HasValue)
-        {
-            int p = pagina ?? 1;
-            int t = tamanho ?? 20;
-            notasQuery = notasQuery.Skip((p - 1) * t).Take(t);
-            ordensQuery = ordensQuery.Skip((p - 1) * t).Take(t);
-        }
+        //Agrupa tudo em uma única lista na memória
+        var listaUnica = todasNotas.Cast<object>().Concat(todasOrdens.Cast<object>()).ToList();
 
-        var notas = await notasQuery.Cast<object>().ToListAsync().ConfigureAwait(false);
-        var ordens = await ordensQuery.Cast<object>().ToListAsync().ConfigureAwait(false);
+        //Cálculos da paginação
+        int totalGeral = listaUnica.Count;
+        int p = pagina ?? 1;
+        int t = tamanho ?? 20;
+        int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
+
+        //Pega os 'n' primeiros itens dependendo da página
+        var itensPaginados = listaUnica.Skip((p - 1) * t).Take(t).ToList();
+
+        //Separa de volta para preencher o NotaOrdemSearchResult
+        var notas = itensPaginados.Where(x => x is NotaModel).ToList(); 
+        var ordens = itensPaginados.Where(x => x is OrdemModel).ToList(); 
 
         var result = new NotaOrdemSearchResult(notas, ordens);
-        
-        return new { Total = notas.Count() + ordens.Count(), Result = result };
+
+        return new 
+        { 
+            Total = totalGeral, 
+            TotalPaginas = totalPaginas,
+            pagina = p, 
+            Tamanho = t,
+            Result = result 
+        };
     }
 
     private async Task<object> BuscarInternoAsync<T>(
