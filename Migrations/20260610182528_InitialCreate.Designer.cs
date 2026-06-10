@@ -14,7 +14,7 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260603160227_InitialCreate")]
+    [Migration("20260610182528_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -648,16 +648,12 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<string>("StatusNota")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<int?>("StatusNota")
+                        .HasColumnType("integer");
 
                     b.Property<string>("TipoNota")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
-
-                    b.Property<bool>("ativoAPM")
-                        .HasColumnType("boolean");
 
                     b.HasKey("IdNota");
 
@@ -795,16 +791,12 @@ namespace app_pm_back.Migrations
                         .IsRequired()
                         .HasColumnType("bigint");
 
-                    b.Property<string>("StatusOrdem")
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
+                    b.Property<int?>("StatusOrdem")
+                        .HasColumnType("integer");
 
                     b.Property<string>("TipoOrdem")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
-
-                    b.Property<bool>("ativoAPM")
-                        .HasColumnType("boolean");
 
                     b.HasKey("IdOrdem");
 

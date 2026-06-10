@@ -109,6 +109,8 @@ public class SynchronizeAPMService
                     if (duple.Item2 != null && !duple.Item2.Any(a => a == nota.IdAtivo))
                     {
                         nota.IdAtivo = null;
+                        notasAtualizadas++;
+                        
                     }
                     if (nota.DnsIot != duple.Item1)
                     {
@@ -125,11 +127,12 @@ public class SynchronizeAPMService
                     if (duple.Item2 != null && !duple.Item2.Any(a => a == ordem.IdAtivo))
                     {
                         ordem.IdAtivo = null;
+                        ordensAtualizadas++;
                     }
                     if (ordem.DnsIot != duple.Item1)
                     {
                         ordem.DnsIot = duple.Item1;
-                        notasAtualizadas++;
+                        ordensAtualizadas++;
                     }
                 }
             }
