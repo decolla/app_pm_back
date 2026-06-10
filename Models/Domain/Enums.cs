@@ -166,8 +166,8 @@ public enum TipoDados
 
 public enum Status
 {
-    Aberta = 0,
-    Adiada = 1,
+    Reprovada = 0,
+    Aberta = 1,
     EmAndamento = 2,
     Concluida = 3
 }
