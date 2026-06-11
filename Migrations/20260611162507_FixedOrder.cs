@@ -9,7 +9,7 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdatedDB : Migration
+    public partial class FixedOrder : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -496,7 +496,7 @@ namespace app_pm_back.Migrations
                 columns: table => new
                 {
                     IdOrdem = table.Column<long>(type: "bigint", nullable: false),
-                    NumeroOrdem = table.Column<long>(type: "bigint", nullable: false),
+                    NumeroOrdem = table.Column<long>(type: "bigint", nullable: true),
                     DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     StatusOrdem = table.Column<int>(type: "integer", nullable: true),
                     Criticidade = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),

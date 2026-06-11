@@ -14,8 +14,8 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260611152618_UpdatedDB")]
-    partial class UpdatedDB
+    [Migration("20260611162507_FixedOrder")]
+    partial class FixedOrder
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -786,7 +786,6 @@ namespace app_pm_back.Migrations
                         .HasColumnType("character varying(150)");
 
                     b.Property<long?>("NumeroOrdem")
-                        .IsRequired()
                         .HasColumnType("bigint");
 
                     b.Property<int?>("StatusOrdem")

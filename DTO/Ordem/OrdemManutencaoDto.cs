@@ -13,11 +13,11 @@ public class OrdemManutencaoDto
 {
     [SheetColumn("Id Ordem")] public long IdOrdem { get; set; }
 
-    [SheetColumn("Ordem")] public long? NumeroOrdem { get; set; }
+    [SheetColumn("Ordem")] public long NumeroOrdem { get; set; }
 
     [SheetColumn("Tipo de ordem")] public string? TipoOrdem { get; set; }
 
-    [SheetColumn("Classificação")] public string? Classificacao { get; set; }
+    [SheetColumn("Classificação")] public Classificacao Classificacao { get; set; } = Classificacao.NAOCLASSIFICADA;
 
     [SheetColumn("Método classificação")] public string? MetodoClassificacao { get; set; }
 
@@ -25,7 +25,7 @@ public class OrdemManutencaoDto
 
     [SheetColumn("Data classificação")] public DateTime? DataClassificacao { get; set; }
 
-    [SheetColumn("Status sistema")] public Status? StatusOrdem { get; set; }
+    [SheetColumn("Status")] public Status? StatusOrdem { get; set; }
 
     public string? Criticidade { get; set; }
 

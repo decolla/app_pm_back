@@ -17,7 +17,7 @@ public class NotaManutencaoDto
 
     [SheetColumn("Tipo de nota")] public string? TipoNota { get; set; }
 
-    [SheetColumn("Classificação")] public Classificacao Classificacao { get; set; }
+    [SheetColumn("Classificação")] public Classificacao Classificacao { get; set; } = Classificacao.NAOCLASSIFICADA;
 
     [SheetColumn("Método classificação")] public string? MetodoClassificacao { get; set; }
 
@@ -27,7 +27,7 @@ public class NotaManutencaoDto
 
     [SheetColumn("Data classificação")] public DateTime? DataClassificacao { get; set; }
 
-    [SheetColumn("Status sistema")] public Status? StatusNota { get; set; }
+    [SheetColumn("Status")] public Status? StatusNota { get; set; }
 
     [SheetColumn("Data da nota")] public DateTime? DataNota { get; set; }
 

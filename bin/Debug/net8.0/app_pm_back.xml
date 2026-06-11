@@ -355,7 +355,7 @@
             <param name="ativos"></param>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscaAtivoDatas(System.String,app_pm_back.Models.Domain.TipoDados)">
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscaAtivoDatas(System.String,app_pm_back.Models.Domain.Classificacao)">
             <summary>
             Busca as datas de renovação associadas ao LI, retorna um objeto com os dados relevantes
             </summary>
@@ -588,7 +588,7 @@
             Retorna os itens de uma nota 
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoHumanaNota(System.Int64,System.String,System.String)">
+        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoHumanaNota(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
             <summary>
             Classifica uma nota com base na classificação humana atribuida a uma nota específica
             </summary>
@@ -708,7 +708,7 @@
             Delete uma nota de mesmo Id
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ClassificacaoHumanaOrdem(System.Int64,System.String,System.String)">
+        <member name="M:app_pm_back.Controllers.OrdersController.ClassificacaoHumanaOrdem(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
             <summary>
             Classifica uma ordem with manual label
             </summary>
@@ -1434,7 +1434,7 @@
             Usado para requisições no APM específica para ativos/LI
             </summary>
         </member>
-        <member name="T:app_pm_back.Models.Domain.TipoDados">
+        <member name="T:app_pm_back.Models.Domain.Classificacao">
             <summary>
             Usado para classificar os tipos de fichas em dados renovação
             </summary>
@@ -2138,7 +2138,6 @@
             Categoria ou tipo atribuído à nota após análise.
             Permite agrupamento e filtragem de notas por similaridade.
             </summary>
-            <example>"Hidráulica", "Elétrica", "Mecânica", "Lubrificação"</example>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.MetodoClassificacao">
             <summary>
@@ -2477,13 +2476,7 @@
             </summary>
             <example>Baixa, Média, Alta, Crítica, Emergencial</example>
         </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.Classificacao">
-            <summary>
-            Classificação da ordem conforme a interface IClassifiable.
-            Permite categorização customizada da ordem segundo regras de negócio.
-            </summary>
-            <example>Preventiva, Corretiva, Preditiva, Melhoria</example>
-        </member>
+        <!-- Badly formed XML comment ignored for member "P:app_pm_back.Models.Domain.OrdemModel.Classificacao" -->
         <member name="P:app_pm_back.Models.Domain.OrdemModel.MetodoClassificacao">
             <summary>
             Método ou critério utilizado para classificar a ordem.
@@ -3101,16 +3094,16 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.InitialCreate">
+        <member name="T:app_pm_back.Migrations.FixedOrder">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.FixedOrder.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.FixedOrder.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.FixedOrder.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
@@ -3212,7 +3205,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ClassificationService`1"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.HumanClassification(System.Int64,System.String,System.String)">
+        <member name="M:app_pm_back.Services.ClassificationService`1.HumanClassification(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
             <summary>
             Classificação manual de notas/ordens.
             </summary>
@@ -3513,11 +3506,6 @@
             </summary>
             <param name="lis">Lista de LocalInstalacoes (LI's)</param>
             <returns>Lista de AssetComponentTypesDTO com os ativos para cada LI</returns>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.MapearParaTipoDados(System.String,System.String)">
-            <summary>
-            Mapeia Classificacao + MetodoClassificacao para TipoDados
-            </summary>
         </member>
         <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.BuscarRenovacaoAsync(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>

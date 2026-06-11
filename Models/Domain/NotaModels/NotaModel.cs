@@ -175,7 +175,7 @@ public class NotaModel : IClassifiable
     /// Categoria ou tipo atribuído à nota após análise.
     /// Permite agrupamento e filtragem de notas por similaridade.
     /// </summary>
-    public Classificacao Classificacao { get; set; }
+    public Classificacao Classificacao { get; set; } = Classificacao.NAOCLASSIFICADA;
 
     /// <summary>
     /// Método ou técnica utilizada para classificar a nota.

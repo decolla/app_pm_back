@@ -31,7 +31,6 @@ public class OrdemModel : IClassifiable
     /// Utilizado para facilitar a referência e comunicação sobre ordens específicas.
     /// </summary>
     /// <example>2024001</example>
-    [Required(ErrorMessage = "O número da ordem é obrigatório.")]
     public long? NumeroOrdem { get; set; }
 
     /// <summary>
@@ -66,7 +65,7 @@ public class OrdemModel : IClassifiable
     /// Permite categorização customizada da ordem segundo regras de negócio.
     /// </summary>
     /// <example>Preventiva, Corretiva/example>
-    public Classificacao Classificacao { get; set; }
+    public Classificacao Classificacao { get; set; } = Classificacao.NAOCLASSIFICADA;
 
     /// <summary>
     /// Método ou critério utilizado para classificar a ordem.

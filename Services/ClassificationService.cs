@@ -54,7 +54,7 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// </summary>
     public async Task<List<T>> WordsClassification(List<T>? notasComClassificacao)
     {
-        var notasSemClassificacao = await _dbSet.Where(n => n.Classificacao == null).ToListAsync();
+        var notasSemClassificacao = await _dbSet.Where(n => n.Classificacao == Classificacao.NAOCLASSIFICADA).ToListAsync();
         return notasSemClassificacao.Concat(notasComClassificacao ?? []).ToList();
     }
 
@@ -96,7 +96,7 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         while (true)
         {
-            var query = _dbSet.Where(n => n.Classificacao == null || n.Classificacao == Classificacao.NAOCLASSIFICADA).AsQueryable();
+            var query = _dbSet.Where(n => n.Classificacao == Classificacao.NAOCLASSIFICADA).AsQueryable();
 
             if (isNota)
             {
