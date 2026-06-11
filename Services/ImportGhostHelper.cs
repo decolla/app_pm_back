@@ -104,7 +104,9 @@ public static class ImportGhostHelper
         {
             IdNota = id,
             NumeroNota = id,
-            DataNota = DateTime.UtcNow
+            DataNota = DateTime.UtcNow,
+            CriadaPorUsuario = "IMPORTADO",
+            DescricaoBreve = "IMPORTADO AUTOMATICAMENTE PELA IMPORTAÇÃO DE ORDEM",
         });
 
         await context.PM_Notas.AddRangeAsync(novos);
