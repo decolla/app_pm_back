@@ -9,7 +9,7 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations
 {
     /// <inheritdoc />
-    public partial class databaseNew : Migration
+    public partial class UpdatedDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -322,7 +322,7 @@ namespace app_pm_back.Migrations
                     FimDesejado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     DataAvaria = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     HoraAvaria = table.Column<TimeSpan>(type: "interval", nullable: true),
-                    StatusNota = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    StatusNota = table.Column<int>(type: "integer", nullable: true),
                     EquipamentoDisponivel = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     ConfiabilidadeRestaurada = table.Column<int>(type: "integer", nullable: true),
                     DescricaoBreve = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
@@ -498,7 +498,7 @@ namespace app_pm_back.Migrations
                     IdOrdem = table.Column<long>(type: "bigint", nullable: false),
                     NumeroOrdem = table.Column<long>(type: "bigint", nullable: false),
                     DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    StatusOrdem = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    StatusOrdem = table.Column<int>(type: "integer", nullable: true),
                     Criticidade = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Classificacao = table.Column<int>(type: "integer", nullable: false),
                     MetodoClassificacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),

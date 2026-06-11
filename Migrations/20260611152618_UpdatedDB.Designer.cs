@@ -14,8 +14,8 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260611135505_databaseNew")]
-    partial class databaseNew
+    [Migration("20260611152618_UpdatedDB")]
+    partial class UpdatedDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -647,9 +647,8 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<string>("StatusNota")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<int?>("StatusNota")
+                        .HasColumnType("integer");
 
                     b.Property<string>("TipoNota")
                         .HasMaxLength(100)
@@ -790,9 +789,8 @@ namespace app_pm_back.Migrations
                         .IsRequired()
                         .HasColumnType("bigint");
 
-                    b.Property<string>("StatusOrdem")
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
+                    b.Property<int?>("StatusOrdem")
+                        .HasColumnType("integer");
 
                     b.Property<string>("TipoOrdem")
                         .HasMaxLength(100)

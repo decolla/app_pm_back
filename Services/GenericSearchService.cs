@@ -135,8 +135,7 @@ public class GenericSearchService
         // Safe check for properties of dynamic/anonymous object
         var buscaType = (Type)busca.GetType();
 
-        string? statusNotaStr = buscaType.GetProperty("StatusNota")?.GetValue(busca) as string;
-        Status? statusNota = !string.IsNullOrEmpty(statusNotaStr) && Enum.TryParse<Status>(statusNotaStr, true, out var parsedStatusNota) ? parsedStatusNota : null;
+        Status? statusNota = buscaType.GetProperty("StatusNota")?.GetValue(busca);
         if (statusNota.HasValue)
         {
             notasQuery = notasQuery.Where(n => n.StatusNota == statusNota.Value);
@@ -224,8 +223,7 @@ public class GenericSearchService
             notasQuery = notasQuery.Where(n => n.Prioridade <= prioridadeFim.Value);
         }
 
-        string? statusOrdemStr = buscaType.GetProperty("StatusOrdem")?.GetValue(busca) as string;
-        Status? statusOrdem = !string.IsNullOrEmpty(statusOrdemStr) && Enum.TryParse<Status>(statusOrdemStr, true, out var parsedStatusOrdem) ? parsedStatusOrdem : null;
+        Status? statusOrdem = buscaType.GetProperty("StatusOrdem")?.GetValue(busca); 
         if (statusOrdem.HasValue)
         {
             ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem.Value);
