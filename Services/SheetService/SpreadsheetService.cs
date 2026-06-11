@@ -222,6 +222,21 @@ public class SpreadsheetService
                             {
                                 valorConvertido = TryTranslateComponentType(valor);
                             }
+                            else if (tipo.IsEnum)
+                            {
+                                if (Enum.TryParse(tipo, valor, true, out var parsedEnum))
+                                {
+                                    valorConvertido = parsedEnum;
+                                }
+                                else
+                                {
+                                    string cleaned = NormalizeText(valor);
+                                    if (Enum.TryParse(tipo, cleaned, true, out var parsedEnumCleaned))
+                                    {
+                                        valorConvertido = parsedEnumCleaned;
+                                    }
+                                }
+                            }
                             else if (tipo == typeof(long) || tipo == typeof(int))
                             {
                                 string numerosApenas = new string(valor.Where(char.IsDigit).ToArray());
@@ -336,15 +351,28 @@ public class SpreadsheetService
     {
         return new OrdemModel
         {
-            IdOrdem = dto.IdOrdem,
-            Classificacao = Classificacao.NAOCLASSIFICADA,
+            IdOrdem = dto.IdOrdem != 0 ? dto.IdOrdem : (dto.NumeroOrdem ?? 0),
+            NumeroOrdem = dto.NumeroOrdem,
+            TipoOrdem = dto.TipoOrdem,
+            Classificacao = dto.Classificacao,
             MetodoClassificacao = dto.MetodoClassificacao,
-            StatusOrdem = Status.Concluida,
-            IdNota = dto.IdNota,
+            ClassificadoPor = dto.ClassificadoPor,
+            DataClassificacao = dto.DataClassificacao,
+            StatusOrdem = dto.StatusOrdem ?? Status.Concluida,
             Criticidade = dto.Prioridade?.ToString() ?? dto.Criticidade,
             DataCriacao = dto.DataCriacao ?? DateTime.UtcNow,
-            ConfiabilidadeRestaurada = dto.ConfiabilidadeRestaurada ?? ConfiabilidadeRestaurada.NaoRestaura,
-            IdAtivo = dto.IdAtivo
+            CriadaPorUsuario = dto.CriadaPorUsuario,
+            ModificadaPorUsuario = dto.ModificadaPorUsuario,
+            DataModificacao = dto.DataModificacao,
+            DescricaoBreve = dto.DescricaoBreve,
+            InicioPlanejado = dto.InicioPlanejado,
+            FimPlanejado = dto.FimPlanejado,
+            InicioReal = dto.InicioReal,
+            FimReal = dto.FimReal,
+            IdAtivo = dto.IdAtivo,
+            IdLi = dto.IdLi,
+            IdNota = dto.IdNota,
+            ConfiabilidadeRestaurada = dto.ConfiabilidadeRestaurada ?? ConfiabilidadeRestaurada.NaoRestaura
         };
     }
 
