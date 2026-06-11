@@ -76,20 +76,22 @@ public static class SpreadsheetEndpoints
                             { message = "Planilha de ordens reconhecida, mas sem dados válidos." });
 
                     var ordensDeduplicadas = resultadoPlanilha.Ordens
-                        .DistinctBy(o => o.NumeroOrdem ?? o.IdOrdem)
+                        .DistinctBy(o => o.NumeroOrdem)
                         .ToList();
 
-                    var idOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
-                    bool sinc = await synchronizeApmService.SynchronizeAPMAsync(); // sincroniza com o dnsIot do APM
-                    Console.WriteLine(
-                        $"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
-                    // add log dps
-                    await dadosRenovacaoService.ImportarDadosOrdemAsync(idOrdens);
 
                     await ordemService.ImportarOrdensEmLoteSeguroAsync(ordensDeduplicadas, sobrescrever,
                         adicionarNovas);
                     var inseridas = ordensDeduplicadas.Count;
 
+                    var idOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
+                    
+                    bool sinc = await synchronizeApmService.SynchronizeAPMAsync(); // sincroniza com o dnsIot do APM
+                    Console.WriteLine(
+                        $"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                    // add log dps
+                    await dadosRenovacaoService.ImportarDadosOrdemAsync(idOrdens);
+                    
                     return Results.Ok(new { message = inseridas });
                 }
                 else if (resultadoPlanilha.TipoIdentificado == "ITEM")
