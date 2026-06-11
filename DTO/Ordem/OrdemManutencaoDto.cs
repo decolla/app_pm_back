@@ -13,7 +13,7 @@ public class OrdemManutencaoDto
 {
     [SheetColumn("Id Ordem")] public long IdOrdem { get; set; }
 
-    [SheetColumn("Ordem")] public long NumeroOrdem { get; set; }
+    [SheetColumn("Ordem")] public long? NumeroOrdem { get; set; }
 
     [SheetColumn("Tipo de ordem")] public string? TipoOrdem { get; set; }
 

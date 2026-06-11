@@ -75,10 +75,9 @@ public static class SpreadsheetEndpoints
                         return Results.BadRequest(new
                             { message = "Planilha de ordens reconhecida, mas sem dados válidos." });
 
-                    var ordensDeduplicadas = resultadoPlanilha.Ordens
+                    List<OrdemModel> ordensDeduplicadas = resultadoPlanilha.Ordens
                         .DistinctBy(o => o.NumeroOrdem)
                         .ToList();
-
 
                     await ordemService.ImportarOrdensEmLoteSeguroAsync(ordensDeduplicadas, sobrescrever,
                         adicionarNovas);
