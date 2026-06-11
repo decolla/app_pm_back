@@ -561,7 +561,7 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
 
-                    b.Property<int?>("Classificacao")
+                    b.Property<int>("Classificacao")
                         .HasColumnType("integer");
 
                     b.Property<string>("ClassificadoPor")
@@ -714,7 +714,7 @@ namespace app_pm_back.Migrations
                     b.Property<long>("IdOrdem")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("Classificacao")
+                    b.Property<int>("Classificacao")
                         .HasColumnType("integer");
 
                     b.Property<string>("ClassificadoPor")

@@ -279,8 +279,6 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                 {
                     _logger.LogDebug("Processando nota {IdNota} com ConfiabilidadeRestaurada={Conf}",
                         nota.IdNota, nota.ConfiabilidadeRestaurada);
-                    var tipoDados = MapearParaTipoDados(nota.Classificacao.ToString(), nota.MetodoClassificacao);
-
                     var inseridos = await ProcessarPorConfiabilidadeAsync(
                         nota.ConfiabilidadeRestaurada,
                         nota.IdAtivo,
@@ -289,7 +287,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                         nota.DataNota ?? DateTime.UtcNow,
                         OrigemUR.Nota,
                         nota.IdLi ?? string.Empty,
-                        tipoDados);
+                        nota.Classificacao);
                     registrosCriados += inseridos;
                     
                     if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
@@ -319,8 +317,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                 {
                     _logger.LogDebug("Processando ordem {IdOrdem} com ConfiabilidadeRestaurada={Conf}",
                         ordem.IdOrdem, ordem.ConfiabilidadeRestaurada);
-
-                    var tipoDados = MapearParaTipoDados(ordem.Classificacao.ToString(), ordem.MetodoClassificacao);
+                    
 
                     var inseridos = await ProcessarPorConfiabilidadeAsync(
                         ordem.ConfiabilidadeRestaurada,
@@ -330,7 +327,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                         ordem.DataCriacao ?? DateTime.UtcNow,
                         OrigemUR.Ordem,
                         ordem.IdLi ?? string.Empty,
-                        tipoDados);
+                        ordem.Classificacao);
                     registrosCriados += inseridos;
                     
                     if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
@@ -626,44 +623,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
             throw;
         }
     }
-    /// <summary>
-    /// Mapeia Classificacao + MetodoClassificacao para TipoDados
-    /// </summary>
-    private Classificacao MapearParaTipoDados(string? classificacao, string? metodoClassificacao)
-    {
-        // Normalizar valores
-        var classif = (classificacao ?? "").ToUpperInvariant().Trim();
-        var metodo = (metodoClassificacao ?? "").ToUpperInvariant().Trim();
 
-        // Verificar combinações
-        if (classif.Contains("CORRETIVA") || classif.Contains("CORRETIVO"))
-        {
-            if (metodo.Contains("CATBOOST") || metodo.Contains("IA"))
-            {
-                return Classificacao.CORRETIVACAT;
-            }
-            else
-            {
-                return Classificacao.CORRETIVAHUM;
-            }
-        }
-        else if (classif.Contains("PREVENTIVA") || classif.Contains("PREVENTIVO"))
-        {
-            if (metodo.Contains("CATBOOST") || metodo.Contains("IA"))
-            {
-                return Classificacao.PREVENTIVACAT;
-            }
-            else
-            {
-                return Classificacao.PREVENTIVAHUM;
-            }
-        }
-
-        // Fallback padrão
-        _logger.LogWarning("Classificacao={Classificacao}, MetodoClassificacao={Metodo} não reconhecidos. Usando padrão NAOCLASSIFICADA",
-            classificacao, metodoClassificacao);
-        return Classificacao.NAOCLASSIFICADA;
-    }
     /// <summary>
     /// Obtém lista de renovações com paginação
     /// </summary>

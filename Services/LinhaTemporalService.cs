@@ -79,7 +79,7 @@ public class LinhaTemporalService
                 Tipo: "Nota",
                 IdReferencia: nota.IdNota,
                 Descricao: nota.DescricaoBreve ?? nota.AnomaliaObservada,
-                Classificacao: nota.Classificacao.ToString(),
+                Classificacao: nota.Classificacao,
                 ConfiabilidadeRestaurada: nota.ConfiabilidadeRestaurada?.ToString()
             ));
         }
@@ -93,7 +93,7 @@ public class LinhaTemporalService
                 Tipo: "Ordem",
                 IdReferencia: ordem.IdOrdem,
                 Descricao: ordem.DescricaoBreve,
-                Classificacao: ordem.Classificacao.ToString(),
+                Classificacao: ordem.Classificacao,
                 ConfiabilidadeRestaurada: ordem.ConfiabilidadeRestaurada?.ToString()
             ));
         }
@@ -170,6 +170,6 @@ public record EventoLinhaTemporal(
     string Tipo,
     long IdReferencia,
     string? Descricao,
-    string? Classificacao,
+    Classificacao Classificacao,
     string? ConfiabilidadeRestaurada
 );

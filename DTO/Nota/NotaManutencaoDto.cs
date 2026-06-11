@@ -17,7 +17,7 @@ public class NotaManutencaoDto
 
     [SheetColumn("Tipo de nota")] public string? TipoNota { get; set; }
 
-    [SheetColumn("Classificação")] public Classificacao? Classificacao { get; set; }
+    [SheetColumn("Classificação")] public Classificacao Classificacao { get; set; }
 
     [SheetColumn("Método classificação")] public string? MetodoClassificacao { get; set; }
 

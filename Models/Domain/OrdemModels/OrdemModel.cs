@@ -66,7 +66,7 @@ public class OrdemModel : IClassifiable
     /// Permite categorização customizada da ordem segundo regras de negócio.
     /// </summary>
     /// <example>Preventiva, Corretiva/example>
-    public Classificacao? Classificacao { get; set; }
+    public Classificacao Classificacao { get; set; }
 
     /// <summary>
     /// Método ou critério utilizado para classificar a ordem.

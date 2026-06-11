@@ -31,7 +31,7 @@ public class GenericSearchService
 
     public record TimelineItem(
         long Id,
-        string? Classificacao,
+        Classificacao Classificacao,
         string? Descricao,
         DateTime? DataCriacao);
 
@@ -578,7 +578,7 @@ public class GenericSearchService
 
         var timeline = combinadosDb.Select(x => new TimelineItem(
             x.Id,
-            x.Classificacao.ToString(),
+            x.Classificacao,
             x.Descricao,
             x.Data
         )).ToList();
