@@ -460,7 +460,7 @@ public class GenericSearchService
         };
     }
 
-    public async Task<object?> AtivoDatas(string idLi, TipoDados tipoDados)
+    public async Task<object?> AtivoDatas(string idLi, Classificacao tipoDados)
     {
         //Busca a data da última renovação daquele conjunto LI 
         DadosRenovacaoModel? ultimaRenovacao = await _context.PM_DadosRenovacao
@@ -578,7 +578,7 @@ public class GenericSearchService
 
         var timeline = combinadosDb.Select(x => new TimelineItem(
             x.Id,
-            x.Classificacao,
+            x.Classificacao.ToString(),
             x.Descricao,
             x.Data
         )).ToList();

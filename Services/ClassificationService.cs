@@ -34,7 +34,7 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// <summary>
     /// Classificação manual de notas/ordens.
     /// </summary>
-    public async Task<T?> HumanClassification(long id, string classificacao, string usuario)
+    public async Task<T?> HumanClassification(long id, Classificacao classificacao, string usuario)
     {
         var nota = await _dbSet.FindAsync(id);
         if (nota == null) return null;
@@ -96,7 +96,7 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         while (true)
         {
-            var query = _dbSet.Where(n => n.Classificacao == null || n.Classificacao == "").AsQueryable();
+            var query = _dbSet.Where(n => n.Classificacao == null || n.Classificacao == Classificacao.NAOCLASSIFICADA).AsQueryable();
 
             if (isNota)
             {
@@ -152,10 +152,10 @@ public class ClassificationService<T> where T : class, IClassifiable
                 var chanceDeSerCorretiva = probabilidades[i];
 
                 if (chanceDeSerCorretiva > 0.8)
-                    nota.Classificacao = "CORRETIVA";
+                    nota.Classificacao = Classificacao.CORRETIVACAT;
                 else if (chanceDeSerCorretiva < 0.7)
-                    nota.Classificacao = "PREVENTIVA";
-                else nota.Classificacao = "NAO CLASSIFICADA";
+                    nota.Classificacao = Classificacao.PREVENTIVACAT;
+                else nota.Classificacao = Classificacao.NAOCLASSIFICADA;
 
                 nota.MetodoClassificacao = "IA_CATBOOST";
                 nota.DataClassificacao = DateTime.UtcNow;

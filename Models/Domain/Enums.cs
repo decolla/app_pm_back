@@ -155,7 +155,7 @@ public enum OriginType
 /// <summary>
 /// Usado para classificar os tipos de fichas em dados renovação
 /// </summary>
-public enum TipoDados
+public enum Classificacao
 {
     PREVENTIVACAT = 0,
     CORRETIVACAT = 1,

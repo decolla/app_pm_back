@@ -14,8 +14,8 @@ namespace app_pm_back.Services.Manutencao;
 public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 {
     private readonly ILogger<DadosRenovacaoService> _logger;
-    private List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, TipoDados TipoDados)> _liParaRestaurar 
-        = new List<(string, long?, long?, DateTime, OrigemUR, TipoDados)>();
+    private List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, Classificacao TipoDados)> _liParaRestaurar 
+        = new List<(string, long?, long?, DateTime, OrigemUR, Classificacao)>();
     private const int TAMANHO_LOTE_LI = 50;
     private readonly HttpClient _httpClient;
     private readonly string _apmBaseUrl;
@@ -194,7 +194,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                 .Where(n => idsOrdens.Contains(n.IdOrdem))
                 .ToListAsync();
             
-            ordens = ordens.Where(o => o.Classificacao != "NÃO CLASSIFICADA").ToList();
+            ordens = ordens.Where(o => o.Classificacao != Classificacao.NAOCLASSIFICADA).ToList();
 
 
             _logger.LogInformation("Carregadas {QtdOrdens} ordens do banco", ordens.Count);
@@ -270,7 +270,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                     .Where(n => ids.Contains(n.IdNota))
                     .ToListAsync();
 
-                notas = notas.Where(n => n.Classificacao != "NÃO CLASSIFICADA").ToList();
+                notas = notas.Where(n => n.Classificacao != Classificacao.NAOCLASSIFICADA).ToList();
 
                 _logger.LogInformation("Carregadas {QtdNotas} notas para cadastro de dados de renovação", notas.Count);
 
@@ -279,7 +279,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                 {
                     _logger.LogDebug("Processando nota {IdNota} com ConfiabilidadeRestaurada={Conf}",
                         nota.IdNota, nota.ConfiabilidadeRestaurada);
-                    var tipoDados = MapearParaTipoDados(nota.Classificacao, nota.MetodoClassificacao);
+                    var tipoDados = MapearParaTipoDados(nota.Classificacao.ToString(), nota.MetodoClassificacao);
 
                     var inseridos = await ProcessarPorConfiabilidadeAsync(
                         nota.ConfiabilidadeRestaurada,
@@ -320,7 +320,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                     _logger.LogDebug("Processando ordem {IdOrdem} com ConfiabilidadeRestaurada={Conf}",
                         ordem.IdOrdem, ordem.ConfiabilidadeRestaurada);
 
-                    var tipoDados = MapearParaTipoDados(ordem.Classificacao, ordem.MetodoClassificacao);
+                    var tipoDados = MapearParaTipoDados(ordem.Classificacao.ToString(), ordem.MetodoClassificacao);
 
                     var inseridos = await ProcessarPorConfiabilidadeAsync(
                         ordem.ConfiabilidadeRestaurada,
@@ -380,7 +380,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         DateTime dataSource,
         OrigemUR origem,
         string idLi,
-        TipoDados tipoDados)
+        Classificacao tipoDados)
     {
         if (confiabilidade == null)
         {
@@ -440,7 +440,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         return inseridos;
     }
     private async Task<int> ProcessarLoteLiAsync(
-        List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, TipoDados TipoDados)> liComContexto)
+        List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, Classificacao TipoDados)> liComContexto)
     {
     if (!liComContexto.Any())
     {
@@ -486,12 +486,13 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             {
                 registrosProcessados += await InserirOuAtualizarPorAtivoAsync(
                     idAtivo,
-                    idNota: contextoDaLi.IdNota,  // ← USAR DO CONTEXTO
-                    idOrdem: contextoDaLi.IdOrdem,  // ← USAR DO CONTEXTO
-                    dataSource: contextoDaLi.DataOrigem,  // ← USAR DATA ORIGINAL
-                    origem: contextoDaLi.Origem,  // ← USAR ORIGEM ORIGINAL
+                    idNota: contextoDaLi.IdNota, // ← USAR DO CONTEXTO
+                    idOrdem: contextoDaLi.IdOrdem, // ← USAR DO CONTEXTO
+                    dataSource: contextoDaLi.DataOrigem, // ← USAR DATA ORIGINAL
+                    origem: contextoDaLi.Origem, // ← USAR ORIGEM ORIGINAL
                     idLi: assetComponent.Name,
-                    tipoDados: contextoDaLi.TipoDados);
+                    tipoDados: contextoDaLi.TipoDados
+                );
             }
         }
 
@@ -588,7 +589,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
         DateTime dataSource,
         OrigemUR origem,
         string idLi,
-        TipoDados tipoDados)
+        Classificacao tipoDados)
     {
         try
         {
@@ -628,7 +629,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
     /// <summary>
     /// Mapeia Classificacao + MetodoClassificacao para TipoDados
     /// </summary>
-    private TipoDados MapearParaTipoDados(string? classificacao, string? metodoClassificacao)
+    private Classificacao MapearParaTipoDados(string? classificacao, string? metodoClassificacao)
     {
         // Normalizar valores
         var classif = (classificacao ?? "").ToUpperInvariant().Trim();
@@ -639,29 +640,29 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
         {
             if (metodo.Contains("CATBOOST") || metodo.Contains("IA"))
             {
-                return TipoDados.CORRETIVACAT;
+                return Classificacao.CORRETIVACAT;
             }
             else
             {
-                return TipoDados.CORRETIVAHUM;
+                return Classificacao.CORRETIVAHUM;
             }
         }
         else if (classif.Contains("PREVENTIVA") || classif.Contains("PREVENTIVO"))
         {
             if (metodo.Contains("CATBOOST") || metodo.Contains("IA"))
             {
-                return TipoDados.PREVENTIVACAT;
+                return Classificacao.PREVENTIVACAT;
             }
             else
             {
-                return TipoDados.PREVENTIVAHUM;
+                return Classificacao.PREVENTIVAHUM;
             }
         }
 
         // Fallback padrão
         _logger.LogWarning("Classificacao={Classificacao}, MetodoClassificacao={Metodo} não reconhecidos. Usando padrão NAOCLASSIFICADA",
             classificacao, metodoClassificacao);
-        return TipoDados.NAOCLASSIFICADA;
+        return Classificacao.NAOCLASSIFICADA;
     }
     /// <summary>
     /// Obtém lista de renovações com paginação

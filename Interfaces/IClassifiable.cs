@@ -1,3 +1,5 @@
+using app_pm_back.Models.Domain;
+
 namespace app_pm_back.Interfaces;
 
 public interface IClassifiable
@@ -6,7 +8,7 @@ public interface IClassifiable
     /// O resultado do tipo da nota
     /// </summary>
     /// <example>CORRETIVA ou PREVENTIVA</example>
-    public string? Classificacao { get; set; }
+    public Classificacao? Classificacao { get; set; }
     
     /// <summary>
     /// Quem/o que tomou a decisão da classificação da nota

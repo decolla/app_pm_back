@@ -337,7 +337,7 @@ public class SpreadsheetService
         return new OrdemModel
         {
             IdOrdem = dto.IdOrdem,
-            Classificacao = dto.Classificacao,
+            Classificacao = Classificacao.NAOCLASSIFICADA,
             MetodoClassificacao = dto.MetodoClassificacao,
             StatusOrdem = Status.Concluida,
             IdNota = dto.IdNota,

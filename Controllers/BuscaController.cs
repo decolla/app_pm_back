@@ -232,7 +232,7 @@ public class BuscaController : ControllerBase
     /// <param name="tipoDados">Tipo de dados da renovação</param>
     /// <returns>Objeto com informações relevantes</returns>
     [HttpGet("ativo/datas")]
-    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] string idLi, [FromQuery] TipoDados tipoDados)
+    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] string idLi, [FromQuery] Classificacao tipoDados)
     {
         try
         {
@@ -242,7 +242,7 @@ public class BuscaController : ControllerBase
                 return BadRequest(new { message = "Parametro idLi obrigatorio." });
             }
 
-            if (!Enum.IsDefined(typeof(TipoDados), tipoDados))
+            if (!Enum.IsDefined(typeof(Classificacao), tipoDados))
             {
                 return BadRequest(new { message = "Parametro tipoDados invalido." });
             }

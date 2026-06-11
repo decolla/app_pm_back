@@ -26,7 +26,7 @@ public class DadosRenovacaoDto
     /// Se a renovação é corretiva/preventiva e de usuario/catboost
     /// </summary>
     
-    public TipoDados TipoDados { get; set; }
+    public Classificacao TipoDados { get; set; }
 
     /// <summary>
     /// Índice de confiabilidade calculado para o ativo (0 a 1 ou percentual).

@@ -175,9 +175,7 @@ public class NotaModel : IClassifiable
     /// Categoria ou tipo atribuído à nota após análise.
     /// Permite agrupamento e filtragem de notas por similaridade.
     /// </summary>
-    /// <example>"Hidráulica", "Elétrica", "Mecânica", "Lubrificação"</example>
-    [MaxLength(100, ErrorMessage = "A classificação não pode exceder 100 caracteres.")]
-    public string? Classificacao { get; set; }
+    public Classificacao? Classificacao { get; set; }
 
     /// <summary>
     /// Método ou técnica utilizada para classificar a nota.

@@ -220,12 +220,12 @@ public class NotasController : ControllerBase
     [HttpPut("classificacao/{id:long}")]
     public async Task<IActionResult> ClassificacaoHumanaNota(
         [FromRoute] long id,
-        [FromQuery] string classificacao,
+        [FromQuery] Classificacao classificacao,
         [FromQuery] string idUsuario)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(classificacao) || string.IsNullOrWhiteSpace(idUsuario))
+            if (string.IsNullOrWhiteSpace(idUsuario))
             {
                 return BadRequest(new { message = "Parametros classificacao e idUsuario sao obrigatorios." });
             }

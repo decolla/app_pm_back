@@ -65,9 +65,8 @@ public class OrdemModel : IClassifiable
     /// Classificação da ordem conforme a interface IClassifiable.
     /// Permite categorização customizada da ordem segundo regras de negócio.
     /// </summary>
-    /// <example>Preventiva, Corretiva, Preditiva, Melhoria</example>
-    [MaxLength(100, ErrorMessage = "A classificação não pode exceder 100 caracteres.")]
-    public string? Classificacao { get; set; }
+    /// <example>Preventiva, Corretiva/example>
+    public Classificacao? Classificacao { get; set; }
 
     /// <summary>
     /// Método ou critério utilizado para classificar a ordem.
