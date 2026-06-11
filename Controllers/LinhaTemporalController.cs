@@ -15,9 +15,7 @@ public class LinhaTemporalController : ControllerBase
     }
 
     /// <summary>
-    /// Obtém a linha temporal paginada das LIs.
-    /// Primeira chamada busca do APM (asset/installation/date) e cacheia.
-    /// Chamadas subsequentes usam cache + paginação local.
+    /// Obtém a linha temporal paginada das LIs consultando diretamente a API do APM com paginação.
     /// </summary>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -34,32 +32,22 @@ public class LinhaTemporalController : ControllerBase
 
         try
         {
-            // 1. Busca todas as LIs do APM (cache ou API)
-            var todasLis = await _linhaTemporalService.ObterTodasLisDoApmAsync();
+            // 1. Busca LIs do APM com paginação direta na API
+            var lisPagina = await _linhaTemporalService.ObterLisDoApmAsync(pagina, tamanho);
             
-            if (!todasLis.Any())
+            if (!lisPagina.Any())
             {
                 return Ok(new
                 {
                     itens = new List<object>(),
                     pagina,
                     tamanho,
-                    totalItens = 0,
-                    totalPaginas = 0,
                     temProxima = false,
-                    temAnterior = false
+                    temAnterior = pagina > 1
                 });
             }
 
-            // 2. Paginação no nível das LIs
-            var totalItens = todasLis.Count;
-            var totalPaginas = (int)Math.Ceiling((double)totalItens / tamanho);
-            var lisPagina = todasLis
-                .Skip((pagina - 1) * tamanho)
-                .Take(tamanho)
-                .ToList();
-
-            // 3. Para cada LI da página, busca notas/ordens no banco
+            // 2. Para cada LI da página, busca notas/ordens no banco
             var resultado = new List<object>();
 
             foreach (var li in lisPagina)
@@ -84,14 +72,15 @@ public class LinhaTemporalController : ControllerBase
                 });
             }
 
+            // Determina se tem próxima página: se veio menos itens que o tamanho, não tem próxima
+            var temProxima = lisPagina.Count == tamanho;
+
             return Ok(new
             {
                 itens = resultado,
                 pagina,
                 tamanho,
-                totalItens,
-                totalPaginas,
-                temProxima = pagina < totalPaginas,
+                temProxima,
                 temAnterior = pagina > 1
             });
         }
@@ -104,30 +93,6 @@ public class LinhaTemporalController : ControllerBase
         {
             return StatusCode(StatusCodes.Status500InternalServerError, 
                 $"Erro interno: {ex.Message}");
-        }
-    }
-
-    /// <summary>
-    /// Força refresh do cache do APM
-    /// </summary>
-    [HttpPost("refresh-cache")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status502BadGateway)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> AtualizarCache()
-    {
-        try
-        {
-            var qtd = await _linhaTemporalService.AtualizarCacheAsync();
-            return Ok(new { message = "Cache atualizado", totalLis = qtd });
-        }
-        catch (HttpRequestException ex)
-        {
-            return StatusCode(StatusCodes.Status502BadGateway, $"Erro no APM: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 }

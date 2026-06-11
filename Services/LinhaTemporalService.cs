@@ -4,61 +4,64 @@ using System.Text.Json.Serialization;
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 namespace app_pm_back.Services.Manutencao;
 
 /// <summary>
 /// Serviço para obter linha temporal de LIs consultando API externa (APM)
-/// e cruzando com notas/ordens do banco de dados local com cache
+/// com paginação direta na API e cruzando com notas/ordens do banco de dados local
 /// </summary>
 public class LinhaTemporalService
 {
     private readonly AppDbContext _context;
     private readonly ILogger<LinhaTemporalService> _logger;
     private readonly HttpClient _httpClient;
-    private readonly IMemoryCache _cache;
     private readonly string _apmBaseUrl;
-    
-    private const string CacheKeyApmData = "LinhaTemporal_ApmData";
-    private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(30);
 
     public LinhaTemporalService(
         AppDbContext context,
         ILogger<LinhaTemporalService> logger,
         IConfiguration configuration,
-        HttpClient httpClient,
-        IMemoryCache cache)
+        HttpClient httpClient)
     {
         _context = context;
         _logger = logger;
         _httpClient = httpClient;
-        _cache = cache;
         _apmBaseUrl = configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
     }
 
     /// <summary>
-    /// Obtém todas as LIs do APM (do cache ou da API)
+    /// Obtém LIs do APM com paginação direta na API externa
     /// </summary>
-    public async Task<List<LiApmInfo>> ObterTodasLisDoApmAsync()
+    /// <param name="pagina">Número da página (base 1)</param>
+    /// <param name="tamanho">Tamanho da página</param>
+    /// <returns>Lista de LIs da página solicitada</returns>
+    public async Task<List<LiApmInfo>> ObterLisDoApmAsync(int pagina, int tamanho)
     {
-        if (_cache.TryGetValue(CacheKeyApmData, out List<LiApmInfo>? cached) && cached != null)
+        try
         {
-            _logger.LogInformation("Dados do APM obtidos do cache ({QtdLIs} LIs)", cached.Count);
-            return cached;
-        }
+            // Assumindo que a API do APM suporta paginação via query parameters
+            // Ajuste os nomes dos parâmetros conforme a documentação da API do APM
+            var url = $"{_apmBaseUrl}/api/V1/Asset/InstallationDate?page={pagina}&pageSize={tamanho}";
+            _logger.LogInformation("Chamando API APM: GET {Url}", url);
 
-        _logger.LogInformation("Cache miss - buscando dados do APM na API externa");
-        var dados = await BuscarTodasLisDaApiExternaAsync();
-        
-        if (dados.Any())
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<List<LiApmInfo>>(content, options) ?? new();
+        }
+        catch (Exception ex)
         {
-            _cache.Set(CacheKeyApmData, dados, CacheExpiration);
-            _logger.LogInformation("Dados do APM armazenados no cache ({QtdLIs} LIs)", dados.Count);
+            _logger.LogError(ex, "Erro ao buscar LIs do APM (página {Pagina}, tamanho {Tamanho})", pagina, tamanho);
+            throw;
         }
-
-        return dados;
     }
 
     /// <summary>
@@ -103,43 +106,6 @@ public class LinhaTemporalService
             idLi,
             eventos.OrderByDescending(e => e.Data).ToList()
         );
-    }
-
-    /// <summary>
-    /// Força atualização do cache
-    /// </summary>
-    public async Task<int> AtualizarCacheAsync()
-    {
-        _cache.Remove(CacheKeyApmData);
-        var dados = await BuscarTodasLisDaApiExternaAsync();
-        if (dados.Any())
-            _cache.Set(CacheKeyApmData, dados, CacheExpiration);
-        return dados.Count;
-    }
-
-    private async Task<List<LiApmInfo>> BuscarTodasLisDaApiExternaAsync()
-    {
-        try
-        {
-            var url = $"{_apmBaseUrl}/api/V1/Asset/InstallationDate";
-            _logger.LogInformation("Chamando API APM: GET {Url}", url);
-
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-            _httpClient.DefaultRequestHeaders.Authorization = 
-                new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
-
-            var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-
-            var content = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            return JsonSerializer.Deserialize<List<LiApmInfo>>(content, options) ?? new();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao buscar LIs do APM");
-            throw;
-        }
     }
 
     private Task<List<NotaModel>> BuscarNotasDaLiAsync(string idLi) =>
