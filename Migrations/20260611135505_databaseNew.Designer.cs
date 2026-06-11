@@ -14,8 +14,8 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260611122531_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260611135505_databaseNew")]
+    partial class databaseNew
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -564,9 +564,8 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)");
 
-                    b.Property<string>("Classificacao")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                    b.Property<int>("Classificacao")
+                        .HasColumnType("integer");
 
                     b.Property<string>("ClassificadoPor")
                         .HasMaxLength(150)
@@ -718,9 +717,8 @@ namespace app_pm_back.Migrations
                     b.Property<long>("IdOrdem")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Classificacao")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                    b.Property<int>("Classificacao")
+                        .HasColumnType("integer");
 
                     b.Property<string>("ClassificadoPor")
                         .HasMaxLength(150)

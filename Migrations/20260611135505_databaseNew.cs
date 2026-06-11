@@ -9,7 +9,7 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class databaseNew : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -328,7 +328,7 @@ namespace app_pm_back.Migrations
                     DescricaoBreve = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     AnomaliaObservada = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     ObservacoesComplementares = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
-                    Classificacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Classificacao = table.Column<int>(type: "integer", nullable: false),
                     MetodoClassificacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ClassificadoPor = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     DataClassificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -500,7 +500,7 @@ namespace app_pm_back.Migrations
                     DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     StatusOrdem = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     Criticidade = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Classificacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Classificacao = table.Column<int>(type: "integer", nullable: false),
                     MetodoClassificacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ClassificadoPor = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     DataClassificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
