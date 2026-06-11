@@ -21,7 +21,7 @@ public class FerramentaTipoDto
 
     [SheetColumn("Quantidade")] public int Quantidade { get; set; }
 
-    [SheetColumn("Loc.instalacao")] public string IdLI { get; set; }
+    [SheetColumn("Loc.instalacao")] public string IdLI { get; set; } = string.Empty;
 
     [SheetColumn("Fabricante")] public string? Fabricante { get; set; }
 

@@ -12,7 +12,7 @@ public abstract class BaseCrudService<T> where T : class
     protected readonly AppDbContext _context;
     protected readonly DbSet<T> _dbSet;
     /// <summary>
-    /// Inicializa uma nova instância da classe <see cref="BaseCrudService"/>.
+    /// Inicializa uma nova instância da classe <see cref="BaseCrudService{T}"/>.
     /// </summary>
 
     public BaseCrudService(AppDbContext context)

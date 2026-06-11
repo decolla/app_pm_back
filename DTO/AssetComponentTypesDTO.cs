@@ -11,7 +11,7 @@ public class AssetComponentTypesDTO
     /// <summary>
     /// Nome da LocalInstalacao (LI/Name)
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     
     /// <summary>
     /// DNS do IoT associado a esta LI (LI/DnsIot)

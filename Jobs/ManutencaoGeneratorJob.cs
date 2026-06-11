@@ -60,7 +60,7 @@ public class ManutencaoGeneratorJob
             foreach (var plano in planos)
             {
                 var tiposVencidos = plano.TiposPlano
-                    .Where(tp => plano.DataInicios.Value.AddDays((tp.Dias ?? 0) - (tp.ToleranciaNegativa ?? 0)) < dataAtual)
+                    .Where(tp => plano.DataInicios!.Value.AddDays((tp.Dias ?? 0) - (tp.ToleranciaNegativa ?? 0)) < dataAtual)
                     .ToList();
 
                 foreach (var tipo in tiposVencidos)

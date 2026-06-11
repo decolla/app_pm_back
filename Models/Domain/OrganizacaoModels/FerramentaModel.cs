@@ -112,7 +112,7 @@ public class FerramentaModel
     /// <summary>
     /// Identificador do Local de Instalação (LI).
     /// </summary>
-    public string IdLI { get; set; }
+    public string IdLI { get; set; } = string.Empty;
 
     /// <summary>
     /// Identificador do Escopo associado.

@@ -109,7 +109,7 @@ public class GenericSearchService
         var generico = metodo.MakeGenericMethod(entityType);
         var task = (Task<IReadOnlyList<object>>)generico.Invoke(
             this,
-            new object[] { campo, valor, parcial, pagina, tamanho })!;
+            new object?[] { campo, valor, parcial, pagina, tamanho })!;
 
         return await task.ConfigureAwait(false);
     }
@@ -513,12 +513,12 @@ public class GenericSearchService
         // Busca datas das Notas e ordens associadas ao IdLi
         var datasNotas = await _notaModels.AsNoTracking()
             .Where(n => n.IdLi == idLi && n.DataNota.HasValue)
-            .Select(n => n.DataNota.Value)
+            .Select(n => n.DataNota!.Value)
             .ToListAsync();
         
         var datasOrdens = await _ordemModels.AsNoTracking()
             .Where(o => o.IdLi == idLi && o.DataCriacao.HasValue)
-            .Select(o => o.DataCriacao.Value)
+            .Select(o => o.DataCriacao!.Value)
             .ToListAsync();
         
 

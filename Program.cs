@@ -28,6 +28,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
         $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+    c.CustomSchemaIds(type => type.FullName ?? type.Name);
 });
 
 builder.Services.AddCors(option => option.AddPolicy("AllowAll", policy =>

@@ -1217,21 +1217,6 @@
             Identificador do Usuário que processou a renovação.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.Nota">
-            <summary>
-            Referência à Nota relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.Ordem">
-            <summary>
-            Referência à Ordem de Serviço relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.DTO.DadosRenovacaoDto.Usuario">
-            <summary>
-            Referência ao Usuário que realizou a renovação.
-            </summary>
-        </member>
         <member name="T:app_pm_back.DTO.GrupoPlanejamentoManutencaoDto">
             <summary>
             DTO de grupo de planejamento de manutencao.
@@ -3128,18 +3113,6 @@
         <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Migrations.FixedComponentType">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixedComponentType.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixedComponentType.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.FixedComponentType.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
         <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
             <summary>
             Rotas para planilhas
@@ -3171,7 +3144,7 @@
         </member>
         <member name="M:app_pm_back.Services.BaseCrudService`1.#ctor(app_pm_back.Data.AppDbContext)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="!:BaseCrudService"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.BaseCrudService`1"/>.
             </summary>
         </member>
         <member name="M:app_pm_back.Services.BaseCrudService`1.CreateAsync(`0)">
@@ -3236,7 +3209,7 @@
         </member>
         <member name="M:app_pm_back.Services.ClassificationService`1.#ctor(app_pm_back.Data.AppDbContext,teste_catboost_cs.Cbm,teste_catboost_cs.ModelMeta)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="!:ClassificationService"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ClassificationService`1"/>.
             </summary>
         </member>
         <member name="M:app_pm_back.Services.ClassificationService`1.HumanClassification(System.Int64,System.String,System.String)">

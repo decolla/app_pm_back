@@ -92,6 +92,8 @@ public class AutoMapperProfile : Profile
  CreateMap<FerramentaTipoDto, FerramentaModel>()
  .ForMember(dest => dest.ValorCompra, opt => opt.MapFrom(src => src.ValorCompra ?? 0))
  .ForMember(dest => dest.DataAquisicao, opt => opt.MapFrom(src => src.DataAquisicao ?? DateTime.MinValue));
+
+ CreateMap<DadosRenovacaoDto, DadosRenovacaoModel>();
  }
 
 }

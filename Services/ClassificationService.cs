@@ -20,7 +20,7 @@ public class ClassificationService<T> where T : class, IClassifiable
     protected readonly Cbm? _cbm;
     protected readonly ModelMeta? _meta;
     /// <summary>
-    /// Inicializa uma nova instância da classe <see cref="ClassificationService"/>.
+    /// Inicializa uma nova instância da classe <see cref="ClassificationService{T}"/>.
     /// </summary>
 
     public ClassificationService(AppDbContext context, Cbm? modeloCatboost = null, ModelMeta? meta = null)

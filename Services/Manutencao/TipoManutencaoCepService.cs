@@ -26,7 +26,7 @@ public class TipoManutencaoCepService : BaseCrudService<TipoCepModel>
         var tipoAtivoNormalizado = tipoAtivo.Trim().ToLower();
 
         return await _context.PM_TiposCep
-            .Where(t => t.TipoAtivo.ToLower().Contains(tipoAtivoNormalizado))
+            .Where(t => t.TipoAtivo != null && t.TipoAtivo.ToLower().Contains(tipoAtivoNormalizado))
             .OrderBy(t => t.IdTipoCep)
             .ToListAsync();
     }

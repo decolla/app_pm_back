@@ -20,7 +20,7 @@ public class VariavelNotaModel
     /// Nome da variável registrada. Exemplo: "Temperatura", "Pressão", "Vibração".
     /// </summary>
     [MaxLength(200, ErrorMessage = "O nome da variável não pode exceder 200 caracteres.")]
-    public string NomeVariavel { get; set; }
+    public string NomeVariavel { get; set; } = string.Empty;
 
     /// <summary>
     /// Valor numérico registrado. Exemplo: 10.5

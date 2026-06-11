@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace app_pm_back.Controllers;
 
 [ApiController]
-[Route(Config.RouteConfig.BaseRoute + "/update-dados")]
-public class UpdateDados : ControllerBase
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/update-dados")]
+public class UpdateDadosController : ControllerBase
 {
     private readonly SynchronizeAPMService _synchronizeApmService;
-    private readonly ILogger<UpdateDados> _logger;
+    private readonly ILogger<UpdateDadosController> _logger;
     
-    public UpdateDados(SynchronizeAPMService synchronizeApmService, ILogger<UpdateDados> logger)
+    public UpdateDadosController(SynchronizeAPMService synchronizeApmService, ILogger<UpdateDadosController> logger)
     {
         _synchronizeApmService = synchronizeApmService;
         _logger = logger;

@@ -46,7 +46,7 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
         if (!string.IsNullOrWhiteSpace(tipoAtivo))
         {
             var tipoAtivoNormalizado = tipoAtivo.Trim().ToLower();
-            query = query.Where(e => e.TipoAtivoAplicavel.ToLower().Contains(tipoAtivoNormalizado));
+            query = query.Where(e => e.TipoAtivoAplicavel != null && e.TipoAtivoAplicavel.ToLower().Contains(tipoAtivoNormalizado));
         }
 
         query = query.OrderBy(e => e.IdEstrategia);

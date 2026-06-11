@@ -171,7 +171,7 @@ public class SpreadsheetService
 
         while (!parser.EndOfData)
         {
-            string[] row = parser.ReadFields();
+            string[]? row = parser.ReadFields();
             if (row == null || row.All(string.IsNullOrWhiteSpace)) continue;
 
             if (resultado.TipoIdentificado == "NOTA")

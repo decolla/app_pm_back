@@ -21,8 +21,8 @@ public class AppDbContext : DbContext
             modelBuilder.HasDefaultSchema("dbo");
 
             var converter = new ValueConverter<List<AcoesFalha>?, string>(
-                v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
-                v => JsonSerializer.Deserialize<List<AcoesFalha>>(v, (JsonSerializerOptions)null) ?? new List<AcoesFalha>()
+                v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+                v => JsonSerializer.Deserialize<List<AcoesFalha>>(v, (JsonSerializerOptions?)null) ?? new List<AcoesFalha>()
             );
 
             modelBuilder.Entity<TipoCepModel>()

@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using app_pm_back.Data;
 using app_pm_back.Services.Extensions;
@@ -13,7 +13,6 @@ namespace app_pm_back.Services.Manutencao;
 /// </summary>
 public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 {
-    private readonly AppDbContext _context;
     private readonly ILogger<DadosRenovacaoService> _logger;
     private List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, TipoDados TipoDados)> _liParaRestaurar 
         = new List<(string, long?, long?, DateTime, OrigemUR, TipoDados)>();
@@ -32,7 +31,6 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         HttpClient httpClient)
         : base(context)
     {
-        _context = context;
         _dadosRenovacao = _context.Set<DadosRenovacaoModel>();
         _logger = logger;
         _httpClient = httpClient;
@@ -69,9 +67,11 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 
             _logger.LogInformation("Carregadas {QtdNotas} notas do banco", notas.Count);
 
-            var itens = await _context.PM_ItensNota
-                .Where(i => idsItensNota.Contains(i.IdItemNota))
-                .ToListAsync();
+            var itens = idsItensNota == null || idsItensNota.Count == 0
+                ? new List<ItemNotaModel>()
+                : await _context.PM_ItensNota
+                    .Where(i => idsItensNota.Contains(i.IdItemNota))
+                    .ToListAsync();
 
             _logger.LogInformation("Carregados {QtdItens} itens do banco", itens.Count);
 
@@ -288,7 +288,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                         null,
                         nota.DataNota ?? DateTime.UtcNow,
                         OrigemUR.Nota,
-                        nota.IdLi,
+                        nota.IdLi ?? string.Empty,
                         tipoDados);
                     registrosCriados += inseridos;
                     
@@ -329,7 +329,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                         ordem.IdOrdem,
                         ordem.DataCriacao ?? DateTime.UtcNow,
                         OrigemUR.Ordem,
-                        ordem.IdLi,
+                        ordem.IdLi ?? string.Empty,
                         tipoDados);
                     registrosCriados += inseridos;
                     

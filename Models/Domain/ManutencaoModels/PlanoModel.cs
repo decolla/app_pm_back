@@ -74,10 +74,10 @@ public class PlanoModel
     /// <summary>
     /// Coleção de tipos associados a este plano.
     /// </summary>
-    public virtual ICollection<TipoPlanoModel>? TiposPlano { get; set; } = new List<TipoPlanoModel>();
+    public virtual ICollection<TipoPlanoModel> TiposPlano { get; set; } = new List<TipoPlanoModel>();
 
     /// <summary>
     /// Coleção de notas ou observações vinculadas ao plano.
     /// </summary>
-    public virtual ICollection<NotaModel>? Notas { get; set; } = new List<NotaModel>();
+    public virtual ICollection<NotaModel> Notas { get; set; } = new List<NotaModel>();
 }

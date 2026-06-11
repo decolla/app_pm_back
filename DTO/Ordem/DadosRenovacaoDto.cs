@@ -58,20 +58,4 @@ public class DadosRenovacaoDto
     /// Identificador do Usuário que processou a renovação.
     /// </summary>
     public int? IdUsuario { get; set; }
-    
-    /// <summary>
-    /// Referência à Nota relacionada.
-    /// </summary>
-    public virtual NotaModel? Nota { get; set; }
-
-    /// <summary>
-    /// Referência à Ordem de Serviço relacionada.
-    /// </summary>
-    public virtual OrdemModel? Ordem { get; set; }
-
-    /// <summary>
-    /// Referência ao Usuário que realizou a renovação.
-    /// </summary>
-    public virtual UsuarioModel? Usuario { get; set; }
-
 }
