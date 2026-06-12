@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xPHopNT3NpFJ7Qyufa2rvzaQk7mWv/1IPenMP/5Mg3TQevkqPx0Ra7JxBm0xPZqQ07wI5Oc858ZRjIvZ9divXA==",
+  "dgSpecHash": "nbK3ngsncwM=",
   "success": true,
-  "projectFilePath": "/home/decolla/Downloads/app_pm_back/app_pm_back/app_pm_back.csproj",
+  "projectFilePath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj",
   "expectedPackageFiles": [
     "/home/decolla/.nuget/packages/dnsclient/1.6.1/dnsclient.1.6.1.nupkg.sha512",
     "/home/decolla/.nuget/packages/microsoft.aspnetcore.openapi/8.0.23/microsoft.aspnetcore.openapi.8.0.23.nupkg.sha512",
