@@ -315,20 +315,11 @@
         </member>
         <member name="M:app_pm_back.Controllers.BuscaController.BuscarPorCampo(System.String,System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
-            Obtém um registro específico.
+            Obtém um registro específico de uma tabela.
             </summary>
-            <param name="tabela">Parâmetro do método.</param>
-            <param name="campo">Parâmetro do método.</param>
-            <param name="valor">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-        </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscarPorNome(System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Obtém um registro específico.
-            </summary>
-            <param name="tabela">Parâmetro do método.</param>
-            <param name="nome">Parâmetro do método.</param>
+            <param name="tabela">Nome da tabela a ser buscada.</param>
+            <param name="campo">Campo no qual uma busca será realizada.</param>
+            <param name="valor">Valor de busca.</param>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
@@ -3304,23 +3295,14 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.GenericSearchService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.BuscarPorNomeAsync(System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Obtém um registro específico.
-            </summary>
-            <param name="tabela">Parâmetro do método.</param>
-            <param name="campo">Parâmetro do método.</param>
-            <param name="nome">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-        </member>
         <member name="M:app_pm_back.Services.GenericSearchService.BuscarPorCampoAsync(System.String,System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
-            Obtém um registro específico.
+            Obtém um registro específico em uma tabela.
             </summary>
-            <param name="tabela">Parâmetro do método.</param>
-            <param name="campo">Parâmetro do método.</param>
-            <param name="valor">Parâmetro do método.</param>
-            <param name="parcial">Parâmetro do método.</param>
+            <param name="tabela">Nome da tabela.</param>
+            <param name="campo">Campo de busca.</param>
+            <param name="valor">Valor atribuído ao campo.</param>
+            <param name="parcial"></param>
             <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Services.GenericSearchService.BuscarNotaOrdemAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{app_pm_back.Models.Domain.Fichas})">

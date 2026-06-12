@@ -67,7 +67,7 @@ public class GenericSearchService
     /// <param name="valor">Valor atribuído ao campo.</param>
     /// <param name="parcial"></param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<IReadOnlyList<object>> BuscarPorCampoAsync(
+    public async Task<object> BuscarPorCampoAsync(
         string tabela,
         string campo,
         string valor,
@@ -90,7 +90,7 @@ public class GenericSearchService
         }
 
         var generico = metodo.MakeGenericMethod(entityType);
-        var task = (Task<IReadOnlyList<object>>)generico.Invoke(
+        var task = (Task<object>)generico.Invoke(
             this,
             new object?[] { campo, valor, parcial, pagina, tamanho })!;
 
