@@ -332,7 +332,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{app_pm_back.Models.Domain.Fichas})">
             <summary>
             Busca notas ou ordens de manutenção por diversos critérios, retorna uma lista de objetos com os dados relevantes
             </summary>
@@ -484,14 +484,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.LinhaTemporalController.ObterLinhaTemporal(System.Int32,System.Int32)">
             <summary>
-            Obtém a linha temporal paginada das LIs.
-            Primeira chamada busca do APM (asset/installation/date) e cacheia.
-            Chamadas subsequentes usam cache + paginação local.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.LinhaTemporalController.AtualizarCache">
-            <summary>
-            Força refresh do cache do APM
+            Obtém a linha temporal paginada das LIs consultando diretamente a API do APM com paginação.
             </summary>
         </member>
         <member name="T:app_pm_back.Controllers.ItemsController">
@@ -2181,6 +2174,11 @@
             </summary>
             <example>2024-01-16T10:30:00</example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Escopo">
+            <summary>
+            O escopo da nota/pordem
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.IdPlano">
             <summary>
             Chave estrangeira para o plano de manutenção associado.
@@ -2567,6 +2565,11 @@
             Rastreia quando foi a última alteração para controle de versionamento.
             </summary>
             <example>2024-01-18T14:30:00</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.Escopo">
+            <summary>
+            O escopo da nota/pordem
+            </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.IdAtivo">
             <summary>
@@ -3094,16 +3097,16 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.FixedOrder">
+        <member name="T:app_pm_back.Migrations.InitialCreate">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.FixedOrder.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.FixedOrder.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.FixedOrder.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
@@ -3320,7 +3323,7 @@
             <param name="parcial">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.BuscarNotaOrdemAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarNotaOrdemAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{app_pm_back.Models.Domain.Fichas})">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -3396,22 +3399,20 @@
         <member name="T:app_pm_back.Services.Manutencao.LinhaTemporalService">
             <summary>
             Serviço para obter linha temporal de LIs consultando API externa (APM)
-            e cruzando com notas/ordens do banco de dados local com cache
+            com paginação direta na API e cruzando com notas/ordens do banco de dados local
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.ObterTodasLisDoApmAsync">
+        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.ObterLisDoApmAsync(System.Int32,System.Int32)">
             <summary>
-            Obtém todas as LIs do APM (do cache ou da API)
+            Obtém LIs do APM com paginação direta na API externa
             </summary>
+            <param name="pagina">Número da página (base 1)</param>
+            <param name="tamanho">Tamanho da página</param>
+            <returns>Lista de LIs da página solicitada</returns>
         </member>
         <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.ObterItensDaLiAsync(System.String)">
             <summary>
             Obtém notas e ordens para uma LI específica
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.AtualizarCacheAsync">
-            <summary>
-            Força atualização do cache
             </summary>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.ImobilizadoService">
