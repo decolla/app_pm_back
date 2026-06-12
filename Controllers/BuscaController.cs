@@ -37,11 +37,11 @@ public class BuscaController : ControllerBase
     }
 
     /// <summary>
-    /// Obtém um registro específico.
+    /// Obtém um registro específico de uma tabela.
     /// </summary>
-    /// <param name="tabela">Parâmetro do método.</param>
-    /// <param name="campo">Parâmetro do método.</param>
-    /// <param name="valor">Parâmetro do método.</param>
+    /// <param name="tabela">Nome da tabela a ser buscada.</param>
+    /// <param name="campo">Campo no qual uma busca será realizada.</param>
+    /// <param name="valor">Valor de busca.</param>
     /// <returns>Resultado da operação.</returns>
     /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet]
@@ -75,54 +75,6 @@ public class BuscaController : ControllerBase
                 campo,
                 valor,
                 parcial,
-                pagina,
-                tamanho);
-
-            return Ok(resultados);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao buscar na tabela {tabela}: {e.Message}." });
-        }
-    }
-
-    /// <summary>
-    /// Obtém um registro específico.
-    /// </summary>
-    /// <param name="tabela">Parâmetro do método.</param>
-    /// <param name="nome">Parâmetro do método.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-    [HttpGet("nome")]
-    public async Task<IActionResult> BuscarPorNome(
-        [FromQuery] string tabela,
-        [FromQuery] string nome,
-        [FromQuery] string? campo,
-        [FromQuery] int? pagina = null,
-        [FromQuery] int? tamanho = null)
-    {
-        try
-        {
-            if (string.IsNullOrWhiteSpace(tabela))
-            {
-                return BadRequest(new { message = "Informe tabela para a busca." });
-            }
-
-            if (string.IsNullOrWhiteSpace(nome))
-            {
-                return BadRequest(new { message = "Informe nome para a busca." });
-            }
-
-            if (TemPaginacaoInvalida(pagina, tamanho))
-            {
-                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
-            }
-
-            var campoNome = string.IsNullOrWhiteSpace(campo) ? "Nome" : campo;
-            var resultados = await _searchService.BuscarPorNomeAsync(
-                tabela,
-                campoNome,
-                nome,
                 pagina,
                 tamanho);
 

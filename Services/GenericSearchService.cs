@@ -46,23 +46,6 @@ public class GenericSearchService
         _planoModels = context.PM_Planos;
     }
 
-    /// <summary>
-    /// Obtém um registro específico.
-    /// </summary>
-    /// <param name="tabela">Parâmetro do método.</param>
-    /// <param name="campo">Parâmetro do método.</param>
-    /// <param name="nome">Parâmetro do método.</param>
-    /// <returns>Resultado da operação.</returns>
-    public Task<IReadOnlyList<object>> BuscarPorNomeAsync(
-        string tabela,
-        string campo,
-        string nome,
-        int? pagina,
-        int? tamanho)
-    {
-        return BuscarPorCampoAsync(tabela, campo, nome, true, pagina, tamanho);
-    }
-
     public IReadOnlyDictionary<string, IReadOnlyList<string>> ListarTabelasCampos()
     {
         return Tabelas.ToDictionary(
@@ -77,12 +60,12 @@ public class GenericSearchService
     }
 
     /// <summary>
-    /// Obtém um registro específico.
+    /// Obtém um registro específico em uma tabela.
     /// </summary>
-    /// <param name="tabela">Parâmetro do método.</param>
-    /// <param name="campo">Parâmetro do método.</param>
-    /// <param name="valor">Parâmetro do método.</param>
-    /// <param name="parcial">Parâmetro do método.</param>
+    /// <param name="tabela">Nome da tabela.</param>
+    /// <param name="campo">Campo de busca.</param>
+    /// <param name="valor">Valor atribuído ao campo.</param>
+    /// <param name="parcial"></param>
     /// <returns>Resultado da operação.</returns>
     public async Task<IReadOnlyList<object>> BuscarPorCampoAsync(
         string tabela,
