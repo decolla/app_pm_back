@@ -1,145 +1,232 @@
+using System.Reflection;
+using System.Text.Json;
+using api.Communications.Service.Impl.Data;
+using app_pm_back.Data;
+using app_pm_back.Middlewares;
 using app_pm_back.Models;
+using app_pm_back.Models.Domain;
+using app_pm_back.Routes;
 using app_pm_back.Services;
+using app_pm_back.Services.ExternIntegationsServices;
+using app_pm_back.Services.Manutencao;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Diagnostics;
-using MongoDB.Driver;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using teste_catboost_cs;
+
+// apagar depois essa gambiarra aqui
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls("http://+:60135");
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
-builder.Services.AddCors(option => option.AddPolicy("AllowAngularApp", policy =>
+builder.Services.AddSwaggerGen(c =>
 {
-    policy.WithOrigins("http://localhost:4200", "http://localhost");
-    policy.AllowAnyMethod();
-    policy.AllowAnyHeader();
-}));
-string connectionString = builder.Configuration.GetSection("MongoDb").GetSection("ConnectionString").Value;
-Console.WriteLine(connectionString);
-string databaseName = "app_pm_back";
-string collectionName = "pm_data";
-
-builder.Services.AddSingleton<IMongoClient>(new MongoClient(connectionString));
-builder.Services.AddScoped<IMongoDatabase>(sp =>
-    sp.GetRequiredService<IMongoClient>().GetDatabase(databaseName));
-builder.Services.AddScoped<IMongoCollection<NotaModel>>(sp =>
-    sp.GetRequiredService<IMongoDatabase>().GetCollection<NotaModel>(collectionName));
-builder.Services.AddScoped<NotasService>();
-
-var app = builder.Build();
-
-// captura erros
-app.UseExceptionHandler(errorApp =>
-{
-    errorApp.Run(async context =>
-    {
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        context.Response.ContentType = "application/json";
-
-        var error = context.Features.Get<IExceptionHandlerFeature>();
-        if (error != null)
-        {
-            await context.Response.WriteAsJsonAsync(new
-            {
-                message = "Ocorreu um erro inesperado.",
-                detail = error.Error.Message
-            });
-        }
-    });
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
+        $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+    c.CustomSchemaIds(type => type.FullName ?? type.Name);
 });
 
+builder.Services.AddCors(option => option.AddPolicy("AllowAll", policy =>
+{
+    // policy.WithOrigins("http://localhost:4200", "http://localhost");
+
+    policy.SetIsOriginAllowed(_ => true).AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+}));
+
+// aumenta o limite de ficheiros multipart para 200 MB
+builder.Services.Configure<FormOptions>(options => { options.MultipartBodyLengthLimit = 209715200; });
+
+// aumenta o limite do servidor para 200 MB
+builder.WebHost.ConfigureKestrel(serverOptions => { serverOptions.Limits.MaxRequestBodySize = 209715200; });
+
+// ignora ciclos no json, impedindo de erros de retorno MUDAR DPS
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    // mostra os nomes dos enums (ao invés dos números) no Swagger e na serialização JSON
+    // options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
+
+//  Memory Cache para LinhaTemporal
+builder.Services.AddMemoryCache();
+
+var databaseSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+
+if (databaseSchema == "cg")
+{
+    var connectionString = builder.Configuration.GetConnectionString("DBConnection") 
+                           ?? builder.Configuration.GetConnectionString("DefaultConnection");
+                           
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlServer(connectionString));
+}
+else
+{
+    var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION") 
+                           ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+    // criar o construtor da fonte de dados do PostgreSQL
+    var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+
+    // dar permissão para JSON dinâmico
+    dataSourceBuilder.EnableDynamicJson();
+
+    // criar a fonte de dados
+    var dataSource = dataSourceBuilder.Build();
+
+    // adicionar o contexto do PostgreSQL
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseNpgsql(dataSource));
+}
+
+// config hangfire
+builder.Services.AddHangfire(config => config
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UsePostgreSqlStorage(c => 
+        c.UseNpgsqlConnection(builder.Configuration.GetConnectionString("DefaultConnection"))));
+
+builder.Services.AddHangfireServer();
+
+builder.Services.AddTransient<app_pm_back.Jobs.ManutencaoGeneratorJob>();
+
+builder.Services.AddScoped<ConvertService>();
+builder.Services.AddScoped<SpreadsheetService>();
+builder.Services.AddScoped<GenericSearchService>();
+builder.Services.AddScoped<NotaManutencaoService>();
+builder.Services.AddScoped<OrdemService>();
+builder.Services.AddScoped<ItemNotaService>();
+builder.Services.AddScoped<PlanoManutencaoService>();
+builder.Services.AddScoped<EstrategiaService>();
+builder.Services.AddScoped<TipoEstrategiaService>();
+builder.Services.AddScoped<TipoManutencaoService>();
+builder.Services.AddScoped<TipoPlanoService>();
+builder.Services.AddScoped<TipoManutencaoCepService>();
+builder.Services.AddScoped<DadosRenovacaoService>();
+builder.Services.AddScoped<TarefaService>();
+builder.Services.AddScoped<FerramentaService>();
+builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<CpmService>();
+builder.Services.AddScoped<CtmService>();
+builder.Services.AddScoped<ReportService>();
+builder.Services.AddScoped<SynchronizeAPMService>();
+builder.Services.AddScoped<GpmService>();
+builder.Services.AddScoped<ImobilizadoService>();
+builder.Services.AddScoped<AlmoxarifadoService>();
+builder.Services.AddScoped<ClassificationService<NotaModel>>();
+builder.Services.AddScoped<ClassificationService<OrdemModel>>();
+builder.Services.AddScoped<AnnexService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<DadosRenovacaoService>();
+builder.Services.AddScoped<LinhaTemporalService>();
+
+// configuração de clientes http
+builder.Services.AddHttpClient<ExternIntegrationService>(client =>
+    {
+        // busca a URL do APM
+        var urlBase = builder.Configuration.GetValue<string>("APIs:APM");
+
+        if (string.IsNullOrEmpty(urlBase))
+        {
+            throw new InvalidOperationException(
+                "A URL do APM não está configurada. Verifique as configurações de 'APIs:APM'.");
+        }
+
+        client.BaseAddress = new Uri(urlBase);
+
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+        client.Timeout = TimeSpan.FromSeconds(30); // aborta se demorar mais de 30seg
+    }
+);
+
+var modelPath = Path.Combine(AppContext.BaseDirectory, "Data", "catboost_model.cbm");
+var metaPath = Path.Combine(AppContext.BaseDirectory, "Data", "model_meta.json");
+
+// verifica se os ficheiros existem antes de tentar ler (evita crash no 'dotnet ef')
+if (File.Exists(metaPath) && File.Exists(modelPath))
+{
+    var metaJson = File.ReadAllText(metaPath);
+    var modelMeta = JsonSerializer.Deserialize<ModelMeta>(metaJson);
+    if (modelMeta != null)
+    {
+        builder.Services.AddSingleton(modelMeta);
+    }
+
+    var catboostModel = new Cbm(modelPath);
+    builder.Services.AddSingleton(catboostModel);
+}
+else
+{
+    Console.WriteLine("Aviso: Ficheiros do CatBoost não encontrados. O modelo IA não será carregado.");
+}
+
+builder.Services.AddAutoMapper(typeof(Program));
+
+var app = builder.Build();
+var schema = Environment.GetEnvironmentVariable("SCHEMA") ?? "(not set)";
+app.Logger.LogInformation("SCHEMA={Schema}", schema);
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<AppDbContext>();
+        var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+        
+        if (dbSchema == "cg")
+        {
+            Console.WriteLine("Ambiente 'cg' detectado. A tentar criar o banco de dados e as tabelas...");
+            dbContext.Database.EnsureCreated();
+            Console.WriteLine("Banco de dados e tabelas criados/verificados com sucesso!");
+        }
+        else
+        {
+            Console.WriteLine("PostgreSQL detectado. A tentar aplicar as migrations no banco de dados...");
+            // REMOVER DEPOIS: APAGA TODAS AS TABELAS
+            // dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
+            dbContext.Database.Migrate();
+            Console.WriteLine("Migrations aplicadas com sucesso!");
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[ERRO CRÍTICO NO BANCO]: {ex.Message}");
+        if (ex.InnerException != null)
+        {
+            Console.WriteLine($"[DETALHE]: {ex.InnerException.Message}");
+        }
+    }
+}
+
+// dashboard do hangfire
+app.UseHangfireDashboard();
+
+// rotina de verificação nos planos de manutenção
+RecurringJob.AddOrUpdate<app_pm_back.Jobs.ManutencaoGeneratorJob>(
+    "gerador-fichas",
+    service => service.RunDailyRoutine(),
+    Cron.Daily(2,0));
+
+// captura erros
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
 // permite que o angular realize 
-app.UseCors("AllowAngularApp");
+app.UseCors("AllowAll");
 
-app.UseHttpsRedirection();
-
-// endpoint essencial para o cadastro de ativos
-app.MapPost("/notas", async (NotaModel novaNota, app_pm_back.Services.NotasService service) =>
-{
-    var nota = await service.CreateNotaAsync(novaNota);
-
-    if (nota == null)
-    {
-        return Results.BadRequest(new { message = "Erro ao criar o ativo." });
-    }
-    else
-    {
-        return Results.Created($"/notas/{nota}", nota);
-    }
-});
-
-app.MapGet("/notas", async (app_pm_back.Services.NotasService service) =>
-{
-    try
-    {
-        var notas = await service.GetAllNotasAsync();
-        return Results.Ok(notas);
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao procurar notas: {e.Message}");
-        throw;
-    }
-});
-
-app.MapGet("/notas/search", async (string id ,app_pm_back.Services.NotasService service) =>
-{
-    try
-    {
-        var nota = await service.GetNotaByIdAsync(id);
-        return Results.Ok(nota);
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao procurar notas: {e.Message}");
-        throw;
-    }
-});
-
-app.MapGet("/notas/count", async (app_pm_back.Services.NotasService service) =>
-{
-    try
-    {
-        var notas = await service.CountNotasAsync();
-        return Results.Ok(new { count = notas });
-    }
-    catch (Exception e)
-    {
-        Console.WriteLine($"Erro ao procurar notas: {e.Message}");
-        throw;
-    }
-});
-
-app.MapPut("/notas", async (NotaModel nota, app_pm_back.Services.NotasService service) =>
-{
-    try
-    {
-        var result = await service.UpdateNotaAsync(nota);
-        return Results.Ok(new { message = "Nota atualizada com sucesso: " + result.IdMongo });
-    }
-    catch (Exception e){
-        Console.WriteLine($"Erro ao atualizar nota: {e.Message}");
-        return Results.BadRequest(new { message = "Erro ao atualizar nota." });
-    }
-});
-
-app.MapDelete("/notas", async (string id, app_pm_back.Services.NotasService service) =>
-{
-    try
-    {
-        var result = await service.DeleteNotaAsync(id);
-        return Results.Ok(new { message = "Nota deletada com sucesso: " + result.DeletedCount });
-    }
-    catch (Exception e){
-        Console.WriteLine($"Erro ao deletar nota: {e.Message}");
-        return Results.BadRequest(new { message = "Erro ao deletar nota." });
-    }
-});
+// app.UseHttpsRedirection();
 
 app.MapControllers();
+app.MapSpreadsheetEndpoints();
+
 
 app.Run();

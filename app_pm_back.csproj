@@ -5,18 +5,57 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <NoWarn>$(NoWarn);1591;1573;1572;1587</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+        <PackageReference Include="CsvHelper" Version="33.1.0" />
+        <PackageReference Include="ExcelDataReader" Version="3.8.0" />
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.23" />
+        <PackageReference Include="Hangfire.PostgreSql" Version="1.21.1" />
+        <PackageReference Include="Hangfire.SqlServer" Version="1.8.23" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.23" />
-        <PackageReference Include="MongoDB.Driver" Version="3.6.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.24" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.24">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.24" />
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.19.0" />
+        <PackageReference Include="Npgsql" Version="8.0.3" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+        <None Update="Data\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="libcatboostmodel.so">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="catboostmodel.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="CatBoost\libcatboostmodel.so"> <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+      <_ContentIncludedByDefault Remove="app_pm_back\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\appsettings.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\obj\app_pm_back.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="app_pm_back\Properties\launchSettings.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="app_pm_back.Tests\**" />
+      <Content Remove="app_pm_back.Tests\**" />
+      <EmbeddedResource Remove="app_pm_back.Tests\**" />
+      <None Remove="app_pm_back.Tests\**" />
     </ItemGroup>
 
 </Project>

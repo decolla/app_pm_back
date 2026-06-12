@@ -1,0 +1,157 @@
+using app_pm_back.Data;
+using app_pm_back.Models.Domain;
+using app_pm_back.Services;
+using app_pm_back.Services.ExternIntegationsServices;
+using app_pm_back.Services.Manutencao;
+using AutoMapper.Internal;
+using ExcelDataReader.Log;
+using Microsoft.EntityFrameworkCore;
+
+namespace app_pm_back.Routes;
+
+/// <summary>
+/// Rotas para planilhas
+/// </summary>
+public static class SpreadsheetEndpoints
+{
+    public static void MapSpreadsheetEndpoints(this IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("api/V1/planilhas");
+
+        List<long> idNotas = new List<long>();
+        List<int> idItens = new List<int>();
+
+        group.MapPost("/upload", async (
+            IFormFile file,
+            bool sobrescrever,
+            bool adicionarNovas,
+            AppDbContext dbContext,
+            SpreadsheetService spreadsheetService,
+            NotaManutencaoService notaManutencaoService,
+            OrdemService ordemService,
+            ItemNotaService itemNotaService,
+            DadosRenovacaoService dadosRenovacaoService,
+            SynchronizeAPMService synchronizeApmService
+        ) =>
+        {
+            try
+            {
+                if (!sobrescrever && !adicionarNovas)
+                    return Results.BadRequest(new
+                        { message = "Nenhuma ação selecionada. Marque 'sobrescrever' ou 'adicionarNovas'." });
+
+                if (file == null || file.Length == 0)
+                    return Results.BadRequest(new { message = "Arquivo inválido ou vazio." });
+
+                var resultadoPlanilha = await spreadsheetService.ReadNotasSpreadSheetAsync(file);
+
+                if (resultadoPlanilha.TipoIdentificado == "NOTA")
+                {
+                    if (!resultadoPlanilha.Notas.Any())
+                        return Results.BadRequest(new { message = "Planilha reconhecida, mas sem dados válidos." });
+
+                    List<NotaModel> notasDeduplicadas = resultadoPlanilha.Notas
+                        .DistinctBy(o => o.NumeroNota).ToList();
+
+                    await notaManutencaoService.ImportarNotasEmLoteSeguroAsync(notasDeduplicadas, sobrescrever,
+                        adicionarNovas);
+                    var inseridas = notasDeduplicadas.Count;
+
+                    idNotas = notasDeduplicadas.Select(n => n.IdNota).ToList();
+                    if (idItens.Count > 1)
+                    {
+                        bool sinc = await synchronizeApmService.SynchronizeAPMAsync(); // sincroniza com o dnsIot do APM
+                        Console.WriteLine(
+                            $"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                        // adicionar logs
+                        await dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
+                    }
+
+                    return Results.Ok(new { message = inseridas });
+                }
+                else if (resultadoPlanilha.TipoIdentificado == "ORDEM")
+                {
+                    if (!resultadoPlanilha.Ordens.Any())
+                        return Results.BadRequest(new
+                            { message = "Planilha de ordens reconhecida, mas sem dados válidos." });
+
+                    List<OrdemModel> ordensDeduplicadas = resultadoPlanilha.Ordens
+                        .DistinctBy(o => o.NumeroOrdem)
+                        .ToList();
+
+                    await ordemService.ImportarOrdensEmLoteSeguroAsync(ordensDeduplicadas, sobrescrever,
+                        adicionarNovas);
+                    var inseridas = ordensDeduplicadas.Count;
+
+                    var idOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
+                    
+                    bool sinc = await synchronizeApmService.SynchronizeAPMAsync(); // sincroniza com o dnsIot do APM
+                    Console.WriteLine(
+                        $"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                    // add log dps
+                    await dadosRenovacaoService.ImportarDadosOrdemAsync(idOrdens);
+                    
+                    return Results.Ok(new { message = inseridas });
+                }
+                else if (resultadoPlanilha.TipoIdentificado == "ITEM")
+                {
+                    if (!resultadoPlanilha.Itens.Any())
+                        return Results.BadRequest(new
+                            { message = "Planilha de itens reconhecida, mas sem dados válidos." });
+
+                    var sapNumbers = resultadoPlanilha.Itens.Select(i => i.IdNota).Distinct().ToList();
+
+                    var notasNoBanco = await dbContext.PM_Notas
+                        .Where(n => sapNumbers.Contains(n.NumeroNota))
+                        .Select(n => new { n.IdNota, n.NumeroNota })
+                        .ToDictionaryAsync(n => n.NumeroNota, n => n.IdNota);
+
+                    var notasFaltantes = sapNumbers.Except(notasNoBanco.Keys).ToList();
+                    if (notasFaltantes.Any())
+                    {
+                        await ImportGhostHelper.EnsureNotasAsync(dbContext, notasFaltantes.Select(n => (long?)n));
+                        foreach (var nota in notasFaltantes)
+                        {
+                            notasNoBanco[nota] = nota;
+                        }
+                    }
+
+                    var itensValidos = new List<ItemNotaModel>();
+                    foreach (var item in resultadoPlanilha.Itens)
+                    {
+                        if (notasNoBanco.TryGetValue(item.IdNota, out long idInterno))
+                        {
+                            item.IdNota = idInterno;
+                            itensValidos.Add(item);
+                        }
+                    }
+
+                    if (itensValidos.Any())
+                    {
+                        await itemNotaService.ImportarItensEmLoteSeguroAsync(itensValidos);
+
+                        idItens = itensValidos.Select(i => i.IdItemNota).ToList();
+                        if (idNotas.Count > 1)
+                        {
+                            await dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
+                        }
+
+                        return Results.Ok(new { message = itensValidos.Count });
+                    }
+
+                    return Results.BadRequest(new
+                        { message = "Nenhum item pôde ser vinculado a uma nota existente no banco." });
+                }
+                else
+                {
+                    return Results.BadRequest(new
+                        { message = "Formato de planilha não reconhecido. Verifique os cabeçalhos." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(new { message = $"Erro ao processar planilha: {ex.Message}" });
+            }
+        }).DisableAntiforgery();
+    }
+}
