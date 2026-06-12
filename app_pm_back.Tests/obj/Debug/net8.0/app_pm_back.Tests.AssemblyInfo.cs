@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("app_pm_back.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+47aece48aaa903bfffd4a9cdd6ae60d42144a775")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c436cbd2154dab3e7e8d380da6f4de7779e03d7")]
 [assembly: System.Reflection.AssemblyProductAttribute("app_pm_back.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("app_pm_back.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
