@@ -179,6 +179,12 @@ public class OrdemModel : IClassifiable
     #endregion
 
     #region Relacionamentos
+    
+    /// <summary>
+    /// O escopo da nota/pordem
+    /// </summary>
+    //[MaxLength(100, ErrorMessage = "O escopo não pode exceder 100 caracteres.")]
+    //public string? Escopo { get; set; }
 
     /// <summary>
     /// Identificador do ativo relacionado à ordem (referência externa).

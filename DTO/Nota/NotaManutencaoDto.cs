@@ -64,6 +64,7 @@ public class NotaManutencaoDto
     [SheetColumn("Txt.grp.codific")] public string? DescricaoBreve { get; set; }
 
     [SheetColumn("Id Usuario")] public int? IdUsuario { get; set; }
+    public string? Escopo { get; set; } = "comgas";
 }
 
 #pragma warning restore CS1591

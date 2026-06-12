@@ -122,7 +122,8 @@ public class GenericSearchService
     public async Task<object> BuscarNotaOrdemAsync(
         dynamic busca,
         int? pagina,
-        int? tamanho)
+        int? tamanho,
+        Fichas? Tfichas)
     {
         if (busca == null)
         {
@@ -229,14 +230,22 @@ public class GenericSearchService
             ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem.Value);
         }
 
-        notasQuery = notasQuery.AplicarOrdenacao(_context);
-        ordensQuery = ordensQuery.AplicarOrdenacao(_context);
+        var listaUnica = new List<object>();
         
-        var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
-        var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
+        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Notas)
+        {
+            notasQuery = notasQuery.AplicarOrdenacao(_context);
+            var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
+            listaUnica.AddRange(todasNotas);
+        }
 
-        //Agrupa tudo em uma única lista na memória
-        var listaUnica = todasNotas.Cast<object>().Concat(todasOrdens.Cast<object>()).ToList();
+        // Busca Ordens apenas se for Ambas (0) ou Ordens (2)
+        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Ordens)
+        {
+            ordensQuery = ordensQuery.AplicarOrdenacao(_context);
+            var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
+            listaUnica.AddRange(todasOrdens);
+        }
 
         //Cálculos da paginação
         int totalGeral = listaUnica.Count;
@@ -248,10 +257,10 @@ public class GenericSearchService
         var itensPaginados = listaUnica.Skip((p - 1) * t).Take(t).ToList();
 
         //Separa de volta para preencher o NotaOrdemSearchResult
-        var notas = itensPaginados.Where(x => x is NotaModel).ToList(); 
-        var ordens = itensPaginados.Where(x => x is OrdemModel).ToList(); 
+        var notasResult = itensPaginados.OfType<NotaModel>().ToList(); 
+        var ordensResult = itensPaginados.OfType<OrdemModel>().ToList(); 
 
-        var result = new NotaOrdemSearchResult(notas, ordens);
+        var result = new NotaOrdemSearchResult(notasResult, ordensResult);
 
         return new 
         { 

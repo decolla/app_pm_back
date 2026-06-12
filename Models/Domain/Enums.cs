@@ -171,3 +171,10 @@ public enum Status
     EmAndamento = 2,
     Concluida = 3
 }
+
+public enum Fichas
+{
+    Ambas = 0,
+    Notas = 1,
+    Ordens =2
+}

@@ -145,7 +145,8 @@ public class BuscaController : ControllerBase
     public async Task<IActionResult> BuscarNotaOrdem(
         [FromBody] BuscaOrdemNotaDto busca,
         [FromQuery] int? pagina = null,
-        [FromQuery] int? tamanho = null)
+        [FromQuery] int? tamanho = null,
+        [FromQuery] Fichas? Tfichas = Fichas.Ambas)
     {
         try
         {
@@ -157,7 +158,8 @@ public class BuscaController : ControllerBase
             var resultados = await _searchService.BuscarNotaOrdemAsync(
                 busca,
                 pagina,
-                tamanho);
+                tamanho,
+                Tfichas);
 
             return Ok(resultados);
         }
