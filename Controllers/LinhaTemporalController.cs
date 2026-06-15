@@ -32,22 +32,26 @@ public class LinhaTemporalController : ControllerBase
 
         try
         {
-            // 1. Busca LIs do APM com paginação direta na API
-            var lisPagina = await _linhaTemporalService.ObterLisDoApmAsync(pagina, tamanho);
-            
+            var apmResultado = await _linhaTemporalService.ObterLisDoApmAsync(pagina, tamanho);
+    
+            // Extrai a lista e o total para facilitar o uso
+            var lisPagina = apmResultado.Assets;
+            var totalRegistros = apmResultado.Total;
+    
             if (!lisPagina.Any())
             {
                 return Ok(new
                 {
-                    itens = new List<object>(),
                     pagina,
                     tamanho,
+                    total = totalRegistros,
+                    itens = new List<object>(),
                     temProxima = false,
                     temAnterior = pagina > 1
                 });
             }
 
-            // 2. Para cada LI da página, busca notas/ordens no banco
+            // Para cada LI da página, busca notas/ordens no banco
             var resultado = new List<object>();
 
             foreach (var li in lisPagina)
@@ -77,9 +81,10 @@ public class LinhaTemporalController : ControllerBase
 
             return Ok(new
             {
-                itens = resultado,
                 pagina,
                 tamanho,
+                total = totalRegistros,
+                itens = resultado,
                 temProxima,
                 temAnterior = pagina > 1
             });
