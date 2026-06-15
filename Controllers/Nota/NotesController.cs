@@ -245,13 +245,34 @@ public class NotasController : ControllerBase
     }
 
     /// <summary>
-    /// Classifica uma nota com base uma lista de palavras armazenadas no banco
+    /// Cria uma regra de classificação por palavras
     /// </summary>
-    [HttpPost("classificacao/filtro")]
-    public async Task<IActionResult> ClassificacaoPalavrasNota()
+    /// <param name="regra">Regra a ser aplicada</param>
+    /// <returns>Regra criada</returns>
+    [HttpPost("classificacao/regra")]
+    public async Task<IActionResult> CriarRegraCongas([FromBody] RuleClassificationDto regra)
     {
         try
         {
+            var result = await _classificationService.CreateRule(regra);
+            return Ok(new { message = $"Regra criada com sucesso com Id: {result.IdRegra}" });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao criar regra {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Classifica uma nota com base uma lista de palavras armazenadas no banco
+    /// </summary>
+    /// <returns>Lista de notas atualizadas</returns>
+    [HttpPost("classificacao/filtro")]
+    public async Task<IActionResult> ClassificacaoPalavrasNotaCongas()
+    {
+        try
+        {
+            // passar uma lista vazia por enquanto 
             var result = await _classificationService.WordsClassification([]);
             if (result.Count > 0)
             {

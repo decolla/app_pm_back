@@ -157,13 +157,22 @@ public enum OriginType
 /// </summary>
 public enum Classificacao
 {
-    PREVENTIVACAT = 0,
-    CORRETIVACAT = 1,
-    PREVENTIVAHUM = 2,
-    CORRETIVAHUM = 3,
-    NAOCLASSIFICADA =4
+    PREVENTIVA = 0,
+    CORRETIVA = 1,
+    NAOCLASSIFICADA = 2,
+    SERVICO = 3
 }
 
+/// <summary>
+/// Representa o método utilizado para uma classificação.
+/// </summary>
+public enum MetodoClassificacao
+{
+    HUMANA = 0,
+    ALGORITMO = 1,
+    CATBOOST = 2,
+    NAOCLASSIFICADA = 3,
+}
 public enum Status
 {
     Reprovada = 0,

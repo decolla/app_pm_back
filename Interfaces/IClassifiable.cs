@@ -14,7 +14,7 @@ public interface IClassifiable
     /// Quem/o que tomou a decisão da classificação da nota
     /// </summary>
     /// <example>"MANUAL", "FILTRO_POR_PALAVRAS", "IA_CATBOOST"</example>
-    public string? MetodoClassificacao { get; set;}
+    public MetodoClassificacao MetodoClassificacao { get; set;}
     
     /// <summary>
     /// Identificador de quem classificou a nota. No caso nulo, foi classificado pelo sistema

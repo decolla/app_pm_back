@@ -261,6 +261,10 @@ public class SpreadsheetService
                                     valorConvertido = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
                                 }
                             }
+                            else if (tipo == typeof(Classificacao))
+                            {
+                                valorConvertido = TryTranslateClassificacao(valor);
+                            }
                             else
                             {
                                 valorConvertido = Convert.ChangeType(valor, tipo);
@@ -296,6 +300,22 @@ public class SpreadsheetService
         }
 
         return null;
+    }
+    
+    private static Classificacao TryTranslateClassificacao(string rawValue)
+    {
+        var normalized = NormalizeText(rawValue);
+        if (string.IsNullOrEmpty(normalized))
+            return Classificacao.NAOCLASSIFICADA;
+
+        if (normalized.Contains("corretiva") || normalized.Contains("zf") || normalized.Contains("1"))
+            return Classificacao.CORRETIVA;
+        if (normalized.Contains("preventiva") || normalized.Contains("0"))
+            return Classificacao.PREVENTIVA;
+        if (normalized.Contains("zs"))
+            return Classificacao.SERVICO;
+
+        return Classificacao.NAOCLASSIFICADA;
     }
 
     private static string NormalizeText(string value)

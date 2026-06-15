@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using app_pm_back.Data;
+using app_pm_back.DTO;
 using app_pm_back.Interfaces;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ public class ClassificationService<T> where T : class, IClassifiable
 {
     protected readonly AppDbContext _context;
     protected readonly DbSet<T> _dbSet;
+    protected readonly DbSet<RuleClassificationDto> _classificationModel;
     protected readonly Cbm? _cbm;
     protected readonly ModelMeta? _meta;
     /// <summary>
@@ -42,19 +44,88 @@ public class ClassificationService<T> where T : class, IClassifiable
         nota.Classificacao = classificacao;
         nota.ClassificadoPor = usuario;
         nota.DataClassificacao = DateTime.Now;
-        nota.MetodoClassificacao = "MANUAL";
+        nota.MetodoClassificacao = MetodoClassificacao.NAOCLASSIFICADA;
 
         _dbSet.Update(nota);
         await _context.SaveChangesAsync();
         return nota;
     }
+    
+    /// <summary>
+    /// Cria uma regra de palavras
+    /// </summary>
+    /// <param name="rule">Regra no formato de RuleClassificationModel</param>
+    /// <returns>Regra passada como parâmetro</returns>
+    public async Task<RuleClassificationDto> CreateRule(RuleClassificationDto rule)
+    {
+        await _classificationModel.AddAsync(rule);
+        await _context.SaveChangesAsync();
+        return rule;
+    }
 
     /// <summary>
-    /// Função para classificar notas/ordens com base nas regras de palavras (mocked/no-op since Rule table is deleted).
+    /// Função para classificar notas/ordens com base nas regras de palavras.
+    /// A busca será feita no controller e passará todas que estiverem sem classificar,
+    /// e quais deverão ser reclassificadas.
     /// </summary>
+    /// <param name="notasComClassificacao"> Lista de tipo genérico de notas/ordens já classificadas para serem analisadas pelo algoritmo</param>
+    /// <returns>Todas as notas que não tinham sido classificadas juntamente as reclassificadas</returns>
     public async Task<List<T>> WordsClassification(List<T>? notasComClassificacao)
     {
-        var notasSemClassificacao = await _dbSet.Where(n => n.Classificacao == Classificacao.NAOCLASSIFICADA).ToListAsync();
+        // busco todas as notas/ordems sem classificação
+        // remover comentário caso deve reavaliar regras já avaladas
+        var notasSemClassificacao =
+            await _dbSet.Where(n => n.Classificacao == null /* || n.ClassificadoPor == null*/).ToListAsync();
+
+        // leio o campo alvo da regra e busco a palavra chave 
+        List<RuleClassificationDto> regras = await _classificationModel.OrderBy(r => r.OrdemPrioridade).ToListAsync();
+
+        // dicionário para armazenar um cache das propriedades
+        Dictionary<string, PropertyInfo> cache = new Dictionary<string, PropertyInfo>();
+
+        foreach (var regra in regras)
+        {
+            // verifica se a regra está ou não na lista de regras
+            if (!cache.ContainsKey(regra.CampoAlvo))
+            {
+                // pega a propriedade da nota por Reflection
+                var prop = typeof(T).GetProperty(regra.CampoAlvo);
+                if (prop != null)
+                {
+                    // adiciona a propriedade ao cache
+                    cache[regra.CampoAlvo] = prop;
+                }
+            }
+        }
+
+        // caso a palavra exista atualiza a ficha com o método "FILTRO_PALAVRAS"
+        foreach (var nota in notasSemClassificacao)
+        {
+            foreach (var regra in regras)
+            {
+                // captura a propriedade alvo da nota e a palavra chave
+                if (!cache.TryGetValue(regra.CampoAlvo, out var propriedadeAlvo))
+                    continue;
+
+                string palavraChave = regra.PalavraChave;
+
+                string? valorAlvo = propriedadeAlvo.GetValue(nota)?.ToString();
+
+                // verifica se a palavra chave existe no valor alvo
+                if (valorAlvo != null && valorAlvo.Contains(palavraChave, StringComparison.OrdinalIgnoreCase))
+                {
+                    nota.Classificacao = regra.ClassificacaoAplicada;
+                    nota.ClassificadoPor = null;
+                    nota.DataClassificacao = DateTime.Now;
+                    nota.MetodoClassificacao = MetodoClassificacao.ALGORITMO;
+                    break;
+                }
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        // retorna as notas/ordens atualizadas
         return notasSemClassificacao.Concat(notasComClassificacao ?? []).ToList();
     }
 
@@ -152,12 +223,12 @@ public class ClassificationService<T> where T : class, IClassifiable
                 var chanceDeSerCorretiva = probabilidades[i];
 
                 if (chanceDeSerCorretiva > 0.8)
-                    nota.Classificacao = Classificacao.CORRETIVACAT;
+                    nota.Classificacao = Classificacao.CORRETIVA;
                 else if (chanceDeSerCorretiva < 0.7)
-                    nota.Classificacao = Classificacao.PREVENTIVACAT;
+                    nota.Classificacao = Classificacao.PREVENTIVA;
                 else nota.Classificacao = Classificacao.NAOCLASSIFICADA;
 
-                nota.MetodoClassificacao = "IA_CATBOOST";
+                nota.MetodoClassificacao = MetodoClassificacao.CATBOOST;
                 nota.DataClassificacao = DateTime.UtcNow;
 
                 notasAtualizadas.Add(nota);

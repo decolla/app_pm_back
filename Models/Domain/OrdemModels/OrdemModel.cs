@@ -73,7 +73,7 @@ public class OrdemModel : IClassifiable
     /// </summary>
     /// <example>Manual, Automático por IA, Baseado em Histórico, Por Template</example>
     [MaxLength(100, ErrorMessage = "O método de classificação não pode exceder 100 caracteres.")]
-    public string? MetodoClassificacao { get; set; }
+    public MetodoClassificacao MetodoClassificacao { get; set; } = MetodoClassificacao.NAOCLASSIFICADA;
 
     /// <summary>
     /// Identificação do usuário ou sistema que classificou a ordem.

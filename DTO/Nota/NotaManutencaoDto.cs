@@ -19,7 +19,7 @@ public class NotaManutencaoDto
 
     [SheetColumn("Classificação")] public Classificacao Classificacao { get; set; } = Classificacao.NAOCLASSIFICADA;
 
-    [SheetColumn("Método classificação")] public string? MetodoClassificacao { get; set; }
+    [SheetColumn("Método classificação")] public MetodoClassificacao MetodoClassificacao { get; set; } = MetodoClassificacao.NAOCLASSIFICADA;
 
     [SheetColumn("Classificado por")] public string? ClassificadoPor { get; set; }
 

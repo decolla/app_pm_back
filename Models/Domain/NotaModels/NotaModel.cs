@@ -34,6 +34,11 @@ public class NotaModel : IClassifiable
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public long IdNota { get; set; }
+    
+    /// <summary>
+    /// Identificador para string no caso do id do SAP.
+    /// </summary>
+    public string? SapCode { get; set; }
 
     /// <summary>
     /// Número sequencial da nota dentro do contexto do plano de manutenção.
@@ -183,7 +188,7 @@ public class NotaModel : IClassifiable
     /// </summary>
     /// <example>"Manual", "IA - Modelo v2.1", "Regras de Negócio", "Híbrido"</example>
     [MaxLength(100, ErrorMessage = "O método de classificação não pode exceder 100 caracteres.")]
-    public string? MetodoClassificacao { get; set; }
+    public MetodoClassificacao MetodoClassificacao { get; set; } = MetodoClassificacao.NAOCLASSIFICADA;
 
     /// <summary>
     /// Identificação do responsável pela classificação.
