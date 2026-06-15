@@ -61,9 +61,17 @@ if (databaseSchema == "cg")
 {
     var connectionString = builder.Configuration.GetConnectionString("DBConnection") 
                            ?? builder.Configuration.GetConnectionString("DefaultConnection");
-                           
+                          
+    // ef core para sql server
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(connectionString));
+
+    // config hangfire para sql server
+    builder.Services.AddHangfire(config => config
+        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UseSqlServerStorage(connectionString));
 }
 else
 {
@@ -82,15 +90,15 @@ else
     // adicionar o contexto do PostgreSQL
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(dataSource));
+    
+    // config hangfire 
+    builder.Services.AddHangfire(config => config
+        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UsePostgreSqlStorage(c => 
+            c.UseNpgsqlConnection(connectionString)));
 }
-
-// config hangfire
-builder.Services.AddHangfire(config => config
-    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
-    .UseSimpleAssemblyNameTypeSerializer()
-    .UseRecommendedSerializerSettings()
-    .UsePostgreSqlStorage(c => 
-        c.UseNpgsqlConnection(builder.Configuration.GetConnectionString("DefaultConnection"))));
 
 builder.Services.AddHangfireServer();
 
