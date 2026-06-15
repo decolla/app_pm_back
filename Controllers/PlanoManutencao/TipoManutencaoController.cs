@@ -366,7 +366,7 @@ public class TipoPlanoController : ControllerBase
     /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
-    /// <param name="tipo">Parâmetro do método.</param>
+    /// <param name="tipo">Tipo do tipo plano</param>
     /// <returns>Resultado da operação.</returns>
     /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpGet("tipado/{tipo:int}")]

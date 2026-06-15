@@ -23,10 +23,8 @@ public class AnnexController : ControllerBase
     }
 
     /// <summary>
-    /// Executa a ação correspondente.
+    /// Realiza upload de um arquivo.
     /// </summary>
-    /// <param name="request">Parâmetro do método.</param>
-    /// <returns>Resultado da operação.</returns>
     [HttpPost("upload")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadArquivo([FromForm] UploadAnnexRequestDto request)
@@ -47,7 +45,7 @@ public class AnnexController : ControllerBase
     }
 
     /// <summary>
-    /// Executa a ação correspondente.
+    /// Realiza o download de um arquivo.
     /// </summary>
     /// <param name="id">Identificador do registro.</param>
     /// <returns>Resultado da operação.</returns>
@@ -68,9 +66,8 @@ public class AnnexController : ControllerBase
     /// <summary>
     /// Obtém um registro específico.
     /// </summary>
-    /// <param name="referenciaId">Parâmetro do método.</param>
-    /// <param name="tipoReferencia">Parâmetro do método.</param>
-    /// <returns>Resultado da operação.</returns>
+    /// <param name="referenciaId">Id de referência.</param>
+    /// <param name="tipoReferencia">Tipo de referência.</param>
     [HttpGet("referencia/{referenciaId:long}/{tipoReferencia}")]
     public async Task<IActionResult> BuscarArquivo([FromRoute] long referenciaId, [FromRoute] string tipoReferencia)
     {
@@ -91,6 +88,14 @@ public class AnnexController : ControllerBase
         return Ok(list);
     }
 
+    /// <summary>
+    /// Função auxiliar para identificar o tipo da referência.
+    /// </summary>
+    /// <param name="request">Anexo enviado.</param>
+    /// <param name="notaId">Id da nota associada.</param>
+    /// <param name="ordemId">Id da ordem associada.</param>
+    /// <param name="error">Erro de retorno em caso de erro</param>
+    /// <returns>Booleano de se a referência é válida ou não.</returns>
     private static bool TryResolveReferencia(UploadAnnexRequestDto request, out long? notaId, out long? ordemId,
         out string? error)
     {
