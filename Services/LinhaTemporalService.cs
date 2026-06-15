@@ -12,12 +12,19 @@ namespace app_pm_back.Services.Manutencao;
 /// Serviço para obter linha temporal de LIs consultando API externa (APM)
 /// com paginação direta na API e cruzando com notas/ordens do banco de dados local
 /// </summary>
+
+public class ApmResponse
+{
+    public List<LiApmInfo> Assets { get; set; } = new();
+    public int Total { get; set; }
+}
 public class LinhaTemporalService
 {
     private readonly AppDbContext _context;
     private readonly ILogger<LinhaTemporalService> _logger;
     private readonly HttpClient _httpClient;
     private readonly string _apmBaseUrl;
+    
 
     public LinhaTemporalService(
         AppDbContext context,
@@ -37,7 +44,7 @@ public class LinhaTemporalService
     /// <param name="pagina">Número da página (base 1)</param>
     /// <param name="tamanho">Tamanho da página</param>
     /// <returns>Lista de LIs da página solicitada</returns>
-    public async Task<List<LiApmInfo>> ObterLisDoApmAsync(int pagina, int tamanho)
+    public async Task<ApmResponse> ObterLisDoApmAsync(int pagina, int tamanho)
     {
         try
         {
@@ -55,7 +62,7 @@ public class LinhaTemporalService
 
             var content = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            return JsonSerializer.Deserialize<List<LiApmInfo>>(content, options) ?? new();
+            return JsonSerializer.Deserialize<ApmResponse>(content, options) ?? new ApmResponse();
         }
         catch (Exception ex)
         {
