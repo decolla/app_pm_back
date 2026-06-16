@@ -198,7 +198,7 @@ using (var scope = app.Services.CreateScope())
         {
             Console.WriteLine("PostgreSQL detectado. A tentar aplicar as migrations no banco de dados...");
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
-            // dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
+            dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
             dbContext.Database.Migrate();
             Console.WriteLine("Migrations aplicadas com sucesso!");
         }
