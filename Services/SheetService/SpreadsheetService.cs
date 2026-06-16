@@ -244,6 +244,13 @@ public class SpreadsheetService
                                 DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
                                 valorConvertido = dataOffset.UtcDateTime;
                             }
+                            else if (tipo == typeof(DateTime) && 
+                                     string.Equals(nomeColunaExcel, "Data da nota", StringComparison.OrdinalIgnoreCase))
+                            {
+                                long.TryParse(valor, out long l);
+                                DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
+                                valorConvertido = dataOffset.UtcDateTime;
+                            }
                             else if (tipo == typeof(Status) &&
                                      string.Equals(property.Name, "StatusNota", StringComparison.OrdinalIgnoreCase)
                                      )
