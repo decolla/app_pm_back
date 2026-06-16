@@ -191,7 +191,7 @@ using (var scope = app.Services.CreateScope())
         if (dbSchema == "cg")
         {
             Console.WriteLine("Ambiente 'cg' detectado. A tentar criar o banco de dados e as tabelas...");
-            dbContext.Database.EnsureCreated();
+            dbContext.Database.Migrate();
             Console.WriteLine("Banco de dados e tabelas criados/verificados com sucesso!");
         }
         else
