@@ -18,12 +18,22 @@ public class SpreadsheetService
 {
     private static readonly (ComponentType Type, string[] Terms)[] ComponentTypeMatchers =
     [
-        (ComponentType.Shutoff, new[] { "shut-off", "shutoff", "shut off", "sbr", "sdv", "bloqueio remoto", "sistema bloqueio remoto", "valvula saida"}),
+        (ComponentType.Shutoff,
+            new[]
+            {
+                "shut-off", "shutoff", "shut off", "sbr", "sdv", "bloqueio remoto", "sistema bloqueio remoto",
+                "valvula saida"
+            }),
         (ComponentType.PilotValve, new[] { "valvula piloto", "pilot valve", "pilot", "piloto" }),
         (ComponentType.RegulatorValve, new[] { "valvula reguladora", "regulator valve" }),
         (ComponentType.Regulator, new[] { "regulador", "regulator", "reguladores" }),
-        (ComponentType.FlowSensor, new[] { "flow", "flowtrail", "flow sensor", "flow trail", "sensor de vazao", "sensor de fluxo", "medidor" }),
-        (ComponentType.FillValveV9, new[] { "abastecimento de odorante", "valvula de abastecimento", "fill valve", "v9" }),
+        (ComponentType.FlowSensor,
+            new[]
+            {
+                "flow", "flowtrail", "flow sensor", "flow trail", "sensor de vazao", "sensor de fluxo", "medidor"
+            }),
+        (ComponentType.FillValveV9,
+            new[] { "abastecimento de odorante", "valvula de abastecimento", "fill valve", "v9" }),
         (ComponentType.OdorantPump, new[] { "bomba odorante", "bomba de odorante", "odorante bomba", "pump", "bomba" }),
         (ComponentType.OdorantTank, new[] { "tanque de odorante", "tanque odorante", "reservatorio de odorante" }),
         (ComponentType.ManifoldIn, new[] { "manifold in", "manifold entrada" }),
@@ -35,21 +45,24 @@ public class SpreadsheetService
         (ComponentType.AlimentationPanel, new[] { "painel de alimentacao", "nobreak" }),
         (ComponentType.Battery, new[] { "bateria", "baterias" }),
         (ComponentType.SolarPanel, new[] { "painel solar", "solar" }),
-        (ComponentType.CommunicationInterface, new[] { "comunicacao", "telemetria", "modem", "vsat", "antena", "chip", "ethernet", "serial" }),
+        (ComponentType.CommunicationInterface,
+            new[] { "comunicacao", "telemetria", "modem", "vsat", "antena", "chip", "ethernet", "serial" }),
         (ComponentType.Controller, new[] { "controlador", "scada", "ihm", "datalogger", "data logger" }),
         (ComponentType.ChargeControllerPanel, new[] { "controlador de carga", "painel controlador de carga" }),
         (ComponentType.Plc, new[] { "plc" })
     ];
 
     private readonly ConvertService _convertService;
+
     private readonly AppDbContext _appDbContext;
+
     // memória temporária para evitar consultar o banco centenas de vezes
     private readonly Dictionary<string, long> _sapCodeCache = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="SpreadsheetService"/>.
     /// </summary>
-    public SpreadsheetService(ConvertService convertService,AppDbContext appDbContext)
+    public SpreadsheetService(ConvertService convertService, AppDbContext appDbContext)
     {
         _appDbContext = appDbContext;
         _convertService = convertService;
@@ -154,7 +167,7 @@ public class SpreadsheetService
 
         if (columns.Count == 0) return resultado;
 
-        bool isNota = (columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota")) || 
+        bool isNota = (columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota")) ||
                       (columns.ContainsKey("Nota") && columns.ContainsKey("status_nota"));
         bool isOrdem = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve") ||
                        (columns.ContainsKey("numero_ordem") && columns.ContainsKey("status_ordem"));
@@ -232,28 +245,40 @@ public class SpreadsheetService
                                 valorConvertido = TryTranslateComponentType(valor);
                             }
                             else if (tipo == typeof(long) &&
-                                string.Equals(property.Name, "IdNota", StringComparison.OrdinalIgnoreCase) &&
-                                string.Equals(nomeColunaExcel, "cdnotamanutencao", StringComparison.OrdinalIgnoreCase))
+                                     string.Equals(property.Name, "IdNota", StringComparison.OrdinalIgnoreCase) &&
+                                     string.Equals(nomeColunaExcel, "cdnotamanutencao",
+                                         StringComparison.OrdinalIgnoreCase))
                             {
                                 valorConvertido = TryTranslateSapCode(valor);
                             }
-                            else if (tipo == typeof(DateTime) && 
-                                     string.Equals(nomeColunaExcel, "data_expectativa_nota", StringComparison.OrdinalIgnoreCase))
+                            else if (tipo == typeof(DateTime) &&
+                                     string.Equals(nomeColunaExcel, "data_expectativa_nota",
+                                         StringComparison.OrdinalIgnoreCase))
                             {
                                 long.TryParse(valor, out long l);
                                 DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
                                 valorConvertido = dataOffset.UtcDateTime;
                             }
-                            else if (tipo == typeof(DateTime) && 
+                            else if (tipo == typeof(DateTime) &&
                                      string.Equals(nomeColunaExcel, "Data da nota", StringComparison.OrdinalIgnoreCase))
                             {
-                                long.TryParse(valor, out long l);
-                                DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
-                                valorConvertido = dataOffset.UtcDateTime;
+                                if (!DateTime.TryParse(valor, out DateTime dataConvertida))
+                                {
+                                    long.TryParse(valor, out long l);
+                                    DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
+                                    valorConvertido = dataOffset.UtcDateTime;
+                                }
+                            }
+                            else if (string.Equals(nomeColunaExcel, "CondInstApósMed",
+                                         StringComparison.OrdinalIgnoreCase) &&
+                                     tipo == typeof(ConfiabilidadeRestaurada) &&
+                                     valor.Contains("3"))
+                            {
+                                valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
                             }
                             else if (tipo == typeof(Status) &&
                                      string.Equals(property.Name, "StatusNota", StringComparison.OrdinalIgnoreCase)
-                                     )
+                                    )
                             {
                                 valorConvertido = TryTranslateStatusNota(valor);
                             }
@@ -341,17 +366,17 @@ public class SpreadsheetService
 
         return null;
     }
-    
+
     public long? TryTranslateSapCode(string rawValue)
     {
         if (string.IsNullOrWhiteSpace(rawValue)) return null;
-        
+
         // verifica se ja foi consultado o banco para esse código SAP antes
         if (_sapCodeCache.TryGetValue(rawValue, out var cachedIdNota))
         {
             return cachedIdNota;
         }
-        
+
         var result = _appDbContext.PM_Notas
             .Where(n => n.SapCode == rawValue)
             .Select(n => (long?)n.IdNota)
@@ -361,6 +386,7 @@ public class SpreadsheetService
             _sapCodeCache[rawValue] = result.Value;
             return result;
         }
+
         return null;
     }
 
@@ -369,51 +395,52 @@ public class SpreadsheetService
         var normalized = NormalizeText(rawValue);
         if (string.IsNullOrEmpty(normalized))
             return Status.EmAndamento;
-        
+
         if (normalized.Contains("concluida") || normalized.Contains("msen"))
             return Status.Concluida;
-        if (normalized.Contains("aberta") || normalized.Contains("meab") || normalized.Contains("mspn") || normalized.Contains("mrel"))
-            return Status.Aberta;   
+        if (normalized.Contains("aberta") || normalized.Contains("meab") || normalized.Contains("mspn") ||
+            normalized.Contains("mrel"))
+            return Status.Aberta;
         if (normalized.Contains("reprovada") || normalized.Contains("mbar"))
             return Status.Reprovada;
-        
+
         return Status.EmAndamento;
     }
-    
+
     public Status TryTranslateStatusOrdem(string rawValue)
     {
         var normalized = NormalizeText(rawValue);
         if (string.IsNullOrEmpty(normalized))
             return Status.Concluida;
-        
-        if (normalized.Contains("concluida") 
-            || normalized.Contains("exco") 
-            || normalized.Contains("ftec") 
+
+        if (normalized.Contains("concluida")
+            || normalized.Contains("exco")
+            || normalized.Contains("ftec")
             || normalized.Contains("enco")
             || normalized.Contains("ente")
             || normalized.Contains("ence")
             || normalized.Contains("mrel")
-            )
+           )
             return Status.Concluida;
-        if (normalized.Contains("aberta") 
-            || normalized.Contains("impd") 
-            || normalized.Contains("ppro") 
+        if (normalized.Contains("aberta")
+            || normalized.Contains("impd")
+            || normalized.Contains("ppro")
             || normalized.Contains("tria")
             || normalized.Contains("pmau")
             || normalized.Contains("abra")
             || normalized.Contains("lib")
-            )
-            return Status.Aberta;   
-        if (normalized.Contains("reprovada") 
+           )
+            return Status.Aberta;
+        if (normalized.Contains("reprovada")
             || normalized.Contains("scan")
             || normalized.Contains("excl")
             || normalized.Contains("pmvl")
-            )
+           )
             return Status.Reprovada;
-        
+
         return Status.EmAndamento;
     }
-    
+
     private static Classificacao TryTranslateClassificacao(string rawValue)
     {
         var normalized = NormalizeText(rawValue);

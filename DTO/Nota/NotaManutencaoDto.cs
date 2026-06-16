@@ -65,7 +65,7 @@ public class NotaManutencaoDto
 
     [SheetColumn("Equipamento")] public string? EquipamentoDisponivel { get; set; }
 
-    public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
+    [SheetColumn("CondInstApósMed")]public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
 
     [SheetColumn("Descrição")] public string? AnomaliaObservada { get; set; }
 
