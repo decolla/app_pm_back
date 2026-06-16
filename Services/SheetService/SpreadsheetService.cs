@@ -42,16 +42,16 @@ public class SpreadsheetService
     ];
 
     private readonly ConvertService _convertService;
-    private readonly DbSet<NotaModel> _notaModels;
+    private readonly AppDbContext _appDbContext;
     // memória temporária para evitar consultar o banco centenas de vezes
     private readonly Dictionary<string, long> _sapCodeCache = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="SpreadsheetService"/>.
     /// </summary>
-    public SpreadsheetService(ConvertService convertService, DbSet<NotaModel> notaModels)
+    public SpreadsheetService(ConvertService convertService,AppDbContext appDbContext)
     {
-        _notaModels = notaModels;
+        _appDbContext = appDbContext;
         _convertService = convertService;
     }
 
@@ -228,12 +228,22 @@ public class SpreadsheetService
                             {
                                 valorConvertido = TryTranslateComponentType(valor);
                             }
-
-                            if (tipo == typeof(long) &&
+                            else if (tipo == typeof(long) &&
                                 string.Equals(property.Name, "IdNota", StringComparison.OrdinalIgnoreCase) &&
                                 string.Equals(nomeColunaExcel, "cdnotamanutencao", StringComparison.OrdinalIgnoreCase))
                             {
                                 valorConvertido = TryTranslateSapCode(valor);
+                            }
+                            else if (tipo == typeof(Status) &&
+                                     string.Equals(property.Name, "StatusNota", StringComparison.OrdinalIgnoreCase)
+                                     )
+                            {
+                                valorConvertido = TryTranslateStatusNota(valor);
+                            }
+                            else if (tipo == typeof(Status) &&
+                                     string.Equals(property.Name, "StatusOrdem", StringComparison.OrdinalIgnoreCase))
+                            {
+                                valorConvertido = TryTranslateStatusOrdem(valor);
                             }
                             else if (tipo.IsEnum)
                             {
@@ -325,7 +335,7 @@ public class SpreadsheetService
             return cachedIdNota;
         }
         
-        var result = _notaModels
+        var result = _appDbContext.PM_Notas
             .Where(n => n.SapCode == rawValue)
             .Select(n => (long?)n.IdNota)
             .FirstOrDefault();
@@ -335,6 +345,56 @@ public class SpreadsheetService
             return result;
         }
         return null;
+    }
+
+    public Status TryTranslateStatusNota(string rawValue)
+    {
+        var normalized = NormalizeText(rawValue);
+        if (string.IsNullOrEmpty(normalized))
+            return Status.EmAndamento;
+        
+        if (normalized.Contains("concluida") || normalized.Contains("msen"))
+            return Status.Concluida;
+        if (normalized.Contains("aberta") || normalized.Contains("meab") || normalized.Contains("mspn") || normalized.Contains("mrel"))
+            return Status.Aberta;   
+        if (normalized.Contains("reprovada") || normalized.Contains("mbar"))
+            return Status.Reprovada;
+        
+        return Status.EmAndamento;
+    }
+    
+    public Status TryTranslateStatusOrdem(string rawValue)
+    {
+        var normalized = NormalizeText(rawValue);
+        if (string.IsNullOrEmpty(normalized))
+            return Status.Concluida;
+        
+        if (normalized.Contains("concluida") 
+            || normalized.Contains("exco") 
+            || normalized.Contains("ftec") 
+            || normalized.Contains("enco")
+            || normalized.Contains("ente")
+            || normalized.Contains("ence")
+            || normalized.Contains("mrel")
+            )
+            return Status.Concluida;
+        if (normalized.Contains("aberta") 
+            || normalized.Contains("impd") 
+            || normalized.Contains("ppro") 
+            || normalized.Contains("tria")
+            || normalized.Contains("pmau")
+            || normalized.Contains("abra")
+            || normalized.Contains("lib")
+            )
+            return Status.Aberta;   
+        if (normalized.Contains("reprovada") 
+            || normalized.Contains("scan")
+            || normalized.Contains("excl")
+            || normalized.Contains("pmvl")
+            )
+            return Status.Reprovada;
+        
+        return Status.EmAndamento;
     }
     
     private static Classificacao TryTranslateClassificacao(string rawValue)
@@ -380,7 +440,7 @@ public class SpreadsheetService
             NumeroNota = dto.NumeroNota,
             Classificacao = dto.Classificacao,
             MetodoClassificacao = dto.MetodoClassificacao,
-            StatusNota = Status.Concluida,
+            StatusNota = Status.EmAndamento,
             DataNota = dto.DataNota,
             Prioridade = prioridade,
             FimDesejado = dto.FimDesejado,
@@ -413,7 +473,7 @@ public class SpreadsheetService
             MetodoClassificacao = dto.MetodoClassificacao,
             ClassificadoPor = dto.ClassificadoPor,
             DataClassificacao = dto.DataClassificacao,
-            StatusOrdem = dto.StatusOrdem ?? Status.Concluida,
+            StatusOrdem = dto.StatusOrdem ?? Status.EmAndamento,
             Criticidade = dto.Prioridade?.ToString() ?? dto.Criticidade,
             DataCriacao = dto.DataCriacao ?? DateTime.UtcNow,
             CriadaPorUsuario = dto.CriadaPorUsuario,

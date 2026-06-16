@@ -26,7 +26,7 @@ public class OrdemManutencaoDto
 
     [SheetColumn("Data classificação")] public DateTime? DataClassificacao { get; set; }
 
-    [SheetColumn("status_nota")] public Status? StatusOrdem { get; set; }
+    [SheetColumn("status_ordem")] public Status? StatusOrdem { get; set; }
 
     public string? Criticidade { get; set; }
 
@@ -34,7 +34,7 @@ public class OrdemManutencaoDto
 
     [SheetColumn("Data de entrada")] public DateTime? DataCriacao { get; set; }
 
-    [SheetColumn("Criado por")] public string? CriadaPorUsuario { get; set; }
+    [SheetColumn("status_usuario")] public string? CriadaPorUsuario { get; set; }
 
     [SheetColumn("Modificado por")] public string? ModificadaPorUsuario { get; set; }
 

@@ -38,7 +38,7 @@ public class NotaManutencaoDto
 
     [SheetColumn("Data classificação")] public DateTime? DataClassificacao { get; set; }
 
-    [SheetColumn("Status")] public Status? StatusNota { get; set; }
+    [SheetColumn("status_nota")] public Status? StatusNota { get; set; }
 
     [SheetColumn("Data da nota")] public DateTime? DataNota { get; set; }
 

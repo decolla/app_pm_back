@@ -71,7 +71,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Criar(app_pm_back.DTO.CentroPlanejamentoManutencaoDto)">
             <summary>
-            Cria um novo registro.
+            Cria um novo centro de planejamento e manutenção.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
             <returns>Resultado da operação.</returns>
@@ -255,17 +255,17 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="T:app_pm_back.Controllers.UsuariosSapController">
+        <member name="T:app_pm_back.Controllers.UsuariosController">
             <summary>
-            Classe UsuariosSapController.
+            Classe UsuariosController.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.#ctor(app_pm_back.Services.Manutencao.UsuarioService,AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.#ctor(app_pm_back.Services.Manutencao.UsuarioService,AutoMapper.IMapper)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.UsuariosSapController"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.UsuariosController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.Criar(app_pm_back.DTO.UsuarioSapDto)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Criar(app_pm_back.DTO.UsuarioSapDto)">
             <summary>
             Cria um novo registro.
             </summary>
@@ -273,21 +273,21 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.Contar">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Contar">
             <summary>
             Obtém o total de registros cadastrados.
             </summary>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.Atualizar(System.Int32,app_pm_back.DTO.UsuarioSapDto)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Atualizar(System.Int32,app_pm_back.DTO.UsuarioSapDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -296,7 +296,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -667,65 +667,65 @@
             </summary>
             <returns>Lista Paginada</returns>
         </member>
-        <member name="T:app_pm_back.Controllers.OrdersController">
+        <member name="T:app_pm_back.Controllers.OrdensController">
             <summary>
             Endpoints de ordens .
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.#ctor(app_pm_back.Services.Manutencao.OrdemService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.OrdemModel},AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.OrdensController.#ctor(app_pm_back.Services.Manutencao.OrdemService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.OrdemModel},AutoMapper.IMapper)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.OrdersController"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.OrdensController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.CriarOrdem(app_pm_back.DTO.OrdemManutencaoDto)">
+        <member name="M:app_pm_back.Controllers.OrdensController.CriarOrdem(app_pm_back.DTO.OrdemManutencaoDto)">
             <summary>
             Cadastra uma ordem a partir de DTO.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ListarOrdens(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.OrdensController.ListarOrdens(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Retorna todas as ordens , com paginacao opcional.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ContarNotas">
+        <member name="M:app_pm_back.Controllers.OrdensController.ContarNotas">
             <summary>
             Conta o número total de notas salvas no banco
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ListarFichasPorAtivo(app_pm_back.Models.Domain.ComponentType,System.String)">
+        <member name="M:app_pm_back.Controllers.OrdensController.ListarFichasPorAtivo(app_pm_back.Models.Domain.ComponentType,System.String)">
             <summary>
             Retorna as Fichas de uma nota e suas ocorrências de mesmo tipo
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.AtualizarOrdem(System.Int64,app_pm_back.DTO.OrdemManutencaoDto)">
+        <member name="M:app_pm_back.Controllers.OrdensController.AtualizarOrdem(System.Int64,app_pm_back.DTO.OrdemManutencaoDto)">
             <summary>
             Atualiza uma ordem pelo DTO.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.DeletarOrdem(System.Int64)">
+        <member name="M:app_pm_back.Controllers.OrdensController.DeletarOrdem(System.Int64)">
             <summary>
             Delete uma nota de mesmo Id
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ClassificacaoHumanaOrdem(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
+        <member name="M:app_pm_back.Controllers.OrdensController.ClassificacaoHumanaOrdem(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
             <summary>
             Classifica uma ordem with manual label
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.CriarRegraCongas(app_pm_back.DTO.RuleClassificationDto)">
+        <member name="M:app_pm_back.Controllers.OrdensController.CriarRegraCongas(app_pm_back.DTO.RuleClassificationDto)">
             <summary>
             Cria uma regra de classificação por palavras
             </summary>
             <param name="regra">Regra a ser aplicada</param>
             <returns>Regra criada</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ClassificacaoPalavrasNotaCongas">
+        <member name="M:app_pm_back.Controllers.OrdensController.ClassificacaoPalavrasNotaCongas">
             <summary>
             Classifica uma ordem com base uma lista de palavras armazenadas no banco
             </summary>
             <returns>Lista de ordem atualizadas</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ClassificacaoCatboostOrdem">
+        <member name="M:app_pm_back.Controllers.OrdensController.ClassificacaoCatboostOrdem">
             <summary>
             Classifica as ordens usando a IA catboost
             </summary>
@@ -779,37 +779,37 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="T:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController">
+        <member name="T:app_pm_back.Controllers.PlanoManutencao.FerramentaController">
             <summary>
             Endpoints de ferramentas de tipo de manutencao.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.#ctor(app_pm_back.Services.Manutencao.FerramentaService,AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.#ctor(app_pm_back.Services.Manutencao.FerramentaService,AutoMapper.IMapper)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.FerramentaController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Criar(app_pm_back.DTO.FerramentaTipoDto)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Criar(app_pm_back.DTO.FerramentaTipoDto)">
             <summary>
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Listar(System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Listar(System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.BuscarPorId(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.BuscarPorId(System.Int32)">
             <summary>
             Obtém um registro específico.
             </summary>
             <param name="id">Identificador do registro.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Atualizar(System.Int32,app_pm_back.DTO.FerramentaTipoDto)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Atualizar(System.Int32,app_pm_back.DTO.FerramentaTipoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -817,7 +817,7 @@
             <param name="dto">DTO contendo os dados da requisição.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -3150,6 +3150,18 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
+        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
             <inheritdoc />
         </member>
@@ -3897,7 +3909,7 @@
             Classe SpreadsheetService.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.SpreadsheetService.#ctor(api.Communications.Service.Impl.Data.ConvertService)">
+        <member name="M:app_pm_back.Services.SpreadsheetService.#ctor(api.Communications.Service.Impl.Data.ConvertService,app_pm_back.Data.AppDbContext)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.SpreadsheetService"/>.
             </summary>
