@@ -6,6 +6,8 @@ using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using Microsoft.VisualBasic.FileIO;
 using api.Communications.Service.Impl.Data;
+using app_pm_back.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services;
 
@@ -40,12 +42,16 @@ public class SpreadsheetService
     ];
 
     private readonly ConvertService _convertService;
+    private readonly DbSet<NotaModel> _notaModels;
+    // memória temporária para evitar consultar o banco centenas de vezes
+    private readonly Dictionary<string, long> _sapCodeCache = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="SpreadsheetService"/>.
     /// </summary>
-    public SpreadsheetService(ConvertService convertService)
+    public SpreadsheetService(ConvertService convertService, DbSet<NotaModel> notaModels)
     {
+        _notaModels = notaModels;
         _convertService = convertService;
     }
 
@@ -222,6 +228,13 @@ public class SpreadsheetService
                             {
                                 valorConvertido = TryTranslateComponentType(valor);
                             }
+
+                            if (tipo == typeof(long) &&
+                                string.Equals(property.Name, "IdNota", StringComparison.OrdinalIgnoreCase) &&
+                                string.Equals(nomeColunaExcel, "cdnotamanutencao", StringComparison.OrdinalIgnoreCase))
+                            {
+                                valorConvertido = TryTranslateSapCode(valor);
+                            }
                             else if (tipo.IsEnum)
                             {
                                 if (Enum.TryParse(tipo, valor, true, out var parsedEnum))
@@ -299,6 +312,28 @@ public class SpreadsheetService
                 return type;
         }
 
+        return null;
+    }
+    
+    public long? TryTranslateSapCode(string rawValue)
+    {
+        if (string.IsNullOrWhiteSpace(rawValue)) return null;
+        
+        // verifica se ja foi consultado o banco para esse código SAP antes
+        if (_sapCodeCache.TryGetValue(rawValue, out var cachedIdNota))
+        {
+            return cachedIdNota;
+        }
+        
+        var result = _notaModels
+            .Where(n => n.SapCode == rawValue)
+            .Select(n => (long?)n.IdNota)
+            .FirstOrDefault();
+        if (result.HasValue)
+        {
+            _sapCodeCache[rawValue] = result.Value;
+            return result;
+        }
         return null;
     }
     

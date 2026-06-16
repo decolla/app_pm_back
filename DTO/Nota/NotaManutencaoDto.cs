@@ -13,9 +13,20 @@ public class NotaManutencaoDto
 {
     [SheetColumn("Id Nota")] public long IdNota { get; set; }
 
+    // ordem
+    // campo seleção
+    // local instlação
+    // loc instalação afetado
+    // area operacional
+    // centrabprinc
+    // grupo planej
+    //
+    
     [SheetColumn("Nota")] public long NumeroNota { get; set; }
 
     [SheetColumn("Tipo de nota")] public string? TipoNota { get; set; }
+    
+    [SheetColumn("cdnotamanutencao")]public string? SapCode { get; set; }
 
     [SheetColumn("Classificação")] public Classificacao Classificacao { get; set; } = Classificacao.NAOCLASSIFICADA;
 
@@ -61,7 +72,7 @@ public class NotaManutencaoDto
 
     [SheetColumn("Txt.code codif.")] public string? ObservacoesComplementares { get; set; }
 
-    [SheetColumn("Txt.grp.codific")] public string? DescricaoBreve { get; set; }
+    [SheetColumn("Campo seleção")] public string? DescricaoBreve { get; set; }
 
     [SheetColumn("Id Usuario")] public int? IdUsuario { get; set; }
     

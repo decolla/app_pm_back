@@ -12,16 +12,16 @@ namespace app_pm_back.Controllers.PlanoManutencao;
 /// Endpoints de ferramentas de tipo de manutencao.
 /// </summary>
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/ferramenta-tipo")]
-public class FerramentaTipoController : ControllerBase
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/ferramenta")]
+public class FerramentaController : ControllerBase
 {
     private readonly FerramentaService _service;
     private readonly IMapper _mapper;
 
     /// <summary>
-    /// Inicializa uma nova instância da classe <see cref="FerramentaTipoController"/>.
+    /// Inicializa uma nova instância da classe <see cref="FerramentaController"/>.
     /// </summary>
-    public FerramentaTipoController(FerramentaService service, IMapper mapper)
+    public FerramentaController(FerramentaService service, IMapper mapper)
     {
         _service = service;
         _mapper = mapper;

@@ -27,7 +27,7 @@ public class CentrosPlanejamentoController : ControllerBase
     }
 
     /// <summary>
-    /// Cria um novo registro.
+    /// Cria um novo centro de planejamento e manutenção.
     /// </summary>
     /// <param name="dto">DTO contendo os dados da requisição.</param>
     /// <returns>Resultado da operação.</returns>

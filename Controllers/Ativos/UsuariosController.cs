@@ -7,20 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace app_pm_back.Controllers;
 
 /// <summary>
-/// Classe UsuariosSapController.
+/// Classe UsuariosController.
 /// </summary>
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/usuarios-sap")]
-public class UsuariosSapController : ControllerBase
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/usuarios")]
+public class UsuariosController : ControllerBase
 {
     private readonly UsuarioService _service;
     private readonly IMapper _mapper;
     private readonly string _operador = "usuario sap";
 
     /// <summary>
-    /// Inicializa uma nova instância da classe <see cref="UsuariosSapController"/>.
+    /// Inicializa uma nova instância da classe <see cref="UsuariosController"/>.
     /// </summary>
-    public UsuariosSapController(UsuarioService service, IMapper mapper)
+    public UsuariosController(UsuarioService service, IMapper mapper)
     {
         _service = service;
         _mapper = mapper;

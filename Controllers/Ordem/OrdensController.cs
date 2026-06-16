@@ -11,17 +11,17 @@ namespace app_pm_back.Controllers;
 /// Endpoints de ordens .
 /// </summary>
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/orders")]
-public class OrdersController : ControllerBase
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/ordens")]
+public class OrdensController : ControllerBase
 {
     private readonly OrdemService _ordemService;
     private readonly ClassificationService<OrdemModel> _classificationService;
     private readonly IMapper _mapper;
 
     /// <summary>
-    /// Inicializa uma nova instância da classe <see cref="OrdersController"/>.
+    /// Inicializa uma nova instância da classe <see cref="OrdensController"/>.
     /// </summary>
-    public OrdersController(
+    public OrdensController(
         OrdemService ordemService,
         ClassificationService<OrdemModel> classificationService,
         IMapper mapper

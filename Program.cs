@@ -3,7 +3,6 @@ using System.Text.Json;
 using api.Communications.Service.Impl.Data;
 using app_pm_back.Data;
 using app_pm_back.Middlewares;
-using app_pm_back.Models;
 using app_pm_back.Models.Domain;
 using app_pm_back.Routes;
 using app_pm_back.Services;
@@ -11,7 +10,6 @@ using app_pm_back.Services.ExternIntegationsServices;
 using app_pm_back.Services.Manutencao;
 using Hangfire;
 using Hangfire.PostgreSql;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -198,7 +196,7 @@ using (var scope = app.Services.CreateScope())
         {
             Console.WriteLine("PostgreSQL detectado. A tentar aplicar as migrations no banco de dados...");
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
-            dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
+            // dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
             dbContext.Database.Migrate();
             Console.WriteLine("Migrations aplicadas com sucesso!");
         }
