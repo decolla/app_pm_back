@@ -140,6 +140,7 @@ public class SpreadsheetService
                 }
             }
 
+            // verifica para colunas da petro
             if (columns.ContainsKey("Nota") || columns.ContainsKey("numero_nota") ||
                 columns.ContainsKey("Ordem") || columns.ContainsKey("numero_ordem") ||
                 columns.ContainsKey("Item") ||
