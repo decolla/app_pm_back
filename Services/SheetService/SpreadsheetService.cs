@@ -118,7 +118,7 @@ public class SpreadsheetService
                 TextFieldType = FieldType.Delimited
             };
 
-        parser.SetDelimiters(";");
+        parser.SetDelimiters(";", ",");
         parser.HasFieldsEnclosedInQuotes = false;
         parser.TrimWhiteSpace = true;
 
@@ -140,8 +140,8 @@ public class SpreadsheetService
                 }
             }
 
-            if (columns.ContainsKey("Nota") ||
-                columns.ContainsKey("Ordem") ||
+            if (columns.ContainsKey("Nota") || columns.ContainsKey("numero_nota") ||
+                columns.ContainsKey("Ordem") || columns.ContainsKey("numero_ordem") ||
                 columns.ContainsKey("Item") ||
                 columns.ContainsKey("Objeto") ||
                 columns.ContainsKey("Área operacion.")
@@ -153,8 +153,10 @@ public class SpreadsheetService
 
         if (columns.Count == 0) return resultado;
 
-        bool isNota = columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota");
-        bool isOrdem = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve");
+        bool isNota = (columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota")) || 
+                      (columns.ContainsKey("numero_nota") && columns.ContainsKey("status_nota"));
+        bool isOrdem = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve") ||
+                       columns.ContainsKey("numero_ordem") && columns.ContainsKey("status_ordem");
         bool isItem = columns.ContainsKey("Item") && columns.ContainsKey("Causa") &&
                       columns.ContainsKey("Texto da causa");
 

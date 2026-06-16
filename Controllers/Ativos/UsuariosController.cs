@@ -33,7 +33,7 @@ public class UsuariosController : ControllerBase
     /// <returns>Resultado da operação.</returns>
     /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpPost]
-    public async Task<IActionResult> Criar([FromBody] UsuarioSapDto dto)
+    public async Task<IActionResult> Criar([FromBody] UsuarioDto dto)
     {
         try
         {
@@ -116,7 +116,7 @@ public class UsuariosController : ControllerBase
     /// <returns>Resultado da operação.</returns>
     /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] UsuarioSapDto dto)
+    public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] UsuarioDto dto)
     {
         try
         {

@@ -7,7 +7,7 @@ namespace app_pm_back.DTO;
 /// <summary>
 /// DTO de importacao para usuarios SAP .
 /// </summary>
-public class UsuarioSapDto
+public class UsuarioDto
 {
     /// <summary>
     /// Identificador do usuario no SAP interno.

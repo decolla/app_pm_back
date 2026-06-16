@@ -265,7 +265,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.UsuariosController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Criar(app_pm_back.DTO.UsuarioSapDto)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Criar(app_pm_back.DTO.UsuarioDto)">
             <summary>
             Cria um novo registro.
             </summary>
@@ -287,7 +287,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Atualizar(System.Int32,app_pm_back.DTO.UsuarioSapDto)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Atualizar(System.Int32,app_pm_back.DTO.UsuarioDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -1348,32 +1348,32 @@
             Categoria do anexo.
             </summary>
         </member>
-        <member name="T:app_pm_back.DTO.UsuarioSapDto">
+        <member name="T:app_pm_back.DTO.UsuarioDto">
             <summary>
             DTO de importacao para usuarios SAP .
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioSapDto.IdUsuario">
+        <member name="P:app_pm_back.DTO.UsuarioDto.IdUsuario">
             <summary>
             Identificador do usuario no SAP interno.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioSapDto.Nome">
+        <member name="P:app_pm_back.DTO.UsuarioDto.Nome">
             <summary>
             Nome do usuario.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioSapDto.Cpf">
+        <member name="P:app_pm_back.DTO.UsuarioDto.Cpf">
             <summary>
             CPF do usuario.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioSapDto.Permissoes">
+        <member name="P:app_pm_back.DTO.UsuarioDto.Permissoes">
             <summary>
             Permissoes (lista serializada ou descricao textual).
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioSapDto.IdEscopo">
+        <member name="P:app_pm_back.DTO.UsuarioDto.IdEscopo">
             <summary>
             Escopo externo (apenas o ID).
             </summary>
