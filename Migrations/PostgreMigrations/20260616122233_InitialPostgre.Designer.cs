@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using app_pm_back.Data;
@@ -10,12 +11,14 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations
+namespace app_pm_back.Migrations.PostgreMigrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260616122233_InitialPostgre")]
+    partial class InitialPostgre
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -626,9 +629,9 @@ namespace app_pm_back.Migrations
                     b.Property<int?>("IdUsuario")
                         .HasColumnType("integer");
 
-                    b.Property<string>("MetodoClassificacao")
+                    b.Property<int>("MetodoClassificacao")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("integer");
 
                     b.Property<string>("ModificadaPorUsuario")
                         .HasMaxLength(150)
@@ -647,6 +650,9 @@ namespace app_pm_back.Migrations
                     b.Property<string>("ReferenciaLocalizacaoAtivo")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<string>("SapCode")
+                        .HasColumnType("text");
 
                     b.Property<int?>("StatusNota")
                         .HasColumnType("integer");
@@ -782,9 +788,9 @@ namespace app_pm_back.Migrations
                     b.Property<DateTime?>("InicioReal")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("MetodoClassificacao")
+                    b.Property<int>("MetodoClassificacao")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("integer");
 
                     b.Property<string>("ModificadaPorUsuario")
                         .HasMaxLength(150)

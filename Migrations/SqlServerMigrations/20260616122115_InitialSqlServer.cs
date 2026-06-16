@@ -6,10 +6,10 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations
+namespace app_pm_back.Migrations.SqlServerMigrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialSqlServer : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -313,6 +313,7 @@ namespace app_pm_back.Migrations
                 columns: table => new
                 {
                     IdNota = table.Column<long>(type: "bigint", nullable: false),
+                    SapCode = table.Column<string>(type: "text", nullable: true),
                     NumeroNota = table.Column<long>(type: "bigint", nullable: false),
                     DataNota = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     TipoNota = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
@@ -329,7 +330,7 @@ namespace app_pm_back.Migrations
                     AnomaliaObservada = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     ObservacoesComplementares = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
                     Classificacao = table.Column<int>(type: "integer", nullable: false),
-                    MetodoClassificacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    MetodoClassificacao = table.Column<int>(type: "integer", maxLength: 100, nullable: false),
                     ClassificadoPor = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     DataClassificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CriadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
@@ -502,7 +503,7 @@ namespace app_pm_back.Migrations
                     StatusOrdem = table.Column<int>(type: "integer", nullable: true),
                     Criticidade = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Classificacao = table.Column<int>(type: "integer", nullable: false),
-                    MetodoClassificacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    MetodoClassificacao = table.Column<int>(type: "integer", maxLength: 100, nullable: false),
                     ClassificadoPor = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     DataClassificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     TipoOrdem = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),

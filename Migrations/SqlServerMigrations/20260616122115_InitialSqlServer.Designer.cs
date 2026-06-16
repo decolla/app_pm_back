@@ -11,11 +11,11 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations
+namespace app_pm_back.Migrations.SqlServerMigrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260612141507_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260616122115_InitialSqlServer")]
+    partial class InitialSqlServer
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -629,9 +629,9 @@ namespace app_pm_back.Migrations
                     b.Property<int?>("IdUsuario")
                         .HasColumnType("integer");
 
-                    b.Property<string>("MetodoClassificacao")
+                    b.Property<int>("MetodoClassificacao")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("integer");
 
                     b.Property<string>("ModificadaPorUsuario")
                         .HasMaxLength(150)
@@ -650,6 +650,9 @@ namespace app_pm_back.Migrations
                     b.Property<string>("ReferenciaLocalizacaoAtivo")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<string>("SapCode")
+                        .HasColumnType("text");
 
                     b.Property<int?>("StatusNota")
                         .HasColumnType("integer");
@@ -785,9 +788,9 @@ namespace app_pm_back.Migrations
                     b.Property<DateTime?>("InicioReal")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("MetodoClassificacao")
+                    b.Property<int>("MetodoClassificacao")
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("integer");
 
                     b.Property<string>("ModificadaPorUsuario")
                         .HasMaxLength(150)

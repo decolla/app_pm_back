@@ -32,14 +32,12 @@
         </member>
         <member name="M:app_pm_back.Controllers.AnnexController.UploadArquivo(app_pm_back.DTO.UploadAnnexRequestDto)">
             <summary>
-            Executa a ação correspondente.
+            Realiza upload de um arquivo.
             </summary>
-            <param name="request">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Controllers.AnnexController.DownloadArquivo(System.Int64)">
             <summary>
-            Executa a ação correspondente.
+            Realiza o download de um arquivo.
             </summary>
             <param name="id">Identificador do registro.</param>
             <returns>Resultado da operação.</returns>
@@ -48,9 +46,18 @@
             <summary>
             Obtém um registro específico.
             </summary>
-            <param name="referenciaId">Parâmetro do método.</param>
-            <param name="tipoReferencia">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="referenciaId">Id de referência.</param>
+            <param name="tipoReferencia">Tipo de referência.</param>
+        </member>
+        <member name="M:app_pm_back.Controllers.AnnexController.TryResolveReferencia(app_pm_back.DTO.UploadAnnexRequestDto,System.Nullable{System.Int64}@,System.Nullable{System.Int64}@,System.String@)">
+            <summary>
+            Função auxiliar para identificar o tipo da referência.
+            </summary>
+            <param name="request">Anexo enviado.</param>
+            <param name="notaId">Id da nota associada.</param>
+            <param name="ordemId">Id da ordem associada.</param>
+            <param name="error">Erro de retorno em caso de erro</param>
+            <returns>Booleano de se a referência é válida ou não.</returns>
         </member>
         <member name="T:app_pm_back.Controllers.CentrosPlanejamentoController">
             <summary>
@@ -577,10 +584,18 @@
             Classifica uma nota com base na classificação humana atribuida a uma nota específica
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoPalavrasNota">
+        <member name="M:app_pm_back.Controllers.NotasController.CriarRegraCongas(app_pm_back.DTO.RuleClassificationDto)">
+            <summary>
+            Cria uma regra de classificação por palavras
+            </summary>
+            <param name="regra">Regra a ser aplicada</param>
+            <returns>Regra criada</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoPalavrasNotaCongas">
             <summary>
             Classifica uma nota com base uma lista de palavras armazenadas no banco
             </summary>
+            <returns>Lista de notas atualizadas</returns>
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoCatboostNota">
             <summary>
@@ -697,10 +712,18 @@
             Classifica uma ordem with manual label
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ClassificacaoPalavrasOrdem">
+        <member name="M:app_pm_back.Controllers.OrdersController.CriarRegraCongas(app_pm_back.DTO.RuleClassificationDto)">
+            <summary>
+            Cria uma regra de classificação por palavras
+            </summary>
+            <param name="regra">Regra a ser aplicada</param>
+            <returns>Regra criada</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.OrdersController.ClassificacaoPalavrasNotaCongas">
             <summary>
             Classifica uma ordem com base uma lista de palavras armazenadas no banco
             </summary>
+            <returns>Lista de ordem atualizadas</returns>
         </member>
         <member name="M:app_pm_back.Controllers.OrdersController.ClassificacaoCatboostOrdem">
             <summary>
@@ -1046,7 +1069,7 @@
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <param name="tipo">Parâmetro do método.</param>
+            <param name="tipo">Tipo do tipo plano</param>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
@@ -1261,6 +1284,35 @@
             DTO de tipo de plano .
             </summary>
         </member>
+        <member name="P:app_pm_back.DTO.RuleClassificationDto.IdRegra">
+            <summary>
+            Id da Regra
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.RuleClassificationDto.PalavraChave">
+            <summary>
+            Palavra chave usada para a filtragem 
+            </summary>
+            <example>"Vazamento", "Inspecionar", "Limpeza"</example>
+        </member>
+        <member name="P:app_pm_back.DTO.RuleClassificationDto.CampoAlvo">
+            <summary>
+            Campo alvo onde as palavras da regra serão aplicadas
+            </summary>
+            <example>"Descricao", "TextoBreve"</example>
+        </member>
+        <member name="P:app_pm_back.DTO.RuleClassificationDto.ClassificacaoAplicada">
+            <summary>
+            Qual o tipo de classificação aplicada pela regra 
+            </summary>
+            <example>0,1,2</example>
+        </member>
+        <member name="P:app_pm_back.DTO.RuleClassificationDto.OrdemPrioridade">
+            <summary>
+            Em caso de conflito, qual a prioridade da regra acima das outras
+            </summary>
+            <example>1</example>
+        </member>
         <member name="T:app_pm_back.DTO.UploadAnnexRequestDto">
             <summary>
             Dados de upload de anexo via multipart/form-data.
@@ -1421,6 +1473,11 @@
         <member name="T:app_pm_back.Models.Domain.Classificacao">
             <summary>
             Usado para classificar os tipos de fichas em dados renovação
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.MetodoClassificacao">
+            <summary>
+            Representa o método utilizado para uma classificação.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.EstrategiaModel">
@@ -2011,6 +2068,11 @@
             <summary>
             Identificador único da nota, gerado a partir do IdPlano e NumeroNota.
             Este valor é definido manualmente e não é auto-incrementado pelo banco de dados.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.SapCode">
+            <summary>
+            Identificador para string no caso do id do SAP.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.NumeroNota">
@@ -3088,16 +3150,28 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.InitialCreate">
+        <member name="T:app_pm_back.Migrations.PostgreMigrations.InitialPostgre">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgreMigrations.InitialPostgre.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgreMigrations.InitialPostgre.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgreMigrations.InitialPostgre.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
@@ -3204,10 +3278,21 @@
             Classificação manual de notas/ordens.
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.CreateRule(app_pm_back.DTO.RuleClassificationDto)">
+            <summary>
+            Cria uma regra de palavras
+            </summary>
+            <param name="rule">Regra no formato de RuleClassificationModel</param>
+            <returns>Regra passada como parâmetro</returns>
+        </member>
         <member name="M:app_pm_back.Services.ClassificationService`1.WordsClassification(System.Collections.Generic.List{`0})">
             <summary>
-            Função para classificar notas/ordens com base nas regras de palavras (mocked/no-op since Rule table is deleted).
+            Função para classificar notas/ordens com base nas regras de palavras.
+            A busca será feita no controller e passará todas que estiverem sem classificar,
+            e quais deverão ser reclassificadas.
             </summary>
+            <param name="notasComClassificacao"> Lista de tipo genérico de notas/ordens já classificadas para serem analisadas pelo algoritmo</param>
+            <returns>Todas as notas que não tinham sido classificadas juntamente as reclassificadas</returns>
         </member>
         <member name="M:app_pm_back.Services.ClassificationService`1.CatboostClassification">
             <summary>
@@ -3378,7 +3463,7 @@
             <param name="ignoreProperties"></param>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="T:app_pm_back.Services.Manutencao.LinhaTemporalService">
+        <member name="T:app_pm_back.Services.Manutencao.ApmResponse">
             <summary>
             Serviço para obter linha temporal de LIs consultando API externa (APM)
             com paginação direta na API e cruzando com notas/ordens do banco de dados local
