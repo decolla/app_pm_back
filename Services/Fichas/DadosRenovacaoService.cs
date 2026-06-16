@@ -267,12 +267,17 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         {
             if (ehNota)
             {
-                //se for nota, busca o id no banco
-                var notas = await _context.PM_Notas
-                    .Where(n => ids.Contains(n.IdNota))
-                    .ToListAsync();
-
-                notas = notas.Where(n => n.Classificacao != Classificacao.NAOCLASSIFICADA).ToList();
+                var notas = new List<NotaModel>();
+                foreach (var loteIds in ids.Chunk(2000))
+                {
+                    //Busca no banco em lotes
+                    var notasDoLote = await _context.PM_Notas
+                        .Where(n => loteIds.Contains(n.IdNota) && n.Classificacao != Classificacao.NAOCLASSIFICADA)
+                        .ToListAsync();
+                
+                    //Guarda resultado em lotes
+                    notas.AddRange(notasDoLote);
+                }
 
                 _logger.LogInformation("Carregadas {QtdNotas} notas para cadastro de dados de renovação", notas.Count);
 
