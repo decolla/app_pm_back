@@ -76,6 +76,7 @@ public class ClassificationService<T> where T : class, IClassifiable
         // remover comentário caso deve reavaliar regras já avaladas
         var notasSemClassificacao =
             await _dbSet.Where(n => n.Classificacao == null /* || n.ClassificadoPor == null*/).ToListAsync();
+        DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(10000);
 
         // leio o campo alvo da regra e busco a palavra chave 
         List<RuleClassificationDto> regras = await _classificationModel.OrderBy(r => r.OrdemPrioridade).ToListAsync();

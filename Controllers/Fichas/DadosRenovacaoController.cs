@@ -189,9 +189,8 @@ public class DadosRenovacaoController : ControllerBase
     }
     
     /// <summary>
-    /// Lista os dados de renovação em formato de página
+    /// Busca todas as notas para preencher a tabela de Dados Renovacao
     /// </summary>
-    /// <returns>Lista Paginada</returns>
     [HttpPost("RenovacaoNotas")]
     public async Task<IActionResult> GerarRenovacaoNota()
     {
@@ -213,9 +212,8 @@ public class DadosRenovacaoController : ControllerBase
     }
         
     /// <summary>
-    /// Lista os dados de renovação em formato de página
+    /// Busca todas as ordens para preencher a tabela de Dados Renovacao
     /// </summary>
-    /// <returns>Lista Paginada</returns>
     [HttpPost("RenovacaoOrdens")]
     public async Task<IActionResult> GerarRenovacaoOrdem()
     {

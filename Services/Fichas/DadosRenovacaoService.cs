@@ -86,8 +86,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 
             if (idsNotasRenovacao.Count == 0)
             {
-                _logger.LogWarning("Nenhuma nota com palavras-chave de renovação encontrada");
-                return 0;
+                _logger.LogWarning("Nenhuma nota com palavras-chave de renovação encontrada relacionada aos itens");
             }
 
             //Filtra as notas que devem ser marcadas com base nos ids retornados anteriormente
@@ -209,16 +208,19 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 
                 bool temRenovacao = palavrasRenovacao.Any(p => textoOrdem.Contains(p));
                 bool temTroca = palavrasTroca.Any(p => textoOrdem.Contains(p));
-
-                if (temRenovacao)
+                if (ordem.ConfiabilidadeRestaurada == null ||
+                    ordem.ConfiabilidadeRestaurada == ConfiabilidadeRestaurada.NaoRestaura)
                 {
-                    ordem.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraLI;
-                    _logger.LogDebug("Ordem {IdOrdem} marcada como RestauraLI", ordem.IdOrdem);
-                }
-                else if (temTroca && ordem.IdAtivo.HasValue)
-                {
-                    ordem.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
-                    _logger.LogDebug("Ordem {IdOrdem} marcada como RestauraAtivo", ordem.IdOrdem);
+                    if (temRenovacao)
+                    {
+                        ordem.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraLI;
+                        _logger.LogDebug("Ordem {IdOrdem} marcada como RestauraLI", ordem.IdOrdem);
+                    }
+                    else if (temTroca && ordem.IdAtivo.HasValue)
+                    {
+                        ordem.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
+                        _logger.LogDebug("Ordem {IdOrdem} marcada como RestauraAtivo", ordem.IdOrdem);
+                    }
                 }
             }
 
