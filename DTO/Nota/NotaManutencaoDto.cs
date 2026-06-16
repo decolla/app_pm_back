@@ -43,7 +43,7 @@ public class NotaManutencaoDto
 
     [SheetColumn("Prioridade")] public string? Prioridade { get; set; }
 
-    [SheetColumn("FimDesej.")] public DateTime? FimDesejado { get; set; }
+    [SheetColumn("data_expectativa_nota")] public DateTime? FimDesejado { get; set; }
 
     [SheetColumn("Txt.code codif.")] public ComponentType? IdAtivo { get; set; }
 

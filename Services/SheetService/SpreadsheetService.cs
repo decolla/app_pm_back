@@ -237,6 +237,13 @@ public class SpreadsheetService
                             {
                                 valorConvertido = TryTranslateSapCode(valor);
                             }
+                            else if (tipo == typeof(DateTime) && 
+                                     string.Equals(nomeColunaExcel, "data_expectativa_nota", StringComparison.OrdinalIgnoreCase))
+                            {
+                                long.TryParse(valor, out long l);
+                                DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
+                                valorConvertido = dataOffset.UtcDateTime;
+                            }
                             else if (tipo == typeof(Status) &&
                                      string.Equals(property.Name, "StatusNota", StringComparison.OrdinalIgnoreCase)
                                      )
