@@ -13,7 +13,7 @@ public class OrdemManutencaoDto
 {
     [SheetColumn("Id Ordem")] public long IdOrdem { get; set; }
 
-    [SheetColumn("numero_ordem")] public long? NumeroOrdem { get; set; }
+    [SheetColumn("Ordem")] public long? NumeroOrdem { get; set; }
 
     [SheetColumn("Tipo de ordem")] public string? TipoOrdem { get; set; }
 
@@ -52,9 +52,9 @@ public class OrdemManutencaoDto
 
     [SheetColumn("Texto breve")] public ComponentType? IdAtivo { get; set; }
 
-    [SheetColumn("cdequipamento")] public string? IdLi { get; set; }
+    [SheetColumn("Loc.instalação")] public string? IdLi { get; set; }
 
-    [SheetColumn("cdnotamanutencao")] public long? IdNota { get; set; }
+    [SheetColumn("Nota")] public long? IdNota { get; set; }
 
     public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
 

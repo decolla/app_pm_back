@@ -49,7 +49,7 @@ public class AutoMapperProfile : Profile
  CreateMap<TipoManutencaoCepDto, TipoCepModel>()
  .ForMember(dest => dest.AcoesFalha, opt => opt.MapFrom(src => src.AcoesFalha));
 
- CreateMap<UsuarioSapDto, UsuarioModel>()
+ CreateMap<UsuarioDto, UsuarioModel>()
  .ForMember(dest => dest.IdUsuario, opt => opt.MapFrom(src => src.IdUsuario))
  .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome))
  .ForMember(dest => dest.CPF, opt => opt.MapFrom(src => src.Cpf))
