@@ -10,34 +10,16 @@ namespace app_pm_back.Data;
 /// </summary>
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    public AppDbContext(DbContextOptions options) : base(options)
     {
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        if (Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer")
-        {
-            modelBuilder.HasDefaultSchema("dbo");
-
-            var converter = new ValueConverter<List<AcoesFalha>?, string>(
-                v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                v => JsonSerializer.Deserialize<List<AcoesFalha>>(v, (JsonSerializerOptions?)null) ?? new List<AcoesFalha>()
-            );
-
-            modelBuilder.Entity<TipoCepModel>()
-                .Property(e => e.AcoesFalha)
-                .HasConversion(converter)
-                .HasColumnType("nvarchar(max)");
-        }
-        else
-        {
-            modelBuilder.HasDefaultSchema("public");
-        }
-
+        
         base.OnModelCreating(modelBuilder);
 
-        // Configure Primary Keys and Auto-increment
+        // configura as chaves primárias
         modelBuilder.Entity<TipoManutencaoModel>().HasKey(e => e.IdTipoManutencao);
         modelBuilder.Entity<TipoEstrategiaModel>().HasKey(e => e.IdTipoEstrategia);
         modelBuilder.Entity<TipoCepModel>().HasKey(e => e.IdTipoCep);
@@ -60,14 +42,13 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<AnexoOrdemModel>().HasKey(e => e.IdAnexoOrdem);
         modelBuilder.Entity<DadosRenovacaoModel>().HasKey(e => e.IdDados);
 
-        // 1-to-1: CTM and GPM share same primary key or relate 1-to-1
+        // 1-to-1: CTM e GPM 
         modelBuilder.Entity<CtmModel>()
             .HasOne<GpmModel>()
             .WithOne()
             .HasForeignKey<CtmModel>(c => c.IdCTM)
             .OnDelete(DeleteBehavior.Cascade);
 
-        // Configure many-to-many associations
         // 1. Ferramentas/Operacoes
         modelBuilder.Entity<OperacaoModel>()
             .HasMany(o => o.Ferramentas)
@@ -161,4 +142,47 @@ public class AppDbContext : DbContext
     public DbSet<AnexoOrdemModel> PM_AnexosOrdem { get; set; }
     public DbSet<DadosRenovacaoModel> PM_DadosRenovacao { get; set; }
     
+}
+
+public class SqlServerDbContext : AppDbContext
+{
+    public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options) : base(options)
+    {
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // aplica as configurações globais primeiro
+        base.OnModelCreating(modelBuilder);
+
+        // aplica as exclusividades do SQL Server
+        modelBuilder.HasDefaultSchema("dbo");
+
+        var converter = new ValueConverter<List<AcoesFalha>?, string>(
+            v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+            v => JsonSerializer.Deserialize<List<AcoesFalha>>(v, (JsonSerializerOptions?)null) ?? new List<AcoesFalha>()
+        );
+
+        modelBuilder.Entity<TipoCepModel>()
+            .Property(e => e.AcoesFalha)
+            .HasConversion(converter)
+            .HasColumnType("nvarchar(max)");
+    }
+}
+
+public class PostgresDbContext : AppDbContext
+{
+    public PostgresDbContext(DbContextOptions<PostgresDbContext> options) : base(options)
+    {
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // aplica as configurações globais primeiro
+        base.OnModelCreating(modelBuilder);
+
+        // aplica as exclusividades do PostgreSQL
+        modelBuilder.HasDefaultSchema("public");
+        
+    }
 }

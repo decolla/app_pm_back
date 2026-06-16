@@ -63,7 +63,7 @@ if (databaseSchema == "cg")
                            ?? builder.Configuration.GetConnectionString("DefaultConnection");
                           
     // ef core para sql server
-    builder.Services.AddDbContext<AppDbContext>(options =>
+    builder.Services.AddDbContext<AppDbContext, SqlServerDbContext>(options =>
         options.UseSqlServer(connectionString));
 
     // config hangfire para sql server
@@ -88,7 +88,7 @@ else
     var dataSource = dataSourceBuilder.Build();
 
     // adicionar o contexto do PostgreSQL
-    builder.Services.AddDbContext<AppDbContext>(options =>
+    builder.Services.AddDbContext<AppDbContext, PostgresDbContext>(options =>
         options.UseNpgsql(dataSource));
     
     // config hangfire 

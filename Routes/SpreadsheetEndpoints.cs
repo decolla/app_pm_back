@@ -34,6 +34,13 @@ public static class SpreadsheetEndpoints
             SynchronizeAPMService synchronizeApmService
         ) =>
         {
+            // XXX: Impede que o usuário importe planilhas para o schema CG, retirar isso para permitir a importação de planilhas para o schema CG
+            var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+        
+            if (dbSchema == "cg")
+            {
+                return Results.BadRequest(new { message = "PEDRO ADVERTE: Importação de planilhas desabilitada para o schema CG." });
+            }
             try
             {
                 if (!sobrescrever && !adicionarNovas)
