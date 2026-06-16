@@ -193,7 +193,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                 .Where(n => idsOrdens.Contains(n.IdOrdem))
                 .ToListAsync();
             
-            ordens = ordens.Where(o => o.Classificacao != Classificacao.NAOCLASSIFICADA).ToList();
+            ordens = ordens.Where(o => o.ConfiabilidadeRestaurada != ConfiabilidadeRestaurada.NaoRestaura).ToList();
 
 
             _logger.LogInformation("Carregadas {QtdOrdens} ordens do banco", ordens.Count);
@@ -268,13 +268,11 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             if (ehNota)
             {
                 var notas = new List<NotaModel>();
-                _logger.LogInformation("Notas antes do loop {Tipo}", 
-                    ids?.Count ?? 0);
                 foreach (var loteIds in ids.Chunk(2000))
                 {
                     //Busca no banco em lotes
                     var notasDoLote = await _context.PM_Notas
-                        .Where(n => loteIds.Contains(n.IdNota) && n.Classificacao != Classificacao.NAOCLASSIFICADA)
+                        .Where(n => loteIds.Contains(n.IdNota) && n.ConfiabilidadeRestaurada != ConfiabilidadeRestaurada.NaoRestaura)
                         .ToListAsync();
                 
                     //Guarda resultado em lotes
