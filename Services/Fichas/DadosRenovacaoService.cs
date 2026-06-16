@@ -268,6 +268,8 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             if (ehNota)
             {
                 var notas = new List<NotaModel>();
+                _logger.LogInformation("Notas antes do loop {Tipo}", 
+                    ids?.Count ?? 0);
                 foreach (var loteIds in ids.Chunk(2000))
                 {
                     //Busca no banco em lotes
