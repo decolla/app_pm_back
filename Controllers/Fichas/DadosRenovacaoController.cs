@@ -189,41 +189,35 @@ public class DadosRenovacaoController : ControllerBase
     }
     
     /// <summary>
-    /// Busca todas as notas para preencher a tabela de Dados Renovacao
+    /// Busca todas as Fichas, Notas ou Ordens para preencher a tabela de Dados Renovacao
     /// </summary>
-    [HttpPost("RenovacaoNotas")]
-    public async Task<IActionResult> GerarRenovacaoNota()
+    [HttpPost("RenovacaoFichas")]
+    public async Task<IActionResult> GerarRenovacaoFichas(Fichas buscaTabela)
     {
         try
         {
-            var idNotas = await _context.PM_Notas
-                .Select(n => n.IdNota)
-                .ToListAsync();
-            var idItens = await _context.PM_ItensNota
-                .Select(n => n.IdItemNota)
-                .ToListAsync();
-            var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
-            return Ok("Notas classificadas com sucesso");
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao listar dados de renovação: {e.Message}." });
-        }
-    }
-        
-    /// <summary>
-    /// Busca todas as ordens para preencher a tabela de Dados Renovacao
-    /// </summary>
-    [HttpPost("RenovacaoOrdens")]
-    public async Task<IActionResult> GerarRenovacaoOrdem()
-    {
-        try
-        {
-            var idsOrdens = await _context.PM_Ordens
-                .Select(n => n.IdOrdem)
-                .ToListAsync();
-            var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosOrdemAsync(idsOrdens);
-            return Ok("Notas classificadas com sucesso");
+            var message = "";
+            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Notas)
+            {
+                var idNotas = await _context.PM_Notas
+                    .Select(n => n.IdNota)
+                    .ToListAsync();
+                var idItens = await _context.PM_ItensNota
+                    .Select(n => n.IdItemNota)
+                    .ToListAsync();
+                var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
+                message = "Notas classificadas com sucesso";
+            }
+            else if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
+            {
+                var idsOrdens = await _context.PM_Ordens
+                    .Select(n => n.IdOrdem)
+                    .ToListAsync();
+                var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosOrdemAsync(idsOrdens);
+                message += "| Ordens classificadas com sucesso";
+            }
+
+            return Ok(message);
         }
         catch (Exception e)
         {
