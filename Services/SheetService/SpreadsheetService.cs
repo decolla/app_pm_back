@@ -157,7 +157,7 @@ public class SpreadsheetService
         bool isNota = (columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota")) || 
                       (columns.ContainsKey("numero_nota") && columns.ContainsKey("status_nota"));
         bool isOrdem = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve") ||
-                       columns.ContainsKey("numero_ordem") && columns.ContainsKey("status_ordem");
+                       (columns.ContainsKey("numero_ordem") && columns.ContainsKey("status_ordem"));
         bool isItem = columns.ContainsKey("Item") && columns.ContainsKey("Causa") &&
                       columns.ContainsKey("Texto da causa");
 
