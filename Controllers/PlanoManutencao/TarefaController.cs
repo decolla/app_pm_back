@@ -12,7 +12,7 @@ namespace app_pm_back.Controllers.PlanoManutencao;
 /// Endpoints de tarefas por tipo de manutencao.
 /// </summary>
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/tarefa-tipo-manutencao")]
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/tarefas-tipo-manutencao")]
 public class TarefaController : ControllerBase
 {
     private readonly TarefaService _service;
@@ -27,12 +27,16 @@ public class TarefaController : ControllerBase
         _mapper = mapper;
     }
 
-    /// <summary>
+        /// <summary>
     /// Cria um novo registro.
     /// </summary>
     /// <param name="dto">DTO contendo os dados da requisição.</param>
-    /// <returns>Resultado da operação.</returns>
+    /// <returns>O objeto criado com status 201 (Created).</returns>
+    /// <response code="201">Registro criado com sucesso.</response>
+    /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Criar([FromBody] TarefaDto dto)
     {
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -42,14 +46,20 @@ public class TarefaController : ControllerBase
 
         var model = _mapper.Map<OperacaoModel>(dto);
         var criado = await _service.CreateAsync(model);
-        return Ok(criado);
+        return CreatedAtAction(nameof(BuscarPorId), new { id = criado.IdOperacao }, criado);
     }
 
-    /// <summary>
+        /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
-    /// <returns>Resultado da operação.</returns>
+    /// <param name="pagina">Número da página (1-based) para paginação.</param>
+    /// <param name="tamanho">Quantidade de itens por página.</param>
+    /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+    /// <response code="200">Sucesso ao listar registros.</response>
+    /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Listar([FromQuery] int? tipoManutencaoId)
     {
         if (tipoManutencaoId.HasValue)
@@ -61,12 +71,18 @@ public class TarefaController : ControllerBase
         return Ok(await _service.GetAllNotasAsync());
     }
 
-    /// <summary>
+        /// <summary>
     /// Obtém um registro específico.
     /// </summary>
-    /// <param name="id">Identificador do registro.</param>
-    /// <returns>Resultado da operação.</returns>
+    /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+    /// <returns>O objeto correspondente cadastrado.</returns>
+    /// <response code="200">Sucesso ao obter o registro.</response>
+    /// <response code="400">ID fornecido inválido.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> BuscarPorId([FromRoute] int id)
     {
         var obj = await _service.GetByIdAsync(id);
@@ -74,13 +90,17 @@ public class TarefaController : ControllerBase
         return Ok(obj);
     }
 
-    /// <summary>
+        /// <summary>
     /// Atualiza um registro existente.
     /// </summary>
-    /// <param name="id">Identificador do registro.</param>
-    /// <param name="dto">DTO contendo os dados da requisição.</param>
-    /// <returns>Resultado da operação.</returns>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="dto">DTO contendo os novos dados para atualização.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TarefaDto dto)
     {
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -94,12 +114,16 @@ public class TarefaController : ControllerBase
         return Ok(atualizado);
     }
 
-    /// <summary>
+        /// <summary>
     /// Exclui um registro pelo seu identificador.
     /// </summary>
-    /// <param name="id">Identificador do registro.</param>
-    /// <returns>Resultado da operação.</returns>
+    /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+    /// <returns>Mensagem de confirmação da exclusão.</returns>
+    /// <response code="200">Sucesso ao deletar o registro.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar([FromRoute] int id)
     {
         var deleted = await _service.DeleteNotaAsync(id);

@@ -25,26 +25,17 @@ public class BuscaController : ControllerBase
         _searchService = searchService;
     }
 
-    /// <summary>
+        /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
-    /// <returns>Resultado da operação.</returns>
-    [HttpGet("tabelas")]
-    public IActionResult ListarTabelasCampos()
-    {
-        var tabelas = _searchService.ListarTabelasCampos();
-        return Ok(tabelas);
-    }
-
-    /// <summary>
-    /// Obtém um registro específico de uma tabela.
-    /// </summary>
-    /// <param name="tabela">Nome da tabela a ser buscada.</param>
-    /// <param name="campo">Campo no qual uma busca será realizada.</param>
-    /// <param name="valor">Valor de busca.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="pagina">Número da página (1-based) para paginação.</param>
+    /// <param name="tamanho">Quantidade de itens por página.</param>
+    /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+    /// <response code="200">Sucesso ao listar registros.</response>
+    /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> BuscarPorCampo(
         [FromQuery] string tabela,
         [FromQuery] string campo,

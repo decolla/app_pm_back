@@ -19,7 +19,7 @@ public class DadosRenovacaoController : ControllerBase
     private readonly DadosRenovacaoService _dadosRenovacaoService;
     private readonly AppDbContext _context;
     private readonly IMapper _mapper;
-    
+
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="DadosRenovacaoController"/>.
     /// </summary>
@@ -56,13 +56,13 @@ public class DadosRenovacaoController : ControllerBase
             return BadRequest(new { message = $"Erro ao criar dados de renovação: {e.Message}." });
         }
     }
-    
+
     /// <summary>
     /// Lista os dados de renovação em formato de página
     /// </summary>
     /// <returns>Lista Paginada</returns>
     [HttpPost("busca")]
-    public async Task<IActionResult> ListarDadosRenovacao(        
+    public async Task<IActionResult> ListarDadosRenovacao(
         [FromQuery] int? pagina = null,
         [FromQuery] int? tamanho = null)
     {
@@ -72,6 +72,7 @@ public class DadosRenovacaoController : ControllerBase
             {
                 return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
             }
+
             var dadosRenovacao = await _dadosRenovacaoService.BuscarRenovacaoAsync(pagina,
                 tamanho);
             return new ObjectResult(dadosRenovacao);
@@ -81,7 +82,7 @@ public class DadosRenovacaoController : ControllerBase
             return BadRequest(new { message = $"Erro ao listar dados de renovação: {e.Message}." });
         }
     }
-    
+
     /// <summary>
     /// Conta a quantidade total de dados de renovação cadastrados.
     /// </summary>
@@ -103,9 +104,15 @@ public class DadosRenovacaoController : ControllerBase
     /// <summary>
     /// Obtém um dado de renovação específico a partir do id na rota.
     /// </summary>
-    /// <param name="id">Id do Dado</param>
-    /// <returns></returns>
+    /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+    /// <returns>O objeto correspondente cadastrado.</returns>
+    /// <response code="200">Sucesso ao obter o registro.</response>
+    /// <response code="400">ID fornecido inválido.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ObterDadosRenovacaoPorId(int id)
     {
         try
@@ -115,6 +122,7 @@ public class DadosRenovacaoController : ControllerBase
             {
                 return NotFound(new { message = $"Dados de renovação com id {id} não encontrado." });
             }
+
             return new ObjectResult(dadosRenovacao);
         }
         catch (Exception e)
@@ -122,7 +130,7 @@ public class DadosRenovacaoController : ControllerBase
             return BadRequest(new { message = $"Erro ao obter dados de renovação por id: {e.Message}." });
         }
     }
-    
+
     /// <summary>
     /// Atualiza um dado de renovação existente a partir de DTO e id na rota.
     /// </summary>
@@ -168,14 +176,15 @@ public class DadosRenovacaoController : ControllerBase
             return BadRequest(new { message = "Erro ao atualizar Dados Renovação ." });
         }
     }
-    
+
     /// <summary>
     /// Deleta um dado de renovação existente a partir do id na rota.
     /// </summary>
     /// <param name="id">Id do dado a ser deletado</param>
     /// <returns>IActionResult</returns>
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeletarDadosRenovacao(int id){
+    public async Task<IActionResult> DeletarDadosRenovacao(int id)
+    {
         try
         {
             var deleted = await _dadosRenovacaoService.DeleteNotaAsync(id);
@@ -188,11 +197,11 @@ public class DadosRenovacaoController : ControllerBase
             return BadRequest(new { message = "Erro ao deletar dados de renovação ." });
         }
     }
-    
+
     /// <summary>
     /// Busca todas as Fichas, Notas ou Ordens para preencher a tabela de Dados Renovacao
     /// </summary>
-    [HttpPost("RenovacaoFichas")]
+    [HttpPost("renovacao-fichas")]
     public async Task<IActionResult> GerarRenovacaoFichas(Fichas buscaTabela)
     {
         try
@@ -209,6 +218,7 @@ public class DadosRenovacaoController : ControllerBase
                 var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
                 message = "Notas classificadas com sucesso";
             }
+
             if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
             {
                 var idsOrdens = await _context.PM_Ordens

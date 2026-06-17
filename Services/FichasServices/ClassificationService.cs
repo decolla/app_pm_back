@@ -29,6 +29,7 @@ public class ClassificationService<T> where T : class, IClassifiable
     {
         _context = context;
         _dbSet = context.Set<T>();
+        _classificationModel = context.Set<RuleClassificationDto>();
         _cbm = modeloCatboost;
         _meta = meta;
     }
@@ -44,7 +45,7 @@ public class ClassificationService<T> where T : class, IClassifiable
         nota.Classificacao = classificacao;
         nota.ClassificadoPor = usuario;
         nota.DataClassificacao = DateTime.Now;
-        nota.MetodoClassificacao = MetodoClassificacao.NAOCLASSIFICADA;
+        nota.MetodoClassificacao = MetodoClassificacao.HUMANA;
 
         _dbSet.Update(nota);
         await _context.SaveChangesAsync();
@@ -75,7 +76,7 @@ public class ClassificationService<T> where T : class, IClassifiable
         // busco todas as notas/ordems sem classificação
         // remover comentário caso deve reavaliar regras já avaladas
         var notasSemClassificacao =
-            await _dbSet.Where(n => n.Classificacao == null /* || n.ClassificadoPor == null*/).ToListAsync();
+            await _dbSet.Where(n => n.Classificacao == Classificacao.NAOCLASSIFICADA).ToListAsync();
         DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(10000);
 
         // leio o campo alvo da regra e busco a palavra chave 

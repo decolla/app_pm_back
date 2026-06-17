@@ -20,36 +20,39 @@
             </summary>
             <param name="nomeDaColuna"></param>
         </member>
-        <member name="T:app_pm_back.Controllers.AnnexController">
+        <member name="T:app_pm_back.Controllers.AnexosController">
             <summary>
             Controller para anexos
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.AnnexController.#ctor(app_pm_back.Services.AnnexService)">
+        <member name="M:app_pm_back.Controllers.AnexosController.#ctor(app_pm_back.Services.AnnexService)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.AnnexController"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.AnexosController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.AnnexController.UploadArquivo(app_pm_back.DTO.UploadAnnexRequestDto)">
+        <member name="M:app_pm_back.Controllers.AnexosController.UploadArquivo(app_pm_back.DTO.UploadAnnexRequestDto)">
             <summary>
             Realiza upload de um arquivo.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.AnnexController.DownloadArquivo(System.Int64)">
+        <member name="M:app_pm_back.Controllers.AnexosController.DownloadArquivo(System.Int64)">
             <summary>
             Realiza o download de um arquivo.
             </summary>
             <param name="id">Identificador do registro.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.AnnexController.BuscarArquivo(System.Int64,System.String)">
+        <member name="M:app_pm_back.Controllers.AnexosController.BuscarArquivo(System.Int64,System.String)">
             <summary>
             Obtém um registro específico.
             </summary>
-            <param name="referenciaId">Id de referência.</param>
-            <param name="tipoReferencia">Tipo de referência.</param>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.AnnexController.TryResolveReferencia(app_pm_back.DTO.UploadAnnexRequestDto,System.Nullable{System.Int64}@,System.Nullable{System.Int64}@,System.String@)">
+        <member name="M:app_pm_back.Controllers.AnexosController.TryResolveReferencia(app_pm_back.DTO.UploadAnnexRequestDto,System.Nullable{System.Int64}@,System.Nullable{System.Int64}@,System.String@)">
             <summary>
             Função auxiliar para identificar o tipo da referência.
             </summary>
@@ -74,22 +77,29 @@
             Cria um novo centro de planejamento e manutenção.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.ObterPorId(System.Int64)">
             <summary>
             Obtém um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Contar">
             <summary>
@@ -102,18 +112,20 @@
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.CentrosTrabalhoController">
             <summary>
@@ -130,22 +142,29 @@
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.ObterPorId(System.Int64)">
             <summary>
             Obtém um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Contar">
             <summary>
@@ -158,18 +177,20 @@
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.GruposPlanejamentoController">
             <summary>
@@ -186,22 +207,29 @@
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.ObterPorId(System.Int64)">
             <summary>
             Obtém um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Contar">
             <summary>
@@ -214,18 +242,20 @@
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.ImobilizadosController">
             <summary>
@@ -242,22 +272,29 @@
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.ImobilizadosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.ImobilizadosController.ObterPorId(System.Int64)">
             <summary>
             Obtém um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.ImobilizadosController.Contar">
             <summary>
@@ -270,18 +307,20 @@
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.ImobilizadosController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.UsuariosController">
             <summary>
@@ -298,22 +337,29 @@
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.UsuariosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.UsuariosController.ObterPorId(System.Int64)">
             <summary>
             Obtém um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.UsuariosController.Contar">
             <summary>
@@ -326,18 +372,20 @@
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.UsuariosController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.BuscaController">
             <summary>
@@ -349,21 +397,15 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.BuscaController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.ListarTabelasCampos">
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscarPorCampo(System.String,System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscarPorCampo(System.String,System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Obtém um registro específico de uma tabela.
-            </summary>
-            <param name="tabela">Nome da tabela a ser buscada.</param>
-            <param name="campo">Campo no qual uma busca será realizada.</param>
-            <param name="valor">Valor de busca.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.BuscaController.BuscaGerald(app_pm_back.Models.Domain.ComponentType)">
             <summary>
@@ -408,13 +450,22 @@
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Criar(app_pm_back.DTO.EstrategiaManutencaoDto)">
             <summary>
-            Cria uma estratégia 
+            Cria uma estratégia
             </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
-            Lista as estratégias em formato de página 
+            Lista as estratégias em formato de página
             </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Contar">
             <summary>
@@ -425,11 +476,20 @@
             <summary>
             Atualiza um objeto do modelo
             </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Deletar(System.Int32)">
             <summary>
             Deleta um objeto do modelo
             </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Pesquisar(System.String,System.Nullable{System.Int32},System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
@@ -438,8 +498,13 @@
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.BuscarPorId(System.Int32)">
             <summary>
-            Busca por id a estratégia 
+            Busca por id a estratégia
             </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.Estrategia.TipoEstrategiaController">
             <summary>
@@ -453,20 +518,32 @@
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.Criar(app_pm_back.DTO.TipoEstrategiaDto,app_pm_back.Data.AppDbContext)">
             <summary>
-            Cria uma estratégia 
+            Cria uma estratégia
             </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
-            Lista as estratégias em formato de página 
+            Lista as estratégias em formato de página
             </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.ObterPorId(System.Int64)">
             <summary>
             Obtém um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.Contar">
             <summary>
@@ -477,11 +554,20 @@
             <summary>
             Atualiza um objeto do modelo
             </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.Deletar(System.Int32)">
             <summary>
             Deleta um objeto do modelo
             </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController">
             <summary>
@@ -518,8 +604,11 @@
             <summary>
             Obtém um dado de renovação específico a partir do id na rota.
             </summary>
-            <param name="id">Id do Dado</param>
-            <returns></returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.AtualizarDadosRenovacao(System.Int32,app_pm_back.DTO.DadosRenovacaoDto)">
             <summary>
@@ -614,61 +703,70 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:app_pm_back.Controllers.ItemsController">
+        <member name="T:app_pm_back.Controllers.ItensController">
             <summary>
-            Classe ItemsController.
+            Classe ItensController.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ItemsController.#ctor(app_pm_back.Services.Manutencao.ItemNotaService,AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.ItensController.#ctor(app_pm_back.Services.Manutencao.ItemNotaService,AutoMapper.IMapper)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.ItemsController"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.ItensController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ItemsController.CriarItem(app_pm_back.DTO.ItemNotaManutencaoDto)">
+        <member name="M:app_pm_back.Controllers.ItensController.CriarItem(app_pm_back.DTO.ItemNotaManutencaoDto)">
             <summary>
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.ItemsController.ListarItens(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.ItensController.ListarItens(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
-        <member name="M:app_pm_back.Controllers.ItemsController.ObterPorId(System.Int64)">
+        <member name="M:app_pm_back.Controllers.ItensController.ObterPorId(System.Int64)">
             <summary>
             Obtém um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.ItemsController.ContarItens">
+        <member name="M:app_pm_back.Controllers.ItensController.ContarItens">
             <summary>
             Obtém o total de registros cadastrados.
             </summary>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.ItemsController.AtualizarItem(System.Int32,app_pm_back.DTO.ItemNotaManutencaoDto)">
+        <member name="M:app_pm_back.Controllers.ItensController.AtualizarItem(System.Int32,app_pm_back.DTO.ItemNotaManutencaoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.ItemsController.DeletarItem(System.Int32)">
+        <member name="M:app_pm_back.Controllers.ItensController.DeletarItem(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.NotasController">
             <summary>
@@ -684,18 +782,30 @@
             <summary>
             Cadastra uma nota a partir de DTO.
             </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.ListarNotas(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Retorna todas as notas , com paginacao opcional.
             </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.ObterPorId(System.Int64)">
             <summary>
             Obtém um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.ContarNotas">
             <summary>
@@ -711,11 +821,20 @@
             <summary>
             Atualiza uma nota pelo DTO.
             </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.DeletarNota(System.Int32)">
             <summary>
             Delete uma nota de mesmo Id
             </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.BuscarItensNota(System.Int64)">
             <summary>
@@ -726,6 +845,13 @@
             <summary>
             Classifica uma nota com base na classificação humana atribuida a uma nota específica
             </summary>
+            <param name="id">Identificador exclusivo do registro a ser classificado.</param>
+            <param name="classificacao">Valor da classificação humana.</param>
+            <param name="idUsuario">Identificador do usuário que realizou a classificação.</param>
+            <returns>O objeto classificado atualizado.</returns>
+            <response code="200">Sucesso ao classificar.</response>
+            <response code="400">Erros na validação do usuário ou ID informado inválido.</response>
+            <response code="404">Registro não encontrado.</response>
         </member>
         <member name="T:app_pm_back.Controllers.OrdensController">
             <summary>
@@ -741,15 +867,24 @@
             <summary>
             Cadastra uma ordem a partir de DTO.
             </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.OrdensController.ListarOrdens(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
-            Retorna todas as ordens , com paginacao opcional.
+            Retorna todas as ordens, com paginacao opcional.
             </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.OrdensController.ObterPorId(System.Int64)">
             <summary>
-            Obtém um registro pelo seu identificador.
+            Obtém um registro pelo id da ordem.
             </summary>
             <param name="id">Identificador do registro.</param>
             <returns>Resultado da operação.</returns>
@@ -768,16 +903,32 @@
             <summary>
             Atualiza uma ordem pelo DTO.
             </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.OrdensController.DeletarOrdem(System.Int64)">
             <summary>
             Delete uma nota de mesmo Id
             </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.OrdensController.ClassificacaoHumanaOrdem(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
             <summary>
             Classifica uma ordem with manual label
             </summary>
+            <param name="id">Identificador exclusivo do registro a ser classificado.</param>
+            <param name="classificacao">Valor da classificação humana.</param>
+            <param name="idUsuario">Identificador do usuário que realizou a classificação.</param>
+            <returns>O objeto classificado atualizado.</returns>
+            <response code="200">Sucesso ao classificar.</response>
+            <response code="400">Erros na validação do usuário ou ID informado inválido.</response>
+            <response code="404">Registro não encontrado.</response>
         </member>
         <member name="T:app_pm_back.Controllers.Organizacao.AlmoxarifadosController">
             <summary>
@@ -794,22 +945,29 @@
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.ObterPorId(System.Int64)">
             <summary>
             Obtém um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Contar">
             <summary>
@@ -822,18 +980,20 @@
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.FerramentaController">
             <summary>
@@ -850,35 +1010,48 @@
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Listar(System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.BuscarPorId(System.Int32)">
             <summary>
             Obtém um registro específico.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Atualizar(System.Int32,app_pm_back.DTO.FerramentaTipoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController">
             <summary>
@@ -900,18 +1073,23 @@
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
-            Lista objetos do modelo em formato de página 
+            Lista objetos do modelo em formato de página
             </summary>
-            <param name="pagina">Página a ser exibida</param>
-            <param name="tamanho">Quantidade de objetos na página</param>
-            <returns>Lista de objetos presentes na página</returns>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.ObterPorId(System.Int64)">
             <summary>
             Obtém um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.Contar">
             <summary>
@@ -921,18 +1099,22 @@
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.Atualizar(System.Int64,app_pm_back.DTO.PlanoManutencaoDto)">
             <summary>
-            Atualiza um registro existente.
+            Atualiza um objeto do modelo
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.Deletar(System.Int32)">
             <summary>
             Deleta um objeto do modelo
             </summary>
-            <param name="id">Id do objeto a ser deletado</param>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
@@ -954,35 +1136,48 @@
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Listar(System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.BuscarPorId(System.Int32)">
             <summary>
             Obtém um registro específico.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Atualizar(System.Int32,app_pm_back.DTO.TarefaDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController">
             <summary>
@@ -999,35 +1194,48 @@
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.Listar(System.String)">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.BuscarPorId(System.Int32)">
             <summary>
             Obtém um registro específico.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.Atualizar(System.Int32,app_pm_back.DTO.TipoManutencaoCepDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController">
             <summary>
@@ -1044,15 +1252,19 @@
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Contar">
             <summary>
@@ -1065,26 +1277,30 @@
             <summary>
             Obtém um registro específico.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Atualizar(System.Int32,app_pm_back.DTO.TipoManutencaoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController">
             <summary>
@@ -1100,18 +1316,20 @@
             <summary>
             Cria um novo registro.
             </summary>
-            <param name="tipo">Parâmetro do método.</param>
             <param name="dto">DTO contendo os dados da requisição.</param>
-            <param name="context">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Contar">
             <summary>
@@ -1124,9 +1342,11 @@
             <summary>
             Obtém um registro específico.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.ListarPorTipo(System.Int32)">
             <summary>
@@ -1140,18 +1360,20 @@
             <summary>
             Atualiza um registro existente.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Data.AppDbContext">
             <summary>
@@ -3377,13 +3599,6 @@
             </summary>
             <param name="pagina"></param>
             <param name="tamanho"></param>
-            <returns></returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.GetNotaByIdAsync(System.Int64)">
-            <summary>
-            Busca uma nota pelo ID
-            </summary>
-            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:app_pm_back.Services.BaseCrudService`1.DeleteNotaAsync(System.Int64)">

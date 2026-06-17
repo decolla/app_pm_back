@@ -1,4 +1,4 @@
-﻿using app_pm_back.DTO;
+using app_pm_back.DTO;
 using app_pm_back.Models;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
@@ -14,7 +14,6 @@ namespace app_pm_back.Controllers.FichasControllers;
 /// </summary>
 [ApiController]
 [Route(Config.RouteConfig.BaseRoute + "/fichas")]
-
 public class FichasController : ControllerBase
 {
     private readonly SynchronizeAPMService _synchronizeApmService;
@@ -24,11 +23,12 @@ public class FichasController : ControllerBase
     private readonly ClassificationService<OrdemModel> _ordemService;
     private readonly ReliabilityService _reliabilityService;
     private readonly SpreadSheetService _spreadsheetOrchestrator;
-    
-    public FichasController(SynchronizeAPMService synchronizeApmService, ILogger<FichasController> logger, 
-        GenericSearchService searchService, ReliabilityService reliabilityService, ClassificationService<NotaModel> notaService, 
+
+    public FichasController(SynchronizeAPMService synchronizeApmService, ILogger<FichasController> logger,
+        GenericSearchService searchService, ReliabilityService reliabilityService,
+        ClassificationService<NotaModel> notaService,
         ClassificationService<OrdemModel> ordemService, SpreadSheetService spreadsheetOrchestrator)
-    
+
     {
         _searchService = searchService;
         _synchronizeApmService = synchronizeApmService;
@@ -37,9 +37,8 @@ public class FichasController : ControllerBase
         _notaService = notaService;
         _ordemService = ordemService;
         _spreadsheetOrchestrator = spreadsheetOrchestrator;
-        
     }
-    
+
     /// <summary>
     /// Sincroniza as fichas do PM com os ativos do APM
     /// </summary>
@@ -73,14 +72,15 @@ public class FichasController : ControllerBase
             return BadRequest(new { message = $"Erro ao iniciar sincronização: {e.Message}." });
         }
     }
-    
+
     /// <summary>
     /// Cria uma regra de classificação por palavras para Ambas, Fichas ou Ordens
     /// </summary>
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
-    [HttpGet("classificacao/regra")]
-    public async Task<IActionResult> CriarRegraCongas([FromBody] RuleClassificationDto regra, Fichas buscaTabela)
+    [HttpPost("classificacao/regras")]
+    public async Task<IActionResult> CriarRegraCongas([FromBody] RuleClassificationDto regra,
+        [FromQuery] Fichas buscaTabela)
     {
         try
         {
@@ -92,20 +92,23 @@ public class FichasController : ControllerBase
                 regrasCriadas.Add(resultNota);
                 message = "Notas classificadas com sucesso";
             }
+
             if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
             {
                 var resultOrdem = await _ordemService.CreateRule(regra);
                 regrasCriadas.Add(resultOrdem);
                 message += "| Ordens classificadas com sucesso";
             }
+
             if (!regrasCriadas.Any())
             {
                 return BadRequest(new { message = $"Resultado da busca nulo" });
             }
+
             var idsGerados = string.Join(", ", regrasCriadas.Select(r => r.IdRegra));
 
             return Ok(new { message = $"{message} ! IDs: {idsGerados}" });
-       }
+        }
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao criar regra {e.Message}" });
@@ -127,20 +130,22 @@ public class FichasController : ControllerBase
             List<OrdemModel>? ordensClassificadas = null;
             if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Notas)
             {
-                notasClassificadas= await _notaService.WordsClassification([]);
+                notasClassificadas = await _notaService.WordsClassification([]);
                 message = "Notas classificadas com sucesso";
             }
+
             if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
             {
-                ordensClassificadas= await _ordemService.WordsClassification([]);
+                ordensClassificadas = await _ordemService.WordsClassification([]);
                 message += "| Ordens classificadas com sucesso";
             }
+
             if (!message.Any())
             {
                 return BadRequest(new { message = "Ficha inválida" });
             }
+
             return Ok(new { message = $"{message} !" });
-            
         }
         catch (Exception e)
         {
@@ -161,18 +166,21 @@ public class FichasController : ControllerBase
             List<OrdemModel>? ordensClassificadas = null;
             if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Notas)
             {
-                notasClassificadas= await _notaService.CatboostClassification();
+                notasClassificadas = await _notaService.CatboostClassification();
                 message = "Notas classificadas com sucesso";
             }
+
             if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
             {
-                ordensClassificadas= await _ordemService.CatboostClassification();
+                ordensClassificadas = await _ordemService.CatboostClassification();
                 message += "| Ordens classificadas com sucesso";
             }
+
             if (!message.Any())
             {
                 return BadRequest(new { message = "Ficha inválida" });
             }
+
             return Ok(new { message = $"{message} !" });
         }
         catch (Exception e)
@@ -180,7 +188,7 @@ public class FichasController : ControllerBase
             return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
         }
     }
-    
+
     /// <summary>
     /// Busca Todas as datas de notas e ordens de um LI
     /// </summary>
@@ -191,7 +199,6 @@ public class FichasController : ControllerBase
     {
         try
         {
-
             if (string.IsNullOrWhiteSpace(idLi))
             {
                 return BadRequest(new { message = "Parametro idLi obrigatorio." });
@@ -207,7 +214,7 @@ public class FichasController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
         }
     }
-    
+
     /// <summary>
     /// Faz o upload e processamento de planilhas de Notas, Ordens ou Itens
     /// </summary>
@@ -221,14 +228,15 @@ public class FichasController : ControllerBase
         {
             // Validações básicas e rápidas da requisição
             if (!sobrescrever && !adicionarNovas)
-                return BadRequest(new { message = "Nenhuma ação selecionada. Marque 'sobrescrever' ou 'adicionarNovas'." });
+                return BadRequest(new
+                    { message = "Nenhuma ação selecionada. Marque 'sobrescrever' ou 'adicionarNovas'." });
 
             if (file == null || file.Length == 0)
                 return BadRequest(new { message = "Arquivo inválido ou vazio." });
 
             // 3. Toda a mágica pesada acontece dentro do serviço!
             var inseridas = await _spreadsheetOrchestrator.ProcessarPlanilhaAsync(file, sobrescrever, adicionarNovas);
-            
+
             return Ok(new { message = inseridas });
         }
         catch (ArgumentException ex)
@@ -242,7 +250,7 @@ public class FichasController : ControllerBase
             return BadRequest(new { message = $"Erro ao processar planilha: {ex.Message}" });
         }
     }
-    
+
     /// <summary>
     /// Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
     /// </summary>
@@ -277,6 +285,4 @@ public class FichasController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar nota/ordem: {e.Message}." });
         }
     }
-
-
 }

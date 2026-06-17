@@ -1,5 +1,6 @@
 using System.Text.Json;
 using app_pm_back.Models.Domain;
+using app_pm_back.DTO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -142,7 +143,7 @@ public class AppDbContext : DbContext
     public DbSet<AnexoOrdemModel> PM_AnexosOrdem { get; set; }
     public DbSet<DadosRenovacaoModel> PM_DadosRenovacao { get; set; }
     public DbSet<ReliabilityModel> PM_Reliability { get; set; }
-    
+    public DbSet<RuleClassificationDto> PM_ClassificationRules { get; set; }
 }
 
 public class SqlServerDbContext : AppDbContext

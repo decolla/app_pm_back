@@ -10,7 +10,7 @@ namespace app_pm_back.Controllers.PlanoManutencao;
 /// Endpoints de plano de manutencao .
 /// </summary>
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/plano-manutencao")]
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/planos-manutencao")]
 public class PlanoManutencaoController : ControllerBase
 {
     private readonly string _operador = "plano de mantuenção";
@@ -49,7 +49,7 @@ public class PlanoManutencaoController : ControllerBase
             }
 
             var novoObj = await _planoManutencaoService.CreateComTiposAsync(obj);
-            return new ObjectResult(novoObj);
+            return CreatedAtAction(nameof(ObterPorId), new { id = novoObj.IdPlano }, novoObj);
         }
         catch (Exception e)
         {
@@ -57,13 +57,17 @@ public class PlanoManutencaoController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Lista objetos do modelo em formato de página 
+        /// <summary>
+    /// Lista objetos do modelo em formato de página
     /// </summary>
-    /// <param name="pagina">Página a ser exibida</param>
-    /// <param name="tamanho">Quantidade de objetos na página</param>
-    /// <returns>Lista de objetos presentes na página</returns>
+    /// <param name="pagina">Número da página (1-based) para paginação.</param>
+    /// <param name="tamanho">Quantidade de itens por página.</param>
+    /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+    /// <response code="200">Sucesso ao listar registros.</response>
+    /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
@@ -90,12 +94,18 @@ public class PlanoManutencaoController : ControllerBase
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Obtém um registro pelo seu identificador.
     /// </summary>
-    /// <param name="id">Identificador do registro.</param>
-    /// <returns>Resultado da operação.</returns>
+    /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+    /// <returns>O objeto correspondente cadastrado.</returns>
+    /// <response code="200">Sucesso ao obter o registro.</response>
+    /// <response code="400">ID fornecido inválido.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpGet("{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ObterPorId([FromRoute] long id)
     {
         try
@@ -137,21 +147,17 @@ public class PlanoManutencaoController : ControllerBase
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Atualiza um objeto do modelo
     /// </summary>
-    /// <param name="id">Id do plano na rota</param>
-    /// <param name="dto">Objeto a ser atualizado</param>
-    /// <returns>Novo objeto</returns>
-    // [HttpPut]
-    /// <summary>
-    /// Atualiza um registro existente.
-    /// </summary>
-    /// <param name="id">Identificador do registro.</param>
-    /// <param name="dto">DTO contendo os dados da requisição.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="dto">DTO contendo os novos dados para atualização.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] PlanoManutencaoDto dto)
     {
         try
@@ -191,11 +197,16 @@ public class PlanoManutencaoController : ControllerBase
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Deleta um objeto do modelo
     /// </summary>
-    /// <param name="id">Id do objeto a ser deletado</param>
+    /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+    /// <returns>Mensagem de confirmação da exclusão.</returns>
+    /// <response code="200">Sucesso ao deletar o registro.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar(int id)
     {
         try

@@ -35,7 +35,13 @@ public class OrdensController : ControllerBase
     /// <summary>
     /// Cadastra uma ordem a partir de DTO.
     /// </summary>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>O objeto criado com status 201 (Created).</returns>
+    /// <response code="201">Registro criado com sucesso.</response>
+    /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CriarOrdem([FromBody] OrdemManutencaoDto dto)
     {
         try
@@ -52,7 +58,7 @@ public class OrdensController : ControllerBase
             }
 
             var notaCriada = await _ordemService.CreateAsync(ordem);
-            return Created($"{app_pm_back.Config.RouteConfig.BaseRoute}/orders/{notaCriada.IdOrdem}", notaCriada);
+            return CreatedAtAction(nameof(ObterPorId), new { id = notaCriada.IdOrdem }, notaCriada);
         }
         catch (Exception e)
         {
@@ -63,7 +69,14 @@ public class OrdensController : ControllerBase
     /// <summary>
     /// Retorna todas as ordens, com paginacao opcional.
     /// </summary>
+    /// <param name="pagina">Número da página (1-based) para paginação.</param>
+    /// <param name="tamanho">Quantidade de itens por página.</param>
+    /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+    /// <response code="200">Sucesso ao listar registros.</response>
+    /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListarOrdens([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
@@ -161,7 +174,14 @@ public class OrdensController : ControllerBase
     /// <summary>
     /// Atualiza uma ordem pelo DTO.
     /// </summary>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="dto">DTO contendo os novos dados para atualização.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AtualizarOrdem([FromRoute] long id, [FromBody] OrdemManutencaoDto dto)
     {
         try
@@ -204,7 +224,13 @@ public class OrdensController : ControllerBase
     /// <summary>
     /// Delete uma nota de mesmo Id
     /// </summary>
+    /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+    /// <returns>Mensagem de confirmação da exclusão.</returns>
+    /// <response code="200">Sucesso ao deletar o registro.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeletarOrdem(long id)
     {
         try
@@ -223,7 +249,17 @@ public class OrdensController : ControllerBase
     /// <summary>
     /// Classifica uma ordem with manual label
     /// </summary>
-    [HttpPut("classificacao/{id:long}")]
+    /// <param name="id">Identificador exclusivo do registro a ser classificado.</param>
+    /// <param name="classificacao">Valor da classificação humana.</param>
+    /// <param name="idUsuario">Identificador do usuário que realizou a classificação.</param>
+    /// <returns>O objeto classificado atualizado.</returns>
+    /// <response code="200">Sucesso ao classificar.</response>
+    /// <response code="400">Erros na validação do usuário ou ID informado inválido.</response>
+    /// <response code="404">Registro não encontrado.</response>
+    [HttpPatch("classificacao/{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ClassificacaoHumanaOrdem(
         [FromRoute] long id,
         [FromQuery] Classificacao classificacao,

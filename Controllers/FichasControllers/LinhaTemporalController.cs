@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace app_pm_back.Controllers.FichasControllers;
 
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/LinhaTemporal")]
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/linha-temporal")]
 public class LinhaTemporalController : ControllerBase
 {
     private readonly LinhaTemporalService _linhaTemporalService;
@@ -33,11 +33,11 @@ public class LinhaTemporalController : ControllerBase
         try
         {
             var apmResultado = await _linhaTemporalService.ObterLisDoApmAsync(pagina, tamanho);
-    
+
             // Extrai a lista e o total para facilitar o uso
             var lisPagina = apmResultado.Assets;
             var totalRegistros = apmResultado.Total;
-    
+
             if (!lisPagina.Any())
             {
                 return Ok(new
@@ -57,7 +57,7 @@ public class LinhaTemporalController : ControllerBase
             foreach (var li in lisPagina)
             {
                 var itens = await _linhaTemporalService.ObterItensDaLiAsync(li.IdLi);
-                
+
                 resultado.Add(new
                 {
                     idLi = li.IdLi,
@@ -91,12 +91,12 @@ public class LinhaTemporalController : ControllerBase
         }
         catch (HttpRequestException ex)
         {
-            return StatusCode(StatusCodes.Status502BadGateway, 
+            return StatusCode(StatusCodes.Status502BadGateway,
                 $"Erro ao comunicar com APM: {ex.Message}");
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, 
+            return StatusCode(StatusCodes.Status500InternalServerError,
                 $"Erro interno: {ex.Message}");
         }
     }

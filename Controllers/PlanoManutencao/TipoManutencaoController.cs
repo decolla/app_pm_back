@@ -12,7 +12,7 @@ namespace app_pm_back.Controllers.PlanoManutencao;
 /// Endpoints de tipo de manutencao .
 /// </summary>
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/tipo-manutencao")]
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/tipos-manutencao")]
 public class TipoManutencaoController : ControllerBase
 {
     private readonly string _operador = "tipo de manutenção";
@@ -28,13 +28,16 @@ public class TipoManutencaoController : ControllerBase
         _mapper = mapper;
     }
 
-    /// <summary>
+        /// <summary>
     /// Cria um novo registro.
     /// </summary>
     /// <param name="dto">DTO contendo os dados da requisição.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <returns>O objeto criado com status 201 (Created).</returns>
+    /// <response code="201">Registro criado com sucesso.</response>
+    /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Criar([FromBody] TipoManutencaoDto dto)
     {
         if (!ModelState.IsValid)
@@ -46,7 +49,7 @@ public class TipoManutencaoController : ControllerBase
         {
             var obj = _mapper.Map<TipoManutencaoModel>(dto);
             var novoObj = await _tipoManutencaoService.CreateAsync(obj);
-            return new ObjectResult(novoObj);
+            return CreatedAtAction(nameof(BuscarPorId), new { id = novoObj.IdTipoManutencao }, novoObj);
         }
         catch (Exception e)
         {
@@ -54,12 +57,17 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="pagina">Número da página (1-based) para paginação.</param>
+    /// <param name="tamanho">Quantidade de itens por página.</param>
+    /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+    /// <response code="200">Sucesso ao listar registros.</response>
+    /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
@@ -105,13 +113,18 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Obtém um registro específico.
     /// </summary>
-    /// <param name="id">Identificador do registro.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+    /// <returns>O objeto correspondente cadastrado.</returns>
+    /// <response code="200">Sucesso ao obter o registro.</response>
+    /// <response code="400">ID fornecido inválido.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> BuscarPorId(int id)
     {
         try
@@ -127,14 +140,17 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Atualiza um registro existente.
     /// </summary>
-    /// <param name="id">Identificador do registro.</param>
-    /// <param name="dto">DTO contendo os dados da requisição.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="dto">DTO contendo os novos dados para atualização.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TipoManutencaoDto dto)
     {
         try
@@ -172,13 +188,16 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Exclui um registro pelo seu identificador.
     /// </summary>
-    /// <param name="id">Identificador do registro.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+    /// <returns>Mensagem de confirmação da exclusão.</returns>
+    /// <response code="200">Sucesso ao deletar o registro.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar(int id)
     {
         try
@@ -204,7 +223,7 @@ public class TipoManutencaoController : ControllerBase
 /// Endpoints de tipo de plano .
 /// </summary>
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/tipo-plano")]
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/tipos-plano")]
 public class TipoPlanoController : ControllerBase
 {
     private readonly string _operador = "tipo de plano";
@@ -220,15 +239,16 @@ public class TipoPlanoController : ControllerBase
         _mapper = mapper;
     }
 
-    /// <summary>
+        /// <summary>
     /// Cria um novo registro.
     /// </summary>
-    /// <param name="tipo">Parâmetro do método.</param>
     /// <param name="dto">DTO contendo os dados da requisição.</param>
-    /// <param name="context">Parâmetro do método.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <returns>O objeto criado com status 201 (Created).</returns>
+    /// <response code="201">Registro criado com sucesso.</response>
+    /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Criar(
         [FromBody] TipoPlanoDto dto,
         [FromServices] AppDbContext context)
@@ -282,7 +302,7 @@ public class TipoPlanoController : ControllerBase
         {
             var obj = _mapper.Map<TipoPlanoModel>(dto);
             var novoObj = await _tipoPlanoService.CreateComCopiaAsync(obj);
-            return new ObjectResult(novoObj);
+            return CreatedAtAction(nameof(BuscarPorId), new { id = novoObj.IdTipoPlano }, novoObj);
         }
         catch (Exception e)
         {
@@ -290,12 +310,17 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="pagina">Número da página (1-based) para paginação.</param>
+    /// <param name="tamanho">Quantidade de itens por página.</param>
+    /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+    /// <response code="200">Sucesso ao listar registros.</response>
+    /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
@@ -341,13 +366,18 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Obtém um registro específico.
     /// </summary>
-    /// <param name="id">Identificador do registro.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+    /// <returns>O objeto correspondente cadastrado.</returns>
+    /// <response code="200">Sucesso ao obter o registro.</response>
+    /// <response code="400">ID fornecido inválido.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> BuscarPorId(int id)
     {
         try
@@ -390,14 +420,17 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Atualiza um registro existente.
     /// </summary>
-    /// <param name="id">Identificador do registro.</param>
-    /// <param name="dto">DTO contendo os dados da requisição.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="dto">DTO contendo os novos dados para atualização.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TipoPlanoDto dto)
     {
         try
@@ -449,13 +482,16 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
-    /// <summary>
+        /// <summary>
     /// Exclui um registro pelo seu identificador.
     /// </summary>
-    /// <param name="id">Identificador do registro.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+    /// <returns>Mensagem de confirmação da exclusão.</returns>
+    /// <response code="200">Sucesso ao deletar o registro.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar(int id)
     {
         try

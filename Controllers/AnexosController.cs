@@ -9,15 +9,15 @@ namespace app_pm_back.Controllers;
 /// Controller para anexos
 /// </summary>
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/anexo")]
-public class AnnexController : ControllerBase
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/anexos")]
+public class AnexosController : ControllerBase
 {
     private readonly AnnexService _annexService;
 
     /// <summary>
-    /// Inicializa uma nova instância da classe <see cref="AnnexController"/>.
+    /// Inicializa uma nova instância da classe <see cref="AnexosController"/>.
     /// </summary>
-    public AnnexController(AnnexService annexService)
+    public AnexosController(AnnexService annexService)
     {
         _annexService = annexService;
     }
@@ -63,12 +63,18 @@ public class AnnexController : ControllerBase
         return File(anexo.Value.Dados, anexo.Value.MimeType, anexo.Value.Nome);
     }
 
-    /// <summary>
+        /// <summary>
     /// Obtém um registro específico.
     /// </summary>
-    /// <param name="referenciaId">Id de referência.</param>
-    /// <param name="tipoReferencia">Tipo de referência.</param>
+    /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+    /// <returns>O objeto correspondente cadastrado.</returns>
+    /// <response code="200">Sucesso ao obter o registro.</response>
+    /// <response code="400">ID fornecido inválido.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpGet("referencia/{referenciaId:long}/{tipoReferencia}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> BuscarArquivo([FromRoute] long referenciaId, [FromRoute] string tipoReferencia)
     {
         if (referenciaId <= 0)

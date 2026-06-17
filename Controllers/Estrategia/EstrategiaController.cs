@@ -10,7 +10,7 @@ namespace app_pm_back.Controllers.Estrategia;
 /// Endpoints de estrategia de manutencao .
 /// </summary>
 [ApiController]
-[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/estrategia")]
+[Route(app_pm_back.Config.RouteConfig.BaseRoute + "/estrategias")]
 public class EstrategiaController : ControllerBase
 {
     private readonly string _operador = "estratégia de mantuenção";
@@ -27,9 +27,15 @@ public class EstrategiaController : ControllerBase
     }
 
     /// <summary>
-    /// Cria uma estratégia 
+    /// Cria uma estratégia
     /// </summary>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>O objeto criado com status 201 (Created).</returns>
+    /// <response code="201">Registro criado com sucesso.</response>
+    /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Criar([FromBody] EstrategiaManutencaoDto dto)
     {
         try
@@ -46,7 +52,7 @@ public class EstrategiaController : ControllerBase
             }
 
             var novoObj = await _estrategiaService.CreateAsync(obj);
-            return new ObjectResult(novoObj);
+            return CreatedAtAction(nameof(BuscarPorId), new { id = novoObj.IdEstrategia }, novoObj);
         }
         catch (Exception e)
         {
@@ -55,9 +61,16 @@ public class EstrategiaController : ControllerBase
     }
 
     /// <summary>
-    /// Lista as estratégias em formato de página 
+    /// Lista as estratégias em formato de página
     /// </summary>
+    /// <param name="pagina">Número da página (1-based) para paginação.</param>
+    /// <param name="tamanho">Quantidade de itens por página.</param>
+    /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+    /// <response code="200">Sucesso ao listar registros.</response>
+    /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
@@ -104,7 +117,14 @@ public class EstrategiaController : ControllerBase
     /// <summary>
     /// Atualiza um objeto do modelo
     /// </summary>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="dto">DTO contendo os novos dados para atualização.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] EstrategiaManutencaoDto dto)
     {
         try
@@ -148,7 +168,13 @@ public class EstrategiaController : ControllerBase
     /// <summary>
     /// Deleta um objeto do modelo
     /// </summary>
+    /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+    /// <returns>Mensagem de confirmação da exclusão.</returns>
+    /// <response code="200">Sucesso ao deletar o registro.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar(int id)
     {
         try
@@ -198,9 +224,17 @@ public class EstrategiaController : ControllerBase
     }
 
     /// <summary>
-    /// Busca por id a estratégia 
+    /// Busca por id a estratégia
     /// </summary>
+    /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+    /// <returns>O objeto correspondente cadastrado.</returns>
+    /// <response code="200">Sucesso ao obter o registro.</response>
+    /// <response code="400">ID fornecido inválido.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpGet("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> BuscarPorId(int id)
     {
         try
