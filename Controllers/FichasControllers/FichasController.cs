@@ -72,46 +72,11 @@ public class FichasController : ControllerBase
     }
     
     /// <summary>
-    /// Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
-    /// </summary>
-    /// <param name="busca">Modelo de busca com campos comparáveis</param>
-    /// <param name="pagina">Página a ser exibida</param>
-    /// <param name="tamanho">Número de elementos presente na página</param>
-    /// <returns>Lista de Nota e Ordens com base nos filtros</returns>
-    [HttpPost("fichas")]
-    public async Task<IActionResult> BuscarNotaOrdem(
-        [FromBody] BuscaOrdemNotaDto busca,
-        [FromQuery] int? pagina = null,
-        [FromQuery] int? tamanho = null,
-        [FromQuery] Fichas? tFichas = Fichas.Ambas)
-    {
-        try
-        {
-            if ((pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0))
-            {
-                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
-            }
-
-            var resultados = await _searchService.BuscarNotaOrdemAsync(
-                busca,
-                pagina,
-                tamanho,
-                tFichas);
-
-            return Ok(resultados);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao buscar nota/ordem: {e.Message}." });
-        }
-    }
-    
-    /// <summary>
     /// Cria uma regra de classificação por palavras para Ambas, Fichas ou Ordens
     /// </summary>
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
-    [HttpPost("classificacao/regra")]
+    [HttpGet("classificacao/regra")]
     public async Task<IActionResult> CriarRegraCongas([FromBody] RuleClassificationDto regra, Fichas buscaTabela)
     {
         try
@@ -148,7 +113,7 @@ public class FichasController : ControllerBase
     /// Classifica para Ambas, Fichas ou Ordens com base uma lista de palavras armazenadas no banco
     /// </summary>
     /// <returns>Lista de notas atualizadas</returns>
-    [HttpPost("classificacao/filtro")]
+    [HttpGet("classificacao/filtro")]
     public async Task<IActionResult> ClassificacaoPalavrasNotaCongas(Fichas buscaTabela)
     {
         try
@@ -183,7 +148,7 @@ public class FichasController : ControllerBase
     /// <summary>
     /// Classifica as Ambas, Fichas ou Ordens usando a IA catboost
     /// </summary>
-    [HttpPost("classificacao/catboost")]
+    [HttpGet("classificacao/catboost")]
     public async Task<IActionResult> ClassificacaoCatboostNota(Fichas buscaTabela)
     {
         try
@@ -245,6 +210,41 @@ public class FichasController : ControllerBase
         {
             _logger.LogError(ex, "Erro no upload da planilha.");
             return BadRequest(new { message = $"Erro ao processar planilha: {ex.Message}" });
+        }
+    }
+    
+    /// <summary>
+    /// Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
+    /// </summary>
+    /// <param name="busca">Modelo de busca com campos comparáveis</param>
+    /// <param name="pagina">Página a ser exibida</param>
+    /// <param name="tamanho">Número de elementos presente na página</param>
+    /// <returns>Lista de Nota e Ordens com base nos filtros</returns>
+    [HttpGet("busca")]
+    public async Task<IActionResult> BuscarNotaOrdem(
+        [FromBody] BuscaOrdemNotaDto busca,
+        [FromQuery] int? pagina = null,
+        [FromQuery] int? tamanho = null,
+        [FromQuery] Fichas? tFichas = Fichas.Ambas)
+    {
+        try
+        {
+            if ((pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
+            var resultados = await _searchService.BuscarNotaOrdemAsync(
+                busca,
+                pagina,
+                tamanho,
+                tFichas);
+
+            return Ok(resultados);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar nota/ordem: {e.Message}." });
         }
     }
 
