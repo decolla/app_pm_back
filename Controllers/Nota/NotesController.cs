@@ -100,6 +100,35 @@ public class NotasController : ControllerBase
     }
 
     /// <summary>
+    /// Obtém um registro pelo seu identificador.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> ObterPorId([FromRoute] long id)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id invalido. Envie id maior que zero." });
+            }
+
+            var item = await _notaService.GetByIdAsync(id);
+            if (item == null)
+            {
+                return NotFound(new { message = "Nota nao encontrada." });
+            }
+
+            return Ok(item);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar nota: {e.Message}." });
+        }
+    }
+
+    /// <summary>
     /// Conta o número total de notas salvas no banco
     /// </summary>
     [HttpGet("count")]

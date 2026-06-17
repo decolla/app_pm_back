@@ -34,55 +34,55 @@ public abstract class BaseCrudService<T> where T : class
     }
 
     /// <summary>
-    /// Cria uma nota 
+    /// Cria uma nova entidade.
     /// </summary>
-    /// <param name="nota"></param>
-    /// <returns></returns>
-    public async Task<T> CreateAsync(T nota)
+    /// <param name="entity">A entidade a ser criada.</param>
+    /// <returns>A entidade criada.</returns>
+    public async Task<T> CreateAsync(T entity)
     {
-        _dbSet.Add(nota);
+        _dbSet.Add(entity);
         await _context.SaveChangesAsync();
-        return nota;
+        return entity;
     }
 
     /// <summary>
-    /// Cria notas em massa, somente após lido verifica tudo de uma vez no banco
+    /// Cria várias entidades em massa.
     /// </summary>
-    /// <param name="notas"></param>
-    public async Task CreateNotasEmMassaAsync(List<T> notas)
+    /// <param name="entities">A lista de entidades.</param>
+    public async Task CreateRangeAsync(List<T> entities)
     {
-        await _dbSet.AddRangeAsync(notas);
+        await _dbSet.AddRangeAsync(entities);
         await _context.SaveChangesAsync();
     }
 
     /// <summary>
-    /// Atualiza uma nota
+    /// Atualiza uma entidade existente.
     /// </summary>
-    /// <param name="nota"></param>
-    /// <returns></returns>
-    public async Task<T> UpdateNotaAsync(T nota)
+    /// <param name="entity">A entidade a ser atualizada.</param>
+    /// <returns>A entidade atualizada.</returns>
+    public async Task<T> UpdateAsync(T entity)
     {
-        _dbSet.Update(nota);
+        _dbSet.Update(entity);
         await _context.SaveChangesAsync();
-        return nota;
+        return entity;
     }
 
     /// <summary>
-    /// Retorna todas as notas cadastradas
+    /// Retorna todas as entidades cadastradas.
     /// </summary>
-    /// <returns></returns>
-    public async Task<List<T>> GetAllNotasAsync()
+    /// <returns>Lista de entidades.</returns>
+    public async Task<List<T>> GetAllAsync()
     {
         return await _dbSet.ToListAsync();
     }
 
     /// <summary>
-    /// Retorna as notas paginadas
+    /// Retorna as entidades paginadas.
     /// </summary>
-    /// <param name="pagina"></param>
-    /// <param name="tamanho"></param>
-    /// <returns></returns>
-    public async Task<object> GetNotasPaginadasAsync(int pagina, int tamanho)
+    /// <param name="page">Número da página.</param>
+    /// <param name="size">Tamanho da página.</param>
+    /// <returns>Objeto contendo o total de registros e a lista paginada.</returns>
+    public async Task<object> GetPagedAsync(int page, int size)
     {
         var entityType = _context.Model.FindEntityType(typeof(T));
         var primaryKey = entityType?.FindPrimaryKey();
@@ -96,46 +96,111 @@ public abstract class BaseCrudService<T> where T : class
         
         var result = await _dbSet 
             .OrderBy(e => EF.Property<object>(e, keyName)) 
-            .Skip((pagina - 1) * tamanho) 
-            .Take(tamanho) 
+            .Skip((page - 1) * size) 
+            .Take(size) 
             .ToListAsync(); 
         
         return new { Total = count, Result = result }; 
     }
 
     /// <summary>
-    /// Busca uma nota pelo ID
+    /// Busca uma entidade pelo ID.
     /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    public async Task<T?> GetNotaByIdAsync(long id)
+    /// <param name="id">Identificador da entidade.</param>
+    /// <returns>A entidade correspondente ou null se não encontrada.</returns>
+    public async Task<T?> GetByIdAsync(long id)
     {
         var keyValue = BuildPrimaryKeyValue(id);
         return await _dbSet.FindAsync(keyValue);
     }
 
     /// <summary>
+    /// Deleta uma entidade pelo ID.
+    /// </summary>
+    /// <param name="id">Identificador da entidade.</param>
+    /// <returns>True se deletada com sucesso, False caso contrário.</returns>
+    public async Task<bool> DeleteAsync(long id)
+    {
+        var keyValue = BuildPrimaryKeyValue(id);
+        var entity = await _dbSet.FindAsync(keyValue);
+        if (entity == null) return false;
+
+        _dbSet.Remove(entity);
+        var changes = await _context.SaveChangesAsync();
+        return changes > 0;
+    }
+
+    /// <summary>
+    /// Retorna a contagem total de entidades.
+    /// </summary>
+    /// <returns>Número total de entidades.</returns>
+    public async Task<long> CountAsync()
+    {
+        return await _dbSet.CountAsync();
+    }
+
+    /// <summary>
+    /// Cria notas em massa, somente após lido verifica tudo de uma vez no banco
+    /// </summary>
+    /// <param name="notas"></param>
+    [Obsolete("Use CreateRangeAsync instead.")]
+    public async Task CreateNotasEmMassaAsync(List<T> notas)
+    {
+        await CreateRangeAsync(notas);
+    }
+
+    /// <summary>
+    /// Atualiza uma nota
+    /// </summary>
+    /// <param name="nota"></param>
+    /// <returns></returns>
+    [Obsolete("Use UpdateAsync instead.")]
+    public async Task<T> UpdateNotaAsync(T nota)
+    {
+        return await UpdateAsync(nota);
+    }
+
+    /// <summary>
+    /// Retorna todas as notas cadastradas
+    /// </summary>
+    /// <returns></returns>
+    [Obsolete("Use GetAllAsync instead.")]
+    public async Task<List<T>> GetAllNotasAsync()
+    {
+        return await GetAllAsync();
+    }
+
+    /// <summary>
+    /// Retorna as notas paginadas
+    /// </summary>
+    /// <param name="pagina"></param>
+    /// <param name="tamanho"></param>
+    /// <returns></returns>
+    [Obsolete("Use GetPagedAsync instead.")]
+    public async Task<object> GetNotasPaginadasAsync(int pagina, int tamanho)
+    {
+        return await GetPagedAsync(pagina, tamanho);
+    }
+    
+
+    /// <summary>
     /// Deleta uma nota pelo ID
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
+    [Obsolete("Use DeleteAsync instead.")]
     public async Task<bool> DeleteNotaAsync(long id)
     {
-        var keyValue = BuildPrimaryKeyValue(id);
-        var nota = await _dbSet.FindAsync(keyValue);
-        if (nota == null) return false;
-
-        _dbSet.Remove(nota);
-        var alteracoes = await _context.SaveChangesAsync();
-        return alteracoes > 0;
+        return await DeleteAsync(id);
     }
 
     /// <summary>
     /// Retorna a contagem total de notas
     /// </summary>
     /// <returns></returns>
+    [Obsolete("Use CountAsync instead.")]
     public async Task<long> CountNotasAsync()
     {
-        return await _dbSet.CountAsync();
+        return await CountAsync();
     }
 }

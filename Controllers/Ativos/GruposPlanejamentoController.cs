@@ -90,6 +90,35 @@ public class GruposPlanejamentoController : ControllerBase
     }
 
     /// <summary>
+    /// Obtém um registro pelo seu identificador.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> ObterPorId([FromRoute] long id)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id invalido. Envie id maior que zero." });
+            }
+
+            var item = await _service.GetByIdAsync(id);
+            if (item == null)
+            {
+                return NotFound(new { message = $"{_operador} nao encontrado." });
+            }
+
+            return Ok(item);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar {_operador}: {e.Message}." });
+        }
+    }
+
+    /// <summary>
     /// Obtém o total de registros cadastrados.
     /// </summary>
     /// <returns>Resultado da operação.</returns>

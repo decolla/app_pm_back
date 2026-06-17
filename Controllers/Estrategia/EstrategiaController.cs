@@ -210,7 +210,7 @@ public class EstrategiaController : ControllerBase
                 return BadRequest(new { message = "IdEstrategia invalido na rota. Envie id maior que zero." });
             }
 
-            var obj = await _estrategiaService.GetNotaByIdAsync(id);
+            var obj = await _estrategiaService.GetByIdAsync(id);
             if (obj == null)
             {
                 return NotFound(new { message = $"{_operador} não encontrado(a)." });

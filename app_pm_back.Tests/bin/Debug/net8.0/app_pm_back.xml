@@ -84,6 +84,13 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
         <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Contar">
             <summary>
             Obtém o total de registros cadastrados.
@@ -132,6 +139,13 @@
             </summary>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Contar">
             <summary>
@@ -182,6 +196,13 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
         <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Contar">
             <summary>
             Obtém o total de registros cadastrados.
@@ -231,6 +252,13 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
         <member name="M:app_pm_back.Controllers.ImobilizadosController.Contar">
             <summary>
             Obtém o total de registros cadastrados.
@@ -279,6 +307,13 @@
             </summary>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Controllers.UsuariosController.Contar">
             <summary>
@@ -425,6 +460,13 @@
             <summary>
             Lista as estratégias em formato de página 
             </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.Contar">
             <summary>
@@ -597,6 +639,13 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
+        <member name="M:app_pm_back.Controllers.ItemsController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
         <member name="M:app_pm_back.Controllers.ItemsController.ContarItens">
             <summary>
             Obtém o total de registros cadastrados.
@@ -640,6 +689,13 @@
             <summary>
             Retorna todas as notas , com paginacao opcional.
             </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.ContarNotas">
             <summary>
@@ -691,6 +747,13 @@
             Retorna todas as ordens , com paginacao opcional.
             </summary>
         </member>
+        <member name="M:app_pm_back.Controllers.OrdensController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
         <member name="M:app_pm_back.Controllers.OrdensController.ContarNotas">
             <summary>
             Conta o número total de notas salvas no banco
@@ -740,6 +803,13 @@
             </summary>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Contar">
             <summary>
@@ -835,6 +905,13 @@
             <param name="pagina">Página a ser exibida</param>
             <param name="tamanho">Quantidade de objetos na página</param>
             <returns>Lista de objetos presentes na página</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.Contar">
             <summary>
@@ -3223,10 +3300,57 @@
         </member>
         <member name="M:app_pm_back.Services.BaseCrudService`1.CreateAsync(`0)">
             <summary>
-            Cria uma nota 
+            Cria uma nova entidade.
             </summary>
-            <param name="nota"></param>
-            <returns></returns>
+            <param name="entity">A entidade a ser criada.</param>
+            <returns>A entidade criada.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.CreateRangeAsync(System.Collections.Generic.List{`0})">
+            <summary>
+            Cria várias entidades em massa.
+            </summary>
+            <param name="entities">A lista de entidades.</param>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.UpdateAsync(`0)">
+            <summary>
+            Atualiza uma entidade existente.
+            </summary>
+            <param name="entity">A entidade a ser atualizada.</param>
+            <returns>A entidade atualizada.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.GetAllAsync">
+            <summary>
+            Retorna todas as entidades cadastradas.
+            </summary>
+            <returns>Lista de entidades.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.GetPagedAsync(System.Int32,System.Int32)">
+            <summary>
+            Retorna as entidades paginadas.
+            </summary>
+            <param name="page">Número da página.</param>
+            <param name="size">Tamanho da página.</param>
+            <returns>Objeto contendo o total de registros e a lista paginada.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.GetByIdAsync(System.Int64)">
+            <summary>
+            Busca uma entidade pelo ID.
+            </summary>
+            <param name="id">Identificador da entidade.</param>
+            <returns>A entidade correspondente ou null se não encontrada.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.DeleteAsync(System.Int64)">
+            <summary>
+            Deleta uma entidade pelo ID.
+            </summary>
+            <param name="id">Identificador da entidade.</param>
+            <returns>True se deletada com sucesso, False caso contrário.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.CountAsync">
+            <summary>
+            Retorna a contagem total de entidades.
+            </summary>
+            <returns>Número total de entidades.</returns>
         </member>
         <member name="M:app_pm_back.Services.BaseCrudService`1.CreateNotasEmMassaAsync(System.Collections.Generic.List{`0})">
             <summary>

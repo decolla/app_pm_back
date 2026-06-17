@@ -69,7 +69,7 @@ public class TarefaController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> BuscarPorId([FromRoute] int id)
     {
-        var obj = await _service.GetNotaByIdAsync(id);
+        var obj = await _service.GetByIdAsync(id);
         if (obj == null) return NotFound(new { message = "Tarefa nao encontrada." });
         return Ok(obj);
     }

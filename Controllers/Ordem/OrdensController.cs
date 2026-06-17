@@ -61,7 +61,7 @@ public class OrdensController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todas as ordens , com paginacao opcional.
+    /// Retorna todas as ordens, com paginacao opcional.
     /// </summary>
     [HttpGet]
     public async Task<IActionResult> ListarOrdens([FromQuery] int? pagina, [FromQuery] int? tamanho)
@@ -87,6 +87,35 @@ public class OrdensController : ControllerBase
         catch (Exception)
         {
             return BadRequest(new { message = "Erro ao processar ordens ." });
+        }
+    }
+
+    /// <summary>
+    /// Obtém um registro pelo id da ordem.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> ObterPorId([FromRoute] long id)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id invalido. Envie id maior que zero." });
+            }
+
+            var item = await _ordemService.GetByIdAsync(id);
+            if (item == null)
+            {
+                return NotFound(new { message = "Ordem nao encontrada." });
+            }
+
+            return Ok(item);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar ordem: {e.Message}." });
         }
     }
 

@@ -110,7 +110,7 @@ public class DadosRenovacaoController : ControllerBase
     {
         try
         {
-            var dadosRenovacao = await _dadosRenovacaoService.GetNotaByIdAsync(id);
+            var dadosRenovacao = await _dadosRenovacaoService.GetByIdAsync(id);
             if (dadosRenovacao == null)
             {
                 return NotFound(new { message = $"Dados de renovação com id {id} não encontrado." });
