@@ -220,7 +220,7 @@ public class FichasController : ControllerBase
     /// <param name="pagina">Página a ser exibida</param>
     /// <param name="tamanho">Número de elementos presente na página</param>
     /// <returns>Lista de Nota e Ordens com base nos filtros</returns>
-    [HttpGet("busca")]
+    [HttpPost("busca")]
     public async Task<IActionResult> BuscarNotaOrdem(
         [FromBody] BuscaOrdemNotaDto busca,
         [FromQuery] int? pagina = null,
