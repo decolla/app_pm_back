@@ -6,7 +6,7 @@ using app_pm_back.Models.Domain;
 using app_pm_back.DTO.Restauracao;
 using Microsoft.EntityFrameworkCore;
 
-namespace app_pm_back.Services.Manutencao;
+namespace app_pm_back.Services.FichasServices;
 
 /// <summary>
 /// Classe DadosRenovacaoService.

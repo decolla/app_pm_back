@@ -4,16 +4,17 @@ using api.Communications.Service.Impl.Data;
 using app_pm_back.Data;
 using app_pm_back.Middlewares;
 using app_pm_back.Models.Domain;
-using app_pm_back.Routes;
 using app_pm_back.Services;
 using app_pm_back.Services.ExternIntegationsServices;
 using app_pm_back.Services.Manutencao;
+using app_pm_back.Services.FichasServices;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using teste_catboost_cs;
+
 
 // apagar depois essa gambiarra aqui
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -232,7 +233,6 @@ app.UseCors("AllowAll");
 // app.UseHttpsRedirection();
 
 app.MapControllers();
-app.MapSpreadsheetEndpoints();
 
 
 app.Run();

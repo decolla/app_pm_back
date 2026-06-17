@@ -1,12 +1,13 @@
 using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
-using app_pm_back.Services.Manutencao;
+using app_pm_back.Services.FichasServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using app_pm_back.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace app_pm_back.Controllers.Ordem;
+
+namespace app_pm_back.Controllers.FichasControllers;
 
 /// <summary>
 /// Endpoints de dado renovação
@@ -208,7 +209,7 @@ public class DadosRenovacaoController : ControllerBase
                 var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
                 message = "Notas classificadas com sucesso";
             }
-            else if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
+            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
             {
                 var idsOrdens = await _context.PM_Ordens
                     .Select(n => n.IdOrdem)

@@ -6,7 +6,7 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace app_pm_back.Services.Manutencao;
+namespace app_pm_back.Services.FichasServices;
 
 /// <summary>
 /// Serviço para obter linha temporal de LIs consultando API externa (APM)

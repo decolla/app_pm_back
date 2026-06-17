@@ -1,7 +1,7 @@
-﻿using app_pm_back.Services.Manutencao;
+﻿using app_pm_back.Services.FichasServices;
 using Microsoft.AspNetCore.Mvc;
 
-namespace app_pm_back.Controllers;
+namespace app_pm_back.Controllers.FichasControllers;
 
 [ApiController]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/LinhaTemporal")]

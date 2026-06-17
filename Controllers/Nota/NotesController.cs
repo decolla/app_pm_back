@@ -117,7 +117,7 @@ public class NotasController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna as Fichas de uma nota e suas ocorrências de mesmo tipo
+    /// Retorna as notas para um tipo de ativo
     /// </summary>
     [HttpGet("ativo/{ativo}")]
     public async Task<IActionResult> ListarFichasPorAtivo([FromRoute] ComponentType ativo, [FromQuery] string? type)
@@ -244,65 +244,7 @@ public class NotasController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Cria uma regra de classificação por palavras
-    /// </summary>
-    /// <param name="regra">Regra a ser aplicada</param>
-    /// <returns>Regra criada</returns>
-    [HttpPost("classificacao/regra")]
-    public async Task<IActionResult> CriarRegraCongas([FromBody] RuleClassificationDto regra)
-    {
-        try
-        {
-            var result = await _classificationService.CreateRule(regra);
-            return Ok(new { message = $"Regra criada com sucesso com Id: {result.IdRegra}" });
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao criar regra {e.Message}" });
-        }
-    }
-
-    /// <summary>
-    /// Classifica uma nota com base uma lista de palavras armazenadas no banco
-    /// </summary>
-    /// <returns>Lista de notas atualizadas</returns>
-    [HttpPost("classificacao/filtro")]
-    public async Task<IActionResult> ClassificacaoPalavrasNotaCongas()
-    {
-        try
-        {
-            // passar uma lista vazia por enquanto 
-            var result = await _classificationService.WordsClassification([]);
-            if (result.Count > 0)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest("Não foram achadas notas para classificar");
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
-        }
-    }
-
-    /// <summary>
-    /// Classifica as notas usando a IA catboost
-    /// </summary>
-    [HttpPost("classificacao/catboost")]
-    public async Task<IActionResult> ClassificacaoCatboostNota()
-    {
-        try
-        {
-            var result = await _classificationService.CatboostClassification();
-            return Ok("Notas classificadas com sucesso");
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
-        }
-    }
+    
 
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {

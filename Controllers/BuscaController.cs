@@ -87,41 +87,6 @@ public class BuscaController : ControllerBase
     }
 
     /// <summary>
-    /// Busca notas ou ordens de manutenção por diversos critérios, retorna uma lista de objetos com os dados relevantes
-    /// </summary>
-    /// <param name="busca">Modelo de busca com campos comparáveis</param>
-    /// <param name="pagina">Página a ser exibida</param>
-    /// <param name="tamanho">Número de elementos presente na página</param>
-    /// <returns>Lista de Nota e Ordens com base nos filtros</returns>
-    [HttpPost("fichas")]
-    public async Task<IActionResult> BuscarNotaOrdem(
-        [FromBody] BuscaOrdemNotaDto busca,
-        [FromQuery] int? pagina = null,
-        [FromQuery] int? tamanho = null,
-        [FromQuery] Fichas? Tfichas = Fichas.Ambas)
-    {
-        try
-        {
-            if (TemPaginacaoInvalida(pagina, tamanho))
-            {
-                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
-            }
-
-            var resultados = await _searchService.BuscarNotaOrdemAsync(
-                busca,
-                pagina,
-                tamanho,
-                Tfichas);
-
-            return Ok(resultados);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao buscar nota/ordem: {e.Message}." });
-        }
-    }
-
-    /// <summary>
     /// Busca um plano de mantuenção associado a um ativo, retorna um objeto com os dados relevantes
     /// </summary>
     /// <param name="ativo">Ativo a ser procurado</param>

@@ -221,66 +221,6 @@ public class OrdensController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Cria uma regra de classificação por palavras
-    /// </summary>
-    /// <param name="regra">Regra a ser aplicada</param>
-    /// <returns>Regra criada</returns>
-    [HttpPost("classificacao/regra")]
-    public async Task<IActionResult> CriarRegraCongas([FromBody] RuleClassificationDto regra)
-    {
-        try
-        {
-            var result = await _classificationService.CreateRule(regra);
-            return Ok(new { message = $"Regra criada com sucesso com Id: {result.IdRegra}" });
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao criar regra {e.Message}" });
-        }
-    }
-
-    /// <summary>
-    /// Classifica uma ordem com base uma lista de palavras armazenadas no banco
-    /// </summary>
-    /// <returns>Lista de ordem atualizadas</returns>
-    [HttpPost("classificacao/filtro")]
-    public async Task<IActionResult> ClassificacaoPalavrasNotaCongas()
-    {
-        try
-        {
-            // passar uma lista vazia por enquanto 
-            var result = await _classificationService.WordsClassification([]);
-            if (result.Count > 0)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest("Não foram achadas ordem para classificar");
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao classificar ordem: {e.Message}" });
-        }
-    }
-
-    /// <summary>
-    /// Classifica as ordens usando a IA catboost
-    /// </summary>
-    [HttpPost("classificacao/catboost")]
-    public async Task<IActionResult> ClassificacaoCatboostOrdem()
-    {
-        try
-        {
-            var result = await _classificationService.CatboostClassification();
-            return Ok("Ordens classificadas com sucesso");
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao classificar ordens: {e.Message}" });
-        }
-    }
-
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
