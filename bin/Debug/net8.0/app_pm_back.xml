@@ -654,13 +654,6 @@
             Classifica as Ambas, Fichas ou Ordens usando a IA catboost
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.BuscaReliability(System.String)">
-            <summary>
-            Busca Todas as datas de notas e ordens de um LI
-            </summary>
-            <param name="idLi">LI (Local de Instalação) a ser procurada</param>
-            <returns>idLi+ lista de datas</returns>
-        </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.UploadPlanilha(Microsoft.AspNetCore.Http.IFormFile,System.Boolean,System.Boolean)">
             <summary>
             Faz o upload e processamento de planilhas de Notas, Ordens ou Itens
@@ -679,6 +672,20 @@
             <summary>
             Obtém a linha temporal paginada das LIs consultando diretamente a API do APM com paginação.
             </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ReliabilityController.BuscaReliability(System.String)">
+            <summary>
+            Busca Todas as datas de notas e ordens de um LI
+            </summary>
+            <param name="idLi">LI (Local de Instalação) a ser procurada</param>
+            <returns>idLi+ lista de datas</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ReliabilityController.SyncReliability(System.String)">
+            <summary>
+            Busca Todas as datas de notas e ordens de um LI
+            </summary>
+            <param name="idLi">LI (Local de Instalação) a ser procurada</param>
+            <returns>idLi+ lista de datas</returns>
         </member>
         <member name="T:app_pm_back.Controllers.HealthController">
             <summary>
@@ -1678,6 +1685,12 @@
             <summary>
             Escopo externo (apenas o ID).
             </summary>
+        </member>
+        <member name="M:app_pm_back.DTO.ReliabilityService.SyncLi">
+            <summary>
+            Busca a lista de Li do APM e preenche a tabela
+            </summary>
+            <returns> Bool se a operação ocorreu corretamente</returns>
         </member>
         <member name="T:app_pm_back.Models.BuscaOrdemNotaDto">
             <summary>
@@ -4342,24 +4355,24 @@
         </member>
         <member name="M:api.Communications.Service.Impl.Data.ConvertService.ConvertXlsxStreamToCsvFileAsync(System.IO.Stream,System.String,System.Int32,System.Char,System.Boolean,System.Boolean,System.Int32)">
             <summary>
-            Executa a ação correspondente.
+            Converte xlsx para um arquivo csv.
             </summary>
-            <param name="xlsxStream">Parâmetro do método.</param>
-            <param name="csvPath">Parâmetro do método.</param>
+            <param name="xlsxStream">Stream xlsx.</param>
+            <param name="csvPath">Caminho do csv.</param>
         </member>
         <member name="M:api.Communications.Service.Impl.Data.ConvertService.ConvertXlsxStreamToCsvStreamAsync(System.IO.Stream,System.IO.Stream,System.Text.Encoding,System.Int32,System.Char,System.Boolean,System.Int32,System.Boolean)">
             <summary>
-            Executa a ação correspondente.
+            Converte xlsx para csv stream.
             </summary>
-            <param name="xlsxStream">Parâmetro do método.</param>
-            <param name="outputStream">Parâmetro do método.</param>
+            <param name="xlsxStream">xlsx stream.</param>
+            <param name="outputStream">Objeto de saída em stream csv.</param>
             <param name="encoding">Parâmetro do método.</param>
         </member>
         <member name="M:api.Communications.Service.Impl.Data.ConvertService.ConvertXlsxStreamToCsvMemoryAsync(System.IO.Stream,System.Int32,System.Char,System.Boolean,System.Boolean,System.Int32)">
             <summary>
-            Executa a ação correspondente.
+            Converte xlsx para csv em memória.
             </summary>
-            <param name="xlsxStream">Parâmetro do método.</param>
+            <param name="xlsxStream">Stream xlsx.</param>
             <returns>Resultado da operação.</returns>
         </member>
     </members>

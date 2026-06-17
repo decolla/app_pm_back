@@ -20,7 +20,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
     /// Executa a ação correspondente.
     /// </summary>
     /// <param name="ordens">Parâmetro do método.</param>
-    public async Task ImportarOrdensEmLoteSeguroAsync(List<OrdemModel> ordens, bool sobrescrever, bool adicionarNovas)
+    public virtual async Task ImportarOrdensEmLoteSeguroAsync(List<OrdemModel> ordens, bool sobrescrever, bool adicionarNovas)
     {
         if (ordens == null || !ordens.Any()) return;
 

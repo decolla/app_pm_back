@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.FichasServices;
 
-public class SpreadSheetService
+public class ImportSheetService
 {
     private readonly AppDbContext _dbContext;
     private readonly SpreadsheetService _spreadsheetService;
@@ -16,8 +16,8 @@ public class SpreadSheetService
     private readonly DadosRenovacaoService _dadosRenovacaoService;
     private readonly SynchronizeAPMService _synchronizeApmService;
 
-    // Construtor injetando tudo que o endpoint antigo precisava
-    public SpreadSheetService(
+
+    public ImportSheetService(
         AppDbContext dbContext,
         SpreadsheetService spreadsheetService,
         NotaManutencaoService notaManutencaoService,

@@ -105,6 +105,7 @@ builder.Services.AddTransient<app_pm_back.Jobs.ManutencaoGeneratorJob>();
 
 builder.Services.AddScoped<ConvertService>();
 builder.Services.AddScoped<SpreadsheetService>();
+builder.Services.AddScoped<ImportSheetService>();
 builder.Services.AddScoped<GenericSearchService>();
 builder.Services.AddScoped<NotaManutencaoService>();
 builder.Services.AddScoped<OrdemService>();

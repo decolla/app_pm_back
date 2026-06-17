@@ -267,7 +267,7 @@ public class OrdensController : ControllerBase
     {
         try
         {
-            if (classificacao == null || string.IsNullOrWhiteSpace(idUsuario))
+            if (string.IsNullOrWhiteSpace(idUsuario))
             {
                 return BadRequest(new { message = "Parametros classificacao e idUsuario sao obrigatorios." });
             }

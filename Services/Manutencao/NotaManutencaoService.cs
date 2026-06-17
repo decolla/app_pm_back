@@ -20,7 +20,7 @@ public class NotaManutencaoService : BaseCrudService<NotaModel>
     /// Executa a ação correspondente.
     /// </summary>
     /// <param name="notas">Parâmetro do método.</param>
-    public async Task ImportarNotasEmLoteSeguroAsync(List<NotaModel> notas, bool sobrescrever, bool adicionarNovas)
+    public virtual async Task ImportarNotasEmLoteSeguroAsync(List<NotaModel> notas, bool sobrescrever, bool adicionarNovas)
     {
         if (notas == null || !notas.Any()) return;
 

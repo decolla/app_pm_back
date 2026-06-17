@@ -99,7 +99,7 @@ public class SpreadsheetService
     /// </summary>
     /// <param name="spreadSheet">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(IFormFile spreadSheet)
+    public virtual async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(IFormFile spreadSheet)
     {
         var resultado = new ResultadoPlanilha();
 

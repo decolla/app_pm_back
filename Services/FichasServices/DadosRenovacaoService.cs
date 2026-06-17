@@ -45,7 +45,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     /// <param name="idsItensNota">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
     /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-    public async Task<int> ImportarDadosNotaAsync(
+    public virtual async Task<int> ImportarDadosNotaAsync(
         List<long> idsNotas,
         List<int> idsItensNota)
     {
@@ -175,7 +175,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     /// <param name="idsOrdens">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
     /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-    public async Task<int> ImportarDadosOrdemAsync(
+    public virtual async Task<int> ImportarDadosOrdemAsync(
         List<long> idsOrdens)
     {
         _logger.LogInformation("Iniciando ImportarDadosOrdemAsync com {QtdOrdens} ordens", idsOrdens?.Count ?? 0);

@@ -26,7 +26,7 @@ public class AnnexService
     /// <param name="categoria">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
 
-    public async Task<object> UploadAnexo(IFormFile file, long? notaId, long? ordemId, string tipoReferencia, CategoriaAnexo categoria)
+    public virtual async Task<object> UploadAnexo(IFormFile file, long? notaId, long? ordemId, string tipoReferencia, CategoriaAnexo categoria)
     {
         ValidateAssociacao(notaId, ordemId);
 
@@ -62,7 +62,7 @@ public class AnnexService
         }
     }
 
-    public async Task<(byte[] Dados, string MimeType, string Nome)?> DownloadAnexo(long id)
+    public virtual async Task<(byte[] Dados, string MimeType, string Nome)?> DownloadAnexo(long id)
     {
         // Try searching in AnexosNota
         var anexoNota = await _context.PM_AnexosNota.FindAsync((int)id);
@@ -81,7 +81,7 @@ public class AnnexService
         return null;
     }
 
-    public async Task<List<(long, string)>> BuscarAnexo(long? notaId, long? ordemId, string tipoReferencia)
+    public virtual async Task<List<(long, string)>> BuscarAnexo(long? notaId, long? ordemId, string tipoReferencia)
     {
         ValidateAssociacao(notaId, ordemId);
 

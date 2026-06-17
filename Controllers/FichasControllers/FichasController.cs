@@ -21,12 +21,12 @@ public class FichasController : ControllerBase
     private readonly GenericSearchService _searchService;
     private readonly ClassificationService<NotaModel> _notaService;
     private readonly ClassificationService<OrdemModel> _ordemService;
-    private readonly SpreadSheetService _spreadsheetOrchestrator;
+    private readonly ImportSheetService _spreadsheetOrchestrator;
 
     public FichasController(SynchronizeAPMService synchronizeApmService, ILogger<FichasController> logger,
         GenericSearchService searchService, 
         ClassificationService<NotaModel> notaService,
-        ClassificationService<OrdemModel> ordemService, SpreadSheetService spreadsheetOrchestrator)
+        ClassificationService<OrdemModel> ordemService, ImportSheetService spreadsheetOrchestrator)
 
     {
         _searchService = searchService;
@@ -190,7 +190,7 @@ public class FichasController : ControllerBase
     /// <summary>
     /// Faz o upload e processamento de planilhas de Notas, Ordens ou Itens
     /// </summary>
-    [HttpPost("/upload")]
+    [HttpPost("upload")]
     public async Task<IActionResult> UploadPlanilha(
         IFormFile file,
         [FromQuery] bool sobrescrever,
