@@ -32,14 +32,12 @@
         </member>
         <member name="M:app_pm_back.Controllers.AnnexController.UploadArquivo(app_pm_back.DTO.UploadAnnexRequestDto)">
             <summary>
-            Executa a ação correspondente.
+            Realiza upload de um arquivo.
             </summary>
-            <param name="request">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Controllers.AnnexController.DownloadArquivo(System.Int64)">
             <summary>
-            Executa a ação correspondente.
+            Realiza o download de um arquivo.
             </summary>
             <param name="id">Identificador do registro.</param>
             <returns>Resultado da operação.</returns>
@@ -48,9 +46,18 @@
             <summary>
             Obtém um registro específico.
             </summary>
-            <param name="referenciaId">Parâmetro do método.</param>
-            <param name="tipoReferencia">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="referenciaId">Id de referência.</param>
+            <param name="tipoReferencia">Tipo de referência.</param>
+        </member>
+        <member name="M:app_pm_back.Controllers.AnnexController.TryResolveReferencia(app_pm_back.DTO.UploadAnnexRequestDto,System.Nullable{System.Int64}@,System.Nullable{System.Int64}@,System.String@)">
+            <summary>
+            Função auxiliar para identificar o tipo da referência.
+            </summary>
+            <param name="request">Anexo enviado.</param>
+            <param name="notaId">Id da nota associada.</param>
+            <param name="ordemId">Id da ordem associada.</param>
+            <param name="error">Erro de retorno em caso de erro</param>
+            <returns>Booleano de se a referência é válida ou não.</returns>
         </member>
         <member name="T:app_pm_back.Controllers.CentrosPlanejamentoController">
             <summary>
@@ -64,7 +71,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Criar(app_pm_back.DTO.CentroPlanejamentoManutencaoDto)">
             <summary>
-            Cria um novo registro.
+            Cria um novo centro de planejamento e manutenção.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
             <returns>Resultado da operação.</returns>
@@ -248,17 +255,17 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="T:app_pm_back.Controllers.UsuariosSapController">
+        <member name="T:app_pm_back.Controllers.UsuariosController">
             <summary>
-            Classe UsuariosSapController.
+            Classe UsuariosController.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.#ctor(app_pm_back.Services.Manutencao.UsuarioService,AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.#ctor(app_pm_back.Services.Manutencao.UsuarioService,AutoMapper.IMapper)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.UsuariosSapController"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.UsuariosController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.Criar(app_pm_back.DTO.UsuarioSapDto)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Criar(app_pm_back.DTO.UsuarioDto)">
             <summary>
             Cria um novo registro.
             </summary>
@@ -266,21 +273,21 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.Contar">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Contar">
             <summary>
             Obtém o total de registros cadastrados.
             </summary>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.Atualizar(System.Int32,app_pm_back.DTO.UsuarioSapDto)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Atualizar(System.Int32,app_pm_back.DTO.UsuarioDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -289,7 +296,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosSapController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -323,15 +330,6 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{app_pm_back.Models.Domain.Fichas})">
-            <summary>
-            Busca notas ou ordens de manutenção por diversos critérios, retorna uma lista de objetos com os dados relevantes
-            </summary>
-            <param name="busca">Modelo de busca com campos comparáveis</param>
-            <param name="pagina">Página a ser exibida</param>
-            <param name="tamanho">Número de elementos presente na página</param>
-            <returns>Lista de Nota e Ordens com base nos filtros</returns>
-        </member>
         <member name="M:app_pm_back.Controllers.BuscaController.BuscaGerald(app_pm_back.Models.Domain.ComponentType)">
             <summary>
             Busca um plano de mantuenção associado a um ativo, retorna um objeto com os dados relevantes
@@ -353,13 +351,6 @@
             <param name="idLi">LI (Local de Instalação) a ser procurada</param>
             <param name="tipoDados">Tipo de dados da renovação</param>
             <returns>Objeto com informações relevantes</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscaReliability(System.String)">
-            <summary>
-            Busca Todas as datas de notas e ordens daquele LI
-            </summary>
-            <param name="idLi">LI (Local de Instalação) a ser procurada</param>
-            <returns>idLi+ lista de datas</returns>
         </member>
         <member name="M:app_pm_back.Controllers.BuscaController.BuscarTimeline(System.String,System.String,System.String)">
             <summary>
@@ -450,6 +441,114 @@
             Deleta um objeto do modelo
             </summary>
         </member>
+        <member name="T:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController">
+            <summary>
+            Endpoints de dado renovação
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.FichasServices.DadosRenovacaoService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController"/>.
+            </summary>
+            <param name="dadosRenovacaoService"></param>
+            <param name="mapper"></param>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.CriarDadosRenovacao(app_pm_back.DTO.DadosRenovacaoDto)">
+            <summary>
+            Cria um dado de renovação a partir de DTO.
+            </summary>
+            <param name="dto">DTO de dados renovação</param>
+            <returns>IActionResult</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.ListarDadosRenovacao(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os dados de renovação em formato de página
+            </summary>
+            <returns>Lista Paginada</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.ContarDadosRenovacao">
+            <summary>
+            Conta a quantidade total de dados de renovação cadastrados.
+            </summary>
+            <returns>Número de dados renovação cadastrados</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.ObterDadosRenovacaoPorId(System.Int32)">
+            <summary>
+            Obtém um dado de renovação específico a partir do id na rota.
+            </summary>
+            <param name="id">Id do Dado</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.AtualizarDadosRenovacao(System.Int32,app_pm_back.DTO.DadosRenovacaoDto)">
+            <summary>
+            Atualiza um dado de renovação existente a partir de DTO e id na rota.
+            </summary>
+            <param name="id">Id do dado a ser atulaizado</param>
+            <param name="dto">Dto com os dados atualizados</param>
+            <returns>IActionResult</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.DeletarDadosRenovacao(System.Int32)">
+            <summary>
+            Deleta um dado de renovação existente a partir do id na rota.
+            </summary>
+            <param name="id">Id do dado a ser deletado</param>
+            <returns>IActionResult</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.GerarRenovacaoFichas(app_pm_back.Models.Domain.Fichas)">
+            <summary>
+            Busca todas as Fichas, Notas ou Ordens para preencher a tabela de Dados Renovacao
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:app_pm_back.Controllers.FichasControllers.FichasController" -->
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.SynchronizeApm">
+            <summary>
+            Sincroniza as fichas do PM com os ativos do APM
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.CriarRegraCongas(app_pm_back.DTO.RuleClassificationDto,app_pm_back.Models.Domain.Fichas)">
+            <summary>
+            Cria uma regra de classificação por palavras para Ambas, Fichas ou Ordens
+            </summary>
+            <param name="regra">Regra a ser aplicada</param>
+            <returns>Regra criada</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.ClassificacaoPalavrasNotaCongas(app_pm_back.Models.Domain.Fichas)">
+            <summary>
+            Classifica para Ambas, Fichas ou Ordens com base uma lista de palavras armazenadas no banco
+            </summary>
+            <returns>Lista de notas atualizadas</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.ClassificacaoCatboostNota(app_pm_back.Models.Domain.Fichas)">
+            <summary>
+            Classifica as Ambas, Fichas ou Ordens usando a IA catboost
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.BuscaReliability(System.String)">
+            <summary>
+            Busca Todas as datas de notas e ordens de um LI
+            </summary>
+            <param name="idLi">LI (Local de Instalação) a ser procurada</param>
+            <returns>idLi+ lista de datas</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.UploadPlanilha(Microsoft.AspNetCore.Http.IFormFile,System.Boolean,System.Boolean)">
+            <summary>
+            Faz o upload e processamento de planilhas de Notas, Ordens ou Itens
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{app_pm_back.Models.Domain.Fichas})">
+            <summary>
+            Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
+            </summary>
+            <param name="busca">Modelo de busca com campos comparáveis</param>
+            <param name="pagina">Página a ser exibida</param>
+            <param name="tamanho">Número de elementos presente na página</param>
+            <returns>Lista de Nota e Ordens com base nos filtros</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.LinhaTemporalController.ObterLinhaTemporal(System.Int32,System.Int32)">
+            <summary>
+            Obtém a linha temporal paginada das LIs consultando diretamente a API do APM com paginação.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Controllers.HealthController">
             <summary>
             Controller para Health
@@ -472,11 +571,6 @@
              Return the last report and reset the current report to start a new one. This endpoint is useful for monitoring the health of the application and getting insights into its performance and any issues that may have occurred since the last report was retrieved.
             </summary>
             <returns></returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.LinhaTemporalController.ObterLinhaTemporal(System.Int32,System.Int32)">
-            <summary>
-            Obtém a linha temporal paginada das LIs consultando diretamente a API do APM com paginação.
-            </summary>
         </member>
         <member name="T:app_pm_back.Controllers.ItemsController">
             <summary>
@@ -554,7 +648,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.ListarFichasPorAtivo(app_pm_back.Models.Domain.ComponentType,System.String)">
             <summary>
-            Retorna as Fichas de uma nota e suas ocorrências de mesmo tipo
+            Retorna as notas para um tipo de ativo
             </summary>
         </member>
         <member name="M:app_pm_back.Controllers.NotasController.AtualizarNota(System.Int64,app_pm_back.DTO.NotaManutencaoDto)">
@@ -577,134 +671,49 @@
             Classifica uma nota com base na classificação humana atribuida a uma nota específica
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoPalavrasNota">
-            <summary>
-            Classifica uma nota com base uma lista de palavras armazenadas no banco
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.NotasController.ClassificacaoCatboostNota">
-            <summary>
-            Classifica as notas usando a IA catboost
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Controllers.Ordem.DadosRenovacaoController">
-            <summary>
-            Endpoints de dado renovação
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.Manutencao.DadosRenovacaoService,AutoMapper.IMapper)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.Ordem.DadosRenovacaoController"/>.
-            </summary>
-            <param name="dadosRenovacaoService"></param>
-            <param name="mapper"></param>
-        </member>
-        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.CriarDadosRenovacao(app_pm_back.DTO.DadosRenovacaoDto)">
-            <summary>
-            Cria um dado de renovação a partir de DTO.
-            </summary>
-            <param name="dto">DTO de dados renovação</param>
-            <returns>IActionResult</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.ListarDadosRenovacao(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Lista os dados de renovação em formato de página
-            </summary>
-            <returns>Lista Paginada</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.ContarDadosRenovacao">
-            <summary>
-            Conta a quantidade total de dados de renovação cadastrados.
-            </summary>
-            <returns>Número de dados renovação cadastrados</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.ObterDadosRenovacaoPorId(System.Int32)">
-            <summary>
-            Obtém um dado de renovação específico a partir do id na rota.
-            </summary>
-            <param name="id">Id do Dado</param>
-            <returns></returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.AtualizarDadosRenovacao(System.Int32,app_pm_back.DTO.DadosRenovacaoDto)">
-            <summary>
-            Atualiza um dado de renovação existente a partir de DTO e id na rota.
-            </summary>
-            <param name="id">Id do dado a ser atulaizado</param>
-            <param name="dto">Dto com os dados atualizados</param>
-            <returns>IActionResult</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.DeletarDadosRenovacao(System.Int32)">
-            <summary>
-            Deleta um dado de renovação existente a partir do id na rota.
-            </summary>
-            <param name="id">Id do dado a ser deletado</param>
-            <returns>IActionResult</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.GerarRenovacaoNota">
-            <summary>
-            Lista os dados de renovação em formato de página
-            </summary>
-            <returns>Lista Paginada</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.Ordem.DadosRenovacaoController.GerarRenovacaoOrdem">
-            <summary>
-            Lista os dados de renovação em formato de página
-            </summary>
-            <returns>Lista Paginada</returns>
-        </member>
-        <member name="T:app_pm_back.Controllers.OrdersController">
+        <member name="T:app_pm_back.Controllers.OrdensController">
             <summary>
             Endpoints de ordens .
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.#ctor(app_pm_back.Services.Manutencao.OrdemService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.OrdemModel},AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.OrdensController.#ctor(app_pm_back.Services.Manutencao.OrdemService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.OrdemModel},AutoMapper.IMapper)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.OrdersController"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.OrdensController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.CriarOrdem(app_pm_back.DTO.OrdemManutencaoDto)">
+        <member name="M:app_pm_back.Controllers.OrdensController.CriarOrdem(app_pm_back.DTO.OrdemManutencaoDto)">
             <summary>
             Cadastra uma ordem a partir de DTO.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ListarOrdens(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.OrdensController.ListarOrdens(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Retorna todas as ordens , com paginacao opcional.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ContarNotas">
+        <member name="M:app_pm_back.Controllers.OrdensController.ContarNotas">
             <summary>
             Conta o número total de notas salvas no banco
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ListarFichasPorAtivo(app_pm_back.Models.Domain.ComponentType,System.String)">
+        <member name="M:app_pm_back.Controllers.OrdensController.ListarFichasPorAtivo(app_pm_back.Models.Domain.ComponentType,System.String)">
             <summary>
             Retorna as Fichas de uma nota e suas ocorrências de mesmo tipo
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.AtualizarOrdem(System.Int64,app_pm_back.DTO.OrdemManutencaoDto)">
+        <member name="M:app_pm_back.Controllers.OrdensController.AtualizarOrdem(System.Int64,app_pm_back.DTO.OrdemManutencaoDto)">
             <summary>
             Atualiza uma ordem pelo DTO.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.DeletarOrdem(System.Int64)">
+        <member name="M:app_pm_back.Controllers.OrdensController.DeletarOrdem(System.Int64)">
             <summary>
             Delete uma nota de mesmo Id
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ClassificacaoHumanaOrdem(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
+        <member name="M:app_pm_back.Controllers.OrdensController.ClassificacaoHumanaOrdem(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
             <summary>
             Classifica uma ordem with manual label
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ClassificacaoPalavrasOrdem">
-            <summary>
-            Classifica uma ordem com base uma lista de palavras armazenadas no banco
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.OrdersController.ClassificacaoCatboostOrdem">
-            <summary>
-            Classifica as ordens usando a IA catboost
             </summary>
         </member>
         <member name="T:app_pm_back.Controllers.Organizacao.AlmoxarifadosController">
@@ -756,37 +765,37 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="T:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController">
+        <member name="T:app_pm_back.Controllers.PlanoManutencao.FerramentaController">
             <summary>
             Endpoints de ferramentas de tipo de manutencao.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.#ctor(app_pm_back.Services.Manutencao.FerramentaService,AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.#ctor(app_pm_back.Services.Manutencao.FerramentaService,AutoMapper.IMapper)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.FerramentaController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Criar(app_pm_back.DTO.FerramentaTipoDto)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Criar(app_pm_back.DTO.FerramentaTipoDto)">
             <summary>
             Cria um novo registro.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Listar(System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Listar(System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.BuscarPorId(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.BuscarPorId(System.Int32)">
             <summary>
             Obtém um registro específico.
             </summary>
             <param name="id">Identificador do registro.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Atualizar(System.Int32,app_pm_back.DTO.FerramentaTipoDto)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Atualizar(System.Int32,app_pm_back.DTO.FerramentaTipoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -794,7 +803,7 @@
             <param name="dto">DTO contendo os dados da requisição.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaTipoController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Deletar(System.Int32)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -1046,7 +1055,7 @@
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
-            <param name="tipo">Parâmetro do método.</param>
+            <param name="tipo">Tipo do tipo plano</param>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
@@ -1125,31 +1134,6 @@
             DTO de imobilizado .
             </summary>
         </member>
-        <member name="T:app_pm_back.DTO.CentroTrabalhoDto">
-            <summary>
-            DTO de centro de trabalho .
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.ItemNotaManutencaoDto">
-            <summary>
-            DTO de item de nota de manutenção.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.NotaManutencaoDto">
-            <summary>
-            DTO de importacao de notas de manutencao .
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.VariavelNotaDto">
-            <summary>
-            DTO de variavel registrada na nota de manutencao.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.DTO.CentroPlanejamentoManutencaoDto">
-            <summary>
-            DTO de centro de planejamento de manutencao .
-            </summary>
-        </member>
         <member name="P:app_pm_back.DTO.DadosRenovacaoDto.IdDados">
             <summary>
             Identificador único do registro de renovação.
@@ -1199,6 +1183,47 @@
         <member name="P:app_pm_back.DTO.DadosRenovacaoDto.IdUsuario">
             <summary>
             Identificador do Usuário que processou a renovação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.ReliabilityDTO.IdLi">
+            <summary>
+            Chave estrangeira para a localização de instalação do ativo.
+            Permite vincular a nota a um local específico de instalação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.ReliabilityDTO.IdsNotas">
+            <summary>
+            Identificador da Nota relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.ReliabilityDTO.IdsOrdens">
+            <summary>
+            Identificador da Ordem de Serviço relacionada.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.CentroTrabalhoDto">
+            <summary>
+            DTO de centro de trabalho .
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.ItemNotaManutencaoDto">
+            <summary>
+            DTO de item de nota de manutenção.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.NotaManutencaoDto">
+            <summary>
+            DTO de importacao de notas de manutencao .
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.VariavelNotaDto">
+            <summary>
+            DTO de variavel registrada na nota de manutencao.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.DTO.CentroPlanejamentoManutencaoDto">
+            <summary>
+            DTO de centro de planejamento de manutencao .
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.GrupoPlanejamentoManutencaoDto">
@@ -1261,6 +1286,35 @@
             DTO de tipo de plano .
             </summary>
         </member>
+        <member name="P:app_pm_back.DTO.RuleClassificationDto.IdRegra">
+            <summary>
+            Id da Regra
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.RuleClassificationDto.PalavraChave">
+            <summary>
+            Palavra chave usada para a filtragem 
+            </summary>
+            <example>"Vazamento", "Inspecionar", "Limpeza"</example>
+        </member>
+        <member name="P:app_pm_back.DTO.RuleClassificationDto.CampoAlvo">
+            <summary>
+            Campo alvo onde as palavras da regra serão aplicadas
+            </summary>
+            <example>"Descricao", "TextoBreve"</example>
+        </member>
+        <member name="P:app_pm_back.DTO.RuleClassificationDto.ClassificacaoAplicada">
+            <summary>
+            Qual o tipo de classificação aplicada pela regra 
+            </summary>
+            <example>0,1,2</example>
+        </member>
+        <member name="P:app_pm_back.DTO.RuleClassificationDto.OrdemPrioridade">
+            <summary>
+            Em caso de conflito, qual a prioridade da regra acima das outras
+            </summary>
+            <example>1</example>
+        </member>
         <member name="T:app_pm_back.DTO.UploadAnnexRequestDto">
             <summary>
             Dados de upload de anexo via multipart/form-data.
@@ -1296,32 +1350,32 @@
             Categoria do anexo.
             </summary>
         </member>
-        <member name="T:app_pm_back.DTO.UsuarioSapDto">
+        <member name="T:app_pm_back.DTO.UsuarioDto">
             <summary>
             DTO de importacao para usuarios SAP .
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioSapDto.IdUsuario">
+        <member name="P:app_pm_back.DTO.UsuarioDto.IdUsuario">
             <summary>
             Identificador do usuario no SAP interno.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioSapDto.Nome">
+        <member name="P:app_pm_back.DTO.UsuarioDto.Nome">
             <summary>
             Nome do usuario.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioSapDto.Cpf">
+        <member name="P:app_pm_back.DTO.UsuarioDto.Cpf">
             <summary>
             CPF do usuario.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioSapDto.Permissoes">
+        <member name="P:app_pm_back.DTO.UsuarioDto.Permissoes">
             <summary>
             Permissoes (lista serializada ou descricao textual).
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioSapDto.IdEscopo">
+        <member name="P:app_pm_back.DTO.UsuarioDto.IdEscopo">
             <summary>
             Escopo externo (apenas o ID).
             </summary>
@@ -1421,6 +1475,108 @@
         <member name="T:app_pm_back.Models.Domain.Classificacao">
             <summary>
             Usado para classificar os tipos de fichas em dados renovação
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.MetodoClassificacao">
+            <summary>
+            Representa o método utilizado para uma classificação.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.DadosRenovacaoModel">
+            <summary>
+            Representa os dados de renovação de um ativo no sistema.
+            Esta entidade armazena o histórico e métricas de confiabilidade resultantes de processos de manutenção.
+            </summary>
+            <example>
+            <code>
+            var renovacao = new DadosRenovacaoModel { 
+                UltimaRenovacao = DateTime.Now, 
+                OrigemUR = "Sistema", 
+                Confiabilidade = 0.95 
+            };
+            </code>
+            </example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdDados">
+            <summary>
+            Identificador único do registro de renovação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.UltimaRenovacao">
+            <summary>
+            Data e hora da última renovação realizada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.OrigemUR">
+            <summary>
+            Origem da última renovação (nota, ordem, usuario).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.TipoDados">
+            <summary>
+            Se a renovação é corretiva/preventiva e de usuario/catboost
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Confiabilidade">
+            <summary>
+            Índice de confiabilidade calculado para o ativo (0 a 1 ou percentual).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdAtivo">
+            <summary>
+            Identificador do Ativo relacionado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdLi">
+            <summary>
+            Chave estrangeira para a localização de instalação do ativo.
+            Permite vincular a nota a um local específico de instalação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdNota">
+            <summary>
+            Identificador da Nota relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdOrdem">
+            <summary>
+            Identificador da Ordem de Serviço relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdUsuario">
+            <summary>
+            Identificador do Usuário que processou a renovação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Nota">
+            <summary>
+            Referência à Nota relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Ordem">
+            <summary>
+            Referência à Ordem de Serviço relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Usuario">
+            <summary>
+            Referência ao Usuário que realizou a renovação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ReliabilityModel.IdLi">
+            <summary>
+            Chave estrangeira para a localização de instalação do ativo.
+            Permite vincular a nota a um local específico de instalação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ReliabilityModel.IdsNotas">
+            <summary>
+            Identificador da Nota relacionada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ReliabilityModel.IdsOrdens">
+            <summary>
+            Identificador da Ordem de Serviço relacionada.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.EstrategiaModel">
@@ -2013,6 +2169,11 @@
             Este valor é definido manualmente e não é auto-incrementado pelo banco de dados.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.SapCode">
+            <summary>
+            Identificador para string no caso do id do SAP.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.NumeroNota">
             <summary>
             Número sequencial da nota dentro do contexto do plano de manutenção.
@@ -2336,87 +2497,6 @@
             <summary>
             Propriedade de navegação para a entidade Ordem relacionada.
             Permite o carregamento (Eager ou Lazy Loading) dos dados da ordem.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.Domain.DadosRenovacaoModel">
-            <summary>
-            Representa os dados de renovação de um ativo no sistema.
-            Esta entidade armazena o histórico e métricas de confiabilidade resultantes de processos de manutenção.
-            </summary>
-            <example>
-            <code>
-            var renovacao = new DadosRenovacaoModel { 
-                UltimaRenovacao = DateTime.Now, 
-                OrigemUR = "Sistema", 
-                Confiabilidade = 0.95 
-            };
-            </code>
-            </example>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdDados">
-            <summary>
-            Identificador único do registro de renovação.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.UltimaRenovacao">
-            <summary>
-            Data e hora da última renovação realizada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.OrigemUR">
-            <summary>
-            Origem da última renovação (nota, ordem, usuario).
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.TipoDados">
-            <summary>
-            Se a renovação é corretiva/preventiva e de usuario/catboost
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Confiabilidade">
-            <summary>
-            Índice de confiabilidade calculado para o ativo (0 a 1 ou percentual).
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdAtivo">
-            <summary>
-            Identificador do Ativo relacionado.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdLi">
-            <summary>
-            Chave estrangeira para a localização de instalação do ativo.
-            Permite vincular a nota a um local específico de instalação.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdNota">
-            <summary>
-            Identificador da Nota relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdOrdem">
-            <summary>
-            Identificador da Ordem de Serviço relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.IdUsuario">
-            <summary>
-            Identificador do Usuário que processou a renovação.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Nota">
-            <summary>
-            Referência à Nota relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Ordem">
-            <summary>
-            Referência à Ordem de Serviço relacionada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.DadosRenovacaoModel.Usuario">
-            <summary>
-            Referência ao Usuário que realizou a renovação.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.OrdemModel">
@@ -3088,22 +3168,29 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.InitialCreate">
+        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
-        <member name="T:app_pm_back.Routes.SpreadsheetEndpoints">
-            <summary>
-            Rotas para planilhas
-            </summary>
+        <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
         </member>
         <member name="T:app_pm_back.Services.AnnexService">
             <summary>
@@ -3188,39 +3275,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="T:app_pm_back.Services.ClassificationService`1">
-            <summary>
-            Classe para classificar notas/ordens usando regras de palavras e catboost.
-            </summary>
-            <typeparam name="T">Tipo genérico para qualquer parâmetro classificável (nota ou ordem)</typeparam>
-        </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.#ctor(app_pm_back.Data.AppDbContext,teste_catboost_cs.Cbm,teste_catboost_cs.ModelMeta)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ClassificationService`1"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.HumanClassification(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
-            <summary>
-            Classificação manual de notas/ordens.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.WordsClassification(System.Collections.Generic.List{`0})">
-            <summary>
-            Função para classificar notas/ordens com base nas regras de palavras (mocked/no-op since Rule table is deleted).
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.CatboostClassification">
-            <summary>
-            Classificação de notas/ordens com base no modelo Catboost.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.NormalizeAsciiLower(System.String,System.String)">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="columnName">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-        </member>
         <member name="M:app_pm_back.Services.ExternIntegrationService.#ctor(System.Net.Http.HttpClient)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ExternIntegrationService"/>.
@@ -3262,6 +3316,119 @@
             Sincroniza os dados de APM (Asset Performance Management) com as notas e ordens de serviço do sistema.
             </summary>
             <returns> Bool se a operação ocorreu corretamente</returns>
+        </member>
+        <member name="T:app_pm_back.Services.ClassificationService`1">
+            <summary>
+            Classe para classificar notas/ordens usando regras de palavras e catboost.
+            </summary>
+            <typeparam name="T">Tipo genérico para qualquer parâmetro classificável (nota ou ordem)</typeparam>
+        </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.#ctor(app_pm_back.Data.AppDbContext,teste_catboost_cs.Cbm,teste_catboost_cs.ModelMeta)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ClassificationService`1"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.HumanClassification(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
+            <summary>
+            Classificação manual de notas/ordens.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.CreateRule(app_pm_back.DTO.RuleClassificationDto)">
+            <summary>
+            Cria uma regra de palavras
+            </summary>
+            <param name="rule">Regra no formato de RuleClassificationModel</param>
+            <returns>Regra passada como parâmetro</returns>
+        </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.WordsClassification(System.Collections.Generic.List{`0})">
+            <summary>
+            Função para classificar notas/ordens com base nas regras de palavras.
+            A busca será feita no controller e passará todas que estiverem sem classificar,
+            e quais deverão ser reclassificadas.
+            </summary>
+            <param name="notasComClassificacao"> Lista de tipo genérico de notas/ordens já classificadas para serem analisadas pelo algoritmo</param>
+            <returns>Todas as notas que não tinham sido classificadas juntamente as reclassificadas</returns>
+        </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.CatboostClassification">
+            <summary>
+            Classificação de notas/ordens com base no modelo Catboost.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.NormalizeAsciiLower(System.String,System.String)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="columnName">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.FichasServices.DadosRenovacaoService">
+            <summary>
+            Classe DadosRenovacaoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.FichasServices.DadosRenovacaoService},Microsoft.Extensions.Configuration.IConfiguration,System.Net.Http.HttpClient)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.FichasServices.DadosRenovacaoService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ImportarDadosNotaAsync(System.Collections.Generic.List{System.Int64},System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="idsNotas">Parâmetro do método.</param>
+            <param name="idsItensNota">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ImportarDadosOrdemAsync(System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="idsOrdens">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.CadastraDadosRenovacaoAsync(System.Collections.Generic.List{System.Int64},System.Boolean)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="ids">Parâmetro do método.</param>
+            <param name="ehNota">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ObterAtivosDoLoteLiAsync(System.Collections.Generic.List{System.String})">
+            <summary>
+            Chama a API da APM (PUT) para obter os ativos (ComponentTypes) associados às LI's.
+            </summary>
+            <param name="lis">Lista de LocalInstalacoes (LI's)</param>
+            <returns>Lista de AssetComponentTypesDTO com os ativos para cada LI</returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.BuscarRenovacaoAsync(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Obtém lista de renovações com paginação
+            </summary>
+            <param name="busca">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.FichasServices.ApmResponse">
+            <summary>
+            Serviço para obter linha temporal de LIs consultando API externa (APM)
+            com paginação direta na API e cruzando com notas/ordens do banco de dados local
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.LinhaTemporalService.ObterLisDoApmAsync(System.Int32,System.Int32)">
+            <summary>
+            Obtém LIs do APM com paginação direta na API externa
+            </summary>
+            <param name="pagina">Número da página (base 1)</param>
+            <param name="tamanho">Tamanho da página</param>
+            <returns>Lista de LIs da página solicitada</returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.LinhaTemporalService.ObterItensDaLiAsync(System.String)">
+            <summary>
+            Obtém notas e ordens para uma LI específica
+            </summary>
         </member>
         <member name="T:app_pm_back.Services.GenericSearchService">
             <summary>
@@ -3378,25 +3545,6 @@
             <param name="ignoreProperties"></param>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="T:app_pm_back.Services.Manutencao.LinhaTemporalService">
-            <summary>
-            Serviço para obter linha temporal de LIs consultando API externa (APM)
-            com paginação direta na API e cruzando com notas/ordens do banco de dados local
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.ObterLisDoApmAsync(System.Int32,System.Int32)">
-            <summary>
-            Obtém LIs do APM com paginação direta na API externa
-            </summary>
-            <param name="pagina">Número da página (base 1)</param>
-            <param name="tamanho">Tamanho da página</param>
-            <returns>Lista de LIs da página solicitada</returns>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.LinhaTemporalService.ObterItensDaLiAsync(System.String)">
-            <summary>
-            Obtém notas e ordens para uma LI específica
-            </summary>
-        </member>
         <member name="T:app_pm_back.Services.Manutencao.ImobilizadoService">
             <summary>
             Classe ImobilizadoService.
@@ -3446,56 +3594,6 @@
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.GpmService"/>.
             </summary>
-        </member>
-        <member name="T:app_pm_back.Services.Manutencao.DadosRenovacaoService">
-            <summary>
-            Classe DadosRenovacaoService.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.Manutencao.DadosRenovacaoService},Microsoft.Extensions.Configuration.IConfiguration,System.Net.Http.HttpClient)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.DadosRenovacaoService"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.ImportarDadosNotaAsync(System.Collections.Generic.List{System.Int64},System.Collections.Generic.List{System.Int32})">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="idsNotas">Parâmetro do método.</param>
-            <param name="idsItensNota">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.ImportarDadosOrdemAsync(System.Collections.Generic.List{System.Int64})">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="idsOrdens">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.CadastraDadosRenovacaoAsync(System.Collections.Generic.List{System.Int64},System.Boolean)">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="ids">Parâmetro do método.</param>
-            <param name="ehNota">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.ObterAtivosDoLoteLiAsync(System.Collections.Generic.List{System.String})">
-            <summary>
-            Chama a API da APM (PUT) para obter os ativos (ComponentTypes) associados às LI's.
-            </summary>
-            <param name="lis">Lista de LocalInstalacoes (LI's)</param>
-            <returns>Lista de AssetComponentTypesDTO com os ativos para cada LI</returns>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.DadosRenovacaoService.BuscarRenovacaoAsync(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Obtém lista de renovações com paginação
-            </summary>
-            <param name="busca">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.EstrategiaService">
             <summary>
@@ -3824,7 +3922,7 @@
             Classe SpreadsheetService.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.SpreadsheetService.#ctor(api.Communications.Service.Impl.Data.ConvertService)">
+        <member name="M:app_pm_back.Services.SpreadsheetService.#ctor(api.Communications.Service.Impl.Data.ConvertService,app_pm_back.Data.AppDbContext)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.SpreadsheetService"/>.
             </summary>

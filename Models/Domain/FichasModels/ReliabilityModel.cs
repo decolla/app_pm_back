@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.Domain;
 
@@ -9,6 +10,9 @@ public class ReliabilityModel
     /// Permite vincular a nota a um local específico de instalação.
     /// </summary>
     [MaxLength(100)]
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
     public string IdLi { get; set; }
     
 
