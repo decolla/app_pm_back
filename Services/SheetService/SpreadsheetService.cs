@@ -106,6 +106,7 @@ public class SpreadsheetService
         var extension = Path.GetExtension(spreadSheet.FileName).ToLower();
         Stream csvStream;
 
+        // se for Excel, converte para csv usando o serviço de conversão, se for csv, lê direto do arquivo enviado
         if (extension == ".xlsx")
         {
             await using var xlsxStream = spreadSheet.OpenReadStream();
@@ -125,6 +126,8 @@ public class SpreadsheetService
 
         CultureInfo culture = CultureInfo.GetCultureInfo("pt-BR");
 
+        // declara o parser para ler o arquivo csv, usando UTF-8 e detectando a codificação automaticamente,
+        // e configurando para usar ; como delimitador, sem campos entre aspas e para trimar os espaços em branco
         using TextFieldParser parser =
             new TextFieldParser(csvStream, Encoding.UTF8, detectEncoding: true, leaveOpen: false)
             {

@@ -5,21 +5,20 @@ using System.Text;
 using ExcelDataReader;
 
 namespace api.Communications.Service.Impl.Data;
+
 /// <summary>
 /// Classe ConvertService.
 /// </summary>
-
 public class ConvertService
 {
     // armazena os valores de carácteres especiais 
     private static readonly SearchValues<char> SpecialChars = SearchValues.Create(new[] { ';', '"', '\n', '\r' });
 
-    // Convete xlsx para csv
     /// <summary>
-    /// Executa a ação correspondente.
+    /// Converte xlsx para um arquivo csv.
     /// </summary>
-    /// <param name="xlsxStream">Parâmetro do método.</param>
-    /// <param name="csvPath">Parâmetro do método.</param>
+    /// <param name="xlsxStream">Stream xlsx.</param>
+    /// <param name="csvPath">Caminho do csv.</param>
     public Task ConvertXlsxStreamToCsvFileAsync(
         Stream xlsxStream,
         string csvPath,
@@ -50,13 +49,13 @@ public class ConvertService
             maxDegreeOfParallelism,
             leaveOpen: false);
     }
-    /// <summary>
-    /// Executa a ação correspondente.
-    /// </summary>
-    /// <param name="xlsxStream">Parâmetro do método.</param>
-    /// <param name="outputStream">Parâmetro do método.</param>
-    /// <param name="encoding">Parâmetro do método.</param>
 
+    /// <summary>
+    /// Converte xlsx para csv stream.
+    /// </summary>
+    /// <param name="xlsxStream">xlsx stream.</param>
+    /// <param name="outputStream">Objeto de saída em stream csv.</param>
+    /// <param name="encoding">Parâmetro do método.</param>
     public async Task ConvertXlsxStreamToCsvStreamAsync(
         Stream xlsxStream,
         Stream outputStream,
@@ -165,12 +164,12 @@ public class ConvertService
 
         await writer.FlushAsync();
     }
-    /// <summary>
-    /// Executa a ação correspondente.
-    /// </summary>
-    /// <param name="xlsxStream">Parâmetro do método.</param>
-    /// <returns>Resultado da operação.</returns>
 
+    /// <summary>
+    /// Converte xlsx para csv em memória.
+    /// </summary>
+    /// <param name="xlsxStream">Stream xlsx.</param>
+    /// <returns>Resultado da operação.</returns>
     public async Task<MemoryStream> ConvertXlsxStreamToCsvMemoryAsync(
         Stream xlsxStream,
         int sheetIndex = 0,
