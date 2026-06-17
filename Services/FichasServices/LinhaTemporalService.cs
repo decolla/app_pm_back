@@ -115,17 +115,43 @@ public class LinhaTemporalService
         );
     }
 
-    private Task<List<NotaModel>> BuscarNotasDaLiAsync(string idLi) =>
-        _context.PM_Notas
-            .Where(n => n.IdLi == idLi)
+    private async Task<List<NotaModel>> BuscarNotasDaLiAsync(string idLi)
+    {
+        //Busca o registro na tabela Reliability usando o IdLi
+        var reliability = await _context.PM_Reliability
+            .FirstOrDefaultAsync(r => r.IdLi == idLi);
+
+        //erifica se o registro existe e se a lista de IDs não está nula ou vazia
+        if (reliability?.IdsNotas == null || !reliability.IdsNotas.Any())
+        {
+            return new List<NotaModel>(); // Retorna vazio sem bater na tabela de Notas
+        }
+
+        //Busca as Notas usando o .Contains() com a lista resgatada
+        return await _context.PM_Notas
+            .Where(n => reliability.IdsNotas.Contains(n.IdNota))
             .OrderByDescending(n => n.DataNota)
             .ToListAsync();
+    }
 
-    private Task<List<OrdemModel>> BuscarOrdensDaLiAsync(string idLi) =>
-        _context.PM_Ordens
-            .Where(o => o.IdLi == idLi)
+    private async Task<List<OrdemModel>> BuscarOrdensDaLiAsync(string idLi)
+    {
+        //Busca o registro na tabela Reliability usando o IdLi
+        var reliability = await _context.PM_Reliability
+            .FirstOrDefaultAsync(r => r.IdLi == idLi);
+
+        //Verifica se o registro existe e se a lista de IDs não está nula/vazia
+        if (reliability?.IdsOrdens == null || !reliability.IdsOrdens.Any())
+        {
+            return new List<OrdemModel>(); // Retorna vazio sem bater na tabela de Ordens
+        }
+
+        //Busca as Ordens usando o .Contains() com a lista resgatada
+        return await _context.PM_Ordens
+            .Where(o => reliability.IdsOrdens.Contains(o.IdOrdem))
             .OrderByDescending(o => o.DataCriacao)
             .ToListAsync();
+    }
 }
 
 // Classes internas simples (não são DTOs de banco, apenas transport)

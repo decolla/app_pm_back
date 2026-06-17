@@ -141,6 +141,7 @@ public class AppDbContext : DbContext
     public DbSet<OrdemModel> PM_Ordens { get; set; }
     public DbSet<AnexoOrdemModel> PM_AnexosOrdem { get; set; }
     public DbSet<DadosRenovacaoModel> PM_DadosRenovacao { get; set; }
+    public DbSet<ReliabilityModel> PM_Reliability { get; set; }
     
 }
 

@@ -498,32 +498,7 @@ public class GenericSearchService
         };
     }
     
-    public async Task<object?> DatasReliability(string idLi)
-    {
-        // Busca datas das Notas e ordens associadas ao IdLi
-        var datasNotas = await _notaModels.AsNoTracking()
-            .Where(n => n.IdLi == idLi && n.DataNota.HasValue)
-            .Select(n => n.DataNota!.Value)
-            .ToListAsync();
-        
-        var datasOrdens = await _ordemModels.AsNoTracking()
-            .Where(o => o.IdLi == idLi && o.DataCriacao.HasValue)
-            .Select(o => o.DataCriacao!.Value)
-            .ToListAsync();
-        
 
-        var todasDatas = datasNotas
-            .Concat(datasOrdens)
-            .Distinct()
-            .OrderBy(d => d)
-            .ToList();
-
-        return new
-        {
-            SapName = idLi,
-            Datas = todasDatas
-        };
-    }
 
     /// <summary>
     /// Obtém uma timeline de fichas de um ativo para um range de data específico
@@ -575,4 +550,5 @@ public class GenericSearchService
 
         return timeline;
     }
+    
 }

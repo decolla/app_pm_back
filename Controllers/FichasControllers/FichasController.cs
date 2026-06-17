@@ -22,19 +22,22 @@ public class FichasController : ControllerBase
     private readonly GenericSearchService _searchService;
     private readonly ClassificationService<NotaModel> _notaService;
     private readonly ClassificationService<OrdemModel> _ordemService;
+    private readonly ReliabilityService _reliabilityService;
     private readonly SpreadSheetService _spreadsheetOrchestrator;
     
     public FichasController(SynchronizeAPMService synchronizeApmService, ILogger<FichasController> logger, 
-        GenericSearchService searchService,ClassificationService<NotaModel> notaService, 
+        GenericSearchService searchService, ReliabilityService reliabilityService, ClassificationService<NotaModel> notaService, 
         ClassificationService<OrdemModel> ordemService, SpreadSheetService spreadsheetOrchestrator)
     
     {
         _searchService = searchService;
         _synchronizeApmService = synchronizeApmService;
         _logger = logger;
+        _reliabilityService = reliabilityService;
         _notaService = notaService;
         _ordemService = ordemService;
         _spreadsheetOrchestrator = spreadsheetOrchestrator;
+        
     }
     
     /// <summary>
@@ -175,6 +178,33 @@ public class FichasController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
+        }
+    }
+    
+    /// <summary>
+    /// Busca Todas as datas de notas e ordens de um LI
+    /// </summary>
+    /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
+    /// <returns>idLi+ lista de datas</returns>
+    [HttpGet("reliabilityData")]
+    public async Task<IActionResult> BuscaReliability([FromQuery] string idLi)
+    {
+        try
+        {
+
+            if (string.IsNullOrWhiteSpace(idLi))
+            {
+                return BadRequest(new { message = "Parametro idLi obrigatorio." });
+            }
+
+            var obj = await _reliabilityService.DatasReliability(idLi);
+            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
+
+            return Ok(obj);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
         }
     }
     
