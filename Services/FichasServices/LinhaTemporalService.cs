@@ -50,7 +50,7 @@ public class LinhaTemporalService
         {
             // Assumindo que a API do APM suporta paginação via query parameters
             // Ajuste os nomes dos parâmetros conforme a documentação da API do APM
-            var url = $"{_apmBaseUrl}/api/V1/Asset/InstallationDate?page={pagina}&pageSize={tamanho}";
+            var url = $"{_apmBaseUrl}/api/V1/Asset/InstallationDate?pageNumber={pagina}&pageSize={tamanho}";
             _logger.LogInformation("Chamando API APM: GET {Url}", url);
 
             var request = new HttpRequestMessage(HttpMethod.Get, url);
