@@ -11,7 +11,7 @@ public class TipoManutencaoModel
     /// Identificador único do Tipo de Manutenção.
     /// </summary>
     [Key]
-    public int IdTipoManutencao { get; set; }
+    public long IdTipoManutencao { get; set; }
 
     /// <summary>
     /// Categoria associada ao tipo de manutenção.

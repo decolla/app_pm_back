@@ -122,10 +122,10 @@ public class EstrategiaController : ControllerBase
     /// <returns>Mensagem de confirmação da atualização.</returns>
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] EstrategiaManutencaoDto dto)
+    public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] EstrategiaManutencaoDto dto)
     {
         try
         {
@@ -172,10 +172,10 @@ public class EstrategiaController : ControllerBase
     /// <returns>Mensagem de confirmação da exclusão.</returns>
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Deletar(int id)
+    public async Task<IActionResult> Deletar(long id)
     {
         try
         {
@@ -196,7 +196,7 @@ public class EstrategiaController : ControllerBase
     [HttpGet("pesquisa")]
     public async Task<IActionResult> Pesquisar(
         [FromQuery] string? nome,
-        [FromQuery] int? id,
+        [FromQuery] long? id,
         [FromQuery] string? tipoAtivo,
         [FromQuery] string? visao,
         [FromQuery] int? pagina,
@@ -231,11 +231,11 @@ public class EstrategiaController : ControllerBase
     /// <response code="200">Sucesso ao obter o registro.</response>
     /// <response code="400">ID fornecido inválido.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> BuscarPorId(int id)
+    public async Task<IActionResult> BuscarPorId(long id)
     {
         try
         {

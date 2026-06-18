@@ -12,7 +12,7 @@ public class UsuarioModel
     /// Identificador único do usuário.
     /// </summary>
     [Key]
-    public int IdUsuario { get; set; }
+    public long IdUsuario { get; set; }
 
     /// <summary>
     /// Nome completo do usuário.
@@ -38,7 +38,7 @@ public class UsuarioModel
     /// <summary>
     /// Identificador do escopo ao qual o usuário pertence.
     /// </summary>
-    public int? IdEscopo { get; set; }
+    public long? IdEscopo { get; set; }
 
     /// <summary>
     /// Coleção de notas associadas ao usuário.

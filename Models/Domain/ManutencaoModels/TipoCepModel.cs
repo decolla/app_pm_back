@@ -13,7 +13,7 @@ public class TipoCepModel
     /// Identificador único do Tipo de CEP.
     /// </summary>
     [Key]
-    public int IdTipoCep { get; set; }
+    public long IdTipoCep { get; set; }
 
     /// <summary>
     /// Descrição do tipo de ativo associado.

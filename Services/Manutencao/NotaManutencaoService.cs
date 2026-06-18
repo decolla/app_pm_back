@@ -36,7 +36,7 @@ public class NotaManutencaoService : BaseCrudService<NotaModel>
             .Distinct()
             .ToList();
 
-        await ImportGhostHelper.EnsureUsuariosSapAsync(_context, usuariosCriadoresExcel.Select(id => (int?)id));
+        await ImportGhostHelper.EnsureUsuariosSapAsync(_context, usuariosCriadoresExcel.Select(id => (long?)id));
         await ImportGhostHelper.EnsurePlanosAsync(_context, planosExcel.Select(id => (long?)id));
 
         var numerosNotas = notas

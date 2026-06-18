@@ -11,7 +11,7 @@ public class AlmoxarifadoModel
     /// Identificador único do Almoxarifado.
     /// </summary>
     [Key]
-    public int IdAlmoxarifado { get; set; }
+    public long IdAlmoxarifado { get; set; }
 
     /// <summary>
     /// Nome do Almoxarifado.
@@ -40,7 +40,7 @@ public class AlmoxarifadoModel
     /// <summary>
     /// Identificador do Escopo associado.
     /// </summary>
-    public int IdEscopo { get; set; } 
+    public long IdEscopo { get; set; } 
 
     public virtual ICollection<FerramentaModel> Ferramentas { get; set; } = new List<FerramentaModel>();
     public virtual ICollection<UsuarioModel> Usuarios { get; set; } = new List<UsuarioModel>();

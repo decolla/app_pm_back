@@ -9,7 +9,7 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class TarefaDto
 {
-    [SheetColumn("Id Tarefa")] public int IdOperacao { get; set; }
+    [SheetColumn("Id Tarefa")] public long IdOperacao { get; set; }
 
     [SheetColumn("Nome Tarefa")] public string? Nome { get; set; }
 
@@ -23,9 +23,9 @@ public class TarefaDto
 
     [SheetColumn("Data fim")] public DateTime? FimEsperado { get; set; }
 
-    [SheetColumn("Id CTM")] public int? IdCTM { get; set; }
+    [SheetColumn("Id CTM")] public long? IdCTM { get; set; }
 
-    [SheetColumn("Id Tipo Manutenção")] public int? IdTipoManutencao { get; set; }
+    [SheetColumn("Id Tipo Manutenção")] public long? IdTipoManutencao { get; set; }
 
     [SheetColumn("Id Ordem")] public long? IdOrdem { get; set; }
 }

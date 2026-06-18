@@ -21,7 +21,7 @@ public class TipoManutencaoService : BaseCrudService<TipoManutencaoModel>
     /// </summary>
     /// <param name="id">Identificador do registro.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<TipoManutencaoModel?> GetCompletoByIdAsync(int id)
+    public async Task<TipoManutencaoModel?> GetCompletoByIdAsync(long id)
     {
         return await _context.PM_TiposManutencao
             .FirstOrDefaultAsync(t => t.IdTipoManutencao == id);

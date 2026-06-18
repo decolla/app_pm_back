@@ -12,7 +12,7 @@ public class GpmModel
     /// <summary> Identificador único do GPM. </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int IdGPM { get; set; }
+    public long IdGPM { get; set; }
 
     /// <summary> Nome descritivo do GPM. Exemplo: "GPM Operacional" </summary>
     [MaxLength(150)]
@@ -23,7 +23,7 @@ public class GpmModel
     public string? Descricao { get; set; }
 
     /// <summary> Chave estrangeira para o CPM relacionado. </summary>
-    public int? IdCPM { get; set; }
+    public long? IdCPM { get; set; }
 
     /// <summary>
     /// Propriedade de navegação para o modelo CPM.

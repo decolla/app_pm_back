@@ -60,7 +60,7 @@ public class TarefaController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Listar([FromQuery] int? tipoManutencaoId)
+    public async Task<IActionResult> Listar([FromQuery] long? tipoManutencaoId)
     {
         if (tipoManutencaoId.HasValue)
         {
@@ -79,11 +79,11 @@ public class TarefaController : ControllerBase
     /// <response code="200">Sucesso ao obter o registro.</response>
     /// <response code="400">ID fornecido inválido.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> BuscarPorId([FromRoute] int id)
+    public async Task<IActionResult> BuscarPorId([FromRoute] long id)
     {
         var obj = await _service.GetByIdAsync(id);
         if (obj == null) return NotFound(new { message = "Tarefa nao encontrada." });
@@ -98,10 +98,10 @@ public class TarefaController : ControllerBase
     /// <returns>Mensagem de confirmação da atualização.</returns>
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TarefaDto dto)
+    public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] TarefaDto dto)
     {
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         if (id <= 0) return BadRequest(new { message = "Id invalido na rota." });
@@ -121,10 +121,10 @@ public class TarefaController : ControllerBase
     /// <returns>Mensagem de confirmação da exclusão.</returns>
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Deletar([FromRoute] int id)
+    public async Task<IActionResult> Deletar([FromRoute] long id)
     {
         var deleted = await _service.DeleteNotaAsync(id);
         if (!deleted) return NotFound(new { message = "Tarefa nao encontrada." });

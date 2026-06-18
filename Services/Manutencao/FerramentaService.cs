@@ -24,7 +24,7 @@ public class FerramentaService : BaseCrudService<FerramentaModel>
     /// </summary>
     /// <param name="tipoManutencaoId">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<List<FerramentaModel>> BuscarPorTipoManutencaoAsync(int tipoManutencaoId)
+    public async Task<List<FerramentaModel>> BuscarPorTipoManutencaoAsync(long tipoManutencaoId)
     {
         return await _context.Set<FerramentaModel>()
             .Where(f => f.Operacoes.Any(o => o.IdTipoManutencao == tipoManutencaoId))

@@ -240,10 +240,10 @@ public class NotasController : ControllerBase
     /// <returns>Mensagem de confirmação da exclusão.</returns>
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeletarNota(int id)
+    public async Task<IActionResult> DeletarNota(long id)
     {
         try
         {

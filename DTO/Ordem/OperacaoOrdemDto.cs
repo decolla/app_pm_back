@@ -9,7 +9,7 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class OperacaoOrdemDto
 {
-    [SheetColumn("Id Operação")] public int IdOperacao { get; set; }
+    [SheetColumn("Id Operação")] public long IdOperacao { get; set; }
 
     [SheetColumn("Ordem")] public long? IdOrdem { get; set; }
 
@@ -26,9 +26,9 @@ public class OperacaoOrdemDto
     [SheetColumn("Data fim")] public DateTime? FimEsperado { get; set; }
 
     // Relacionamentos opcionais
-    public int? IdCTM { get; set; }
+    public long? IdCTM { get; set; }
 
-    public int? IdTipoManutencao { get; set; }
+    public long? IdTipoManutencao { get; set; }
 }
 
 #pragma warning restore CS1591

@@ -166,10 +166,10 @@ public class TipoEstrategiaController : ControllerBase
     /// <returns>Mensagem de confirmação da atualização.</returns>
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Atualizar([FromRoute] int id, [FromBody] TipoEstrategiaDto dto)
+    public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] TipoEstrategiaDto dto)
     {
         try
         {
@@ -217,10 +217,10 @@ public class TipoEstrategiaController : ControllerBase
     /// <returns>Mensagem de confirmação da exclusão.</returns>
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Deletar(int id)
+    public async Task<IActionResult> Deletar(long id)
     {
         try
         {

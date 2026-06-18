@@ -14,7 +14,7 @@ public static class ImportGhostHelper
     /// </summary>
     /// <param name="context">Parâmetro do método.</param>
     /// <param name="ids">Parâmetro do método.</param>
-    public static async Task EnsureUsuariosSapAsync(AppDbContext context, IEnumerable<int?> ids)
+    public static async Task EnsureUsuariosSapAsync(AppDbContext context, IEnumerable<long?> ids)
     {
         var idsList = ids.Where(id => id.HasValue).Select(id => id!.Value).Distinct().ToList();
         if (!idsList.Any()) return;
@@ -118,7 +118,7 @@ public static class ImportGhostHelper
     /// <param name="context">Parâmetro do método.</param>
     /// <param name="ids">Parâmetro do método.</param>
 
-    public static async Task EnsureGpmAsync(AppDbContext context, IEnumerable<int?> ids)
+    public static async Task EnsureGpmAsync(AppDbContext context, IEnumerable<long?> ids)
     {
         var idsList = ids.Where(id => id.HasValue).Select(id => id!.Value).Distinct().ToList();
         if (!idsList.Any()) return;
@@ -161,7 +161,7 @@ public static class ImportGhostHelper
     /// <param name="context">Parâmetro do método.</param>
     /// <param name="ids">Parâmetro do método.</param>
 
-    public static async Task EnsureImobilizadosAsync(AppDbContext context, IEnumerable<int?> ids)
+    public static async Task EnsureImobilizadosAsync(AppDbContext context, IEnumerable<long?> ids)
     {
         var idsList = ids.Where(id => id.HasValue).Select(id => id!.Value).Distinct().ToList();
         if (!idsList.Any()) return;

@@ -9,7 +9,7 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class FerramentaTipoDto
 {
-    [SheetColumn("Id Ferramenta")] public int IdFerramenta { get; set; }
+    [SheetColumn("Id Ferramenta")] public long IdFerramenta { get; set; }
 
     [SheetColumn("Nome Ferramenta")] public string? Nome { get; set; }
 
@@ -46,9 +46,9 @@ public class FerramentaTipoDto
     [SheetColumn("Data aquisição")] public DateTime? DataAquisicao { get; set; }
 
     // Escopo externo (apenas o ID).
-    [SheetColumn("Id Escopo")] public int IdEscopo { get; set; }
+    [SheetColumn("Id Escopo")] public long IdEscopo { get; set; }
 
-    [SheetColumn("Id Almoxarifado")] public int IdAlmoxarifado { get; set; }
+    [SheetColumn("Id Almoxarifado")] public long IdAlmoxarifado { get; set; }
 }
 
 #pragma warning restore CS1591

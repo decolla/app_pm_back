@@ -21,7 +21,7 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
     /// </summary>
     /// <returns>Resultado da operação.</returns>
     public async Task<List<EstrategiaModel>> BuscarAsync(
-        int? id,
+        long? id,
         string? nome,
         string? tipoAtivo,
         string? visao,

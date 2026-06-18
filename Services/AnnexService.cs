@@ -65,14 +65,14 @@ public class AnnexService
     public virtual async Task<(byte[] Dados, string MimeType, string Nome)?> DownloadAnexo(long id)
     {
         // Try searching in AnexosNota
-        var anexoNota = await _context.PM_AnexosNota.FindAsync((int)id);
+        var anexoNota = await _context.PM_AnexosNota.FindAsync(id);
         if (anexoNota != null && anexoNota.Dados != null)
         {
             return (anexoNota.Dados, anexoNota.TipoArquivo, anexoNota.Nome);
         }
 
         // Try searching in AnexosOrdem
-        var anexoOrdem = await _context.PM_AnexosOrdem.FindAsync((int)id);
+        var anexoOrdem = await _context.PM_AnexosOrdem.FindAsync(id);
         if (anexoOrdem != null && anexoOrdem.Dados != null)
         {
             return (anexoOrdem.Dados, anexoOrdem.TipoArquivo, anexoOrdem.Nome);

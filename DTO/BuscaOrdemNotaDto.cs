@@ -17,15 +17,15 @@ public class BuscaOrdemNotaDto
     /// <summary>
     /// Id de início da nota
     /// </summary>
-    public int? NotaIdInicio { get; set; }
+    public long? NotaIdInicio { get; set; }
 
     /// <summary>
     /// Id de fim da nota
     /// </summary>
-    public int? NotaIdFim { get; set; }
+    public long? NotaIdFim { get; set; }
 
-    public int? OrdemIdInicio { get; set; }
-    public int? OrdemIdFim { get; set; }
+    public long? OrdemIdInicio { get; set; }
+    public long? OrdemIdFim { get; set; }
 
     public int? LocalInstalacaoInicio { get; set; }
     public int? LocalInstalacaoFim { get; set; }
@@ -39,8 +39,8 @@ public class BuscaOrdemNotaDto
     public DateTime? OrdemDataInicio { get; set; }
     public DateTime? OrdemDataFim { get; set; }
 
-    public int? GpmInicio { get; set; }
-    public int? GpmFim { get; set; }
+    public long? GpmInicio { get; set; }
+    public long? GpmFim { get; set; }
 
     public Prioridade? PrioridadeInicio { get; set; }
     public Prioridade? PrioridadeFim { get; set; }

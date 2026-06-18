@@ -7,11 +7,11 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class GrupoPlanejamentoManutencaoDto
 {
-    [SheetColumn("Id GPM")] public int IdGpm { get; set; }
+    [SheetColumn("Id GPM")] public long IdGpm { get; set; }
 
     [SheetColumn("Descrição GPM")] public string? Descricao { get; set; }
 
     [SheetColumn("Nome")] public string? Nome { get; set; }
 
-    [SheetColumn("Id CPM")] public int? IdCpm { get; set; }
+    [SheetColumn("Id CPM")] public long? IdCpm { get; set; }
 }

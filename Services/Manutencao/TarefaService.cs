@@ -21,7 +21,7 @@ public class TarefaService : BaseCrudService<OperacaoModel>
     /// </summary>
     /// <param name="tipoManutencaoId">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<List<OperacaoModel>> BuscarPorTipoManutencaoAsync(int tipoManutencaoId)
+    public async Task<List<OperacaoModel>> BuscarPorTipoManutencaoAsync(long tipoManutencaoId)
     {
         return await _context.PM_Operacoes
             .Where(t => t.IdTipoManutencao == tipoManutencaoId)

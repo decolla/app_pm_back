@@ -10,7 +10,7 @@ public class DadosRenovacaoDto
     /// <summary>
     /// Identificador único do registro de renovação.
     /// </summary>
-    public int IdDados { get; set; }
+    public long IdDados { get; set; }
 
     /// <summary>
     /// Data e hora da última renovação realizada.
@@ -57,5 +57,5 @@ public class DadosRenovacaoDto
     /// <summary>
     /// Identificador do Usuário que processou a renovação.
     /// </summary>
-    public int? IdUsuario { get; set; }
+    public long? IdUsuario { get; set; }
 }

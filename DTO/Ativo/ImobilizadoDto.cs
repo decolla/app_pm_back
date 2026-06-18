@@ -8,7 +8,7 @@ namespace app_pm_back.DTO;
 public class ImobilizadoDto
 {
     // Identificacao
-    [SheetColumn("Tag Imobilizado")] public int? IdImobilizado { get; set; }
+    [SheetColumn("Tag Imobilizado")] public long? IdImobilizado { get; set; }
 
     [SheetColumn("Nome imobilizado")] public string? Nome { get; set; }
 

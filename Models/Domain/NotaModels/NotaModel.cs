@@ -254,7 +254,7 @@ public class NotaModel : IClassifiable
     /// Estabelece relacionamento com a entidade de usuário responsável.
     /// </summary>
     /// <example>42</example>
-    public int? IdUsuario { get; set; }
+    public long? IdUsuario { get; set; }
 
     /// <summary>
     /// Chave estrangeira para o ativo associado à nota.

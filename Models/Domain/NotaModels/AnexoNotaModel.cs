@@ -13,7 +13,7 @@ public class AnexoNotaModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int IdAnexoNota { get; set; }
+    public long IdAnexoNota { get; set; }
 
     /// <summary>
     /// Nome do arquivo anexo.

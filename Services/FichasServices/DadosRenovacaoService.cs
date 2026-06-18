@@ -47,7 +47,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     public virtual async Task<int> ImportarDadosNotaAsync(
         List<long> idsNotas,
-        List<int> idsItensNota)
+        List<long> idsItensNota)
     {
         _logger.LogInformation("Iniciando ImportarDadosNotaAsync com {QtdNotas} notas e {QtdItens} itens",
             idsNotas?.Count ?? 0, idsItensNota?.Count ?? 0);

@@ -43,7 +43,7 @@ public class ImportSheetService
 
         var resultadoPlanilha = await _spreadsheetService.ReadNotasSpreadSheetAsync(file);
         List<long> idNotas = new List<long>();
-        List<int> idItens = new List<int>();
+        List<long> idItens = new List<long>();
 
         if (resultadoPlanilha.TipoIdentificado == "NOTA")
         {

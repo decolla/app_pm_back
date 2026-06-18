@@ -13,7 +13,7 @@ public class OperacaoModel
     /// Identificador único da operação.
     /// </summary>
     [Key]
-    public int IdOperacao { get; set; }
+    public long IdOperacao { get; set; }
 
     /// <summary>
     /// Nome ou título da operação.
@@ -52,12 +52,12 @@ public class OperacaoModel
     /// <summary>
     /// Chave estrangeira para o Centro de Trabalho Móvel (CTM).
     /// </summary>
-    public int? IdCTM { get; set; }
+    public long? IdCTM { get; set; }
 
     /// <summary>
     /// Chave estrangeira para a categoria de manutenção.
     /// </summary>
-    public int? IdTipoManutencao { get; set; }
+    public long? IdTipoManutencao { get; set; }
 
     /// <summary>
     /// Chave estrangeira para a Ordem de Manutenção pai.

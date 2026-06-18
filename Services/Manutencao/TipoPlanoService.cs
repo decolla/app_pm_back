@@ -21,7 +21,7 @@ public class TipoPlanoService : BaseCrudService<TipoPlanoModel>
     /// </summary>
     /// <param name="id">Identificador do registro.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<TipoPlanoModel?> GetCompletoByIdAsync(int id)
+    public async Task<TipoPlanoModel?> GetCompletoByIdAsync(long id)
     {
         return await _context.PM_TiposPlano
             .Include(t => t.TipoEstrategia)

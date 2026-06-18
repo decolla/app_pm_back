@@ -13,7 +13,7 @@ public class CtmModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public int IdCTM { get; set; }
+    public long IdCTM { get; set; }
     
     /// <summary>
     /// Nome do CTM.
@@ -36,7 +36,7 @@ public class CtmModel
     /// <summary>
     /// Chave estrangeira para o modelo CPM relacionado.
     /// </summary>
-    public int IdCPM { get; set; }
+    public long IdCPM { get; set; }
 
     /// <summary>
     /// Propriedade de navegação para o modelo CPM.

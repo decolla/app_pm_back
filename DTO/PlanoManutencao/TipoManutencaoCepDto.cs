@@ -10,7 +10,7 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class TipoManutencaoCepDto
 {
-    [SheetColumn("CEP")] public int IdTipoCep { get; set; }
+    [SheetColumn("CEP")] public long IdTipoCep { get; set; }
     [SheetColumn("Tipo Ativo")] public string? TipoAtivo { get; set; }
 
     [SheetColumn("Confiabilidade")] public double? Confiabilidade { get; set; }

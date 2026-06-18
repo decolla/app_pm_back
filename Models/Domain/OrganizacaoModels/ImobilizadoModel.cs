@@ -12,7 +12,7 @@ public class ImobilizadoModel
     /// Identificador único do imobilizado.
     /// </summary>
     [Key]
-    public int IdImobilizado { get; set; }
+    public long IdImobilizado { get; set; }
 
     /// <summary>
     /// Nome descritivo do item.

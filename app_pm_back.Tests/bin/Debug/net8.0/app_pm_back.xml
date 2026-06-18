@@ -108,7 +108,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Atualizar(System.Int32,app_pm_back.DTO.CentroPlanejamentoManutencaoDto)">
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Atualizar(System.Int64,app_pm_back.DTO.CentroPlanejamentoManutencaoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -118,7 +118,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Deletar(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -173,7 +173,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Atualizar(System.Int32,app_pm_back.DTO.CentroTrabalhoDto)">
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Atualizar(System.Int64,app_pm_back.DTO.CentroTrabalhoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -183,7 +183,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Deletar(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -238,7 +238,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Atualizar(System.Int32,app_pm_back.DTO.GrupoPlanejamentoManutencaoDto)">
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Atualizar(System.Int64,app_pm_back.DTO.GrupoPlanejamentoManutencaoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -248,7 +248,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Deletar(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -303,7 +303,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.ImobilizadosController.Atualizar(System.Int32,app_pm_back.DTO.ImobilizadoDto)">
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Atualizar(System.Int64,app_pm_back.DTO.ImobilizadoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -313,7 +313,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.ImobilizadosController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Deletar(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -368,7 +368,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Atualizar(System.Int32,app_pm_back.DTO.UsuarioDto)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Atualizar(System.Int64,app_pm_back.DTO.UsuarioDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -378,7 +378,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.UsuariosController.Deletar(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -472,7 +472,7 @@
             Retorna a quantidade de elementos 
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Atualizar(System.Int32,app_pm_back.DTO.EstrategiaManutencaoDto)">
+        <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Atualizar(System.Int64,app_pm_back.DTO.EstrategiaManutencaoDto)">
             <summary>
             Atualiza um objeto do modelo
             </summary>
@@ -482,7 +482,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Deletar(System.Int64)">
             <summary>
             Deleta um objeto do modelo
             </summary>
@@ -491,12 +491,12 @@
             <response code="200">Sucesso ao deletar o registro.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Pesquisar(System.String,System.Nullable{System.Int32},System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.Pesquisar(System.String,System.Nullable{System.Int64},System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Pesquisa estrategias com filtros da tela.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.BuscarPorId(System.Int32)">
+        <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.BuscarPorId(System.Int64)">
             <summary>
             Busca por id a estratégia
             </summary>
@@ -550,7 +550,7 @@
             Retorna a quantidade de elementos 
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.Atualizar(System.Int32,app_pm_back.DTO.TipoEstrategiaDto)">
+        <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.Atualizar(System.Int64,app_pm_back.DTO.TipoEstrategiaDto)">
             <summary>
             Atualiza um objeto do modelo
             </summary>
@@ -560,7 +560,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.Estrategia.TipoEstrategiaController.Deletar(System.Int64)">
             <summary>
             Deleta um objeto do modelo
             </summary>
@@ -756,7 +756,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.ItensController.AtualizarItem(System.Int32,app_pm_back.DTO.ItemNotaManutencaoDto)">
+        <member name="M:app_pm_back.Controllers.ItensController.AtualizarItem(System.Int64,app_pm_back.DTO.ItemNotaManutencaoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -766,7 +766,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.ItensController.DeletarItem(System.Int32)">
+        <member name="M:app_pm_back.Controllers.ItensController.DeletarItem(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -834,7 +834,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.NotasController.DeletarNota(System.Int32)">
+        <member name="M:app_pm_back.Controllers.NotasController.DeletarNota(System.Int64)">
             <summary>
             Delete uma nota de mesmo Id
             </summary>
@@ -983,7 +983,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Atualizar(System.Int32,app_pm_back.DTO.AlmoxarifadoDto)">
+        <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Atualizar(System.Int64,app_pm_back.DTO.AlmoxarifadoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -993,7 +993,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.Organizacao.AlmoxarifadosController.Deletar(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -1021,7 +1021,7 @@
             <response code="201">Registro criado com sucesso.</response>
             <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Listar(System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Listar(System.Nullable{System.Int64})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
@@ -1031,7 +1031,7 @@
             <response code="200">Sucesso ao listar registros.</response>
             <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.BuscarPorId(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.BuscarPorId(System.Int64)">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -1041,7 +1041,7 @@
             <response code="400">ID fornecido inválido.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Atualizar(System.Int32,app_pm_back.DTO.FerramentaTipoDto)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Atualizar(System.Int64,app_pm_back.DTO.FerramentaTipoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -1051,7 +1051,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Deletar(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -1147,7 +1147,7 @@
             <response code="201">Registro criado com sucesso.</response>
             <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Listar(System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Listar(System.Nullable{System.Int64})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
@@ -1157,7 +1157,7 @@
             <response code="200">Sucesso ao listar registros.</response>
             <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.BuscarPorId(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.BuscarPorId(System.Int64)">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -1167,7 +1167,7 @@
             <response code="400">ID fornecido inválido.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Atualizar(System.Int32,app_pm_back.DTO.TarefaDto)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Atualizar(System.Int64,app_pm_back.DTO.TarefaDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -1177,7 +1177,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Deletar(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -1215,7 +1215,7 @@
             <response code="200">Sucesso ao listar registros.</response>
             <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.BuscarPorId(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.BuscarPorId(System.Int64)">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -1225,7 +1225,7 @@
             <response code="400">ID fornecido inválido.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.Atualizar(System.Int32,app_pm_back.DTO.TipoManutencaoCepDto)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.Atualizar(System.Int64,app_pm_back.DTO.TipoManutencaoCepDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -1235,7 +1235,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoCepController.Deletar(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -1280,7 +1280,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.BuscarPorId(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.BuscarPorId(System.Int64)">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -1290,7 +1290,7 @@
             <response code="400">ID fornecido inválido.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Atualizar(System.Int32,app_pm_back.DTO.TipoManutencaoDto)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Atualizar(System.Int64,app_pm_back.DTO.TipoManutencaoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -1300,7 +1300,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoManutencaoController.Deletar(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -1345,7 +1345,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.BuscarPorId(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.BuscarPorId(System.Int64)">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -1363,7 +1363,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Atualizar(System.Int32,app_pm_back.DTO.TipoPlanoDto)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Atualizar(System.Int64,app_pm_back.DTO.TipoPlanoDto)">
             <summary>
             Atualiza um registro existente.
             </summary>
@@ -1373,7 +1373,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TipoPlanoController.Deletar(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
             </summary>
@@ -2616,6 +2616,7 @@
             Importante para auditoria e rastreamento de mudanças.
             </summary>
             <example>2024-01-15T15:00:00</example>
+            <example>2024-01-15T15:00:00</example>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.CriadaPorUsuario">
             <summary>
@@ -2673,6 +2674,11 @@
         <member name="P:app_pm_back.Models.Domain.NotaModel.DnsIot">
             <summary>
             Nomeclatura alternativa para o ativo, também usada para verificar se existe no APM
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.NomeEstrategia">
+            <summary>
+            Nome da estratégia relacionada ao Plano
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.Plano">
@@ -2995,6 +3001,11 @@
         <member name="P:app_pm_back.Models.Domain.OrdemModel.Plano">
             <summary>
             Plano de manutenção associado
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.NomeEstrategia">
+            <summary>
+            Nome da estratégia relacionada ao Plano
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.Anexos">
@@ -3723,7 +3734,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.FichasServices.DadosRenovacaoService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ImportarDadosNotaAsync(System.Collections.Generic.List{System.Int64},System.Collections.Generic.List{System.Int32})">
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ImportarDadosNotaAsync(System.Collections.Generic.List{System.Int64},System.Collections.Generic.List{System.Int64})">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -3848,7 +3859,7 @@
             Cria registros "fantasma" para referencias que ainda nao existem no banco.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureUsuariosSapAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureUsuariosSapAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -3869,14 +3880,14 @@
             <param name="context">Parâmetro do método.</param>
             <param name="ids">Parâmetro do método.</param>
         </member>
-        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureGpmAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureGpmAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
             <summary>
             Executa a ação correspondente.
             </summary>
             <param name="context">Parâmetro do método.</param>
             <param name="ids">Parâmetro do método.</param>
         </member>
-        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureImobilizadosAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureImobilizadosAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -3957,7 +3968,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.EstrategiaService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.EstrategiaService.BuscarAsync(System.Nullable{System.Int32},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Services.Manutencao.EstrategiaService.BuscarAsync(System.Nullable{System.Int64},System.String,System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -3973,7 +3984,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.FerramentaService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.BuscarPorTipoManutencaoAsync(System.Int32)">
+        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.BuscarPorTipoManutencaoAsync(System.Int64)">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -4092,7 +4103,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.TarefaService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.TarefaService.BuscarPorTipoManutencaoAsync(System.Int32)">
+        <member name="M:app_pm_back.Services.Manutencao.TarefaService.BuscarPorTipoManutencaoAsync(System.Int64)">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -4136,7 +4147,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.TipoManutencaoService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.TipoManutencaoService.GetCompletoByIdAsync(System.Int32)">
+        <member name="M:app_pm_back.Services.Manutencao.TipoManutencaoService.GetCompletoByIdAsync(System.Int64)">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -4160,7 +4171,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.TipoPlanoService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.TipoPlanoService.GetCompletoByIdAsync(System.Int32)">
+        <member name="M:app_pm_back.Services.Manutencao.TipoPlanoService.GetCompletoByIdAsync(System.Int64)">
             <summary>
             Obtém um registro específico.
             </summary>
