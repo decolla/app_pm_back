@@ -96,6 +96,7 @@ public class ReliabilityService
 
             using var jsonDoc = JsonDocument.Parse(jsonResponse);
         
+            //Pega todos os nomes válidos da API
             var nomesRecebidos = jsonDoc.RootElement.EnumerateArray()
                 .Select(elemento => elemento.GetProperty("name").GetString())
                 .Where(nome => !string.IsNullOrWhiteSpace(nome))
@@ -107,16 +108,34 @@ public class ReliabilityService
                 return false;
             }
 
-            //Prepara a lista para o banco usando APENAS o IdLi
-            var novosRegistros = nomesRecebidos.Select(nome => new ReliabilityModel
+            // Busca no banco QUAIS desses nomes já existem lá
+            var nomesExistentesNoBanco = await _context.PM_Reliability
+                .Where(r => nomesRecebidos.Contains(r.IdLi))
+                .Select(r => r.IdLi)
+                .ToListAsync(cts.Token);
+
+            // Compara as duas listas e separa APENAS os nomes que ainda não estão no banco
+            var nomesParaInserir = nomesRecebidos
+                .Except(nomesExistentesNoBanco)
+                .ToList();
+
+            // Se não tiver ninguém novo para inserir, encerra com sucesso (true) pois já está tudo sincronizado
+            if (!nomesParaInserir.Any())
+            {
+                _logger.LogInformation("Nenhum LI novo para inserir. Sincronização concluída.");
+                return true; 
+            }
+
+            //Prepara a lista para o banco usando APENAS os nomes novos
+            var novosRegistros = nomesParaInserir.Select(nome => new ReliabilityModel
             {
                 IdLi = nome
             }).ToList();
 
-            //Salva no banco e mais nada
+            //Salva no banco 
             await _context.PM_Reliability.AddRangeAsync(novosRegistros, cts.Token);
             var alteracoes = await _context.SaveChangesAsync(cts.Token);
-        
+
             return alteracoes > 0;
         }
         catch (OperationCanceledException ex) when (cts.IsCancellationRequested)
