@@ -44,7 +44,7 @@ public class TipoEstrategiaModel
     /// <summary>
     /// Chave estrangeira para a Estratégia pai.
     /// </summary>
-    public int? IdEstrategia { get; set; }
+    public long? IdEstrategia { get; set; }
 
     /// <summary>
     /// Chave estrangeira para o Tipo de Manutenção.
