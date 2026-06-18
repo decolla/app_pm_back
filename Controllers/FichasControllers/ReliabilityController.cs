@@ -68,7 +68,7 @@ public class ReliabilityController : ControllerBase
         try
         {
             // 1. Começamos com a base da consulta (ainda não foi no banco de dados)
-            var result = _reliabilityService.FiltraFichas(Classificacoes, Metodos);
+            var result = await _reliabilityService.FiltraFichas(Classificacoes, Metodos);
 
             return Ok(result);
         }
