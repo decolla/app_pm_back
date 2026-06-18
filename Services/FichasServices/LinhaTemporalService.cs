@@ -62,6 +62,8 @@ public class LinhaTemporalService
 
             var content = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            _logger.LogInformation("Recebidos os LI: {content} e options: {options}. Com paginas {Pagina} e tamanho {Tamanho}", 
+                content, options, pagina, tamanho);
             return JsonSerializer.Deserialize<ApmResponse>(content, options) ?? new ApmResponse();
         }
         catch (Exception ex)
