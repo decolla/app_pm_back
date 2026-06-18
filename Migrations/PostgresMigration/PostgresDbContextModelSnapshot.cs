@@ -27,11 +27,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("AlmoxarifadoUsuario", b =>
                 {
-                    b.Property<int>("IdAlmoxarifado")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdAlmoxarifado")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdAlmoxarifado", "IdUsuario");
 
@@ -42,11 +42,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("CtmUsuario", b =>
                 {
-                    b.Property<int>("IdCTM")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdCTM")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdCTM", "IdUsuario");
 
@@ -57,11 +57,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("FerramentasOperacoes", b =>
                 {
-                    b.Property<int>("IdFerramenta")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdFerramenta")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdOperacao")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdOperacao")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdFerramenta", "IdOperacao");
 
@@ -72,11 +72,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("GpmLi", b =>
                 {
-                    b.Property<int>("IdGPM")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdGPM")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdGPM", "IdUsuario");
 
@@ -87,11 +87,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("GpmUsuario", b =>
                 {
-                    b.Property<int>("IdGPM")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdGPM")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdGPM", "IdUsuario");
 
@@ -100,20 +100,47 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.ToTable("PM_GpmUsuario", "public");
                 });
 
-            modelBuilder.Entity("app_pm_back.Models.Domain.AlmoxarifadoModel", b =>
+            modelBuilder.Entity("app_pm_back.DTO.RuleClassificationDto", b =>
                 {
-                    b.Property<int>("IdAlmoxarifado")
+                    b.Property<long>("IdRegra")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdRegra"));
+
+                    b.Property<string>("CampoAlvo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ClassificacaoAplicada")
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdAlmoxarifado"));
+                    b.Property<int>("OrdemPrioridade")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PalavraChave")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("IdRegra");
+
+                    b.ToTable("PM_ClassificationRules", "public");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.AlmoxarifadoModel", b =>
+                {
+                    b.Property<long>("IdAlmoxarifado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdAlmoxarifado"));
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
-                    b.Property<int>("IdEscopo")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdEscopo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -136,11 +163,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AnexoNotaModel", b =>
                 {
-                    b.Property<int>("IdAnexoNota")
+                    b.Property<long>("IdAnexoNota")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdAnexoNota"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdAnexoNota"));
 
                     b.Property<byte[]>("Dados")
                         .HasColumnType("bytea");
@@ -167,11 +194,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AnexoOrdemModel", b =>
                 {
-                    b.Property<int>("IdAnexoOrdem")
+                    b.Property<long>("IdAnexoOrdem")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdAnexoOrdem"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdAnexoOrdem"));
 
                     b.Property<byte[]>("Dados")
                         .HasColumnType("bytea");
@@ -203,18 +230,18 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.CpmModel", b =>
                 {
-                    b.Property<int>("IdCPM")
+                    b.Property<long>("IdCPM")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdCPM"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdCPM"));
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
-                    b.Property<int>("IdEscopo")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdEscopo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("NomeCentro")
                         .IsRequired()
@@ -233,8 +260,8 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.CtmModel", b =>
                 {
-                    b.Property<int>("IdCTM")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdCTM")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("AreaCTM")
                         .IsRequired()
@@ -245,8 +272,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
-                    b.Property<int>("IdCPM")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdCPM")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -262,11 +289,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.DadosRenovacaoModel", b =>
                 {
-                    b.Property<int>("IdDados")
+                    b.Property<long>("IdDados")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdDados"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdDados"));
 
                     b.Property<double?>("Confiabilidade")
                         .HasColumnType("double precision");
@@ -285,8 +312,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<long?>("IdOrdem")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("IdUsuario")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("OrigemUR")
                         .HasColumnType("integer");
@@ -310,11 +337,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.EstrategiaModel", b =>
                 {
-                    b.Property<int>("IdEstrategia")
+                    b.Property<long>("IdEstrategia")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdEstrategia"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdEstrategia"));
 
                     b.Property<bool?>("CicloContinuo")
                         .HasColumnType("boolean");
@@ -325,8 +352,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<bool>("Habilitada")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("IdEscopo")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdEscopo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -348,11 +375,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.FerramentaModel", b =>
                 {
-                    b.Property<int>("IdFerramenta")
+                    b.Property<long>("IdFerramenta")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdFerramenta"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdFerramenta"));
 
                     b.Property<string>("Categoria")
                         .IsRequired()
@@ -374,11 +401,11 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<int>("IdAlmoxarifado")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdAlmoxarifado")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdEscopo")
-                        .HasColumnType("integer");
+                    b.Property<long>("IdEscopo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("IdLI")
                         .IsRequired()
@@ -437,18 +464,18 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.GpmModel", b =>
                 {
-                    b.Property<int>("IdGPM")
+                    b.Property<long>("IdGPM")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdGPM"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdGPM"));
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
-                    b.Property<int?>("IdCPM")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdCPM")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(150)
@@ -463,11 +490,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.ImobilizadoModel", b =>
                 {
-                    b.Property<int>("IdImobilizado")
+                    b.Property<long>("IdImobilizado")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdImobilizado"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdImobilizado"));
 
                     b.Property<DateTime?>("DataAquisicao")
                         .HasColumnType("timestamp without time zone");
@@ -525,11 +552,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.ItemNotaModel", b =>
                 {
-                    b.Property<int>("IdItemNota")
+                    b.Property<long>("IdItemNota")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdItemNota"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdItemNota"));
 
                     b.Property<string>("Causa")
                         .HasMaxLength(150)
@@ -624,8 +651,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<long?>("IdPlano")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("IdUsuario")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("MetodoClassificacao")
                         .HasMaxLength(100)
@@ -670,11 +697,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.OperacaoModel", b =>
                 {
-                    b.Property<int>("IdOperacao")
+                    b.Property<long>("IdOperacao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdOperacao"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdOperacao"));
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(500)
@@ -686,14 +713,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<DateTime?>("FimEsperado")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int?>("IdCTM")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdCTM")
+                        .HasColumnType("bigint");
 
                     b.Property<long?>("IdOrdem")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoManutencao")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdTipoManutencao")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("InicioEsperado")
                         .HasColumnType("timestamp without time zone");
@@ -836,8 +863,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<int?>("IdAtivo")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("IdEstrategia")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdEstrategia")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("IdLi")
                         .HasMaxLength(100)
@@ -878,11 +905,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.TipoCepModel", b =>
                 {
-                    b.Property<int>("IdTipoCep")
+                    b.Property<long>("IdTipoCep")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoCep"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdTipoCep"));
 
                     b.Property<List<AcoesFalha>>("AcoesFalha")
                         .HasColumnType("jsonb");
@@ -907,11 +934,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.TipoEstrategiaModel", b =>
                 {
-                    b.Property<int>("IdTipoEstrategia")
+                    b.Property<long>("IdTipoEstrategia")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoEstrategia"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdTipoEstrategia"));
 
                     b.Property<int>("Categoria")
                         .HasColumnType("integer");
@@ -922,14 +949,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<int?>("Dias")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("IdEstrategia")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdEstrategia")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoCep")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdTipoCep")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoManutencao")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdTipoManutencao")
+                        .HasColumnType("bigint");
 
                     b.Property<double?>("ToleranciaNegativa")
                         .HasColumnType("double precision");
@@ -950,11 +977,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.TipoManutencaoModel", b =>
                 {
-                    b.Property<int>("IdTipoManutencao")
+                    b.Property<long>("IdTipoManutencao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoManutencao"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdTipoManutencao"));
 
                     b.Property<int?>("Categoria")
                         .HasMaxLength(100)
@@ -983,11 +1010,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.TipoPlanoModel", b =>
                 {
-                    b.Property<int>("IdTipoPlano")
+                    b.Property<long>("IdTipoPlano")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTipoPlano"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdTipoPlano"));
 
                     b.Property<int>("Categoria")
                         .HasColumnType("integer");
@@ -1007,14 +1034,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<long?>("IdPlano")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoCep")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdTipoCep")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoEstrategia")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdTipoEstrategia")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoManutencao")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdTipoManutencao")
+                        .HasColumnType("bigint");
 
                     b.Property<double?>("ToleranciaNegativa")
                         .HasColumnType("double precision");
@@ -1044,18 +1071,18 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.UsuarioModel", b =>
                 {
-                    b.Property<int>("IdUsuario")
+                    b.Property<long>("IdUsuario")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdUsuario"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdUsuario"));
 
                     b.Property<string>("CPF")
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<int?>("IdEscopo")
-                        .HasColumnType("integer");
+                    b.Property<long?>("IdEscopo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(150)
@@ -1072,11 +1099,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.VariavelNotaModel", b =>
                 {
-                    b.Property<int>("IdVariavel")
+                    b.Property<long>("IdVariavel")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdVariavel"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdVariavel"));
 
                     b.Property<string>("Comentarios")
                         .HasMaxLength(500)
