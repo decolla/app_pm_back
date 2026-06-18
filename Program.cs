@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json;
 using api.Communications.Service.Impl.Data;
 using app_pm_back.Data;
+using app_pm_back.DTO;
 using app_pm_back.Middlewares;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
@@ -133,6 +134,7 @@ builder.Services.AddScoped<AnnexService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<DadosRenovacaoService>();
 builder.Services.AddScoped<LinhaTemporalService>();
+builder.Services.AddScoped<ReliabilityService>();
 
 // configuração de clientes http
 builder.Services.AddHttpClient<ExternIntegrationService>(client =>
