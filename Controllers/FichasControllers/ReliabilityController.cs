@@ -42,28 +42,22 @@ public class ReliabilityController : ControllerBase
     }
     
     /// <summary>
-    /// Busca Todas as datas de notas e ordens de um LI
+    /// Sincroniza todos os LI do apm e preenche a tabela de Reliability
     /// </summary>
-    /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
-    /// <returns>idLi+ lista de datas</returns>
     [HttpGet("SyncLI")]
-    public async Task<IActionResult> SyncReliability([FromQuery] string idLi)
+    public async Task<IActionResult> SyncReliability()
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(idLi))
-            {
-                return BadRequest(new { message = "Parametro idLi obrigatorio." });
-            }
 
-            var obj = await _reliabilityService.DatasReliability(idLi);
-            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
+            var obj = await _reliabilityService.SyncLi();
+            if (obj == false) return NotFound(new { message = $"Erro ao buscar LIs para sincronizar." });
 
             return Ok(obj);
         }
         catch (Exception e)
         {
-            return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
+            return BadRequest(new { message = $"Erro ao buscar LIs para sincronizar: {e.Message}." });
         }
     }
 
