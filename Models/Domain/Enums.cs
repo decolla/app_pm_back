@@ -157,9 +157,9 @@ public enum OriginType
 /// </summary>
 public enum Classificacao
 {
-    PREVENTIVA = 0,
+    NAOCLASSIFICADA = 0,
     CORRETIVA = 1,
-    NAOCLASSIFICADA = 2,
+    PREVENTIVA= 2,
     SERVICO = 3
 }
 
@@ -168,10 +168,10 @@ public enum Classificacao
 /// </summary>
 public enum MetodoClassificacao
 {
-    HUMANA = 0,
+    NAOCLASSIFICADA = 0,
     ALGORITMO = 1,
     CATBOOST = 2,
-    NAOCLASSIFICADA = 3,
+    HUMANA = 3,
 }
 public enum Status
 {
