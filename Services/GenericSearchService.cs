@@ -102,158 +102,168 @@ public class GenericSearchService
     /// </summary>
     /// <param name="busca">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<object> BuscarNotaOrdemAsync(
+public async Task<object> BuscarNotaOrdemAsync(
         dynamic busca,
         int? pagina,
         int? tamanho,
         Fichas? Tfichas)
+{
+    if (busca == null)
     {
-        if (busca == null)
-        {
-            throw new ArgumentNullException(nameof(busca));
-        }
-
-        var notasQuery = _notaModels.AsNoTracking().AsQueryable();
-        var ordensQuery = _ordemModels.AsNoTracking().AsQueryable();
-
-        // Safe check for properties of dynamic/anonymous object
-        var buscaType = (Type)busca.GetType();
-
-        Status? statusNota = buscaType.GetProperty("StatusNota")?.GetValue(busca);
-        if (statusNota.HasValue)
-        {
-            notasQuery = notasQuery.Where(n => n.StatusNota == statusNota.Value);
-        }
-
-        var notaIdInicioVal = buscaType.GetProperty("NotaIdInicio")?.GetValue(busca);
-        long? notaIdInicio = notaIdInicioVal != null ? Convert.ToInt64(notaIdInicioVal) : null;
-        if (notaIdInicio.HasValue)
-        {
-            notasQuery = notasQuery.Where(n => n.NumeroNota >= notaIdInicio.Value);
-        }
-
-        var notaIdFimVal = buscaType.GetProperty("NotaIdFim")?.GetValue(busca);
-        long? notaIdFim = notaIdFimVal != null ? Convert.ToInt64(notaIdFimVal) : null;
-        if (notaIdFim.HasValue)
-        {
-            notasQuery = notasQuery.Where(n => n.NumeroNota <= notaIdFim.Value);
-        }
-
-        var ordemIdInicioVal = buscaType.GetProperty("OrdemIdInicio")?.GetValue(busca);
-        long? ordemIdInicio = ordemIdInicioVal != null ? Convert.ToInt64(ordemIdInicioVal) : null;
-        if (ordemIdInicio.HasValue)
-        {
-            ordensQuery = ordensQuery.Where(o => o.IdOrdem >= ordemIdInicio.Value);
-        }
-
-        var ordemIdFimVal = buscaType.GetProperty("OrdemIdFim")?.GetValue(busca);
-        long? ordemIdFim = ordemIdFimVal != null ? Convert.ToInt64(ordemIdFimVal) : null;
-        if (ordemIdFim.HasValue)
-        {
-            ordensQuery = ordensQuery.Where(o => o.IdOrdem <= ordemIdFim.Value);
-        }
-
-        var localInstalacaoInicioVal = buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca);
-        ComponentType? localInstalacaoInicio = localInstalacaoInicioVal != null ? (ComponentType)Convert.ToInt32(localInstalacaoInicioVal) : null;
-        if (localInstalacaoInicio.HasValue)
-        {
-            notasQuery = notasQuery.Where(n => n.IdAtivo >= localInstalacaoInicio.Value);
-            ordensQuery = ordensQuery.Where(o => o.IdAtivo >= localInstalacaoInicio.Value);
-        }
-
-        var localInstalacaoFimVal = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca);
-        ComponentType? localInstalacaoFim = localInstalacaoFimVal != null ? (ComponentType)Convert.ToInt32(localInstalacaoFimVal) : null;
-        if (localInstalacaoFim.HasValue)
-        {
-            notasQuery = notasQuery.Where(n => n.IdAtivo <= localInstalacaoFim.Value);
-            ordensQuery = ordensQuery.Where(o => o.IdAtivo <= localInstalacaoFim.Value);
-        }
-
-        DateTime? notaDataInicio = buscaType.GetProperty("NotaDataInicio")?.GetValue(busca) as DateTime?;
-        if (notaDataInicio.HasValue)
-        {
-            notasQuery = notasQuery.Where(n => n.DataNota >= notaDataInicio.Value);
-        }
-
-        DateTime? notaDataFim = buscaType.GetProperty("NotaDataFim")?.GetValue(busca) as DateTime?;
-        if (notaDataFim.HasValue)
-        {
-            notasQuery = notasQuery.Where(n => n.DataNota <= notaDataFim.Value);
-        }
-
-        DateTime? ordemDataInicio = buscaType.GetProperty("OrdemDataInicio")?.GetValue(busca) as DateTime?;
-        if (ordemDataInicio.HasValue)
-        {
-            ordensQuery = ordensQuery.Where(o => o.DataCriacao >= ordemDataInicio.Value);
-        }
-
-        DateTime? ordemDataFim = buscaType.GetProperty("OrdemDataFim")?.GetValue(busca) as DateTime?;
-        if (ordemDataFim.HasValue)
-        {
-            ordensQuery = ordensQuery.Where(o => o.DataCriacao <= ordemDataFim.Value);
-        }
-
-        var prioridadeInicioVal = buscaType.GetProperty("PrioridadeInicio")?.GetValue(busca);
-        Prioridade? prioridadeInicio = prioridadeInicioVal as Prioridade?;
-        if (prioridadeInicio.HasValue)
-        {
-            notasQuery = notasQuery.Where(n => n.Prioridade >= prioridadeInicio.Value);
-        }
-
-        var prioridadeFimVal = buscaType.GetProperty("PrioridadeFim")?.GetValue(busca);
-        Prioridade? prioridadeFim = prioridadeFimVal as Prioridade?;
-        if (prioridadeFim.HasValue)
-        {
-            notasQuery = notasQuery.Where(n => n.Prioridade <= prioridadeFim.Value);
-        }
-
-        Status? statusOrdem = buscaType.GetProperty("StatusOrdem")?.GetValue(busca); 
-        if (statusOrdem.HasValue)
-        {
-            ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem.Value);
-        }
-
-        var listaUnica = new List<object>();
-        
-        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Notas)
-        {
-            notasQuery = notasQuery.AplicarOrdenacao(_context);
-            var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
-            listaUnica.AddRange(todasNotas);
-        }
-
-        // Busca Ordens apenas se for Ambas (0) ou Ordens (2)
-        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Ordens)
-        {
-            ordensQuery = ordensQuery.AplicarOrdenacao(_context);
-            var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
-            listaUnica.AddRange(todasOrdens);
-        }
-
-        //Cálculos da paginação
-        int totalGeral = listaUnica.Count;
-        int p = pagina ?? 1;
-        int t = tamanho ?? 20;
-        int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
-
-        //Pega os 'n' primeiros itens dependendo da página
-        var itensPaginados = listaUnica.Skip((p - 1) * t).Take(t).ToList();
-
-        //Separa de volta para preencher o NotaOrdemSearchResult
-        var notasResult = itensPaginados.OfType<NotaModel>().ToList(); 
-        var ordensResult = itensPaginados.OfType<OrdemModel>().ToList(); 
-
-        var result = new NotaOrdemSearchResult(notasResult, ordensResult);
-
-        return new 
-        { 
-            Total = totalGeral, 
-            TotalPaginas = totalPaginas,
-            pagina = p, 
-            Tamanho = t,
-            Result = result 
-        };
+        throw new ArgumentNullException(nameof(busca));
     }
+
+    // Includes para buscar o Plano e, em seguida, a Estratégia
+    var notasQuery = _notaModels
+        .Include(n => n.Plano)
+            .ThenInclude(p => p.Estrategia)
+        .AsNoTracking()
+        .AsQueryable();
+
+    var ordensQuery = _ordemModels
+        .Include(o => o.Plano)
+            .ThenInclude(p => p.Estrategia)
+        .AsNoTracking()
+        .AsQueryable();
+
+    // Safe check for properties of dynamic/anonymous object
+    var buscaType = (Type)busca.GetType();
+
+    Status? statusNota = buscaType.GetProperty("StatusNota")?.GetValue(busca);
+    if (statusNota.HasValue)
+    {
+        notasQuery = notasQuery.Where(n => n.StatusNota == statusNota.Value);
+    }
+
+    var notaIdInicioVal = buscaType.GetProperty("NotaIdInicio")?.GetValue(busca);
+    long? notaIdInicio = notaIdInicioVal != null ? Convert.ToInt64(notaIdInicioVal) : null;
+    if (notaIdInicio.HasValue)
+    {
+        notasQuery = notasQuery.Where(n => n.NumeroNota >= notaIdInicio.Value);
+    }
+
+    var notaIdFimVal = buscaType.GetProperty("NotaIdFim")?.GetValue(busca);
+    long? notaIdFim = notaIdFimVal != null ? Convert.ToInt64(notaIdFimVal) : null;
+    if (notaIdFim.HasValue)
+    {
+        notasQuery = notasQuery.Where(n => n.NumeroNota <= notaIdFim.Value);
+    }
+
+    var ordemIdInicioVal = buscaType.GetProperty("OrdemIdInicio")?.GetValue(busca);
+    long? ordemIdInicio = ordemIdInicioVal != null ? Convert.ToInt64(ordemIdInicioVal) : null;
+    if (ordemIdInicio.HasValue)
+    {
+        ordensQuery = ordensQuery.Where(o => o.IdOrdem >= ordemIdInicio.Value);
+    }
+
+    var ordemIdFimVal = buscaType.GetProperty("OrdemIdFim")?.GetValue(busca);
+    long? ordemIdFim = ordemIdFimVal != null ? Convert.ToInt64(ordemIdFimVal) : null;
+    if (ordemIdFim.HasValue)
+    {
+        ordensQuery = ordensQuery.Where(o => o.IdOrdem <= ordemIdFim.Value);
+    }
+
+    var localInstalacaoInicioVal = buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca);
+    ComponentType? localInstalacaoInicio = localInstalacaoInicioVal != null ? (ComponentType)Convert.ToInt32(localInstalacaoInicioVal) : null;
+    if (localInstalacaoInicio.HasValue)
+    {
+        notasQuery = notasQuery.Where(n => n.IdAtivo >= localInstalacaoInicio.Value);
+        ordensQuery = ordensQuery.Where(o => o.IdAtivo >= localInstalacaoInicio.Value);
+    }
+
+    var localInstalacaoFimVal = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca);
+    ComponentType? localInstalacaoFim = localInstalacaoFimVal != null ? (ComponentType)Convert.ToInt32(localInstalacaoFimVal) : null;
+    if (localInstalacaoFim.HasValue)
+    {
+        notasQuery = notasQuery.Where(n => n.IdAtivo <= localInstalacaoFim.Value);
+        ordensQuery = ordensQuery.Where(o => o.IdAtivo <= localInstalacaoFim.Value);
+    }
+
+    DateTime? notaDataInicio = buscaType.GetProperty("NotaDataInicio")?.GetValue(busca) as DateTime?;
+    if (notaDataInicio.HasValue)
+    {
+        notasQuery = notasQuery.Where(n => n.DataNota >= notaDataInicio.Value);
+    }
+
+    DateTime? notaDataFim = buscaType.GetProperty("NotaDataFim")?.GetValue(busca) as DateTime?;
+    if (notaDataFim.HasValue)
+    {
+        notasQuery = notasQuery.Where(n => n.DataNota <= notaDataFim.Value);
+    }
+
+    DateTime? ordemDataInicio = buscaType.GetProperty("OrdemDataInicio")?.GetValue(busca) as DateTime?;
+    if (ordemDataInicio.HasValue)
+    {
+        ordensQuery = ordensQuery.Where(o => o.DataCriacao >= ordemDataInicio.Value);
+    }
+
+    DateTime? ordemDataFim = buscaType.GetProperty("OrdemDataFim")?.GetValue(busca) as DateTime?;
+    if (ordemDataFim.HasValue)
+    {
+        ordensQuery = ordensQuery.Where(o => o.DataCriacao <= ordemDataFim.Value);
+    }
+
+    var prioridadeInicioVal = buscaType.GetProperty("PrioridadeInicio")?.GetValue(busca);
+    Prioridade? prioridadeInicio = prioridadeInicioVal as Prioridade?;
+    if (prioridadeInicio.HasValue)
+    {
+        notasQuery = notasQuery.Where(n => n.Prioridade >= prioridadeInicio.Value);
+    }
+
+    var prioridadeFimVal = buscaType.GetProperty("PrioridadeFim")?.GetValue(busca);
+    Prioridade? prioridadeFim = prioridadeFimVal as Prioridade?;
+    if (prioridadeFim.HasValue)
+    {
+        notasQuery = notasQuery.Where(n => n.Prioridade <= prioridadeFim.Value);
+    }
+
+    Status? statusOrdem = buscaType.GetProperty("StatusOrdem")?.GetValue(busca); 
+    if (statusOrdem.HasValue)
+    {
+        ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem.Value);
+    }
+
+    var listaUnica = new List<object>();
+    
+    if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Notas)
+    {
+        notasQuery = notasQuery.AplicarOrdenacao(_context);
+        var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
+        listaUnica.AddRange(todasNotas);
+    }
+
+    // Busca Ordens apenas se for Ambas (0) ou Ordens (2)
+    if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Ordens)
+    {
+        ordensQuery = ordensQuery.AplicarOrdenacao(_context);
+        var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
+        listaUnica.AddRange(todasOrdens);
+    }
+
+    //Cálculos da paginação
+    int totalGeral = listaUnica.Count;
+    int p = pagina ?? 1;
+    int t = tamanho ?? 20;
+    int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
+
+    //Pega os 'n' primeiros itens dependendo da página
+    var itensPaginados = listaUnica.Skip((p - 1) * t).Take(t).ToList();
+
+    //Separa de volta para preencher o NotaOrdemSearchResult
+    var notasResult = itensPaginados.OfType<NotaModel>().ToList(); 
+    var ordensResult = itensPaginados.OfType<OrdemModel>().ToList(); 
+
+    var result = new NotaOrdemSearchResult(notasResult, ordensResult);
+
+    return new 
+    { 
+        Total = totalGeral, 
+        TotalPaginas = totalPaginas,
+        pagina = p, 
+        Tamanho = t,
+        Result = result 
+    };
+}
 
     private async Task<object> BuscarInternoAsync<T>(
         string campo,

@@ -203,6 +203,7 @@ public class NotaModel : IClassifiable
     /// Importante para auditoria e rastreamento de mudanças.
     /// </summary>
     /// <example>2024-01-15T15:00:00</example>
+    /// <example>2024-01-15T15:00:00</example>
     public DateTime? DataClassificacao { get; set; }
 
     #endregion
@@ -274,6 +275,13 @@ public class NotaModel : IClassifiable
     /// </summary>
     [MaxLength(100)]
     public string? DnsIot { get; set; }
+    
+    /// <summary>
+    /// Nome da estratégia relacionada ao Plano
+    /// </summary>
+    [NotMapped]
+    [MaxLength(200)]
+    public string NomeEstrategia => Plano?.Estrategia?.Nome;
 
     #endregion
 

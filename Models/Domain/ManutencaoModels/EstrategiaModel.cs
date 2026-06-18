@@ -23,7 +23,7 @@ public class EstrategiaModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int IdEstrategia { get; set; }
+    public long IdEstrategia { get; set; }
 
     /// <summary>
     /// Nome descritivo da estratégia de manutenção.

@@ -232,6 +232,13 @@ public class OrdemModel : IClassifiable
     /// </summary>
     [ForeignKey(nameof(IdPlano))]
     public virtual PlanoModel? Plano { get; set; }
+    
+    /// <summary>
+    /// Nome da estratégia relacionada ao Plano
+    /// </summary>
+    [NotMapped]
+    [MaxLength(200)]
+    public string NomeEstrategia => Plano?.Estrategia?.Nome;
 
     /// <summary>
     /// Coleção de anexos (arquivos) associados à ordem.

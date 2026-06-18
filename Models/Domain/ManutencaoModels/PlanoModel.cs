@@ -63,7 +63,7 @@ public class PlanoModel
     /// <summary>
     /// Chave estrangeira para a Estratégia de manutenção.
     /// </summary>
-    public int? IdEstrategia { get; set; }
+    public long? IdEstrategia { get; set; }
 
     /// <summary>
     /// Propriedade de navegação para a Estratégia.
