@@ -262,11 +262,16 @@ public class SpreadsheetService
                                 DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
                                 valorConvertido = dataOffset.UtcDateTime;
                             }
-                            else if (tipo == typeof(DateTime) &&
-                                     string.Equals(nomeColunaExcel, "Data da nota", StringComparison.OrdinalIgnoreCase))
+                            else if (tipo == typeof(DateTime))
                             {
-                                if (!DateTime.TryParse(valor, out DateTime dataConvertida))
+                                if (DateTime.TryParse(valor, CultureInfo.GetCultureInfo("pt-BR"), DateTimeStyles.None,
+                                        out var dt))
                                 {
+                                    valorConvertido = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                                }
+                                else
+                                {
+                                    // caso de unix timestamp, converte para datetime
                                     long.TryParse(valor, out long l);
                                     DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
                                     valorConvertido = dataOffset.UtcDateTime;
@@ -319,14 +324,6 @@ public class SpreadsheetService
                                 if (TimeSpan.TryParse(valor, out var ts))
                                 {
                                     valorConvertido = ts;
-                                }
-                            }
-                            else if (tipo == typeof(DateTime))
-                            {
-                                if (DateTime.TryParse(valor, CultureInfo.GetCultureInfo("pt-BR"), DateTimeStyles.None,
-                                        out var dt))
-                                {
-                                    valorConvertido = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
                                 }
                             }
                             else if (tipo == typeof(Classificacao))
