@@ -160,7 +160,7 @@ public class LinhaTemporalService
 public record LiApmInfo(
     [property: JsonPropertyName("sapName")] string IdLi,
     [property: JsonPropertyName("dnsIot")] string? DnsIot,
-    [property: JsonPropertyName("installationDate")] DateTime Data
+    [property: JsonPropertyName("installationDate")] DateTime? Data
 );
 
 public record LinhaTemporalItem(string IdLi, List<EventoLinhaTemporal> Eventos);
