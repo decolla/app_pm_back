@@ -152,6 +152,7 @@ public class ReliabilityService
 
         // Agrupa as notas pelo IdLi e cria um dicionário onde a Chave é o IdLi e o Valor é a lista de Ids das Notas
         var dicionarioNotas = await notasQuery
+            .Where(n => n.IdLi != null)
             .GroupBy(n => n.IdLi)
             .ToDictionaryAsync(
                 grupo => grupo.Key, 
@@ -168,10 +169,11 @@ public class ReliabilityService
             ordensQuery = ordensQuery.Where(o => metodos.Contains(o.MetodoClassificacao));
 
         var dicionarioOrdens = await ordensQuery
+            .Where(o => o.IdLi != null) 
             .GroupBy(o => o.IdLi)
             .ToDictionaryAsync(
                 grupo => grupo.Key, 
-                grupo => grupo.Select(o => o.IdOrdem).ToList() // Assumindo que a chave primária se chama IdOrdem
+                grupo => grupo.Select(o => o.IdOrdem).ToList()
             );
 
         // Descobre quais IdLis foram afetados para não buscar a tabela Reliability inteira à toa
