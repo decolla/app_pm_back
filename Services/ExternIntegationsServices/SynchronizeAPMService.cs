@@ -70,10 +70,10 @@ public class SynchronizeAPMService
             _logger.LogInformation("Desserializados {Count} ativos do APM.", ativos.Count);
 
             // gera um dicionário com nome e dnsIot
-            Dictionary<string, (string?, List<ComponentType>?)> dicionarioDns = ativos
+            Dictionary<(string, string?), (string?, List<ComponentType>?)> dicionarioDns = ativos
                 .Where(a => !string.IsNullOrEmpty(a.Name) && !string.IsNullOrEmpty(a.DnsIot) && a.ComponentTypes != null)
                 .DistinctBy(a => a.Name)
-                .ToDictionary(a => a.Name, a => (a.DnsIot, a.ComponentTypes));
+                .ToDictionary(a => (a.Name, a.sapId), a => (a.DnsIot, a.ComponentTypes));
             
             _logger.LogInformation("Dicionário DNS gerado com {Count} chaves únicas após filtragem e remoção de duplicados.", dicionarioDns.Count);
 
@@ -83,17 +83,19 @@ public class SynchronizeAPMService
                 return false;
             }
             
-            var nomesLi = dicionarioDns.Keys.ToList();
+            // extrai chaves separadas
+            var nomesValidos = dicionarioDns.Keys.Select(k => k.Item1).Where(x => x != null).Distinct().ToList();
+            var sapsValidos = dicionarioDns.Keys.Select(k => k.Item2).Where(x => x != null).Distinct().ToList();
 
             // busca notas e ordens que os LI batem com os passados
             _logger.LogInformation("Buscando Notas e Ordens correspondentes no banco de dados.");
             
             var notasEncontradas = await _context.PM_Notas
-                .Where(n => n.IdLi != null && nomesLi.Contains(n.IdLi))
+                .Where(n => n.IdLi != null && (nomesValidos.Contains(n.IdLi) || sapsValidos.Contains(n.IdLi)))
                 .ToListAsync(cts.Token);
 
             var ordensEncontradas = await _context.PM_Ordens
-                .Where(n => n.IdLi != null && nomesLi.Contains(n.IdLi))
+                .Where(o => o.IdLi != null && (nomesValidos.Contains(o.IdLi) || sapsValidos.Contains(o.IdLi)))
                 .ToListAsync(cts.Token);
 
             _logger.LogInformation("Encontradas {NotasCount} notas e {OrdensCount} ordens no banco de dados para atualização.", 
@@ -105,13 +107,16 @@ public class SynchronizeAPMService
             // atualiza cada uma delas 
             foreach (var nota in notasEncontradas)
             {
-                if (dicionarioDns.TryGetValue(nota.IdLi!, out var duple))
+                var chaveEncontrada = dicionarioDns.Keys.FirstOrDefault(k => k.Item1 == nota.IdLi || k.Item2 == nota.IdLi);
+                
+                if (chaveEncontrada.Item1 != null)
                 {
-                    if (duple.Item2 != null && !duple.Item2.Any(a => a == nota.IdAtivo))
+                    var duple = dicionarioDns[chaveEncontrada];
+
+                    if (duple.Item2 != null && !duple.Item2.Any(a => a == nota.IdAtivo)) 
                     {
                         nota.IdAtivo = null;
                         notasAtualizadas++;
-                        
                     }
                     if (nota.DnsIot != duple.Item1)
                     {
@@ -123,8 +128,12 @@ public class SynchronizeAPMService
             
             foreach (var ordem in ordensEncontradas)
             {
-                if (dicionarioDns.TryGetValue(ordem.IdLi!, out var duple))
+                var chaveEncontrada = dicionarioDns.Keys.FirstOrDefault(k => k.Item1 == ordem.IdLi || k.Item2 == ordem.IdLi);
+
+                if (chaveEncontrada.Item1 != null)
                 {
+                    var duple = dicionarioDns[chaveEncontrada];
+
                     if (duple.Item2 != null && !duple.Item2.Any(a => a == ordem.IdAtivo))
                     {
                         ordem.IdAtivo = null;

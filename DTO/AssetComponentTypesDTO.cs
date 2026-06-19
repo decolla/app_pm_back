@@ -19,6 +19,11 @@ public class AssetComponentTypesDTO
     public string? DnsIot { get; set; }
     
     /// <summary>
+    /// SAP ID do LI.
+    /// </summary>
+    public string? sapId { get; set; }
+    
+    /// <summary>
     /// Indica se a LI existe ou não na APM. Se false, os campos DnsIot e ComponentTypes podem ser ignorados.
     /// </summary>
     public bool? Exists {  get; set; }
