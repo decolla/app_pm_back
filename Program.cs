@@ -121,6 +121,7 @@ builder.Services.AddScoped<DadosRenovacaoService>();
 builder.Services.AddScoped<TarefaService>();
 builder.Services.AddScoped<FerramentaService>();
 builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<UserContextService>();
 builder.Services.AddScoped<CpmService>();
 builder.Services.AddScoped<CtmService>();
 builder.Services.AddScoped<ReportService>();
