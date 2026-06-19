@@ -412,7 +412,11 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             }
             else
             {
-                _logger.LogWarning("RestauraAtivo mas IdAtivo inválido ou nulo");
+                _logger.LogWarning("RestauraAtivo com IdAtivo nulo. Gravando com IdAtivo = null na LI={IdLi}", idLi);
+
+                inseridos = await InserirOuAtualizarPorAtivoAsync(
+                    null, 
+                    idNota, idOrdem, dataSource, origem, idLi, tipoDados);
             }
         }
         else if (confiabilidade == ConfiabilidadeRestaurada.RestauraLI)
@@ -470,33 +474,44 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         // Para cada LI (Name) e seus ativos (ComponentTypes)
         foreach (var assetComponent in ativosDoLote)
         {
-            if (string.IsNullOrWhiteSpace(assetComponent.Name) || assetComponent.ComponentTypes == null)
+            if (string.IsNullOrWhiteSpace(assetComponent.Name))
             {
-                _logger.LogWarning("AssetComponent inválido: Name={Name}", assetComponent.Name);
+                _logger.LogWarning("AssetComponent sem nome retornado pela APM.");
                 continue;
             }
 
-            // ← BUSCAR O CONTEXTO ORIGINAL DESSA LI
             var contextoDaLi = liComContexto.FirstOrDefault(li => li.IdLi == assetComponent.Name);
 
-            _logger.LogDebug("Processando {QtdAtivos} ativos da LI {IdLi} (Origem: Nota={IdNota}, Ordem={IdOrdem})", 
-                assetComponent.ComponentTypes.Count, 
-                assetComponent.Name,
-                contextoDaLi.IdNota,
-                contextoDaLi.IdOrdem);
-
-            // Para cada ativo associado à LI, inserir/atualizar em DadosRenovacao
-            foreach (var idAtivo in assetComponent.ComponentTypes)
+            // Se ComponentTypes for nulo ou vazio, grava na tabela com IdAtivo = null
+            if (assetComponent.ComponentTypes == null || !assetComponent.ComponentTypes.Any())
             {
+                _logger.LogDebug("LI {IdLi} sem ativos. Inserindo registro com IdAtivo nulo.", assetComponent.Name);
+        
                 registrosProcessados += await InserirOuAtualizarPorAtivoAsync(
-                    idAtivo,
-                    idNota: contextoDaLi.IdNota, // ← USAR DO CONTEXTO
-                    idOrdem: contextoDaLi.IdOrdem, // ← USAR DO CONTEXTO
-                    dataSource: contextoDaLi.DataOrigem, // ← USAR DATA ORIGINAL
-                    origem: contextoDaLi.Origem, // ← USAR ORIGEM ORIGINAL
+                    idAtivo: null, // ← PASSANDO NULL AQUI
+                    idNota: contextoDaLi.IdNota,
+                    idOrdem: contextoDaLi.IdOrdem,
+                    dataSource: contextoDaLi.DataOrigem,
+                    origem: contextoDaLi.Origem,
                     idLi: assetComponent.Name,
                     tipoDados: contextoDaLi.TipoDados
                 );
+            }
+            else
+            {
+                // Se vieram ativos, itera e grava para cada um deles (como já era antes)
+                foreach (var idAtivo in assetComponent.ComponentTypes)
+                {
+                    registrosProcessados += await InserirOuAtualizarPorAtivoAsync(
+                        idAtivo,
+                        idNota: contextoDaLi.IdNota,
+                        idOrdem: contextoDaLi.IdOrdem,
+                        dataSource: contextoDaLi.DataOrigem,
+                        origem: contextoDaLi.Origem,
+                        idLi: assetComponent.Name,
+                        tipoDados: contextoDaLi.TipoDados
+                    );
+                }
             }
         }
 
@@ -587,7 +602,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
 
 //Dado o ativo que será restaurado, verifica se ele já existe ou não na tabela DadosRenovacao
     private async Task<int> InserirOuAtualizarPorAtivoAsync(
-        ComponentType idAtivo,
+        ComponentType? idAtivo,
         long? idNota,
         long? idOrdem,
         DateTime dataSource,
