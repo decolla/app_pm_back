@@ -124,20 +124,37 @@ public class SpreadsheetService
 
         csvStream.Position = 0;
 
-        CultureInfo culture = CultureInfo.GetCultureInfo("pt-BR");
-
         // declara o parser para ler o arquivo csv, usando UTF-8 e detectando a codificação automaticamente,
         // e configurando para usar ; como delimitador, sem campos entre aspas e para trimar os espaços em branco
+        string delimitador = ";";
+        using (var reader = new StreamReader(csvStream, Encoding.UTF8, true, 1024, leaveOpen: true))
+        {
+            var primeiraLinha = reader.ReadLine() ?? "";
+            
+            // se houver mais vírgulas do que ponto-e-vírgulas no cabeçalho, sabemos que é um CSV 
+            if (primeiraLinha.Count(c => c == ',') > primeiraLinha.Count(c => c == ';'))
+            {
+                delimitador = ",";
+            }
+        }
+        
+        // reseta a posição do stream para conseguir ler desde o início
+        csvStream.Position = 0; 
+
+        CultureInfo culture = CultureInfo.GetCultureInfo("pt-BR");
+
         using TextFieldParser parser =
             new TextFieldParser(csvStream, Encoding.UTF8, detectEncoding: true, leaveOpen: false)
             {
                 TextFieldType = FieldType.Delimited
             };
 
-        parser.SetDelimiters(";", ",");
-        parser.HasFieldsEnclosedInQuotes = false;
+        // delimitadro detectado
+        parser.SetDelimiters(delimitador);
+        
+        // impede quebras 
+        parser.HasFieldsEnclosedInQuotes = true; 
         parser.TrimWhiteSpace = true;
-
         string[]? headers = null;
         Dictionary<string, int> columns = new(StringComparer.OrdinalIgnoreCase);
 

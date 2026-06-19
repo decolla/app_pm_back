@@ -55,7 +55,7 @@ public class ImportSheetService
             await _notaManutencaoService.ImportarNotasEmLoteSeguroAsync(notasDeduplicadas, sobrescrever, adicionarNovas);
             
             idNotas = notasDeduplicadas.Select(n => n.IdNota).ToList();
-            if (idItens.Count > 1) // Mantive a sua lógica original
+            if (idItens.Count > 1) 
             {
                 bool sinc = await _synchronizeApmService.SynchronizeAPMAsync(); 
                 Console.WriteLine($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");

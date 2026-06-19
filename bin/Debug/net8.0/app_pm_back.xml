@@ -421,7 +421,7 @@
             <param name="ativos"></param>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscaAtivoDatas(System.String,app_pm_back.Models.Domain.Classificacao)">
+        <member name="M:app_pm_back.Controllers.BuscaController.BuscaAtivoDatas(System.String,System.String,app_pm_back.Models.Domain.Classificacao)">
             <summary>
             Busca as datas de renovação associadas ao LI, retorna um objeto com os dados relevantes
             </summary>
@@ -673,19 +673,17 @@
             Obtém a linha temporal paginada das LIs consultando diretamente a API do APM com paginação.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ReliabilityController.BuscaReliability(System.String)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ReliabilityController.BuscaReliability(System.String,System.String)">
             <summary>
             Busca Todas as datas de notas e ordens de um LI
             </summary>
             <param name="idLi">LI (Local de Instalação) a ser procurada</param>
             <returns>idLi+ lista de datas</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ReliabilityController.SyncReliability(System.String)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ReliabilityController.SyncReliability">
             <summary>
-            Busca Todas as datas de notas e ordens de um LI
+            Sincroniza todos os LI do apm e preenche a tabela de Reliability
             </summary>
-            <param name="idLi">LI (Local de Instalação) a ser procurada</param>
-            <returns>idLi+ lista de datas</returns>
         </member>
         <member name="T:app_pm_back.Controllers.HealthController">
             <summary>
