@@ -142,7 +142,7 @@ public class BuscaController : ControllerBase
     /// <param name="tipoDados">Tipo de dados da renovação</param>
     /// <returns>Objeto com informações relevantes</returns>
     [HttpGet("ativo/datas")]
-    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] string idLi, [FromQuery] Classificacao tipoDados)
+    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] string idLi, [FromQuery] string? SapId, [FromQuery] Classificacao tipoDados)
     {
         try
         {
@@ -157,7 +157,7 @@ public class BuscaController : ControllerBase
                 return BadRequest(new { message = "Parametro tipoDados invalido." });
             }
 
-            var obj = await _searchService.AtivoDatas(idLi, tipoDados);
+            var obj = await _searchService.AtivoDatas(idLi, SapId, tipoDados);
             if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
 
             return Ok(obj);

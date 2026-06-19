@@ -21,7 +21,7 @@ public class ReliabilityController : ControllerBase
     /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
     /// <returns>idLi+ lista de datas</returns>
     [HttpGet("Data")]
-    public async Task<IActionResult> BuscaReliability([FromQuery] string idLi)
+    public async Task<IActionResult> BuscaReliability([FromQuery] string idLi, [FromQuery] string SapId)
     {
         try
         {
@@ -30,7 +30,7 @@ public class ReliabilityController : ControllerBase
                 return BadRequest(new { message = "Parametro idLi obrigatorio." });
             }
 
-            var obj = await _reliabilityService.DatasReliability(idLi);
+            var obj = await _reliabilityService.DatasReliability(idLi,SapId);
             if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
 
             return Ok(obj);

@@ -460,53 +460,83 @@ public async Task<object> BuscarNotaOrdemAsync(
         };
     }
 
-    public async Task<object?> AtivoDatas(string idLi, Classificacao tipoDados)
+public async Task<object?> AtivoDatas(string idLi, string? nomAlternativo, Classificacao tipoDados)
+{
+    //Monta a lista com os nomes de busca
+    var nomesBusca = new List<string> { idLi };
+    if (!string.IsNullOrWhiteSpace(nomAlternativo))
     {
-        //Busca a data da última renovação daquele conjunto LI 
-        DadosRenovacaoModel? ultimaRenovacao = await _context.PM_DadosRenovacao
-            .Where(d => d.IdLi == idLi && d.TipoDados == tipoDados)
-            .OrderByDescending(d => d.UltimaRenovacao)
-            .FirstOrDefaultAsync();
+        nomesBusca.Add(nomAlternativo);
+    }
 
-        //Busca o plano relacionado ao LI
-        PlanoModel? plano = await _planoModels
-            .Where(p => p.IdLi == idLi)
-            .FirstOrDefaultAsync();
+    //Busca a data da última renovação verificando TODOS os nomes
+    // O OrderByDescending garante que pegaremos a data mais recente, independente de qual LI ela pertence
+    DadosRenovacaoModel? ultimaRenovacao = await _context.PM_DadosRenovacao
+        .AsNoTracking()
+        .Where(d => nomesBusca.Contains(d.IdLi) && d.TipoDados == tipoDados)
+        .OrderByDescending(d => d.UltimaRenovacao)
+        .FirstOrDefaultAsync();
 
-        //Se plano não existe, apenas retorna data
-        if (plano == null)
-        {
-            return new
-            {
-                UltimaData = ultimaRenovacao?.UltimaRenovacao,
-                ListaRenovacao = new List<object>(),
-                TempoCiclo = 120
-            };
-        }
+    //Busca TODOS os planos relacionados a qualquer um dos LIs
+    var planos = await _planoModels
+        .Where(p => nomesBusca.Contains(p.IdLi))
+        // .Include(p => p.Estrategia) <-- Dica: Adicione isso se 'Estrategia' vier null por causa do Lazy Loading
+        .ToListAsync();
 
-        // Buscar todos os TipoPlano relacionados ao Plano com categoria "renovação"
-        var tiposPlanoRenovacao = await _context.PM_TiposPlano
-            .Where(tp => tp.IdPlano == plano.IdPlano && tp.Categoria == CategoriaTipoManutencao.Renovacao)
-            .Include(tp => tp.TipoManutencao)
-            .ToListAsync();
-
-        //Monta lista com meses, se é contínua ou não e o valor da confibailidade
-        var listaRenovacao = tiposPlanoRenovacao
-            .Select(tp => new
-            {
-                Meses = (double?)(tp.Dias / 30.0),
-                Continua = tp.Continua,
-                Confiabilidade = tp.TipoManutencao?.Confiabilidade
-            })
-            .ToList();
-
+    // Se nenhum plano for encontrado para nenhum dos LIs, retorna o fallback
+    if (!planos.Any())
+    {
         return new
         {
+            SapName = string.Join(" / ", nomesBusca),
             UltimaData = ultimaRenovacao?.UltimaRenovacao,
-            ListaRenovacao = listaRenovacao,
-            TempoCiclo = plano.Estrategia?.Ciclos
+            ListaRenovacao = new List<object>(),
+            TempoCiclo = 120
         };
     }
+
+    // Extrai os IDs de todos os planos que encontramos
+    List<long> idsPlanos = planos
+        .Where(p => p.IdPlano != null) 
+        .Select(p => p.IdPlano)        
+        .ToList();
+
+    // Busca apenas UM TipoPlano (o primeiro que encontrar, ou nulo se não existir)
+    var tipoPlanoRenovacao = await _context.PM_TiposPlano
+        .Include(tp => tp.TipoManutencao)
+        .AsNoTracking()
+        .Where(tp => tp.IdPlano != null && // ← Verifica se não é nulo primeiro
+                     idsPlanos.Contains(tp.IdPlano.Value) && // ← Usa o .Value
+                     tp.Categoria == CategoriaTipoManutencao.Renovacao)
+        .FirstOrDefaultAsync();
+
+// Como agora temos um objeto único (ou nulo), montamos a lista assim:
+    var listaRenovacao = tipoPlanoRenovacao != null 
+        ? new List<object> 
+        { 
+            new 
+            {
+                Meses = (double?)(tipoPlanoRenovacao.Dias / 30.0),
+                Continua = tipoPlanoRenovacao.Continua,
+                Confiabilidade = tipoPlanoRenovacao.TipoManutencao?.Confiabilidade
+            } 
+        } 
+        : new List<object>(); // Se for nulo, retorna lista vazia
+
+    // Tenta pegar o ciclo do primeiro plano que tiver a Estrategia.Ciclos preenchida
+    var tempoCiclo = planos
+        .Where(p => p.Estrategia?.Ciclos != null)
+        .Select(p => p.Estrategia!.Ciclos)
+        .FirstOrDefault();
+
+    return new
+    {
+        SapName = string.Join(" / ", nomesBusca), // Mantendo o mesmo padrão da refatoração anterior
+        UltimaData = ultimaRenovacao?.UltimaRenovacao,
+        ListaRenovacao = listaRenovacao,
+        TempoCiclo = tempoCiclo
+    };
+}
     
 
 
