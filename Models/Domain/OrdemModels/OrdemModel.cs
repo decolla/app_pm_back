@@ -238,7 +238,7 @@ public class OrdemModel : IClassifiable
     /// </summary>
     [NotMapped]
     [MaxLength(200)]
-    public string NomeEstrategia => Plano?.Estrategia?.Nome;
+    public string? NomeEstrategia => Plano?.Estrategia?.Nome;
 
     /// <summary>
     /// Coleção de anexos (arquivos) associados à ordem.

@@ -193,8 +193,10 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                 .Where(n => idsOrdens.Contains(n.IdOrdem))
                 .ToListAsync();
             
-            ordens = ordens.Where(o => o.ConfiabilidadeRestaurada != ConfiabilidadeRestaurada.NaoRestaura).ToList();
 
+            // Não filtrar por ConfiabilidadeRestaurada antes da classificação por descrição de texto, 
+            // caso contrário ordens com NaoRestaura nunca seriam classificadas/processadas.
+            
 
             _logger.LogInformation("Carregadas {QtdOrdens} ordens do banco", ordens.Count);
 
@@ -550,7 +552,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
             Content = content
         };
         
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
         var response = await _httpClient.SendAsync(request);
 
         if (!response.IsSuccessStatusCode)

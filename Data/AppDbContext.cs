@@ -169,6 +169,21 @@ public class SqlServerDbContext : AppDbContext
             .Property(e => e.AcoesFalha)
             .HasConversion(converter)
             .HasColumnType("nvarchar(max)");
+
+        var longListConverter = new ValueConverter<List<long>?, string>(
+            v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+            v => JsonSerializer.Deserialize<List<long>>(v, (JsonSerializerOptions?)null) ?? new List<long>()
+        );
+
+        modelBuilder.Entity<ReliabilityModel>()
+            .Property(e => e.IdsNotas)
+            .HasConversion(longListConverter)
+            .HasColumnType("nvarchar(max)");
+
+        modelBuilder.Entity<ReliabilityModel>()
+            .Property(e => e.IdsOrdens)
+            .HasConversion(longListConverter)
+            .HasColumnType("nvarchar(max)");
     }
 }
 

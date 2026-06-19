@@ -169,7 +169,7 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         while (true)
         {
-            var query = _dbSet.Where(n => n.Classificacao == Classificacao.NAOCLASSIFICADA).AsQueryable();
+            var query = _dbSet.Where(n => n.Classificacao == Classificacao.NAOCLASSIFICADA && n.MetodoClassificacao != MetodoClassificacao.CATBOOST).AsQueryable();
 
             if (isNota)
             {

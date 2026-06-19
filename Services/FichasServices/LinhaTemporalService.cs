@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using app_pm_back.Data;
@@ -54,7 +54,7 @@ public class LinhaTemporalService
             _logger.LogInformation("Chamando API APM: GET {Url}", url);
 
             var request = new HttpRequestMessage(HttpMethod.Get, url);
-            _httpClient.DefaultRequestHeaders.Authorization = 
+            request.Headers.Authorization = 
                 new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
 
             var response = await _httpClient.SendAsync(request);
