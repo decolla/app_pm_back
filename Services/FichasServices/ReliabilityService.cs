@@ -28,7 +28,7 @@ public class ReliabilityService
         _ordemModels = context.PM_Ordens;
         _externIntegrationService = externIntegrationService;
         _logger = logger;
-        _reliabilityBaseUrl = configuration["APIs:APM"] ?? "http://10.3.192.200:60170";
+        _reliabilityBaseUrl = configuration["APIs:Reliability"] ?? "http://10.3.192.200:60170";
         _httpClient = httpClient;
     }
 
@@ -340,16 +340,20 @@ public async Task<object?> DatasReliability(List<string>? idLi)
             : string.Join(" / ", idLi);
 
         // Monta o payload
-        var payload = new
+        var payload = new[]
         {
-            SapName = sapName,
-            Datas = todasDatas
+            new
+            {
+                sapName = sapName,
+                datas = todasDatas
+            }
         };
 
         // Envia para a API do Reliability
         var url = $"{_reliabilityBaseUrl}/Reliability/Parameters/Calculate/Multiple";
 
-        var json = JsonSerializer.Serialize(payload);
+        var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        var json = JsonSerializer.Serialize(payload, jsonOptions);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
         var request = new HttpRequestMessage(HttpMethod.Post, url)
