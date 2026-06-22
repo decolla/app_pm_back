@@ -1423,6 +1423,11 @@
             DNS do IoT associado a esta LI (LI/DnsIot)
             </summary>
         </member>
+        <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.sapId">
+            <summary>
+            SAP ID do LI.
+            </summary>
+        </member>
         <member name="P:app_pm_back.DTO.Restauracao.AssetComponentTypesDTO.Exists">
             <summary>
             Indica se a LI existe ou não na APM. Se false, os campos DnsIot e ComponentTypes podem ser ignorados.
@@ -3791,6 +3796,60 @@
             Obtém notas e ordens para uma LI específica
             </summary>
         </member>
+        <member name="T:app_pm_back.Services.ImportGhostHelper">
+            <summary>
+            Cria registros "fantasma" para referencias que ainda nao existem no banco.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureUsuariosSapAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="context">Parâmetro do método.</param>
+            <param name="ids">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsurePlanosAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="context">Parâmetro do método.</param>
+            <param name="codigos">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureNotasAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="context">Parâmetro do método.</param>
+            <param name="ids">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureGpmAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="context">Parâmetro do método.</param>
+            <param name="ids">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureImobilizadosAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="context">Parâmetro do método.</param>
+            <param name="ids">Parâmetro do método.</param>
+        </member>
+        <member name="T:app_pm_back.Services.ImportMergeHelper">
+            <summary>
+            Utilitarios para mesclar dados importados sem sobrescrever valores existentes.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ImportMergeHelper.MergeNonEmpty``1(``0,``0,System.String[])">
+            <summary>
+            Realiza a operação de merge em tabelas a serem atualizadas
+            </summary>
+            <param name="target"></param>
+            <param name="source"></param>
+            <param name="ignoreProperties"></param>
+            <typeparam name="T"></typeparam>
+        </member>
         <member name="T:app_pm_back.Services.GenericSearchService">
             <summary>
             Classe para busca genérica entre as tabelas do banco de dados 
@@ -3851,60 +3910,6 @@
             <summary>
             Obtém uma timeline de fichas de um ativo para um range de data específico
             </summary>
-        </member>
-        <member name="T:app_pm_back.Services.ImportGhostHelper">
-            <summary>
-            Cria registros "fantasma" para referencias que ainda nao existem no banco.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureUsuariosSapAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="context">Parâmetro do método.</param>
-            <param name="ids">Parâmetro do método.</param>
-        </member>
-        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsurePlanosAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="context">Parâmetro do método.</param>
-            <param name="codigos">Parâmetro do método.</param>
-        </member>
-        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureNotasAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="context">Parâmetro do método.</param>
-            <param name="ids">Parâmetro do método.</param>
-        </member>
-        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureGpmAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="context">Parâmetro do método.</param>
-            <param name="ids">Parâmetro do método.</param>
-        </member>
-        <member name="M:app_pm_back.Services.ImportGhostHelper.EnsureImobilizadosAsync(app_pm_back.Data.AppDbContext,System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="context">Parâmetro do método.</param>
-            <param name="ids">Parâmetro do método.</param>
-        </member>
-        <member name="T:app_pm_back.Services.ImportMergeHelper">
-            <summary>
-            Utilitarios para mesclar dados importados sem sobrescrever valores existentes.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.ImportMergeHelper.MergeNonEmpty``1(``0,``0,System.String[])">
-            <summary>
-            Realiza a operação de merge em tabelas a serem atualizadas
-            </summary>
-            <param name="target"></param>
-            <param name="source"></param>
-            <param name="ignoreProperties"></param>
-            <typeparam name="T"></typeparam>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.ImobilizadoService">
             <summary>
