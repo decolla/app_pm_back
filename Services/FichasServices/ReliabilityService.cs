@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using app_pm_back.Data;
 using app_pm_back.DTO.Restauracao;
 using app_pm_back.Models.Domain;
@@ -15,86 +16,98 @@ public class ReliabilityService
     private readonly DbSet<OrdemModel> _ordemModels;
     private readonly ILogger<ReliabilityService> _logger;
     private readonly ExternIntegrationService _externIntegrationService;
+    private readonly HttpClient _httpClient;
+    private readonly string _reliabilityBaseUrl;
 
     public ReliabilityService(AppDbContext context, ExternIntegrationService externIntegrationService,
-        ILogger<ReliabilityService> logger)
+        ILogger<ReliabilityService> logger, IConfiguration configuration, HttpClient httpClient)
     {
         _context = context;
         _notaModels = context.PM_Notas;
         _ordemModels = context.PM_Ordens;
         _externIntegrationService = externIntegrationService;
         _logger = logger;
+        _reliabilityBaseUrl = configuration["APIs:APM"] ?? "http://10.3.192.200:60170";
+        _httpClient = httpClient;
     }
 
-    public async Task<object?> DatasReliability(string idLi, string? nomeAlternativo)
+    public async Task<object?> DatasLIReliability(string idLi, string? nomeAlternativo)
     {
         //Monta uma lista com os nomes que queremos procurar
         var nomesBusca = new List<string> { idLi };
-
-        if (!string.IsNullOrWhiteSpace(nomeAlternativo))
+        try
         {
-            nomesBusca.Add(nomeAlternativo);
-        }
 
-        //Busca no banco TODOS os registros que derem match com os nomes da lista
-        var reliabilities = await _context.PM_Reliability
-            .AsNoTracking()
-            .Where(r => nomesBusca.Contains(r.IdLi))
-            .ToListAsync();
+            if (!string.IsNullOrWhiteSpace(nomeAlternativo))
+            {
+                nomesBusca.Add(nomeAlternativo);
+            }
 
-        //Junta todos os IdsNotas encontrados (de 1 ou mais registros) em uma lista única e sem duplicatas
-        var todosIdsNotas = reliabilities
-            .Where(r => r.IdsNotas != null)
-            .SelectMany(r => r.IdsNotas)
-            .Distinct()
-            .ToList();
-
-        //Junta todos os IdsOrdens encontrados
-        var todosIdsOrdens = reliabilities
-            .Where(r => r.IdsOrdens != null)
-            .SelectMany(r => r.IdsOrdens)
-            .Distinct()
-            .ToList();
-
-        // Variáveis para guardar as datas
-        List<DateTime> datasNotas = new List<DateTime>();
-        List<DateTime> datasOrdens = new List<DateTime>();
-
-        //Processa as Notas usando a lista unificada de IDs
-        if (todosIdsNotas.Any())
-        {
-            datasNotas = await _notaModels.AsNoTracking()
-                .Where(n => todosIdsNotas.Contains(n.IdNota) && n.DataNota.HasValue)
-                .Select(n => n.DataNota!.Value)
+            //Busca no banco TODOS os registros que derem match com os nomes da lista
+            var reliabilities = await _context.PM_Reliability
+                .AsNoTracking()
+                .Where(r => nomesBusca.Contains(r.IdLi))
                 .ToListAsync();
+
+            //Junta todos os IdsNotas encontrados (de 1 ou mais registros) em uma lista única e sem duplicatas
+            var todosIdsNotas = reliabilities
+                .Where(r => r.IdsNotas != null)
+                .SelectMany(r => r.IdsNotas)
+                .Distinct()
+                .ToList();
+
+            //Junta todos os IdsOrdens encontrados
+            var todosIdsOrdens = reliabilities
+                .Where(r => r.IdsOrdens != null)
+                .SelectMany(r => r.IdsOrdens)
+                .Distinct()
+                .ToList();
+
+            // Variáveis para guardar as datas
+            List<DateTime> datasNotas = new List<DateTime>();
+            List<DateTime> datasOrdens = new List<DateTime>();
+
+            //Processa as Notas usando a lista unificada de IDs
+            if (todosIdsNotas.Any())
+            {
+                datasNotas = await _notaModels.AsNoTracking()
+                    .Where(n => todosIdsNotas.Contains(n.IdNota) && n.DataNota.HasValue)
+                    .Select(n => n.DataNota!.Value)
+                    .ToListAsync();
+            }
+
+            //Processa as Ordens usando a lista unificada de IDs
+            if (todosIdsOrdens.Any())
+            {
+                datasOrdens = await _ordemModels.AsNoTracking()
+                    .Where(o => todosIdsOrdens.Contains(o.IdOrdem) && o.DataCriacao.HasValue)
+                    .Select(o => o.DataCriacao!.Value)
+                    .ToListAsync();
+            }
+
+            //Junta tudo, remove duplicadas e ordena cronologicamente
+            var todasDatas = datasNotas
+                .Concat(datasOrdens)
+                .Distinct()
+                .OrderBy(d => d)
+                .ToList();
+
+            //Cria uma string mostrando quais nomes realmente foram encontrados (Ex: "LI_123 / ALTERNATIVO_123" ou só "LI_123")
+            var nomesEncontrados = reliabilities.Any()
+                ? string.Join(" / ", reliabilities.Select(r => r.IdLi))
+                : idLi;
+
+            return new
+            {
+                SapName = nomesEncontrados,
+                Datas = todasDatas
+            };
         }
-
-        //Processa as Ordens usando a lista unificada de IDs
-        if (todosIdsOrdens.Any())
+        catch (Exception ex)
         {
-            datasOrdens = await _ordemModels.AsNoTracking()
-                .Where(o => todosIdsOrdens.Contains(o.IdOrdem) && o.DataCriacao.HasValue)
-                .Select(o => o.DataCriacao!.Value)
-                .ToListAsync();
+            _logger.LogError(ex, "Erro inesperado.");
+            throw;
         }
-
-        //Junta tudo, remove duplicadas e ordena cronologicamente
-        var todasDatas = datasNotas
-            .Concat(datasOrdens)
-            .Distinct()
-            .OrderBy(d => d)
-            .ToList();
-
-        //Cria uma string mostrando quais nomes realmente foram encontrados (Ex: "LI_123 / ALTERNATIVO_123" ou só "LI_123")
-        var nomesEncontrados = reliabilities.Any()
-            ? string.Join(" / ", reliabilities.Select(r => r.IdLi))
-            : idLi;
-
-        return new
-        {
-            SapName = nomesEncontrados,
-            Datas = todasDatas
-        };
     }
 
     /// <summary>
@@ -261,6 +274,99 @@ public async Task<(List<string> IdsAfetados, bool HouveMudanca)> FiltraFichas(
     catch (Exception ex)
     {
         _logger.LogError(ex, "Erro ao tentar sincronizar notas e ordens no Reliability.");
+        throw;
+    }
+}
+
+public async Task<object?> DatasReliability(List<string>? idLi)
+{
+    if (idLi == null || !idLi.Any())
+    {
+        return new
+        {
+            SapName = "Nenhum LI informado",
+            Datas = new List<DateTime>()
+        };
+    }
+
+    try
+    {
+        // Corrigido: era nomesBusca (indefinido), deve ser idLi
+        var reliabilities = await _context.PM_Reliability
+            .AsNoTracking()
+            .Where(r => idLi.Contains(r.IdLi))
+            .ToListAsync();
+
+        var todosIdsNotas = reliabilities
+            .Where(r => r.IdsNotas != null)
+            .SelectMany(r => r.IdsNotas)
+            .Distinct()
+            .ToList();
+
+        var todosIdsOrdens = reliabilities
+            .Where(r => r.IdsOrdens != null)
+            .SelectMany(r => r.IdsOrdens)
+            .Distinct()
+            .ToList();
+
+        List<DateTime> datasNotas = new();
+        List<DateTime> datasOrdens = new();
+
+        if (todosIdsNotas.Any())
+        {
+            datasNotas = await _notaModels.AsNoTracking()
+                .Where(n => todosIdsNotas.Contains(n.IdNota) && n.DataNota.HasValue)
+                .Select(n => n.DataNota!.Value)
+                .ToListAsync();
+        }
+
+        if (todosIdsOrdens.Any())
+        {
+            datasOrdens = await _ordemModels.AsNoTracking()
+                .Where(o => todosIdsOrdens.Contains(o.IdOrdem) && o.DataCriacao.HasValue)
+                .Select(o => o.DataCriacao!.Value)
+                .ToListAsync();
+        }
+
+        var todasDatas = datasNotas
+            .Concat(datasOrdens)
+            .Distinct()
+            .OrderBy(d => d)
+            .ToList();
+
+        var sapName = reliabilities.Any()
+            ? string.Join(" / ", reliabilities.Select(r => r.IdLi))
+            : string.Join(" / ", idLi);
+
+        // Monta o payload
+        var payload = new
+        {
+            SapName = sapName,
+            Datas = todasDatas
+        };
+
+        // Envia para a API do Reliability
+        var url = $"{_reliabilityBaseUrl}/ROTA-?????";
+
+        var json = JsonSerializer.Serialize(payload);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.PostAsync(url, content);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro = await response.Content.ReadAsStringAsync();
+            _logger.LogError("Erro na requisição ao Reliability. Status: {Status} | Body: {Body}", 
+                response.StatusCode, erro);
+            return null;
+        }
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<object>(responseBody);
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Erro inesperado em DatasReliability.");
         throw;
     }
 }

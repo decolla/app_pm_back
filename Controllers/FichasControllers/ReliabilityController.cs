@@ -21,7 +21,7 @@ public class ReliabilityController : ControllerBase
     /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
     /// <returns>idLi+ lista de datas</returns>
     [HttpGet("Data")]
-    public async Task<IActionResult> BuscaReliability([FromQuery] string idLi, [FromQuery] string SapId)
+    public async Task<IActionResult> BuscaReliability([FromQuery] string idLi, [FromQuery] string? SapId)
     {
         try
         {
@@ -30,7 +30,7 @@ public class ReliabilityController : ControllerBase
                 return BadRequest(new { message = "Parametro idLi obrigatorio." });
             }
 
-            var obj = await _reliabilityService.DatasReliability(idLi,SapId);
+            var obj = await _reliabilityService.DatasLIReliability(idLi,SapId);
             if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
 
             return Ok(obj);
@@ -66,14 +66,19 @@ public class ReliabilityController : ControllerBase
         [FromQuery] List<MetodoClassificacao> Metodos)
     {
         try
-        {
+        { ;
             // 1. Começamos com a base da consulta (ainda não foi no banco de dados)
-            var (result, houveMudanca) = await _reliabilityService.FiltraFichas(Classificacoes, Metodos);
+            var (listLI, houveMudanca) = await _reliabilityService.FiltraFichas(Classificacoes, Metodos);
 
-            if (houveMudanca)
-            {
-                //função que manda requisição pro reliability
-            }
+            if (!houveMudanca)
+                return Ok(new { mensagem = "Nenhuma alteração encontrada." });
+            
+            var result = await _reliabilityService.DatasReliability(listLI);
+            
+
+            if (result == null)
+                    return StatusCode(502, new { mensagem = "A API de Reliability não retornou uma resposta válida." });
+
             return Ok(result);
         }
         catch (Exception e)
