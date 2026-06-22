@@ -191,7 +191,7 @@ else
 }
 
 builder.Services.AddAutoMapper(typeof(Program));
-
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 var schema = Environment.GetEnvironmentVariable("SCHEMA") ?? "(not set)";
 app.Logger.LogInformation("SCHEMA={Schema}", schema);
