@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using app_pm_back.Data;
 using app_pm_back.DTO.Restauracao;
@@ -351,7 +352,14 @@ public async Task<object?> DatasReliability(List<string>? idLi)
         var json = JsonSerializer.Serialize(payload);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await _httpClient.PostAsync(url, content);
+        var request = new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = content
+        };
+
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
+
+        var response = await _httpClient.SendAsync(request);
 
         if (!response.IsSuccessStatusCode)
         {
