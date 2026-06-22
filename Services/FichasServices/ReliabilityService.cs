@@ -356,7 +356,7 @@ public async Task<object?> DatasReliability(List<string>? idLi)
         var json = JsonSerializer.Serialize(payload, jsonOptions);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var request = new HttpRequestMessage(HttpMethod.Post, url)
+        var request = new HttpRequestMessage(HttpMethod.Put, url)
         {
             Content = content
         };
