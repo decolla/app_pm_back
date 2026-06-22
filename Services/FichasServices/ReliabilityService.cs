@@ -346,7 +346,7 @@ public async Task<object?> DatasReliability(List<string>? idLi)
         };
 
         // Envia para a API do Reliability
-        var url = $"{_reliabilityBaseUrl}/ROTA-?????";
+        var url = $"{_reliabilityBaseUrl}/Reliability/Parameters/Calculate/Multiple";
 
         var json = JsonSerializer.Serialize(payload);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
