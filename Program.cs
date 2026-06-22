@@ -156,6 +156,19 @@ builder.Services.AddHttpClient<ExternIntegrationService>(client =>
     }
 );
 
+builder.Services.AddHttpClient<ReliabilityService>(client =>
+{
+    var urlBase = builder.Configuration.GetValue<string>("APIs:Reliability");
+
+    if (string.IsNullOrEmpty(urlBase))
+        throw new InvalidOperationException(
+            "A URL do Reliability não está configurada. Verifique as configurações de 'APIs:Reliability'.");
+
+    client.BaseAddress = new Uri(urlBase);
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
 var modelPath = Path.Combine(AppContext.BaseDirectory, "Data", "catboost_model.cbm");
 var metaPath = Path.Combine(AppContext.BaseDirectory, "Data", "model_meta.json");
 
