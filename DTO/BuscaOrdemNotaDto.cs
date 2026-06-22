@@ -49,5 +49,5 @@ public class BuscaOrdemNotaDto
 
     public Classificacao Classificacao { get; set; }
 
-    public Status? StatusOrdem { get; set; }
+    public StatusFichas? StatusOrdem { get; set; }
 }
