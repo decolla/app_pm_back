@@ -301,13 +301,13 @@ public class SpreadsheetService
                             {
                                 valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
                             }
-                            else if (tipo == typeof(Status) &&
+                            else if (tipo == typeof(StatusFichas) &&
                                      string.Equals(property.Name, "StatusNota", StringComparison.OrdinalIgnoreCase)
                                     )
                             {
                                 valorConvertido = TryTranslateStatusNota(valor);
                             }
-                            else if (tipo == typeof(Status) &&
+                            else if (tipo == typeof(StatusFichas) &&
                                      string.Equals(property.Name, "StatusOrdem", StringComparison.OrdinalIgnoreCase))
                             {
                                 valorConvertido = TryTranslateStatusOrdem(valor);
@@ -407,28 +407,28 @@ public class SpreadsheetService
         return null;
     }
 
-    public Status TryTranslateStatusNota(string rawValue)
+    public StatusFichas TryTranslateStatusNota(string rawValue)
     {
         var normalized = NormalizeText(rawValue);
         if (string.IsNullOrEmpty(normalized))
-            return Status.EmAndamento;
+            return StatusFichas.EmAndamento;
 
         if (normalized.Contains("concluida") || normalized.Contains("msen"))
-            return Status.Concluida;
+            return StatusFichas.Concluida;
         if (normalized.Contains("aberta") || normalized.Contains("meab") || normalized.Contains("mspn") ||
             normalized.Contains("mrel"))
-            return Status.Aberta;
+            return StatusFichas.Aberta;
         if (normalized.Contains("reprovada") || normalized.Contains("mbar"))
-            return Status.Reprovada;
+            return StatusFichas.Reprovada;
 
-        return Status.EmAndamento;
+        return StatusFichas.EmAndamento;
     }
 
-    public Status TryTranslateStatusOrdem(string rawValue)
+    public StatusFichas TryTranslateStatusOrdem(string rawValue)
     {
         var normalized = NormalizeText(rawValue);
         if (string.IsNullOrEmpty(normalized))
-            return Status.Concluida;
+            return StatusFichas.Concluida;
 
         if (normalized.Contains("concluida")
             || normalized.Contains("exco")
@@ -438,7 +438,7 @@ public class SpreadsheetService
             || normalized.Contains("ence")
             || normalized.Contains("mrel")
            )
-            return Status.Concluida;
+            return StatusFichas.Concluida;
         if (normalized.Contains("aberta")
             || normalized.Contains("impd")
             || normalized.Contains("ppro")
@@ -447,15 +447,15 @@ public class SpreadsheetService
             || normalized.Contains("abra")
             || normalized.Contains("lib")
            )
-            return Status.Aberta;
+            return StatusFichas.Aberta;
         if (normalized.Contains("reprovada")
             || normalized.Contains("scan")
             || normalized.Contains("excl")
             || normalized.Contains("pmvl")
            )
-            return Status.Reprovada;
+            return StatusFichas.Reprovada;
 
-        return Status.EmAndamento;
+        return StatusFichas.EmAndamento;
     }
 
     private static Classificacao TryTranslateClassificacao(string rawValue)
@@ -501,7 +501,7 @@ public class SpreadsheetService
             NumeroNota = dto.NumeroNota,
             Classificacao = dto.Classificacao,
             MetodoClassificacao = dto.MetodoClassificacao,
-            StatusNota = Status.EmAndamento,
+            StatusNota = StatusFichas.EmAndamento,
             DataNota = dto.DataNota,
             Prioridade = prioridade,
             FimDesejado = dto.FimDesejado,
@@ -534,7 +534,7 @@ public class SpreadsheetService
             MetodoClassificacao = dto.MetodoClassificacao,
             ClassificadoPor = dto.ClassificadoPor,
             DataClassificacao = dto.DataClassificacao,
-            StatusOrdem = dto.StatusOrdem ?? Status.EmAndamento,
+            StatusOrdem = dto.StatusOrdem ?? StatusFichas.EmAndamento,
             Criticidade = dto.Prioridade?.ToString() ?? dto.Criticidade,
             DataCriacao = dto.DataCriacao ?? DateTime.UtcNow,
             CriadaPorUsuario = dto.CriadaPorUsuario,

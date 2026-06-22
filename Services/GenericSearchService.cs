@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -129,7 +130,7 @@ public async Task<object> BuscarNotaOrdemAsync(
     // Safe check for properties of dynamic/anonymous object
     var buscaType = (Type)busca.GetType();
 
-    Status? statusNota = buscaType.GetProperty("StatusNota")?.GetValue(busca);
+    StatusFichas? statusNota = buscaType.GetProperty("StatusNota")?.GetValue(busca);
     if (statusNota.HasValue)
     {
         notasQuery = notasQuery.Where(n => n.StatusNota == statusNota.Value);
@@ -163,22 +164,32 @@ public async Task<object> BuscarNotaOrdemAsync(
         ordensQuery = ordensQuery.Where(o => o.IdOrdem <= ordemIdFim.Value);
     }
 
-    var localInstalacaoInicioVal = buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca);
-    ComponentType? localInstalacaoInicio = localInstalacaoInicioVal != null ? (ComponentType)Convert.ToInt32(localInstalacaoInicioVal) : null;
-    if (localInstalacaoInicio.HasValue)
+    string? localInstalacaoInicio = buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca);
+    if (localInstalacaoInicio.Any())
     {
-        notasQuery = notasQuery.Where(n => n.IdAtivo >= localInstalacaoInicio.Value);
-        ordensQuery = ordensQuery.Where(o => o.IdAtivo >= localInstalacaoInicio.Value);
+        notasQuery = notasQuery.Where(n => string.Compare(n.IdLi,localInstalacaoInicio) <= 0);
+        ordensQuery = ordensQuery.Where(o => string.Compare(o.IdLi,localInstalacaoInicio) <= 0);
     }
 
-    var localInstalacaoFimVal = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca);
-    ComponentType? localInstalacaoFim = localInstalacaoFimVal != null ? (ComponentType)Convert.ToInt32(localInstalacaoFimVal) : null;
-    if (localInstalacaoFim.HasValue)
+    string? localInstalacaoFim = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca);
+    if (localInstalacaoFim.Any())
     {
-        notasQuery = notasQuery.Where(n => n.IdAtivo <= localInstalacaoFim.Value);
-        ordensQuery = ordensQuery.Where(o => o.IdAtivo <= localInstalacaoFim.Value);
+        notasQuery = notasQuery.Where(n => string.Compare(n.IdLi,localInstalacaoInicio) >= 0);
+        ordensQuery = ordensQuery.Where(o => string.Compare(o.IdLi,localInstalacaoInicio) >= 0);
     }
+    
+    var listaAtivosRaw = buscaType.GetProperty("ListaAtivos")?.GetValue(busca);
+    if (listaAtivosRaw != null)
+    {
+        // converte par uma lista de ComponentType?
+        var listaAtivosConvertida = ((IEnumerable)listaAtivosRaw)
+            .Cast<ComponentType?>()
+            .ToList();
 
+        notasQuery = notasQuery.Where(n => listaAtivosConvertida.Contains(n.IdAtivo));
+        ordensQuery = ordensQuery.Where(o => listaAtivosConvertida.Contains(o.IdAtivo));
+    }
+    
     DateTime? notaDataInicio = buscaType.GetProperty("NotaDataInicio")?.GetValue(busca) as DateTime?;
     if (notaDataInicio.HasValue)
     {
@@ -216,8 +227,16 @@ public async Task<object> BuscarNotaOrdemAsync(
     {
         notasQuery = notasQuery.Where(n => n.Prioridade <= prioridadeFim.Value);
     }
+    
+    var classificacaoVal = buscaType.GetProperty("Classificacao")?.GetValue(busca);
+    Classificacao? classificacao = classificacaoVal as Classificacao?;
+    if (classificacao.HasValue)
+    {
+        notasQuery = notasQuery.Where(n => n.Classificacao == classificacao.Value);
+        ordensQuery = ordensQuery.Where(o => o.Classificacao == classificacao.Value);
+    }
 
-    Status? statusOrdem = buscaType.GetProperty("StatusOrdem")?.GetValue(busca); 
+    StatusFichas? statusOrdem = buscaType.GetProperty("StatusOrdem")?.GetValue(busca); 
     if (statusOrdem.HasValue)
     {
         ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem.Value);

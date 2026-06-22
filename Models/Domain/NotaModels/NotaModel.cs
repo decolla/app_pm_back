@@ -121,14 +121,14 @@ public class NotaModel : IClassifiable
 
     #endregion
 
-    #region Status e Disponibilidade
+    #region StatusFichas e Disponibilidade
 
     /// <summary>
-    /// Status atual da nota no fluxo de trabalho.
+    /// StatusFichas atual da nota no fluxo de trabalho.
     /// Permite rastreamento do ciclo de vida da ocorrência.
     /// </summary>
     /// <example>"Pendente", "Em Andamento", "Aguardando Peças", "Concluída", "Cancelada"</example>
-    public Status? StatusNota { get; set; }
+    public StatusFichas? StatusNota { get; set; }
 
     /// <summary>
     /// Indicador de disponibilidade atual do equipamento afetado.
@@ -337,7 +337,7 @@ public class NotaModel : IClassifiable
     /// Permite rastreamento da execução e desdobramentos da ocorrência.
     /// </summary>
     /// <example>
-    /// Ordens.Add(new OrdemModel { NumeroOrdem = "OS-2024-001", Status = "Aberta" });
+    /// Ordens.Add(new OrdemModel { NumeroOrdem = "OS-2024-001", StatusFichas = "Aberta" });
     /// </example>
     public virtual ICollection<OrdemModel> Ordens { get; set; } = new List<OrdemModel>();
 

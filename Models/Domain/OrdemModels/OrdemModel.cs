@@ -43,14 +43,14 @@ public class OrdemModel : IClassifiable
 
     #endregion
 
-    #region Status e Classificação
+    #region StatusFichas e Classificação
 
     /// <summary>
-    /// Status atual da ordem de trabalho no fluxo de execução.
+    /// StatusFichas atual da ordem de trabalho no fluxo de execução.
     /// Indica o estado operacional da ordem para controle de workflow.
     /// </summary>
     /// <example>Aberta, Em Andamento, Aguardando Peças, Concluída, Cancelada</example>
-    public Status? StatusOrdem { get; set; }
+    public StatusFichas? StatusOrdem { get; set; }
 
     /// <summary>
     /// Nível de criticidade da ordem para priorização de execução.

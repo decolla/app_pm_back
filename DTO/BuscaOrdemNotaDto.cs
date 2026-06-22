@@ -9,10 +9,10 @@ namespace app_pm_back.Models;
 public class BuscaOrdemNotaDto
 {
     /// <summary>
-    /// Status da nota
+    /// StatusFichas da nota
     /// </summary>
     /// <example>Aberta</example>
-    public Status? StatusNota { get; set; }
+    public StatusFichas? StatusNota { get; set; }
 
     /// <summary>
     /// Id de início da nota
@@ -30,8 +30,7 @@ public class BuscaOrdemNotaDto
     public int? LocalInstalacaoInicio { get; set; }
     public int? LocalInstalacaoFim { get; set; }
 
-    public string? AtivoInicio { get; set; }
-    public string? AtivoFim { get; set; }
+    public List<ComponentType>? ListaAtivos { get; set; }
 
     public DateTime? NotaDataInicio { get; set; }
     public DateTime? NotaDataFim { get; set; }
@@ -48,8 +47,7 @@ public class BuscaOrdemNotaDto
     public string? CriadoPorInicio { get; set; }
     public string? CriadoPorFim { get; set; }
 
-    public string? TipoNota { get; set; }
-    public string? TipoOrdem { get; set; }
+    public Classificacao Classificacao { get; set; }
 
     public Status? StatusOrdem { get; set; }
 }

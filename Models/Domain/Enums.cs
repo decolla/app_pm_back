@@ -173,7 +173,7 @@ public enum MetodoClassificacao
     CATBOOST = 2,
     HUMANA = 3,
 }
-public enum Status
+public enum StatusFichas
 {
     Reprovada = 0,
     Aberta = 1,

@@ -356,7 +356,7 @@ public async Task<object?> DatasReliability(List<string>? idLi)
         if (!response.IsSuccessStatusCode)
         {
             var erro = await response.Content.ReadAsStringAsync();
-            _logger.LogError("Erro na requisição ao Reliability. Status: {Status} | Body: {Body}", 
+            _logger.LogError("Erro na requisição ao Reliability. StatusFichas: {StatusFichas} | Body: {Body}", 
                 response.StatusCode, erro);
             return null;
         }

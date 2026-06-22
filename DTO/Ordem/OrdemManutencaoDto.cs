@@ -26,7 +26,7 @@ public class OrdemManutencaoDto
 
     [SheetColumn("Data classificação")] public DateTime? DataClassificacao { get; set; }
 
-    [SheetColumn("status_ordem")] public Status? StatusOrdem { get; set; }
+    [SheetColumn("status_ordem")] public StatusFichas? StatusOrdem { get; set; }
 
     public string? Criticidade { get; set; }
 

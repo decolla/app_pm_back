@@ -150,7 +150,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("StatusFichas")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 

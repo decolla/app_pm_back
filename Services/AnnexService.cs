@@ -21,7 +21,7 @@ public class AnnexService
     /// <summary>
     /// Executa a ação correspondente.
     /// </summary>
-    /// <param name="file">Parâmetro do método.</param>
+    /// <param name="file">Arquivo a ser armazen.</param>
     /// <param name="tipoReferencia">Parâmetro do método.</param>
     /// <param name="categoria">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
@@ -64,14 +64,12 @@ public class AnnexService
 
     public virtual async Task<(byte[] Dados, string MimeType, string Nome)?> DownloadAnexo(long id)
     {
-        // Try searching in AnexosNota
         var anexoNota = await _context.PM_AnexosNota.FindAsync(id);
         if (anexoNota != null && anexoNota.Dados != null)
         {
             return (anexoNota.Dados, anexoNota.TipoArquivo, anexoNota.Nome);
         }
 
-        // Try searching in AnexosOrdem
         var anexoOrdem = await _context.PM_AnexosOrdem.FindAsync(id);
         if (anexoOrdem != null && anexoOrdem.Dados != null)
         {

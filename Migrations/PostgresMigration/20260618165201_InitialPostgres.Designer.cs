@@ -155,7 +155,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("StatusFichas")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 

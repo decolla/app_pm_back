@@ -16,8 +16,8 @@ public class AlmoxarifadoDto
 
     [SheetColumn("Organizacao")] public required string Organizacao { get; set; }
 
-    // Status e descricao (opcionais)
-    [SheetColumn("Status")] public string? Status { get; set; }
+    // StatusFichas e descricao (opcionais)
+    [SheetColumn("StatusFichas")] public string? Status { get; set; }
 
     [SheetColumn("DescricaoBreve")] public string? Descricao { get; set; }
 
