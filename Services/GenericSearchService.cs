@@ -165,14 +165,14 @@ public async Task<object> BuscarNotaOrdemAsync(
     }
 
     string? localInstalacaoInicio = buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca);
-    if (localInstalacaoInicio.Any())
+    if (!string.IsNullOrEmpty(localInstalacaoInicio))
     {
         notasQuery = notasQuery.Where(n => string.Compare(n.IdLi,localInstalacaoInicio) <= 0);
         ordensQuery = ordensQuery.Where(o => string.Compare(o.IdLi,localInstalacaoInicio) <= 0);
     }
 
     string? localInstalacaoFim = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca);
-    if (localInstalacaoFim.Any())
+    if (!string.IsNullOrEmpty(localInstalacaoInicio))
     {
         notasQuery = notasQuery.Where(n => string.Compare(n.IdLi,localInstalacaoInicio) >= 0);
         ordensQuery = ordensQuery.Where(o => string.Compare(o.IdLi,localInstalacaoInicio) >= 0);
