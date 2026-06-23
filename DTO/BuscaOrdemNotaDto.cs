@@ -27,8 +27,8 @@ public class BuscaOrdemNotaDto
     public long? OrdemIdInicio { get; set; }
     public long? OrdemIdFim { get; set; }
 
-    public int? LocalInstalacaoInicio { get; set; }
-    public int? LocalInstalacaoFim { get; set; }
+    public string? LocalInstalacaoInicio { get; set; }
+    public string? LocalInstalacaoFim { get; set; }
 
     public List<ComponentType>? ListaAtivos { get; set; }
 
