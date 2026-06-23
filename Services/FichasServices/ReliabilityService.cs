@@ -344,7 +344,7 @@ public async Task<object?> DatasReliability(List<string>? idLi)
         {
             new
             {
-                sapId = sapName,
+                sapName = sapName,
                 datas = todasDatas
             }
         };
