@@ -44,8 +44,7 @@ public class BuscaOrdemNotaDto
     public Prioridade? PrioridadeInicio { get; set; }
     public Prioridade? PrioridadeFim { get; set; }
 
-    public string? CriadoPorInicio { get; set; }
-    public string? CriadoPorFim { get; set; }
+    public string? CriadoPor { get; set; }
 
     public Classificacao? Classificacao { get; set; }
 
