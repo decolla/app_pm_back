@@ -289,98 +289,96 @@ public async Task<object?> DatasReliability(List<string>? idLi)
             Datas = new List<DateTime>()
         };
     }
-
-    try
-    {
-        // Corrigido: era nomesBusca (indefinido), deve ser idLi
-        var reliabilities = await _context.PM_Reliability
-            .AsNoTracking()
-            .Where(r => idLi.Contains(r.IdLi))
-            .ToListAsync();
-
-        var todosIdsNotas = reliabilities
-            .Where(r => r.IdsNotas != null)
-            .SelectMany(r => r.IdsNotas)
-            .Distinct()
-            .ToList();
-
-        var todosIdsOrdens = reliabilities
-            .Where(r => r.IdsOrdens != null)
-            .SelectMany(r => r.IdsOrdens)
-            .Distinct()
-            .ToList();
-
-        List<DateTime> datasNotas = new();
-        List<DateTime> datasOrdens = new();
-
-        if (todosIdsNotas.Any())
+    
+        try
         {
-            datasNotas = await _notaModels.AsNoTracking()
-                .Where(n => todosIdsNotas.Contains(n.IdNota) && n.DataNota.HasValue)
-                .Select(n => n.DataNota!.Value)
+            //Busca IdLi na tabela Reliability
+            var reliabilities = await _context.PM_Reliability
+                .AsNoTracking()
+                .Where(r => idLi.Contains(r.IdLi))
                 .ToListAsync();
-        }
 
-        if (todosIdsOrdens.Any())
-        {
-            datasOrdens = await _ordemModels.AsNoTracking()
-                .Where(o => todosIdsOrdens.Contains(o.IdOrdem) && o.DataCriacao.HasValue)
-                .Select(o => o.DataCriacao!.Value)
-                .ToListAsync();
-        }
+            //Extrai todos os IDs para consultar o banco de forma otimizada
+            var todosIdsNotas = reliabilities.Where(r => r.IdsNotas != null).SelectMany(r => r.IdsNotas).Distinct()
+                .ToList();
+            var todosIdsOrdens = reliabilities.Where(r => r.IdsOrdens != null).SelectMany(r => r.IdsOrdens).Distinct()
+                .ToList();
 
-        var todasDatas = datasNotas
-            .Concat(datasOrdens)
-            .Distinct()
-            .OrderBy(d => d)
-            .ToList();
+            //Consultas ao banco trazendo os IDs junto com as datas
+            var notasBd = todosIdsNotas.Any()
+                ? await _notaModels.AsNoTracking()
+                    .Where(n => todosIdsNotas.Contains(n.IdNota) && n.DataNota.HasValue)
+                    .Select(n => new { n.IdNota, Data = n.DataNota!.Value })
+                    .ToListAsync()
+                : new();
 
-        var sapName = reliabilities.Any()
-            ? string.Join(" / ", reliabilities.Select(r => r.IdLi))
-            : string.Join(" / ", idLi);
+            var ordensBd = todosIdsOrdens.Any()
+                ? await _ordemModels.AsNoTracking()
+                    .Where(o => todosIdsOrdens.Contains(o.IdOrdem) && o.DataCriacao.HasValue)
+                    .Select(o => new { o.IdOrdem, Data = o.DataCriacao!.Value })
+                    .ToListAsync()
+                : new();
 
-        // Monta o payload
-        var payload = new[]
-        {
-            new
+            //Monta o payload na MEMÓRIA
+            var payload = reliabilities.Select(rel =>
             {
-                sapName = sapName,
-                datas = todasDatas
+                // Filtra as datas referentes aos IDs das Notas e Ordens deste sapName específico
+                var datasNotas = rel.IdsNotas != null
+                    ? notasBd.Where(n => rel.IdsNotas.Contains(n.IdNota)).Select(n => n.Data)
+                    : Enumerable.Empty<DateTime>();
+
+                var datasOrdens = rel.IdsOrdens != null
+                    ? ordensBd.Where(o => rel.IdsOrdens.Contains(o.IdOrdem)).Select(o => o.Data)
+                    : Enumerable.Empty<DateTime>();
+
+                // Junta, tira repetição e ordena
+                var todasDatas = datasNotas
+                    .Concat(datasOrdens)
+                    .Distinct()
+                    .OrderBy(d => d)
+                    .ToList();
+
+                // Retorna o objeto do sapName
+                return new
+                {
+                    sapName = rel.IdLi,
+                    datas = todasDatas
+                };
+            }).ToList();
+
+            //Envia para a API do Reliability
+            var url = $"{_reliabilityBaseUrl}/Reliability/Parameters/Calculate/Multiple";
+
+            var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+            var json = JsonSerializer.Serialize(payload, jsonOptions);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            _logger.LogInformation("Payload enviado ao Reliability com {Count} sapNames", payload.Count);
+
+            var request = new HttpRequestMessage(HttpMethod.Put, url)
+            {
+                Content = content
+            };
+
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
+
+            var response = await _httpClient.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var erro = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Erro na requisição ao Reliability. StatusFichas: {StatusFichas} | Body: {Body}",
+                    response.StatusCode, erro);
+                return null;
             }
-        };
 
-        // Envia para a API do Reliability
-        var url = $"{_reliabilityBaseUrl}/Reliability/Parameters/Calculate/Multiple";
-
-        var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-        var json = JsonSerializer.Serialize(payload, jsonOptions);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        _logger.LogInformation("Payload enviado ao Reliability: {Json}", json);
-
-        var request = new HttpRequestMessage(HttpMethod.Put, url)
-        {
-            Content = content
-        };
-
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
-
-        var response = await _httpClient.SendAsync(request);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            var erro = await response.Content.ReadAsStringAsync();
-            _logger.LogError("Erro na requisição ao Reliability. StatusFichas: {StatusFichas} | Body: {Body}", 
-                response.StatusCode, erro);
-            return null;
+            var responseBody = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<object>(responseBody);
         }
-
-        var responseBody = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<object>(responseBody);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro inesperado em DatasReliability.");
+            throw;
+        }
     }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Erro inesperado em DatasReliability.");
-        throw;
-    }
-}
 }
