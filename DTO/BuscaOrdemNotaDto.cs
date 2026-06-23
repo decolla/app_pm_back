@@ -47,7 +47,7 @@ public class BuscaOrdemNotaDto
     public string? CriadoPorInicio { get; set; }
     public string? CriadoPorFim { get; set; }
 
-    public Classificacao Classificacao { get; set; }
+    public Classificacao? Classificacao { get; set; }
 
     public StatusFichas? StatusOrdem { get; set; }
 }
