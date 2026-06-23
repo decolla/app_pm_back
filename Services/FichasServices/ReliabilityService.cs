@@ -353,7 +353,7 @@ public async Task<object?> DatasReliability(List<string>? idLi)
             var json = JsonSerializer.Serialize(payload, jsonOptions);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            _logger.LogInformation("Payload enviado ao Reliability com {Count} sapNames", payload.Count);
+            _logger.LogInformation("Payload completo enviado ao Reliability: {Json}", json);
 
             var request = new HttpRequestMessage(HttpMethod.Put, url)
             {
