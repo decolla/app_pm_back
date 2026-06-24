@@ -198,15 +198,7 @@ public class PostgresDbContext : AppDbContext
     {
         // aplica as configurações globais primeiro
         base.OnModelCreating(modelBuilder);
-
-        //Lê a variável de ambiente
-        var schema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
         
-        //Se for nula ou vazia, assume "public"
-        var targetSchema = string.IsNullOrWhiteSpace(schema) ? "public" : schema;
-        
-        //Define o schema padrão para todas as tabelas do EF neste contexto
-        modelBuilder.HasDefaultSchema(targetSchema);
 
         
     }

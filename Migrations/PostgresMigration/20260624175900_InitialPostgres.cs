@@ -14,12 +14,8 @@ namespace app_pm_back.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.EnsureSchema(
-                name: "public");
-
             migrationBuilder.CreateTable(
                 name: "Estrategias",
-                schema: "public",
                 columns: table => new
                 {
                     IdEstrategia = table.Column<long>(type: "bigint", nullable: false)
@@ -39,7 +35,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_Almoxarifados",
-                schema: "public",
                 columns: table => new
                 {
                     IdAlmoxarifado = table.Column<long>(type: "bigint", nullable: false)
@@ -57,7 +52,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_ClassificationRules",
-                schema: "public",
                 columns: table => new
                 {
                     IdRegra = table.Column<long>(type: "bigint", nullable: false)
@@ -74,7 +68,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_Cpms",
-                schema: "public",
                 columns: table => new
                 {
                     IdCPM = table.Column<long>(type: "bigint", nullable: false)
@@ -91,7 +84,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_Imobilizados",
-                schema: "public",
                 columns: table => new
                 {
                     IdImobilizado = table.Column<long>(type: "bigint", nullable: false)
@@ -117,7 +109,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_Reliability",
-                schema: "public",
                 columns: table => new
                 {
                     IdLi = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
@@ -131,7 +122,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_TiposCep",
-                schema: "public",
                 columns: table => new
                 {
                     IdTipoCep = table.Column<long>(type: "bigint", nullable: false)
@@ -149,7 +139,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_TiposManutencao",
-                schema: "public",
                 columns: table => new
                 {
                     IdTipoManutencao = table.Column<long>(type: "bigint", nullable: false)
@@ -167,7 +156,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_Usuarios",
-                schema: "public",
                 columns: table => new
                 {
                     IdUsuario = table.Column<long>(type: "bigint", nullable: false)
@@ -184,7 +172,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_Planos",
-                schema: "public",
                 columns: table => new
                 {
                     IdPlano = table.Column<long>(type: "bigint", nullable: false)
@@ -205,14 +192,12 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_Planos_Estrategias_IdEstrategia",
                         column: x => x.IdEstrategia,
-                        principalSchema: "public",
                         principalTable: "Estrategias",
                         principalColumn: "IdEstrategia");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_Ferramentas",
-                schema: "public",
                 columns: table => new
                 {
                     IdFerramenta = table.Column<long>(type: "bigint", nullable: false)
@@ -244,7 +229,6 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_Ferramentas_PM_Almoxarifados_IdAlmoxarifado",
                         column: x => x.IdAlmoxarifado,
-                        principalSchema: "public",
                         principalTable: "PM_Almoxarifados",
                         principalColumn: "IdAlmoxarifado",
                         onDelete: ReferentialAction.Cascade);
@@ -252,7 +236,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_Gpms",
-                schema: "public",
                 columns: table => new
                 {
                     IdGPM = table.Column<long>(type: "bigint", nullable: false)
@@ -267,14 +250,12 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_Gpms_PM_Cpms_IdCPM",
                         column: x => x.IdCPM,
-                        principalSchema: "public",
                         principalTable: "PM_Cpms",
                         principalColumn: "IdCPM");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_TiposEstrategia",
-                schema: "public",
                 columns: table => new
                 {
                     IdTipoEstrategia = table.Column<long>(type: "bigint", nullable: false)
@@ -294,26 +275,22 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_TiposEstrategia_Estrategias_IdEstrategia",
                         column: x => x.IdEstrategia,
-                        principalSchema: "public",
                         principalTable: "Estrategias",
                         principalColumn: "IdEstrategia");
                     table.ForeignKey(
                         name: "FK_PM_TiposEstrategia_PM_TiposCep_IdTipoCep",
                         column: x => x.IdTipoCep,
-                        principalSchema: "public",
                         principalTable: "PM_TiposCep",
                         principalColumn: "IdTipoCep");
                     table.ForeignKey(
                         name: "FK_PM_TiposEstrategia_PM_TiposManutencao_IdTipoManutencao",
                         column: x => x.IdTipoManutencao,
-                        principalSchema: "public",
                         principalTable: "PM_TiposManutencao",
                         principalColumn: "IdTipoManutencao");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_AlmoxarifadoUsuario",
-                schema: "public",
                 columns: table => new
                 {
                     IdAlmoxarifado = table.Column<long>(type: "bigint", nullable: false),
@@ -325,14 +302,12 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_AlmoxarifadoUsuario_PM_Almoxarifados_IdAlmoxarifado",
                         column: x => x.IdAlmoxarifado,
-                        principalSchema: "public",
                         principalTable: "PM_Almoxarifados",
                         principalColumn: "IdAlmoxarifado",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_AlmoxarifadoUsuario_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
-                        principalSchema: "public",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
@@ -340,7 +315,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_Notas",
-                schema: "public",
                 columns: table => new
                 {
                     IdNota = table.Column<long>(type: "bigint", nullable: false),
@@ -380,20 +354,17 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_Notas_PM_Planos_IdPlano",
                         column: x => x.IdPlano,
-                        principalSchema: "public",
                         principalTable: "PM_Planos",
                         principalColumn: "IdPlano");
                     table.ForeignKey(
                         name: "FK_PM_Notas_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
-                        principalSchema: "public",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_Ctms",
-                schema: "public",
                 columns: table => new
                 {
                     IdCTM = table.Column<long>(type: "bigint", nullable: false),
@@ -408,14 +379,12 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_Ctms_PM_Cpms_IdCPM",
                         column: x => x.IdCPM,
-                        principalSchema: "public",
                         principalTable: "PM_Cpms",
                         principalColumn: "IdCPM",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_Ctms_PM_Gpms_IdCTM",
                         column: x => x.IdCTM,
-                        principalSchema: "public",
                         principalTable: "PM_Gpms",
                         principalColumn: "IdGPM",
                         onDelete: ReferentialAction.Cascade);
@@ -423,7 +392,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_GpmLi",
-                schema: "public",
                 columns: table => new
                 {
                     IdGPM = table.Column<long>(type: "bigint", nullable: false),
@@ -435,14 +403,12 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_GpmLi_PM_Gpms_IdGPM",
                         column: x => x.IdGPM,
-                        principalSchema: "public",
                         principalTable: "PM_Gpms",
                         principalColumn: "IdGPM",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_GpmLi_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
-                        principalSchema: "public",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
@@ -450,7 +416,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_GpmUsuario",
-                schema: "public",
                 columns: table => new
                 {
                     IdGPM = table.Column<long>(type: "bigint", nullable: false),
@@ -462,14 +427,12 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_GpmUsuario_PM_Gpms_IdGPM",
                         column: x => x.IdGPM,
-                        principalSchema: "public",
                         principalTable: "PM_Gpms",
                         principalColumn: "IdGPM",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_GpmUsuario_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
-                        principalSchema: "public",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
@@ -477,7 +440,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_AnexosNota",
-                schema: "public",
                 columns: table => new
                 {
                     IdAnexoNota = table.Column<long>(type: "bigint", nullable: false)
@@ -493,7 +455,6 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_AnexosNota_PM_Notas_IdNota",
                         column: x => x.IdNota,
-                        principalSchema: "public",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
@@ -501,7 +462,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_ItensNota",
-                schema: "public",
                 columns: table => new
                 {
                     IdItemNota = table.Column<long>(type: "bigint", nullable: false)
@@ -517,7 +477,6 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_ItensNota_PM_Notas_IdNota",
                         column: x => x.IdNota,
-                        principalSchema: "public",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
@@ -525,7 +484,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_Ordens",
-                schema: "public",
                 columns: table => new
                 {
                     IdOrdem = table.Column<long>(type: "bigint", nullable: false),
@@ -560,20 +518,17 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_Ordens_PM_Notas_IdNota",
                         column: x => x.IdNota,
-                        principalSchema: "public",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota");
                     table.ForeignKey(
                         name: "FK_PM_Ordens_PM_Planos_IdPlano",
                         column: x => x.IdPlano,
-                        principalSchema: "public",
                         principalTable: "PM_Planos",
                         principalColumn: "IdPlano");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_VariaveisNota",
-                schema: "public",
                 columns: table => new
                 {
                     IdVariavel = table.Column<long>(type: "bigint", nullable: false)
@@ -590,14 +545,12 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_VariaveisNota_PM_Notas_IdNota",
                         column: x => x.IdNota,
-                        principalSchema: "public",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_CtmUsuario",
-                schema: "public",
                 columns: table => new
                 {
                     IdCTM = table.Column<long>(type: "bigint", nullable: false),
@@ -609,14 +562,12 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_CtmUsuario_PM_Ctms_IdCTM",
                         column: x => x.IdCTM,
-                        principalSchema: "public",
                         principalTable: "PM_Ctms",
                         principalColumn: "IdCTM",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_CtmUsuario_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
-                        principalSchema: "public",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
@@ -624,7 +575,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "DadosRenovacao",
-                schema: "public",
                 columns: table => new
                 {
                     IdDados = table.Column<long>(type: "bigint", nullable: false)
@@ -645,26 +595,22 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_DadosRenovacao_PM_Notas_IdNota",
                         column: x => x.IdNota,
-                        principalSchema: "public",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota");
                     table.ForeignKey(
                         name: "FK_DadosRenovacao_PM_Ordens_IdOrdem",
                         column: x => x.IdOrdem,
-                        principalSchema: "public",
                         principalTable: "PM_Ordens",
                         principalColumn: "IdOrdem");
                     table.ForeignKey(
                         name: "FK_DadosRenovacao_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
-                        principalSchema: "public",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_AnexosOrdem",
-                schema: "public",
                 columns: table => new
                 {
                     IdAnexoOrdem = table.Column<long>(type: "bigint", nullable: false)
@@ -681,7 +627,6 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_AnexosOrdem_PM_Ordens_IdOrdem",
                         column: x => x.IdOrdem,
-                        principalSchema: "public",
                         principalTable: "PM_Ordens",
                         principalColumn: "IdOrdem",
                         onDelete: ReferentialAction.Cascade);
@@ -689,7 +634,6 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateTable(
                 name: "PM_Operacoes",
-                schema: "public",
                 columns: table => new
                 {
                     IdOperacao = table.Column<long>(type: "bigint", nullable: false)
@@ -710,26 +654,22 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_Operacoes_PM_Ctms_IdCTM",
                         column: x => x.IdCTM,
-                        principalSchema: "public",
                         principalTable: "PM_Ctms",
                         principalColumn: "IdCTM");
                     table.ForeignKey(
                         name: "FK_PM_Operacoes_PM_Ordens_IdOrdem",
                         column: x => x.IdOrdem,
-                        principalSchema: "public",
                         principalTable: "PM_Ordens",
                         principalColumn: "IdOrdem");
                     table.ForeignKey(
                         name: "FK_PM_Operacoes_PM_TiposManutencao_IdTipoManutencao",
                         column: x => x.IdTipoManutencao,
-                        principalSchema: "public",
                         principalTable: "PM_TiposManutencao",
                         principalColumn: "IdTipoManutencao");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_TiposPlano",
-                schema: "public",
                 columns: table => new
                 {
                     IdTipoPlano = table.Column<long>(type: "bigint", nullable: false)
@@ -753,44 +693,37 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_Notas_IdNota",
                         column: x => x.IdNota,
-                        principalSchema: "public",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota");
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_Ordens_IdOrdem",
                         column: x => x.IdOrdem,
-                        principalSchema: "public",
                         principalTable: "PM_Ordens",
                         principalColumn: "IdOrdem");
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_Planos_IdPlano",
                         column: x => x.IdPlano,
-                        principalSchema: "public",
                         principalTable: "PM_Planos",
                         principalColumn: "IdPlano");
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_TiposCep_IdTipoCep",
                         column: x => x.IdTipoCep,
-                        principalSchema: "public",
                         principalTable: "PM_TiposCep",
                         principalColumn: "IdTipoCep");
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_TiposEstrategia_IdTipoEstrategia",
                         column: x => x.IdTipoEstrategia,
-                        principalSchema: "public",
                         principalTable: "PM_TiposEstrategia",
                         principalColumn: "IdTipoEstrategia");
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_TiposManutencao_IdTipoManutencao",
                         column: x => x.IdTipoManutencao,
-                        principalSchema: "public",
                         principalTable: "PM_TiposManutencao",
                         principalColumn: "IdTipoManutencao");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_FerramentasOperacoes",
-                schema: "public",
                 columns: table => new
                 {
                     IdFerramenta = table.Column<long>(type: "bigint", nullable: false),
@@ -802,14 +735,12 @@ namespace app_pm_back.Migrations
                     table.ForeignKey(
                         name: "FK_PM_FerramentasOperacoes_PM_Ferramentas_IdFerramenta",
                         column: x => x.IdFerramenta,
-                        principalSchema: "public",
                         principalTable: "PM_Ferramentas",
                         principalColumn: "IdFerramenta",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_FerramentasOperacoes_PM_Operacoes_IdOperacao",
                         column: x => x.IdOperacao,
-                        principalSchema: "public",
                         principalTable: "PM_Operacoes",
                         principalColumn: "IdOperacao",
                         onDelete: ReferentialAction.Cascade);
@@ -817,193 +748,161 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
-                schema: "public",
                 table: "DadosRenovacao",
                 column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdOrdem",
-                schema: "public",
                 table: "DadosRenovacao",
                 column: "IdOrdem");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdUsuario",
-                schema: "public",
                 table: "DadosRenovacao",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_AlmoxarifadoUsuario_IdUsuario",
-                schema: "public",
                 table: "PM_AlmoxarifadoUsuario",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_AnexosNota_IdNota",
-                schema: "public",
                 table: "PM_AnexosNota",
                 column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_AnexosOrdem_IdOrdem",
-                schema: "public",
                 table: "PM_AnexosOrdem",
                 column: "IdOrdem");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ctms_IdCPM",
-                schema: "public",
                 table: "PM_Ctms",
                 column: "IdCPM");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_CtmUsuario_IdUsuario",
-                schema: "public",
                 table: "PM_CtmUsuario",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ferramentas_IdAlmoxarifado",
-                schema: "public",
                 table: "PM_Ferramentas",
                 column: "IdAlmoxarifado");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_FerramentasOperacoes_IdOperacao",
-                schema: "public",
                 table: "PM_FerramentasOperacoes",
                 column: "IdOperacao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_GpmLi_IdUsuario",
-                schema: "public",
                 table: "PM_GpmLi",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Gpms_IdCPM",
-                schema: "public",
                 table: "PM_Gpms",
                 column: "IdCPM");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_GpmUsuario_IdUsuario",
-                schema: "public",
                 table: "PM_GpmUsuario",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_ItensNota_IdNota",
-                schema: "public",
                 table: "PM_ItensNota",
                 column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Notas_IdPlano",
-                schema: "public",
                 table: "PM_Notas",
                 column: "IdPlano");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Notas_IdUsuario",
-                schema: "public",
                 table: "PM_Notas",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Operacoes_IdCTM",
-                schema: "public",
                 table: "PM_Operacoes",
                 column: "IdCTM");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Operacoes_IdOrdem",
-                schema: "public",
                 table: "PM_Operacoes",
                 column: "IdOrdem");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Operacoes_IdTipoManutencao",
-                schema: "public",
                 table: "PM_Operacoes",
                 column: "IdTipoManutencao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ordens_IdNota",
-                schema: "public",
                 table: "PM_Ordens",
                 column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ordens_IdPlano",
-                schema: "public",
                 table: "PM_Ordens",
                 column: "IdPlano");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Planos_IdEstrategia",
-                schema: "public",
                 table: "PM_Planos",
                 column: "IdEstrategia");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposEstrategia_IdEstrategia",
-                schema: "public",
                 table: "PM_TiposEstrategia",
                 column: "IdEstrategia");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposEstrategia_IdTipoCep",
-                schema: "public",
                 table: "PM_TiposEstrategia",
                 column: "IdTipoCep");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposEstrategia_IdTipoManutencao",
-                schema: "public",
                 table: "PM_TiposEstrategia",
                 column: "IdTipoManutencao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdNota",
-                schema: "public",
                 table: "PM_TiposPlano",
                 column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdOrdem",
-                schema: "public",
                 table: "PM_TiposPlano",
                 column: "IdOrdem");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdPlano",
-                schema: "public",
                 table: "PM_TiposPlano",
                 column: "IdPlano");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdTipoCep",
-                schema: "public",
                 table: "PM_TiposPlano",
                 column: "IdTipoCep");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdTipoEstrategia",
-                schema: "public",
                 table: "PM_TiposPlano",
                 column: "IdTipoEstrategia");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdTipoManutencao",
-                schema: "public",
                 table: "PM_TiposPlano",
                 column: "IdTipoManutencao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_VariaveisNota_IdNota",
-                schema: "public",
                 table: "PM_VariaveisNota",
                 column: "IdNota");
         }
@@ -1012,116 +911,88 @@ namespace app_pm_back.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DadosRenovacao",
-                schema: "public");
+                name: "DadosRenovacao");
 
             migrationBuilder.DropTable(
-                name: "PM_AlmoxarifadoUsuario",
-                schema: "public");
+                name: "PM_AlmoxarifadoUsuario");
 
             migrationBuilder.DropTable(
-                name: "PM_AnexosNota",
-                schema: "public");
+                name: "PM_AnexosNota");
 
             migrationBuilder.DropTable(
-                name: "PM_AnexosOrdem",
-                schema: "public");
+                name: "PM_AnexosOrdem");
 
             migrationBuilder.DropTable(
-                name: "PM_ClassificationRules",
-                schema: "public");
+                name: "PM_ClassificationRules");
 
             migrationBuilder.DropTable(
-                name: "PM_CtmUsuario",
-                schema: "public");
+                name: "PM_CtmUsuario");
 
             migrationBuilder.DropTable(
-                name: "PM_FerramentasOperacoes",
-                schema: "public");
+                name: "PM_FerramentasOperacoes");
 
             migrationBuilder.DropTable(
-                name: "PM_GpmLi",
-                schema: "public");
+                name: "PM_GpmLi");
 
             migrationBuilder.DropTable(
-                name: "PM_GpmUsuario",
-                schema: "public");
+                name: "PM_GpmUsuario");
 
             migrationBuilder.DropTable(
-                name: "PM_Imobilizados",
-                schema: "public");
+                name: "PM_Imobilizados");
 
             migrationBuilder.DropTable(
-                name: "PM_ItensNota",
-                schema: "public");
+                name: "PM_ItensNota");
 
             migrationBuilder.DropTable(
-                name: "PM_Reliability",
-                schema: "public");
+                name: "PM_Reliability");
 
             migrationBuilder.DropTable(
-                name: "PM_TiposPlano",
-                schema: "public");
+                name: "PM_TiposPlano");
 
             migrationBuilder.DropTable(
-                name: "PM_VariaveisNota",
-                schema: "public");
+                name: "PM_VariaveisNota");
 
             migrationBuilder.DropTable(
-                name: "PM_Ferramentas",
-                schema: "public");
+                name: "PM_Ferramentas");
 
             migrationBuilder.DropTable(
-                name: "PM_Operacoes",
-                schema: "public");
+                name: "PM_Operacoes");
 
             migrationBuilder.DropTable(
-                name: "PM_TiposEstrategia",
-                schema: "public");
+                name: "PM_TiposEstrategia");
 
             migrationBuilder.DropTable(
-                name: "PM_Almoxarifados",
-                schema: "public");
+                name: "PM_Almoxarifados");
 
             migrationBuilder.DropTable(
-                name: "PM_Ctms",
-                schema: "public");
+                name: "PM_Ctms");
 
             migrationBuilder.DropTable(
-                name: "PM_Ordens",
-                schema: "public");
+                name: "PM_Ordens");
 
             migrationBuilder.DropTable(
-                name: "PM_TiposCep",
-                schema: "public");
+                name: "PM_TiposCep");
 
             migrationBuilder.DropTable(
-                name: "PM_TiposManutencao",
-                schema: "public");
+                name: "PM_TiposManutencao");
 
             migrationBuilder.DropTable(
-                name: "PM_Gpms",
-                schema: "public");
+                name: "PM_Gpms");
 
             migrationBuilder.DropTable(
-                name: "PM_Notas",
-                schema: "public");
+                name: "PM_Notas");
 
             migrationBuilder.DropTable(
-                name: "PM_Cpms",
-                schema: "public");
+                name: "PM_Cpms");
 
             migrationBuilder.DropTable(
-                name: "PM_Planos",
-                schema: "public");
+                name: "PM_Planos");
 
             migrationBuilder.DropTable(
-                name: "PM_Usuarios",
-                schema: "public");
+                name: "PM_Usuarios");
 
             migrationBuilder.DropTable(
-                name: "Estrategias",
-                schema: "public");
+                name: "Estrategias");
         }
     }
 }
