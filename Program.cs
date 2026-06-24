@@ -246,6 +246,9 @@ using (var scope = app.Services.CreateScope())
             Console.WriteLine("PostgreSQL detectado. A tentar aplicar as migrations no banco de dados...");
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
             // dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
+            var searchPath = dbContext.Database.SqlQueryRaw<string>("SHOW search_path").FirstOrDefault();
+            Console.WriteLine($"[DEBUG] search_path ativo: {searchPath}");
+
             dbContext.Database.Migrate();
             Console.WriteLine("Migrations aplicadas com sucesso!");
         }
