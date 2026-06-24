@@ -81,7 +81,7 @@ else
                            ?? builder.Configuration.GetConnectionString("DefaultConnection");
     
     // Isso faz com que o PostgreSQL direcione as tabelas sem schema explícito para o targetSchema
-    if (!connectionString.Contains("Search Path", StringComparison.OrdinalIgnoreCase) &&
+if (!connectionString.Contains("Search Path", StringComparison.OrdinalIgnoreCase) &&
         !connectionString.Contains("SearchPath", StringComparison.OrdinalIgnoreCase))
     {
         connectionString = $"{connectionString.TrimEnd(';')};Search Path={targetSchema}";
@@ -98,10 +98,14 @@ else
 
     // adicionar o contexto do PostgreSQL
     builder.Services.AddDbContext<AppDbContext, PostgresDbContext>(options =>
+    {
         options.UseNpgsql(dataSource, npgsqlOptions => 
         {
             npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", targetSchema);
-        }));
+        });
+        options.ReplaceService<Microsoft.EntityFrameworkCore.Migrations.IMigrationsSqlGenerator, 
+            Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.NpgsqlMigrationsSqlGenerator>();
+    });
     
     // config hangfire 
     builder.Services.AddHangfire(config => config
@@ -228,12 +232,6 @@ using (var scope = app.Services.CreateScope())
         if (dbSchema == "cg")
         {
             Console.WriteLine("Ambiente 'cg' detectado. A tentar criar o banco de dados e as tabelas...");
-            var targetSchema = string.IsNullOrWhiteSpace(schema) ? "public" : schema;
-            
-            if (targetSchema != "public")
-            {
-                dbContext.Database.ExecuteSqlRaw($"CREATE SCHEMA IF NOT EXISTS \"{targetSchema}\";");
-            }
             dbContext.Database.Migrate();
             Console.WriteLine("Banco de dados e tabelas criados/verificados com sucesso!");
         }
