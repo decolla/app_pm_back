@@ -82,12 +82,24 @@ else
 
     // criar o construtor da fonte de dados do PostgreSQL
     var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
-    
-    //Força o search path a usar o targetschema
-    dataSourceBuilder.ConnectionStringBuilder.SearchPath = targetSchema;
 
     // dar permissão para JSON dinâmico
     dataSourceBuilder.EnableDynamicJson();
+    
+    //Força o search path a usar o targetschema em todas as conexxões
+    dataSourceBuilder.UsePhysicalConnectionInitializer(
+        conn =>
+        {
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = $"SET search_path TO \"{targetSchema}\", public";
+            cmd.ExecuteNonQuery();
+        },
+        async conn =>
+        {
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = $"SET search_path TO \"{targetSchema}\", public";
+            await cmd.ExecuteNonQueryAsync();
+        });
 
     // criar a fonte de dados
     var dataSource = dataSourceBuilder.Build();
