@@ -228,6 +228,12 @@ using (var scope = app.Services.CreateScope())
         if (dbSchema == "cg")
         {
             Console.WriteLine("Ambiente 'cg' detectado. A tentar criar o banco de dados e as tabelas...");
+            var targetSchema = string.IsNullOrWhiteSpace(schema) ? "public" : schema;
+            
+            if (targetSchema != "public")
+            {
+                dbContext.Database.ExecuteSqlRaw($"CREATE SCHEMA IF NOT EXISTS \"{targetSchema}\";");
+            }
             dbContext.Database.Migrate();
             Console.WriteLine("Banco de dados e tabelas criados/verificados com sucesso!");
         }
