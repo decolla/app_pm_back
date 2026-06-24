@@ -81,10 +81,10 @@ else
                            ?? builder.Configuration.GetConnectionString("DefaultConnection");
     
     // Isso faz com que o PostgreSQL direcione as tabelas sem schema explícito para o targetSchema
-if (!connectionString.Contains("Search Path", StringComparison.OrdinalIgnoreCase) &&
+    if (!connectionString.Contains("Search Path", StringComparison.OrdinalIgnoreCase) &&
         !connectionString.Contains("SearchPath", StringComparison.OrdinalIgnoreCase))
     {
-        connectionString = $"{connectionString.TrimEnd(';')};Search Path={targetSchema}";
+        connectionString = $"{connectionString.TrimEnd(';')};Search Path={targetSchema},public";
     }
 
     // criar o construtor da fonte de dados do PostgreSQL
@@ -103,8 +103,6 @@ if (!connectionString.Contains("Search Path", StringComparison.OrdinalIgnoreCase
         {
             npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", targetSchema);
         });
-        options.ReplaceService<Microsoft.EntityFrameworkCore.Migrations.IMigrationsSqlGenerator, 
-            Npgsql.EntityFrameworkCore.PostgreSQL.Migrations.NpgsqlMigrationsSqlGenerator>();
     });
     
     // config hangfire 
