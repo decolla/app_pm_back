@@ -6,7 +6,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     /// <inheritdoc />
     public partial class InitialPostgres : Migration
@@ -174,7 +174,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     CPF = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    Permissoes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    Permissoes = table.Column<int>(type: "integer", nullable: true),
                     IdEscopo = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>

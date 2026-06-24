@@ -11,10 +11,10 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     [DbContext(typeof(PostgresDbContext))]
-    [Migration("20260618165201_InitialPostgres")]
+    [Migration("20260624174544_InitialPostgres")]
     partial class InitialPostgres
     {
         /// <inheritdoc />
@@ -155,7 +155,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("StatusFichas")
+                    b.Property<string>("Status")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
@@ -1091,9 +1091,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<string>("Permissoes")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                    b.Property<int?>("Permissoes")
+                        .HasColumnType("integer");
 
                     b.HasKey("IdUsuario");
 
