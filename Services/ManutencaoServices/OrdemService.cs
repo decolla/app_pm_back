@@ -20,7 +20,8 @@ public class OrdemService : BaseCrudService<OrdemModel>
     /// Executa a ação correspondente.
     /// </summary>
     /// <param name="ordens">Parâmetro do método.</param>
-    public virtual async Task ImportarOrdensEmLoteSeguroAsync(List<OrdemModel> ordens, bool sobrescrever, bool adicionarNovas)
+    public virtual async Task ImportarOrdensEmLoteSeguroAsync(List<OrdemModel> ordens, bool sobrescrever,
+        bool adicionarNovas, CancellationToken cancellationToken)
     {
         if (ordens == null || !ordens.Any()) return;
 
@@ -59,6 +60,8 @@ public class OrdemService : BaseCrudService<OrdemModel>
         var novasOrdens = new List<OrdemModel>();
         foreach (var ordem in ordens)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+            
             OrdemModel? existente = null;
 
             if (ordem.NumeroOrdem.HasValue)
@@ -85,6 +88,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
 
         if (novasOrdens.Any())
         {
+            cancellationToken.ThrowIfCancellationRequested();
             await _context.PM_Ordens.AddRangeAsync(novasOrdens);
         }
 

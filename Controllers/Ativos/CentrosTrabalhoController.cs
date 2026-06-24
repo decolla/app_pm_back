@@ -26,8 +26,8 @@ public class CentrosTrabalhoController : ControllerBase
         _mapper = mapper;
     }
 
-        /// <summary>
-    /// Cria um novo registro.
+    /// <summary>
+    /// Cria um novo Centro de Trabalho.
     /// </summary>
     /// <param name="dto">DTO contendo os dados da requisição.</param>
     /// <returns>O objeto criado com status 201 (Created).</returns>
@@ -60,7 +60,7 @@ public class CentrosTrabalhoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
     /// <param name="pagina">Número da página (1-based) para paginação.</param>
@@ -97,7 +97,7 @@ public class CentrosTrabalhoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Obtém um registro pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
@@ -151,7 +151,7 @@ public class CentrosTrabalhoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Atualiza um registro existente.
     /// </summary>
     /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
@@ -197,7 +197,7 @@ public class CentrosTrabalhoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Exclui um registro pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>

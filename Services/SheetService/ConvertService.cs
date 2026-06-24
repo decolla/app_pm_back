@@ -26,7 +26,8 @@ public class ConvertService
         char separator = ';',
         bool utf8WithBom = true,
         bool includeHeader = true,
-        int maxDegreeOfParallelism = -1
+        int maxDegreeOfParallelism = -1,
+        CancellationToken cancellationToken = default
     )
     {
         var encoding = utf8WithBom ? new UTF8Encoding(true) : new UTF8Encoding(false);
@@ -47,7 +48,9 @@ public class ConvertService
             separator,
             includeHeader,
             maxDegreeOfParallelism,
-            leaveOpen: false);
+            leaveOpen: false,
+            cancellationToken: cancellationToken
+            );
     }
 
     /// <summary>
@@ -64,7 +67,8 @@ public class ConvertService
         char separator = ';',
         bool includeHeader = true,
         int maxDegreeOfParallelism = -1,
-        bool leaveOpen = true)
+        bool leaveOpen = true,
+        CancellationToken cancellationToken = default)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 

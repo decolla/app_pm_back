@@ -32,9 +32,12 @@ public class UsuarioModel
     /// Lista de permissões serializada ou descrição de acessos.
     /// Exemplo: 7 -> NOTAS | ORDENS | ITENS.
     /// </summary>
-    public PermissoesTabela? Permissoes { get; set; }
-    
-    
+    public PermissoesTabela? Permissoes { get; set; } = PermissoesTabela.Nenhuma;
+
+    /// <summary>
+    /// Nível de permissão do usuário no sistema.
+    /// </summary>
+    public NivelPermissao? NivelPermissao { get; set; } = Domain.NivelPermissao.Usuario;
 
     /// <summary>
     /// Identificador do escopo ao qual o usuário pertence.

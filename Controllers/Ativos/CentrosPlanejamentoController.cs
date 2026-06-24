@@ -26,7 +26,7 @@ public class CentrosPlanejamentoController : ControllerBase
         _mapper = mapper;
     }
 
-        /// <summary>
+    /// <summary>
     /// Cria um novo centro de planejamento e manutenção.
     /// </summary>
     /// <param name="dto">DTO contendo os dados da requisição.</param>
@@ -60,8 +60,8 @@ public class CentrosPlanejamentoController : ControllerBase
         }
     }
 
-        /// <summary>
-    /// Lista os registros cadastrados com paginação.
+    /// <summary>
+    /// Lista os Centros de Planejamento cadastrados com paginação.
     /// </summary>
     /// <param name="pagina">Número da página (1-based) para paginação.</param>
     /// <param name="tamanho">Quantidade de itens por página.</param>
@@ -97,7 +97,7 @@ public class CentrosPlanejamentoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Obtém um registro pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
@@ -151,7 +151,7 @@ public class CentrosPlanejamentoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Atualiza um registro existente.
     /// </summary>
     /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
@@ -196,7 +196,7 @@ public class CentrosPlanejamentoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Exclui um registro pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
@@ -221,6 +221,12 @@ public class CentrosPlanejamentoController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Verifica se a paginação passada é valida
+    /// </summary>
+    /// <param name="pagina">Numero da página</param>
+    /// <param name="tamanho">Quantidade de elementos de uma página</param>
+    /// <returns></returns>
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);

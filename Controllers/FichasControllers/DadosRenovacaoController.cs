@@ -202,7 +202,7 @@ public class DadosRenovacaoController : ControllerBase
     /// Busca todas as Fichas, Notas ou Ordens para preencher a tabela de Dados Renovacao
     /// </summary>
     [HttpPost("renovacao-fichas")]
-    public async Task<IActionResult> GerarRenovacaoFichas(Fichas buscaTabela)
+    public async Task<IActionResult> GerarRenovacaoFichas(Fichas buscaTabela, CancellationToken cancellationToken)
     {
         try
         {
@@ -215,7 +215,7 @@ public class DadosRenovacaoController : ControllerBase
                 var idItens = await _context.PM_ItensNota
                     .Select(n => n.IdItemNota)
                     .ToListAsync();
-                var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens);
+                var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens, cancellationToken);
                 message = "Notas classificadas com sucesso";
             }
 
@@ -224,7 +224,7 @@ public class DadosRenovacaoController : ControllerBase
                 var idsOrdens = await _context.PM_Ordens
                     .Select(n => n.IdOrdem)
                     .ToListAsync();
-                var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosOrdemAsync(idsOrdens);
+                var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosOrdemAsync(idsOrdens, cancellationToken);
                 message += "| Ordens classificadas com sucesso";
             }
 

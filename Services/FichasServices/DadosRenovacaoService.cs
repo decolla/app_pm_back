@@ -47,7 +47,8 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     public virtual async Task<int> ImportarDadosNotaAsync(
         List<long> idsNotas,
-        List<long> idsItensNota)
+        List<long> idsItensNota,
+        CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando ImportarDadosNotaAsync com {QtdNotas} notas e {QtdItens} itens",
             idsNotas?.Count ?? 0, idsItensNota?.Count ?? 0);
@@ -97,6 +98,8 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             //para cada nota indentificada, verifica se ela renova ativo ou LI
             foreach (var nota in notasParaAtualizar)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 if (nota.IdAtivo.HasValue)
                 {
                     // Se IdAtivo está preenchido → RestauraAtivo
@@ -120,6 +123,8 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 
             foreach (var nota in notas)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 var textosNota =
                     $"{nota.DescricaoBreve ?? string.Empty} {nota.AnomaliaObservada ?? string.Empty} {nota.ObservacoesComplementares ?? string.Empty}"
                         .ToUpperInvariant();
@@ -176,7 +181,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     /// <returns>Resultado da operação.</returns>
     /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
     public virtual async Task<int> ImportarDadosOrdemAsync(
-        List<long> idsOrdens)
+        List<long> idsOrdens, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Iniciando ImportarDadosOrdemAsync com {QtdOrdens} ordens", idsOrdens?.Count ?? 0);
 
@@ -206,6 +211,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 
             foreach (var ordem in ordens)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 var textoOrdem = (ordem.DescricaoBreve ?? string.Empty).ToUpperInvariant();
 
                 bool temRenovacao = palavrasRenovacao.Any(p => textoOrdem.Contains(p));

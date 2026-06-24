@@ -99,7 +99,9 @@ public class SpreadsheetService
     /// </summary>
     /// <param name="spreadSheet">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    public virtual async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(IFormFile spreadSheet)
+    public virtual async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(
+        IFormFile spreadSheet,
+        CancellationToken cancellationToken)
     {
         var resultado = new ResultadoPlanilha();
 
@@ -160,6 +162,9 @@ public class SpreadsheetService
 
         while (!parser.EndOfData)
         {
+            // interrompe o loop se o token for laçado
+            cancellationToken.ThrowIfCancellationRequested();
+            
             headers = parser.ReadFields();
             if (headers == null) continue;
 
@@ -213,6 +218,9 @@ public class SpreadsheetService
 
         while (!parser.EndOfData)
         {
+            // interrompe o loop se o token for laçado
+            cancellationToken.ThrowIfCancellationRequested();
+            
             string[]? row = parser.ReadFields();
             if (row == null || row.All(string.IsNullOrWhiteSpace)) continue;
 

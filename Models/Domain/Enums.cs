@@ -198,7 +198,6 @@ public enum Fichas
 /// <summary>
 /// Define se um usuário é Admin ou não. ADICIONAR MAIS NÍVEIS DEPOIS
 /// </summary>
-[Flags]
 public enum NivelPermissao
 {
     Usuario = 0, 

@@ -48,7 +48,7 @@ public class TipoPlanoModel
 
     /// <summary>
     /// Categoria descritiva do plano.
-    /// Exemplo: "Manutenção ou renovação ou cep"
+    /// Exemplo: "Manutenção ou renovação"
     /// </summary>
     public CategoriaTipoManutencao Categoria { get; set; }
 

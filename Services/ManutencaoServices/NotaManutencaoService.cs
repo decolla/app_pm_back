@@ -20,7 +20,8 @@ public class NotaManutencaoService : BaseCrudService<NotaModel>
     /// Executa a ação correspondente.
     /// </summary>
     /// <param name="notas">Parâmetro do método.</param>
-    public virtual async Task ImportarNotasEmLoteSeguroAsync(List<NotaModel> notas, bool sobrescrever, bool adicionarNovas)
+    public virtual async Task ImportarNotasEmLoteSeguroAsync(List<NotaModel> notas, bool sobrescrever,
+        bool adicionarNovas, CancellationToken cancellationToken)
     {
         if (notas == null || !notas.Any()) return;
 
@@ -51,6 +52,9 @@ public class NotaManutencaoService : BaseCrudService<NotaModel>
         var novasNotas = new List<NotaModel>();
         foreach (var nota in notas)
         {
+            // lança uma excessão caso o cancelation token seja acionado
+            cancellationToken.ThrowIfCancellationRequested();
+            
             if (existentesPorNumero.TryGetValue(nota.NumeroNota, out var existente))
             {
                 if (sobrescrever)

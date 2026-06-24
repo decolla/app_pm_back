@@ -41,12 +41,12 @@ public class FichasController : ControllerBase
     /// Sincroniza as fichas do PM com os ativos do APM
     /// </summary>
     [HttpGet("synchronize-apm")]
-    public async Task<IActionResult> SynchronizeApm()
+    public async Task<IActionResult> SynchronizeApm(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Recebida requisição GET em /synchronize-apm.");
         try
         {
-            var result = await _synchronizeApmService.SynchronizeAPMAsync();
+            var result = await _synchronizeApmService.SynchronizeAPMAsync(cancellationToken);
 
             if (result)
             {
@@ -194,7 +194,8 @@ public class FichasController : ControllerBase
     public async Task<IActionResult> UploadPlanilha(
         IFormFile file,
         [FromQuery] bool sobrescrever,
-        [FromQuery] bool adicionarNovas)
+        [FromQuery] bool adicionarNovas,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -207,13 +208,19 @@ public class FichasController : ControllerBase
                 return BadRequest(new { message = "Arquivo inválido ou vazio." });
 
             // 3. Toda a mágica pesada acontece dentro do serviço!
-            var inseridas = await _spreadsheetOrchestrator.ProcessarPlanilhaAsync(file, sobrescrever, adicionarNovas);
+            var inseridas = await _spreadsheetOrchestrator
+                .ProcessarPlanilhaAsync(file, sobrescrever, adicionarNovas, cancellationToken);
 
             return Ok(new { message = inseridas });
         }
+        catch (OperationCanceledException)
+        {
+            _logger.LogInformation("Upload cancelado pelo cliente.");
+            return StatusCode(499, new { message = "Operação cancelada pelo cliente." });
+        }
         catch (ArgumentException ex)
         {
-            // Erros de negócio (ex: schema cg, formato inválido)
+            // erros de negócio (ex: schema cg, formato inválido)
             return BadRequest(new { message = ex.Message });
         }
         catch (Exception ex)
