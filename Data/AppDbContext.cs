@@ -119,6 +119,7 @@ public class AppDbContext : DbContext
                     j.HasKey("IdCTM", "IdUsuario");
                     j.ToTable("PM_CtmUsuario");
                 });
+
     }
 
     public DbSet<TipoManutencaoModel> PM_TiposManutencao { get; set; }
@@ -198,8 +199,15 @@ public class PostgresDbContext : AppDbContext
         // aplica as configurações globais primeiro
         base.OnModelCreating(modelBuilder);
 
-        // aplica as exclusividades do PostgreSQL
-        modelBuilder.HasDefaultSchema("public");
+        //Lê a variável de ambiente
+        var schema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+        
+        //Se for nula ou vazia, assume "public"
+        var targetSchema = string.IsNullOrWhiteSpace(schema) ? "public" : schema;
+        
+        //Define o schema padrão para todas as tabelas do EF neste contexto
+        modelBuilder.HasDefaultSchema(targetSchema);
+
         
     }
 }
