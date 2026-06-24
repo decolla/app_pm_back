@@ -75,8 +75,16 @@ if (databaseSchema == "cg")
 }
 else
 {
+    var targetSchema = string.IsNullOrWhiteSpace(databaseSchema) ? "public" : databaseSchema;
     var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION") 
                            ?? builder.Configuration.GetConnectionString("DefaultConnection");
+    
+    // Isso faz com que o PostgreSQL direcione as tabelas sem schema explícito para o targetSchema
+    if (!connectionString.Contains("Search Path", StringComparison.OrdinalIgnoreCase) &&
+        !connectionString.Contains("SearchPath", StringComparison.OrdinalIgnoreCase))
+    {
+        connectionString = $"{connectionString.TrimEnd(';')};Search Path={targetSchema}";
+    }
 
     // criar o construtor da fonte de dados do PostgreSQL
     var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
@@ -89,7 +97,10 @@ else
 
     // adicionar o contexto do PostgreSQL
     builder.Services.AddDbContext<AppDbContext, PostgresDbContext>(options =>
-        options.UseNpgsql(dataSource));
+        options.UseNpgsql(dataSource, npgsqlOptions => 
+        {
+            npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", targetSchema);
+        }));
     
     // config hangfire 
     builder.Services.AddHangfire(config => config
@@ -97,7 +108,11 @@ else
         .UseSimpleAssemblyNameTypeSerializer()
         .UseRecommendedSerializerSettings()
         .UsePostgreSqlStorage(c => 
-            c.UseNpgsqlConnection(connectionString)));
+                c.UseNpgsqlConnection(connectionString), 
+            new PostgreSqlStorageOptions 
+            {
+                SchemaName = targetSchema 
+            }));
 }
 
 builder.Services.AddHangfireServer();
