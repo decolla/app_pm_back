@@ -30,10 +30,11 @@ public class UsuarioModel
 
     /// <summary>
     /// Lista de permissões serializada ou descrição de acessos.
-    /// Exemplo: "ADMIN,USER_READ".
+    /// Exemplo: 7 -> NOTAS | ORDENS | ITENS.
     /// </summary>
-    [MaxLength(500)]
-    public string? Permissoes { get; set; }
+    public PermissoesTabela? Permissoes { get; set; }
+    
+    
 
     /// <summary>
     /// Identificador do escopo ao qual o usuário pertence.

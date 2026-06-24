@@ -32,7 +32,7 @@ public static class ImportGhostHelper
             IdUsuario = id,
             Nome = $"IMPORTADO_{id}",
             CPF = $"000.000.000-{id:D2}",
-            Permissoes = "IMPORTADO"
+            Permissoes = PermissoesTabela.Nenhuma
         });
 
         await context.PM_Usuarios.AddRangeAsync(novos);

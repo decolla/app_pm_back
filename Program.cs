@@ -3,6 +3,7 @@ using System.Text.Json;
 using api.Communications.Service.Impl.Data;
 using app_pm_back.Data;
 using app_pm_back.DTO;
+using app_pm_back.Interfaces;
 using app_pm_back.Middlewares;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
@@ -207,8 +208,13 @@ else
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddHttpContextAccessor();
+
+// sempre que uma requisição chegar na API, trará um Bearer token
+builder.Services.AddScoped<IUserContext, UserContextService>();
+
 var app = builder.Build();
 var schema = Environment.GetEnvironmentVariable("SCHEMA") ?? "(not set)";
+
 app.Logger.LogInformation("SCHEMA={Schema}", schema);
 
 using (var scope = app.Services.CreateScope())

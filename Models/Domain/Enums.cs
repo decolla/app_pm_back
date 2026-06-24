@@ -173,6 +173,10 @@ public enum MetodoClassificacao
     CATBOOST = 2,
     HUMANA = 3,
 }
+
+/// <summary>
+/// Status atual das fichas geradas.
+/// </summary>
 public enum StatusFichas
 {
     Reprovada = 0,
@@ -181,9 +185,45 @@ public enum StatusFichas
     Concluida = 3
 }
 
+/// <summary>
+/// Tipo de fichas a serem geradas durante a busca de fichas.
+/// </summary>
 public enum Fichas
 {
     Ambas = 0,
     Notas = 1,
     Ordens =2
+}
+
+/// <summary>
+/// Define se um usuário é Admin ou não. ADICIONAR MAIS NÍVEIS DEPOIS
+/// </summary>
+[Flags]
+public enum NivelPermissao
+{
+    Usuario = 0, 
+    ADM = 1
+}
+
+/// <summary>
+/// A quais tipos de tabela um usuário terá acesso 
+/// </summary>
+[Flags]
+public enum PermissoesTabela
+{
+    Nenhuma = 0,
+    Notas = 1,          // 2^0
+    Ordens = 2,         // 2^1
+    Itens = 4,          // 2^2
+    Gpms = 8,           
+    Ctms = 16,          
+    Cpms = 32, 
+    Planos = 64,
+    Estrategias = 128,
+    TiposManutencao = 256,
+    Almoxarifados = 512,
+    
+    
+    // combinação de todas as permissões
+    Tudo = Notas | Ordens | Itens | Gpms | Ctms | Cpms | Almoxarifados | Planos | Estrategias | TiposManutencao
 }
