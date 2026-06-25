@@ -87,19 +87,8 @@ else
     dataSourceBuilder.EnableDynamicJson();
     
     //Força o search path a usar o targetschema em todas as conexxões
-    dataSourceBuilder.UsePhysicalConnectionInitializer(
-        conn =>
-        {
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = $"SET search_path TO \"{targetSchema}\", public";
-            cmd.ExecuteNonQuery();
-        },
-        async conn =>
-        {
-            await using var cmd = conn.CreateCommand();
-            cmd.CommandText = $"SET search_path TO \"{targetSchema}\", public";
-            await cmd.ExecuteNonQueryAsync();
-        });
+    dataSourceBuilder.ConnectionStringBuilder["options"] = $"-c search_path=\"{targetSchema}\",public";
+
 
     // criar a fonte de dados
     var dataSource = dataSourceBuilder.Build();
