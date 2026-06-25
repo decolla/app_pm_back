@@ -40,6 +40,9 @@
         <None Update="CatBoost\libcatboostmodel.so"> <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
+        <None Update="CatBoost\catboost_model.cbm">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>

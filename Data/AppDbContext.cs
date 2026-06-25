@@ -164,7 +164,7 @@ public class AppDbContext : DbContext
     public DbSet<AnexoOrdemModel> PM_AnexosOrdem { get; set; }
     public DbSet<DadosRenovacaoModel> PM_DadosRenovacao { get; set; }
     public DbSet<ReliabilityModel> PM_Reliability { get; set; }
-    public DbSet<RuleClassificationDto> PM_ClassificationRules { get; set; }
+    public DbSet<AuditoriaModel> PM_Auditorias { get; set; }
 }
 
 public class SqlServerDbContext : AppDbContext

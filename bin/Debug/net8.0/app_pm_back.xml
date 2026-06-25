@@ -1398,16 +1398,15 @@
             Mapeamento EF Core dinâmico para PostgreSQL ou SQL Server.
             </summary>
         </member>
+        <member name="T:app_pm_back.Data.AuditInterceptor">
+            <summary>
+            Interceptor de auditoria. Captura compliance e logs pré salvamento em banco
+            </summary>
+        </member>
         <member name="T:app_pm_back.Data.DatabaseExceptionInterceptor">
             <summary>
             Interceptador de exceções do banco de dados para retornar mensagens amigáveis globais.
             </summary>
-        </member>
-        <member name="M:app_pm_back.Data.DatabaseExceptionInterceptor.SaveChangesFailed(Microsoft.EntityFrameworkCore.Diagnostics.DbContextErrorEventData)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Data.DatabaseExceptionInterceptor.SaveChangesFailedAsync(Microsoft.EntityFrameworkCore.Diagnostics.DbContextErrorEventData,System.Threading.CancellationToken)">
-            <inheritdoc />
         </member>
         <member name="T:app_pm_back.Data.DesignTimeUserContext">
             <summary>
@@ -1742,6 +1741,46 @@
         <member name="P:app_pm_back.Models.BuscaOrdemNotaDto.NotaIdFim">
             <summary>
             Id de fim da nota
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AuditoriaModel.IdAuditoria">
+            <summary>
+            Identificador da auditoria
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AuditoriaModel.IdUsuario">
+            <summary>
+            O Id de quem fez a alteração.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AuditoriaModel.NomeTabela">
+            <summary>
+            Nome da tabela que foi alterada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AuditoriaModel.Acao">
+            <summary>
+            Ação realizada na tabela.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AuditoriaModel.ChavePrimaria">
+            <summary>
+            O valor da chave primária do registro alterado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AuditoriaModel.ValoresAntigos">
+            <summary>
+            JSON com os valores antigos e novos.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AuditoriaModel.ValoresNovos">
+            <summary>
+            JSON com os valores novos.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.AuditoriaModel.DataAlteracao">
+            <summary>
+            Data que ocorreu tal alteração.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.Prioridade">
@@ -3508,6 +3547,11 @@
             <param name="writer">Parâmetro do método.</param>
             <param name="value">Parâmetro do método.</param>
             <param name="options">Parâmetro do método.</param>
+        </member>
+        <member name="T:app_pm_back.Interfaces.IAuditable">
+            <summary>
+            Qualquer Model que herdar desta interface será monitorizado pelo Audit Trail.
+            </summary>
         </member>
         <member name="P:app_pm_back.Interfaces.IClassifiable.Classificacao">
             <summary>

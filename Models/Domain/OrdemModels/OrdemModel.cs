@@ -13,7 +13,7 @@ namespace app_pm_back.Models.Domain;
 /// A ordem de trabalho é a entidade central para gerenciamento de atividades de manutenção,
 /// permitindo controle de prazos, recursos, criticidade e relacionamento com ativos e notas.
 /// </remarks>
-public class OrdemModel : IClassifiable
+public class OrdemModel : IClassifiable, IAuditable
 {
     #region Identificação e Controle
 

@@ -23,7 +23,7 @@ namespace app_pm_back.Models.Domain;
 ///     IdAtivo = 150
 /// };
 /// </example>
-public class NotaModel : IClassifiable
+public class NotaModel : IClassifiable, IAuditable
 {
     #region Identificação e Controle
 

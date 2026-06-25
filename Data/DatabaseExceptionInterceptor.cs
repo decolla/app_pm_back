@@ -12,7 +12,6 @@ namespace app_pm_back.Data;
 /// </summary>
 public class DatabaseExceptionInterceptor : SaveChangesInterceptor
 {
-    /// <inheritdoc />
     public override void SaveChangesFailed(DbContextErrorEventData eventData)
     {
         var friendlyException = GetFriendlyException(eventData.Exception);
@@ -23,7 +22,6 @@ public class DatabaseExceptionInterceptor : SaveChangesInterceptor
         base.SaveChangesFailed(eventData);
     }
 
-    /// <inheritdoc />
     public override Task SaveChangesFailedAsync(DbContextErrorEventData eventData, CancellationToken cancellationToken = default)
     {
         var friendlyException = GetFriendlyException(eventData.Exception);
