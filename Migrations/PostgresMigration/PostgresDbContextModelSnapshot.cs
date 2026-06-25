@@ -10,7 +10,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations
+namespace app_pm_back.Migrations.PostgresMigration
 {
     [DbContext(typeof(PostgresDbContext))]
     partial class PostgresDbContextModelSnapshot : ModelSnapshot

@@ -13,7 +13,7 @@ namespace app_pm_back.Data;
 public class AppDbContext : DbContext
 {
     private readonly IUserContext _userContext;
-    
+
     public AppDbContext(DbContextOptions options, IUserContext userContext) : base(options)
     {
         _userContext = userContext;
@@ -21,7 +21,6 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
         base.OnModelCreating(modelBuilder);
 
         // configura as chaves primárias
@@ -60,7 +59,8 @@ public class AppDbContext : DbContext
             .WithMany(f => f.Operacoes)
             .UsingEntity<Dictionary<string, object>>(
                 "FerramentasOperacoes",
-                j => j.HasOne<FerramentaModel>().WithMany().HasForeignKey("IdFerramenta").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<FerramentaModel>().WithMany().HasForeignKey("IdFerramenta")
+                    .OnDelete(DeleteBehavior.Cascade),
                 j => j.HasOne<OperacaoModel>().WithMany().HasForeignKey("IdOperacao").OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
@@ -75,7 +75,8 @@ public class AppDbContext : DbContext
             .UsingEntity<Dictionary<string, object>>(
                 "AlmoxarifadoUsuario",
                 j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<AlmoxarifadoModel>().WithMany().HasForeignKey("IdAlmoxarifado").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<AlmoxarifadoModel>().WithMany().HasForeignKey("IdAlmoxarifado")
+                    .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
                     j.HasKey("IdAlmoxarifado", "IdUsuario");
@@ -123,17 +124,22 @@ public class AppDbContext : DbContext
                     j.HasKey("IdCTM", "IdUsuario");
                     j.ToTable("PM_CtmUsuario");
                 });
-        
+
         // FILTROS DE ESCOPO
         // TODO: arrumar escopos para funcionar com as permissões do EF Core
-        
-        modelBuilder.Entity<UsuarioModel>().HasQueryFilter(e => e.Escopos.Contains(_userContext.GetEscopoAtual() ?? 0));
-        modelBuilder.Entity<NotaModel>().HasQueryFilter(e => e.Escopo == _userContext.GetEscopoAtual());
-        modelBuilder.Entity<OrdemModel>().HasQueryFilter(e => e.Escopo == _userContext.GetEscopoAtual());
-        modelBuilder.Entity<CpmModel>().HasQueryFilter(e => e.IdEscopo == _userContext.GetEscopoAtual());
-        modelBuilder.Entity<AlmoxarifadoModel>().HasQueryFilter(e => e.IdEscopo == _userContext.GetEscopoAtual());
-        modelBuilder.Entity<FerramentaModel>().HasQueryFilter(e => e.IdEscopo == _userContext.GetEscopoAtual());
 
+        modelBuilder.Entity<UsuarioModel>().HasQueryFilter(e =>
+            e.Escopos.Any(escopoBanco => _userContext.GetEscoposDoUsuario().Contains(escopoBanco)));
+        modelBuilder.Entity<NotaModel>().HasQueryFilter(e =>
+            e.Escopo != null && _userContext.GetEscoposDoUsuario().Contains(e.Escopo.Value));
+        modelBuilder.Entity<OrdemModel>().HasQueryFilter(e =>
+            e.Escopo != null && _userContext.GetEscoposDoUsuario().Contains(e.Escopo.Value));
+        modelBuilder.Entity<CpmModel>().HasQueryFilter(e =>
+            e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
+        modelBuilder.Entity<AlmoxarifadoModel>().HasQueryFilter(e =>
+            e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
+        modelBuilder.Entity<FerramentaModel>().HasQueryFilter(e =>
+            e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
     }
 
     public DbSet<TipoManutencaoModel> PM_TiposManutencao { get; set; }
@@ -163,7 +169,8 @@ public class AppDbContext : DbContext
 
 public class SqlServerDbContext : AppDbContext
 {
-    public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options, IUserContext userContext) : base(options, userContext)
+    public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options, IUserContext userContext) : base(options,
+        userContext)
     {
     }
 
@@ -201,7 +208,8 @@ public class SqlServerDbContext : AppDbContext
 
 public class PostgresDbContext : AppDbContext
 {
-    public PostgresDbContext(DbContextOptions<PostgresDbContext> options, IUserContext userContext) : base(options, userContext)
+    public PostgresDbContext(DbContextOptions<PostgresDbContext> options, IUserContext userContext) : base(options,
+        userContext)
     {
     }
 
@@ -209,8 +217,5 @@ public class PostgresDbContext : AppDbContext
     {
         // aplica as configurações globais primeiro
         base.OnModelCreating(modelBuilder);
-        
-
-        
     }
 }

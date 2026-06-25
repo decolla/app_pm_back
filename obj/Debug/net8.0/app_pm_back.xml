@@ -3531,28 +3531,16 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.InitialPostgres">
+        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.PostgresMigration.UpdateEscopoToLongAndList">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.UpdateEscopoToLongAndList.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.UpdateEscopoToLongAndList.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.UpdateEscopoToLongAndList.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
@@ -3565,18 +3553,6 @@
             <inheritdoc />
         </member>
         <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.SqlServerMigrations.UpdateEscopoToLongAndList">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.SqlServerMigrations.UpdateEscopoToLongAndList.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.SqlServerMigrations.UpdateEscopoToLongAndList.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.SqlServerMigrations.UpdateEscopoToLongAndList.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Services.AnnexService">

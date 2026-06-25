@@ -10,7 +10,7 @@ namespace app_pm_back.Data;
 /// </summary>
 public class DesignTimeUserContext : IUserContext
 {
-    public long? GetEscopoAtual() => null;
+    public List<long> GetEscoposDoUsuario() => new List<long>();
     public int? GetUsuarioIdAtual() => null;
 }
 
@@ -38,7 +38,7 @@ public class PostgresDbContextFactory : IDesignTimeDbContextFactory<PostgresDbCo
     {
         var optionsBuilder = new DbContextOptionsBuilder<PostgresDbContext>();
         optionsBuilder.UseNpgsql(
-            "Server=localhost;Database=pm_dummy;User Id=sa;Password=senha;TrustServerCertificate=True;");
+            "Host=localhost;Database=pm_dummy;Username=postgres;Password=postgres");
 
         // passa o contexto falso para o terminal
         return new PostgresDbContext(optionsBuilder.Options, new DesignTimeUserContext());

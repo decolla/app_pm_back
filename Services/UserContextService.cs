@@ -13,24 +13,28 @@ public class UserContextService : IUserContext
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public long? GetEscopoAtual()
+    public List<long> GetEscoposDoUsuario()
     {
         // verifica se existe uma requisição HTTP ativa
         var user = _httpContextAccessor.HttpContext?.User;
         
         if (user == null || !user.Identity!.IsAuthenticated)
-            return null; // pode ser o Hangfire ou um endpoint anonimo
+            return new List<long>(); // pode ser o Hangfire ou um endpoint anonimo
 
         // busca a informação dentro do JWT 
         // dps substituir IdEscopo pelo nome exato gerado
-        var claimEscopo = user.FindFirst("IdEscopo"); 
+        var claimsEscopo = user.FindAll("IdEscopo"); 
+        var listaEscopos = new List<long>();
         
-        if (claimEscopo != null && long.TryParse(claimEscopo.Value, out long escopoId))
+        foreach (var claim in claimsEscopo)
         {
-            return escopoId;
+            if (long.TryParse(claim.Value, out long escopoId))
+            {
+                listaEscopos.Add(escopoId);
+            }
         }
 
-        return null;
+        return listaEscopos;
     }
 
     public int? GetUsuarioIdAtual()
