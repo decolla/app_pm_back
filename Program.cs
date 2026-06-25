@@ -14,6 +14,7 @@ using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Npgsql;
 using teste_catboost_cs;
 
@@ -268,7 +269,23 @@ RecurringJob.AddOrUpdate<app_pm_back.Jobs.ManutencaoGeneratorJob>(
 // captura erros
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
-app.UseSwagger();
+app.UseSwagger(c =>
+{
+    c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+    {
+        // Intercepta o cabeçalho enviado pelo seu Ingress do Kubernetes
+        var basePath = httpReq.Headers["X-Forwarded-Prefix"].FirstOrDefault();
+        
+        if (!string.IsNullOrEmpty(basePath))
+        {
+            // Ajusta a URL base do servidor dinamicamente
+            swaggerDoc.Servers = new List<OpenApiServer> 
+            { 
+                new OpenApiServer { Url = basePath } 
+            };
+        }
+    });
+});
 app.UseSwaggerUI();
 
 // permite que o angular realize 
