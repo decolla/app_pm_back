@@ -12,14 +12,6 @@ namespace app_pm_back.DTO;
 public class NotaManutencaoDto
 {
     [SheetColumn("Id Nota")] public long IdNota { get; set; }
-
-    // ordem
-    // campo seleção
-    // local instlação
-    // loc instalação afetado
-    // area operacional
-    // centrabprinc
-    // grupo planej
     
     [SheetColumn("Nota")] public long NumeroNota { get; set; }
 
@@ -75,7 +67,7 @@ public class NotaManutencaoDto
 
     [SheetColumn("Id Usuario")] public int? IdUsuario { get; set; }
     
-    [SheetColumn("Escopo")] public string? Escopo { get; set; } = "N/A";
+    [SheetColumn("Escopo")] public long? Escopo { get; set; }
 }
 
 #pragma warning restore CS1591

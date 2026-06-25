@@ -20,6 +20,11 @@
             </summary>
             <param name="nomeDaColuna"></param>
         </member>
+        <member name="T:app_pm_back.Config.RouteConfig">
+            <summary>
+            Configura a rota base para os endpoints da API, incluindo a versão e o nome do cliente.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Controllers.AnexosController">
             <summary>
             Controller para anexos
@@ -83,7 +88,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
-            Lista os registros cadastrados com paginação.
+            Lista os Centros de Planejamento cadastrados com paginação.
             </summary>
             <param name="pagina">Número da página (1-based) para paginação.</param>
             <param name="tamanho">Quantidade de itens por página.</param>
@@ -127,6 +132,14 @@
             <response code="200">Sucesso ao deletar o registro.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Verifica se a paginação passada é valida
+            </summary>
+            <param name="pagina">Numero da página</param>
+            <param name="tamanho">Quantidade de elementos de uma página</param>
+            <returns></returns>
+        </member>
         <member name="T:app_pm_back.Controllers.CentrosTrabalhoController">
             <summary>
             Classe CentrosTrabalhoController.
@@ -139,7 +152,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Criar(app_pm_back.DTO.CentroTrabalhoDto)">
             <summary>
-            Cria um novo registro.
+            Cria um novo Centro de Trabalho.
             </summary>
             <param name="dto">DTO contendo os dados da requisição.</param>
             <returns>O objeto criado com status 201 (Created).</returns>
@@ -625,13 +638,13 @@
             <param name="id">Id do dado a ser deletado</param>
             <returns>IActionResult</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.GerarRenovacaoFichas(app_pm_back.Models.Domain.Fichas)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.GerarRenovacaoFichas(app_pm_back.Models.Domain.Fichas,System.Threading.CancellationToken)">
             <summary>
             Busca todas as Fichas, Notas ou Ordens para preencher a tabela de Dados Renovacao
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "T:app_pm_back.Controllers.FichasControllers.FichasController" -->
-        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.SynchronizeApm">
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.SynchronizeApm(System.Threading.CancellationToken)">
             <summary>
             Sincroniza as fichas do PM com os ativos do APM
             </summary>
@@ -654,7 +667,7 @@
             Classifica as Ambas, Fichas ou Ordens usando a IA catboost
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.UploadPlanilha(Microsoft.AspNetCore.Http.IFormFile,System.Boolean,System.Boolean)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.UploadPlanilha(Microsoft.AspNetCore.Http.IFormFile,System.Boolean,System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Faz o upload e processamento de planilhas de Notas, Ordens ou Itens
             </summary>
@@ -1396,6 +1409,21 @@
         <member name="M:app_pm_back.Data.DatabaseExceptionInterceptor.SaveChangesFailedAsync(Microsoft.EntityFrameworkCore.Diagnostics.DbContextErrorEventData,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
+        <member name="T:app_pm_back.Data.DesignTimeUserContext">
+            <summary>
+            Contexto falso para o terminal
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Data.SqlServerDbContextFactory">
+            <summary>
+            Fábrica de contexto para o terminal
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Data.PostgresDbContextFactory">
+            <summary>
+            Fábrica de contexto para o terminal
+            </summary>
+        </member>
         <member name="T:app_pm_back.Data.DbInitializer">
             <summary>
             Classe para inicializar o banco de dados.
@@ -1684,9 +1712,9 @@
             Permissoes (lista serializada ou descricao textual).
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioDto.IdEscopo">
+        <member name="P:app_pm_back.DTO.UsuarioDto.Escopos">
             <summary>
-            Escopo externo (apenas o ID).
+            Lista de escopos aos quais o usuário tem acesso.
             </summary>
         </member>
         <member name="M:app_pm_back.DTO.ReliabilityService.SyncLi">
@@ -1702,7 +1730,7 @@
         </member>
         <member name="P:app_pm_back.Models.BuscaOrdemNotaDto.StatusNota">
             <summary>
-            Status da nota
+            StatusFichas da nota
             </summary>
             <example>Aberta</example>
         </member>
@@ -1742,27 +1770,11 @@
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.CategoriaTipoManutencao">
-             <summary>
-             Categoria da estrategia.
-             </summary>
-             public enum CategoriaTipoEstrategia
-             {
-            Manutencao = 0,
-            Renovacao = 1
-            }
             <summary>
             Tipo de tipo de manutencao/plano.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.UnidadeCiclo">
-            <summary>
-            Tipo de tipo de manutencao/plano.
-            </summary>
-            public enum TipoTipo
-            {
-            Manutencao = 0,
-            Renovacao = 1
-            }
             <summary>
             Unidade do ciclo.
             </summary>
@@ -1795,6 +1807,26 @@
         <member name="T:app_pm_back.Models.Domain.MetodoClassificacao">
             <summary>
             Representa o método utilizado para uma classificação.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.StatusFichas">
+            <summary>
+            Status atual das fichas geradas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.Fichas">
+            <summary>
+            Tipo de fichas a serem geradas durante a busca de fichas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.NivelPermissao">
+            <summary>
+            Define se um usuário é Admin ou não. ADICIONAR MAIS NÍVEIS DEPOIS
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.PermissoesTabela">
+            <summary>
+            A quais tipos de tabela um usuário terá acesso 
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.DadosRenovacaoModel">
@@ -2309,7 +2341,7 @@
         <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.Categoria">
             <summary>
             Categoria descritiva do plano.
-            Exemplo: "Manutenção ou renovação ou cep"
+            Exemplo: "Manutenção ou renovação"
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.TipoPlanoModel.IdTipoEstrategia">
@@ -2554,7 +2586,7 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.StatusNota">
             <summary>
-            Status atual da nota no fluxo de trabalho.
+            StatusFichas atual da nota no fluxo de trabalho.
             Permite rastreamento do ciclo de vida da ocorrência.
             </summary>
             <example>"Pendente", "Em Andamento", "Aguardando Peças", "Concluída", "Cancelada"</example>
@@ -2729,7 +2761,7 @@
             Permite rastreamento da execução e desdobramentos da ocorrência.
             </summary>
             <example>
-            Ordens.Add(new OrdemModel { NumeroOrdem = "OS-2024-001", Status = "Aberta" });
+            Ordens.Add(new OrdemModel { NumeroOrdem = "OS-2024-001", StatusFichas = "Aberta" });
             </example>
         </member>
         <member name="T:app_pm_back.Models.Domain.VariavelNotaModel">
@@ -2854,7 +2886,7 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.StatusOrdem">
             <summary>
-            Status atual da ordem de trabalho no fluxo de execução.
+            StatusFichas atual da ordem de trabalho no fluxo de execução.
             Indica o estado operacional da ordem para controle de workflow.
             </summary>
             <example>Aberta, Em Andamento, Aguardando Peças, Concluída, Cancelada</example>
@@ -3049,7 +3081,7 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Status">
             <summary>
-            Status atual do almoxarifado (ex: Ativo, Inativo).
+            StatusFichas atual do almoxarifado (ex: Ativo, Inativo).
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Descricao">
@@ -3379,12 +3411,17 @@
         <member name="P:app_pm_back.Models.Domain.UsuarioModel.Permissoes">
             <summary>
             Lista de permissões serializada ou descrição de acessos.
-            Exemplo: "ADMIN,USER_READ".
+            Exemplo: 7 -> NOTAS | ORDENS | ITENS.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.UsuarioModel.IdEscopo">
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.NivelPermissao">
             <summary>
-            Identificador do escopo ao qual o usuário pertence.
+            Nível de permissão do usuário no sistema.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.Escopos">
+            <summary>
+            Lista de escopos aos quais o usuário tem acesso.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.UsuarioModel.Notas">
@@ -3494,16 +3531,28 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
+        <member name="T:app_pm_back.Migrations.InitialPostgres">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:app_pm_back.Migrations.PostgresMigration.UpdateEscopoToLongAndList">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.UpdateEscopoToLongAndList.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.UpdateEscopoToLongAndList.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.UpdateEscopoToLongAndList.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
@@ -3516,6 +3565,18 @@
             <inheritdoc />
         </member>
         <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:app_pm_back.Migrations.SqlServerMigrations.UpdateEscopoToLongAndList">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.UpdateEscopoToLongAndList.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.UpdateEscopoToLongAndList.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.UpdateEscopoToLongAndList.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Services.AnnexService">
@@ -3532,7 +3593,7 @@
             <summary>
             Executa a ação correspondente.
             </summary>
-            <param name="file">Parâmetro do método.</param>
+            <param name="file">Arquivo a ser armazen.</param>
             <param name="tipoReferencia">Parâmetro do método.</param>
             <param name="categoria">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
@@ -3641,6 +3702,19 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.UsuarioTemAcesso(app_pm_back.Models.Domain.UsuarioModel,app_pm_back.Models.Domain.PermissoesTabela)">
+            <summary>
+            Verifica se o usuário tem acesso a uma tabela específica
+            </summary>
+            <param name="usuario">Usuário a ser verificado</param>
+            <param name="tabelaRequerida">Tabela a ser verificada</param>
+            <returns>Boolean de se o usuário tem ou não acesso à tabela</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Extensions.QueryExtensions.AplicarOrdenacao``1(System.Linq.IQueryable{``0},Microsoft.EntityFrameworkCore.DbContext)">
+            <summary>
+            Aplica uma ordenação padrão a uma consulta com base na chave primária da entidade.
+            </summary>
+        </member>
         <member name="M:app_pm_back.Services.ExternIntegrationService.#ctor(System.Net.Http.HttpClient)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ExternIntegrationService"/>.
@@ -3677,7 +3751,7 @@
             <param name="externIntegrationService"></param>
             <param name="logger"></param>
         </member>
-        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.SynchronizeAPMAsync">
+        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.SynchronizeAPMAsync(System.Threading.CancellationToken)">
             <summary>
             Sincroniza os dados de APM (Asset Performance Management) com as notas e ordens de serviço do sistema.
             </summary>
@@ -3737,7 +3811,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.FichasServices.DadosRenovacaoService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ImportarDadosNotaAsync(System.Collections.Generic.List{System.Int64},System.Collections.Generic.List{System.Int64})">
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ImportarDadosNotaAsync(System.Collections.Generic.List{System.Int64},System.Collections.Generic.List{System.Int64},System.Threading.CancellationToken)">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -3746,7 +3820,7 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ImportarDadosOrdemAsync(System.Collections.Generic.List{System.Int64})">
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ImportarDadosOrdemAsync(System.Collections.Generic.List{System.Int64},System.Threading.CancellationToken)">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -4004,7 +4078,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.ItemNotaService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.ItemNotaService.ImportarItensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.ItemNotaModel})">
+        <member name="M:app_pm_back.Services.Manutencao.ItemNotaService.ImportarItensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.ItemNotaModel},System.Threading.CancellationToken)">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -4027,7 +4101,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.NotaManutencaoService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.ImportarNotasEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel},System.Boolean,System.Boolean)">
+        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.ImportarNotasEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel},System.Boolean,System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -4050,7 +4124,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.OrdemService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ImportarOrdensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel},System.Boolean,System.Boolean)">
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ImportarOrdensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel},System.Boolean,System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -4318,7 +4392,7 @@
             Obtém ou define o valor de Itens.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.SpreadsheetService.ReadNotasSpreadSheetAsync(Microsoft.AspNetCore.Http.IFormFile)">
+        <member name="M:app_pm_back.Services.SpreadsheetService.ReadNotasSpreadSheetAsync(Microsoft.AspNetCore.Http.IFormFile,System.Threading.CancellationToken)">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -4367,14 +4441,14 @@
             Classe ConvertService.
             </summary>
         </member>
-        <member name="M:api.Communications.Service.Impl.Data.ConvertService.ConvertXlsxStreamToCsvFileAsync(System.IO.Stream,System.String,System.Int32,System.Char,System.Boolean,System.Boolean,System.Int32)">
+        <member name="M:api.Communications.Service.Impl.Data.ConvertService.ConvertXlsxStreamToCsvFileAsync(System.IO.Stream,System.String,System.Int32,System.Char,System.Boolean,System.Boolean,System.Int32,System.Threading.CancellationToken)">
             <summary>
             Converte xlsx para um arquivo csv.
             </summary>
             <param name="xlsxStream">Stream xlsx.</param>
             <param name="csvPath">Caminho do csv.</param>
         </member>
-        <member name="M:api.Communications.Service.Impl.Data.ConvertService.ConvertXlsxStreamToCsvStreamAsync(System.IO.Stream,System.IO.Stream,System.Text.Encoding,System.Int32,System.Char,System.Boolean,System.Int32,System.Boolean)">
+        <member name="M:api.Communications.Service.Impl.Data.ConvertService.ConvertXlsxStreamToCsvStreamAsync(System.IO.Stream,System.IO.Stream,System.Text.Encoding,System.Int32,System.Char,System.Boolean,System.Int32,System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Converte xlsx para csv stream.
             </summary>

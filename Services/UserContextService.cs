@@ -13,7 +13,7 @@ public class UserContextService : IUserContext
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public int? GetEscopoAtual()
+    public long? GetEscopoAtual()
     {
         // verifica se existe uma requisição HTTP ativa
         var user = _httpContextAccessor.HttpContext?.User;
@@ -25,7 +25,7 @@ public class UserContextService : IUserContext
         // dps substituir IdEscopo pelo nome exato gerado
         var claimEscopo = user.FindFirst("IdEscopo"); 
         
-        if (claimEscopo != null && int.TryParse(claimEscopo.Value, out int escopoId))
+        if (claimEscopo != null && long.TryParse(claimEscopo.Value, out long escopoId))
         {
             return escopoId;
         }

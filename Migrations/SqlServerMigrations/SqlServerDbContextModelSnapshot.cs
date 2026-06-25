@@ -150,7 +150,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("StatusFichas")
+                    b.Property<string>("Status")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -625,9 +625,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Escopo")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<long?>("Escopo")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("FimDesejado")
                         .HasColumnType("datetime2");
@@ -782,9 +781,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Escopo")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<long?>("Escopo")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("FimPlanejado")
                         .HasColumnType("datetime2");
@@ -1079,16 +1077,19 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<long?>("IdEscopo")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Escopos")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NivelPermissao")
+                        .HasColumnType("int");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("Permissoes")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                    b.Property<int?>("Permissoes")
+                        .HasColumnType("int");
 
                     b.HasKey("IdUsuario");
 

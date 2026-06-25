@@ -2,7 +2,7 @@ namespace app_pm_back.Interfaces;
 
 public interface IUserContext
 {
-    int? GetEscopoAtual();
+    long? GetEscopoAtual();
 
     int? GetUsuarioIdAtual();
 }

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using app_pm_back.Models.Domain;
 using app_pm_back.DTO;
+using app_pm_back.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -11,8 +12,11 @@ namespace app_pm_back.Data;
 /// </summary>
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions options) : base(options)
+    private readonly IUserContext _userContext;
+    
+    public AppDbContext(DbContextOptions options, IUserContext userContext) : base(options)
     {
+        _userContext = userContext;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -119,6 +123,16 @@ public class AppDbContext : DbContext
                     j.HasKey("IdCTM", "IdUsuario");
                     j.ToTable("PM_CtmUsuario");
                 });
+        
+        // FILTROS DE ESCOPO
+        // TODO: arrumar escopos para funcionar com as permissões do EF Core
+        
+        modelBuilder.Entity<UsuarioModel>().HasQueryFilter(e => e.Escopos.Contains(_userContext.GetEscopoAtual() ?? 0));
+        modelBuilder.Entity<NotaModel>().HasQueryFilter(e => e.Escopo == _userContext.GetEscopoAtual());
+        modelBuilder.Entity<OrdemModel>().HasQueryFilter(e => e.Escopo == _userContext.GetEscopoAtual());
+        modelBuilder.Entity<CpmModel>().HasQueryFilter(e => e.IdEscopo == _userContext.GetEscopoAtual());
+        modelBuilder.Entity<AlmoxarifadoModel>().HasQueryFilter(e => e.IdEscopo == _userContext.GetEscopoAtual());
+        modelBuilder.Entity<FerramentaModel>().HasQueryFilter(e => e.IdEscopo == _userContext.GetEscopoAtual());
 
     }
 
@@ -149,7 +163,7 @@ public class AppDbContext : DbContext
 
 public class SqlServerDbContext : AppDbContext
 {
-    public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options) : base(options)
+    public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options, IUserContext userContext) : base(options, userContext)
     {
     }
 
@@ -185,12 +199,17 @@ public class SqlServerDbContext : AppDbContext
             .Property(e => e.IdsOrdens)
             .HasConversion(longListConverter)
             .HasColumnType("nvarchar(max)");
+
+        modelBuilder.Entity<UsuarioModel>()
+            .Property(e => e.Escopos)
+            .HasConversion(longListConverter)
+            .HasColumnType("nvarchar(max)");
     }
 }
 
 public class PostgresDbContext : AppDbContext
 {
-    public PostgresDbContext(DbContextOptions<PostgresDbContext> options) : base(options)
+    public PostgresDbContext(DbContextOptions<PostgresDbContext> options, IUserContext userContext) : base(options, userContext)
     {
     }
 

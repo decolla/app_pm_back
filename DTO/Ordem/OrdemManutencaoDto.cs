@@ -58,7 +58,7 @@ public class OrdemManutencaoDto
 
     public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
 
-    [SheetColumn("Escopo")] public string? Escopo { get; set; } = "N/A";
+    [SheetColumn("Escopo")] public long? Escopo { get; set; }
 }
 
 #pragma warning restore CS1591
