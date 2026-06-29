@@ -54,15 +54,6 @@ public enum Visivel
 }
 
 /// <summary>
-/// Categoria da estrategia.
-/// </summary>
-/// public enum CategoriaTipoEstrategia
-/// {
-    ///Manutencao = 0,
-    ///Renovacao = 1
-///}
-
-/// <summary>
 /// Tipo de tipo de manutencao/plano.
 /// </summary>
 public enum CategoriaTipoManutencao
@@ -70,15 +61,6 @@ public enum CategoriaTipoManutencao
     Manutencao = 0,
     Renovacao = 1
 }
-
-/// <summary>
-/// Tipo de tipo de manutencao/plano.
-/// </summary>
-/// public enum TipoTipo
-/// {
-    /// Manutencao = 0,
-    /// Renovacao = 1
-/// }
 
 /// <summary>
 /// Unidade do ciclo.
@@ -201,7 +183,7 @@ public enum Fichas
 public enum NivelPermissao
 {
     Usuario = 0, 
-    ADM = 1
+    Adm = 1
 }
 
 /// <summary>

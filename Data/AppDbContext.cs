@@ -1,6 +1,7 @@
 using System.Text.Json;
 using app_pm_back.Models.Domain;
 using app_pm_back.DTO;
+using app_pm_back.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -11,13 +12,15 @@ namespace app_pm_back.Data;
 /// </summary>
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions options) : base(options)
+    private readonly IUserContext _userContext;
+
+    public AppDbContext(DbContextOptions options, IUserContext userContext) : base(options)
     {
+        _userContext = userContext;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
         base.OnModelCreating(modelBuilder);
 
         // configura as chaves primárias
@@ -56,7 +59,8 @@ public class AppDbContext : DbContext
             .WithMany(f => f.Operacoes)
             .UsingEntity<Dictionary<string, object>>(
                 "FerramentasOperacoes",
-                j => j.HasOne<FerramentaModel>().WithMany().HasForeignKey("IdFerramenta").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<FerramentaModel>().WithMany().HasForeignKey("IdFerramenta")
+                    .OnDelete(DeleteBehavior.Cascade),
                 j => j.HasOne<OperacaoModel>().WithMany().HasForeignKey("IdOperacao").OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
@@ -71,7 +75,8 @@ public class AppDbContext : DbContext
             .UsingEntity<Dictionary<string, object>>(
                 "AlmoxarifadoUsuario",
                 j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<AlmoxarifadoModel>().WithMany().HasForeignKey("IdAlmoxarifado").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<AlmoxarifadoModel>().WithMany().HasForeignKey("IdAlmoxarifado")
+                    .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
                     j.HasKey("IdAlmoxarifado", "IdUsuario");
@@ -120,6 +125,21 @@ public class AppDbContext : DbContext
                     j.ToTable("PM_CtmUsuario");
                 });
 
+        // FILTROS DE ESCOPO
+        // TODO: arrumar escopos para funcionar com as permissões do EF Core
+
+        modelBuilder.Entity<UsuarioModel>().HasQueryFilter(e =>
+            e.Escopos.Any(escopoBanco => _userContext.GetEscoposDoUsuario().Contains(escopoBanco)));
+        modelBuilder.Entity<NotaModel>().HasQueryFilter(e =>
+            e.Escopo != null && _userContext.GetEscoposDoUsuario().Contains(e.Escopo.Value));
+        modelBuilder.Entity<OrdemModel>().HasQueryFilter(e =>
+            e.Escopo != null && _userContext.GetEscoposDoUsuario().Contains(e.Escopo.Value));
+        modelBuilder.Entity<CpmModel>().HasQueryFilter(e =>
+            e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
+        modelBuilder.Entity<AlmoxarifadoModel>().HasQueryFilter(e =>
+            e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
+        modelBuilder.Entity<FerramentaModel>().HasQueryFilter(e =>
+            e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
     }
 
     public DbSet<TipoManutencaoModel> PM_TiposManutencao { get; set; }
@@ -144,12 +164,13 @@ public class AppDbContext : DbContext
     public DbSet<AnexoOrdemModel> PM_AnexosOrdem { get; set; }
     public DbSet<DadosRenovacaoModel> PM_DadosRenovacao { get; set; }
     public DbSet<ReliabilityModel> PM_Reliability { get; set; }
-    public DbSet<RuleClassificationDto> PM_ClassificationRules { get; set; }
+    public DbSet<AuditoriaModel> PM_Auditorias { get; set; }
 }
 
 public class SqlServerDbContext : AppDbContext
 {
-    public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options) : base(options)
+    public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options, IUserContext userContext) : base(options,
+        userContext)
     {
     }
 
@@ -171,26 +192,24 @@ public class SqlServerDbContext : AppDbContext
             .HasConversion(converter)
             .HasColumnType("nvarchar(max)");
 
-        var longListConverter = new ValueConverter<List<long>?, string>(
-            v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-            v => JsonSerializer.Deserialize<List<long>>(v, (JsonSerializerOptions?)null) ?? new List<long>()
-        );
-
         modelBuilder.Entity<ReliabilityModel>()
             .Property(e => e.IdsNotas)
-            .HasConversion(longListConverter)
             .HasColumnType("nvarchar(max)");
 
         modelBuilder.Entity<ReliabilityModel>()
             .Property(e => e.IdsOrdens)
-            .HasConversion(longListConverter)
+            .HasColumnType("nvarchar(max)");
+
+        modelBuilder.Entity<UsuarioModel>()
+            .Property(e => e.Escopos)
             .HasColumnType("nvarchar(max)");
     }
 }
 
 public class PostgresDbContext : AppDbContext
 {
-    public PostgresDbContext(DbContextOptions<PostgresDbContext> options) : base(options)
+    public PostgresDbContext(DbContextOptions<PostgresDbContext> options, IUserContext userContext) : base(options,
+        userContext)
     {
     }
 
@@ -198,8 +217,5 @@ public class PostgresDbContext : AppDbContext
     {
         // aplica as configurações globais primeiro
         base.OnModelCreating(modelBuilder);
-        
-
-        
     }
 }

@@ -61,9 +61,9 @@ var databaseSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
 
 if (databaseSchema == "cg")
 {
-    var connectionString = builder.Configuration.GetConnectionString("DBConnection") 
+    var connectionString = builder.Configuration.GetConnectionString("DBConnection")
                            ?? builder.Configuration.GetConnectionString("DefaultConnection");
-                          
+
     // ef core para sql server
     builder.Services.AddDbContext<AppDbContext, SqlServerDbContext>(options =>
         options.UseSqlServer(connectionString));
@@ -78,7 +78,7 @@ if (databaseSchema == "cg")
 else
 {
     var targetSchema = string.IsNullOrWhiteSpace(databaseSchema) ? "public" : databaseSchema;
-    var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION") 
+    var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION")
                            ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
     // criar o construtor da fonte de dados do PostgreSQL
@@ -86,33 +86,33 @@ else
 
     // dar permissão para JSON dinâmico
     dataSourceBuilder.EnableDynamicJson();
-    
+
     //Força o search path a usar o targetschema em todas as conexxões
     dataSourceBuilder.ConnectionStringBuilder["options"] = $"-c search_path=\"{targetSchema}\",public";
-
 
     // criar a fonte de dados
     var dataSource = dataSourceBuilder.Build();
 
     // adicionar o contexto do PostgreSQL
-    builder.Services.AddDbContext<AppDbContext, PostgresDbContext>(options =>
+    builder.Services.AddDbContext<AppDbContext, PostgresDbContext>((sp, options) =>
     {
-        options.UseNpgsql(dataSource, npgsqlOptions => 
-        {
-            npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", targetSchema);
-        });
+        options.UseNpgsql(dataSource,
+                npgsqlOptions => { npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", targetSchema); })
+            .AddInterceptors(
+                new DatabaseExceptionInterceptor(),
+                new AuditInterceptor(sp.GetRequiredService<IUserContext>()));
     });
-    
+
     // config hangfire 
     builder.Services.AddHangfire(config => config
         .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
         .UseSimpleAssemblyNameTypeSerializer()
         .UseRecommendedSerializerSettings()
-        .UsePostgreSqlStorage(c => 
-                c.UseNpgsqlConnection(connectionString), 
-            new PostgreSqlStorageOptions 
+        .UsePostgreSqlStorage(c =>
+                c.UseNpgsqlConnection(connectionString),
+            new PostgreSqlStorageOptions
             {
-                SchemaName = targetSchema 
+                SchemaName = targetSchema
             }));
 }
 
@@ -185,8 +185,8 @@ builder.Services.AddHttpClient<ReliabilityService>(client =>
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-var modelPath = Path.Combine(AppContext.BaseDirectory, "Data", "catboost_model.cbm");
-var metaPath = Path.Combine(AppContext.BaseDirectory, "Data", "model_meta.json");
+var modelPath = Path.Combine(AppContext.BaseDirectory, "CatBoost", "catboost_model.cbm");
+var metaPath = Path.Combine(AppContext.BaseDirectory, "CatBoost", "model_meta.json");
 
 // verifica se os ficheiros existem antes de tentar ler (evita crash no 'dotnet ef')
 if (File.Exists(metaPath) && File.Exists(modelPath))
@@ -224,7 +224,7 @@ using (var scope = app.Services.CreateScope())
     {
         var dbContext = services.GetRequiredService<AppDbContext>();
         var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
-        
+
         if (dbSchema == "cg")
         {
             Console.WriteLine("Ambiente 'cg' detectado. A tentar criar o banco de dados e as tabelas...");
@@ -236,7 +236,7 @@ using (var scope = app.Services.CreateScope())
             Console.WriteLine("PostgreSQL detectado. A tentar aplicar as migrations no banco de dados...");
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
             // dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
-            
+
             // Garante que a conexão é aberta com o search_path configurado antes do Migrate()
             var conn = dbContext.Database.GetDbConnection();
             await conn.OpenAsync();
@@ -264,7 +264,7 @@ app.UseHangfireDashboard();
 RecurringJob.AddOrUpdate<app_pm_back.Jobs.ManutencaoGeneratorJob>(
     "gerador-fichas",
     service => service.RunDailyRoutine(),
-    Cron.Daily(2,0));
+    Cron.Daily(2, 0));
 
 // captura erros
 app.UseMiddleware<GlobalExceptionMiddleware>();
@@ -275,13 +275,13 @@ app.UseSwagger(c =>
     {
         // Intercepta o cabeçalho enviado pelo seu Ingress do Kubernetes
         var basePath = httpReq.Headers["X-Forwarded-Prefix"].FirstOrDefault();
-        
+
         if (!string.IsNullOrEmpty(basePath))
         {
             // Ajusta a URL base do servidor dinamicamente
-            swaggerDoc.Servers = new List<OpenApiServer> 
-            { 
-                new OpenApiServer { Url = basePath } 
+            swaggerDoc.Servers = new List<OpenApiServer>
+            {
+                new OpenApiServer { Url = basePath }
             };
         }
     });

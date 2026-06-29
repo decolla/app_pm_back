@@ -50,11 +50,11 @@ public class AutoMapperProfile : Profile
  .ForMember(dest => dest.AcoesFalha, opt => opt.MapFrom(src => src.AcoesFalha));
 
  CreateMap<UsuarioDto, UsuarioModel>()
- .ForMember(dest => dest.IdUsuario, opt => opt.MapFrom(src => src.IdUsuario))
- .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome))
- .ForMember(dest => dest.CPF, opt => opt.MapFrom(src => src.Cpf))
- .ForMember(dest => dest.Permissoes, opt => opt.MapFrom(src => src.Permissoes))
- .ForMember(dest => dest.IdEscopo, opt => opt.MapFrom(src => src.IdEscopo));
+  .ForMember(dest => dest.IdUsuario, opt => opt.MapFrom(src => src.IdUsuario))
+  .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome))
+  .ForMember(dest => dest.CPF, opt => opt.MapFrom(src => src.Cpf))
+  .ForMember(dest => dest.Permissoes, opt => opt.MapFrom(src => src.Permissoes))
+  .ForMember(dest => dest.Escopos, opt => opt.MapFrom(src => src.Escopos));
 
  CreateMap<ImobilizadoDto, ImobilizadoModel>()
  .ForMember(dest => dest.IdImobilizado, opt => opt.MapFrom(src => src.IdImobilizado ?? 0))

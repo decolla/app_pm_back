@@ -1,0 +1,49 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace app_pm_back.Models.Domain;
+
+public class AuditoriaModel
+{
+    /// <summary>
+    /// Identificador da auditoria
+    /// </summary>
+    [Key]
+    public long IdAuditoria { get; set; }
+
+    /// <summary>
+    /// O Id de quem fez a alteração.
+    /// </summary>
+    public int? IdUsuario { get; set; } 
+    
+    /// <summary>
+    /// Nome da tabela que foi alterada.
+    /// </summary>
+    [MaxLength(100)]
+    public string NomeTabela { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Ação realizada na tabela.
+    /// </summary>
+    [MaxLength(20)]
+    public string Acao { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// O valor da chave primária do registro alterado.
+    /// </summary>
+    public string ChavePrimaria { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// JSON com os valores antigos e novos.
+    /// </summary>
+    public string? ValoresAntigos { get; set; }
+    
+    /// <summary>
+    /// JSON com os valores novos.
+    /// </summary>
+    public string? ValoresNovos { get; set; } 
+    
+    /// <summary>
+    /// Data que ocorreu tal alteração.
+    /// </summary>
+    public DateTime DataAlteracao { get; set; } = DateTime.UtcNow;
+}

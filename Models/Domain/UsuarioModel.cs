@@ -40,9 +40,9 @@ public class UsuarioModel
     public NivelPermissao? NivelPermissao { get; set; } = Domain.NivelPermissao.Usuario;
 
     /// <summary>
-    /// Identificador do escopo ao qual o usuário pertence.
+    /// Lista de escopos aos quais o usuário tem acesso.
     /// </summary>
-    public long? IdEscopo { get; set; }
+    public List<long> Escopos { get; set; } = new List<long>();
 
     /// <summary>
     /// Coleção de notas associadas ao usuário.

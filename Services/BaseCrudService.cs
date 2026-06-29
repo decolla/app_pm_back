@@ -214,7 +214,7 @@ public abstract class BaseCrudService<T> where T : class
     public bool UsuarioTemAcesso(UsuarioModel usuario, PermissoesTabela tabelaRequerida)
     {
         // se for ADM, tem passe livre em tudo
-        if (usuario.NivelPermissao == NivelPermissao.ADM)
+        if (usuario.NivelPermissao == NivelPermissao.Adm)
             return true;
         
         return usuario.Permissoes.HasValue && (usuario.Permissoes.Value & tabelaRequerida) == tabelaRequerida;

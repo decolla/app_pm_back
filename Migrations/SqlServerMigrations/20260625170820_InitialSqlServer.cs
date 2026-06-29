@@ -171,8 +171,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     CPF = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    Permissoes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    IdEscopo = table.Column<long>(type: "bigint", nullable: true)
+                    Permissoes = table.Column<int>(type: "int", nullable: true),
+                    NivelPermissao = table.Column<int>(type: "int", nullable: true),
+                    Escopos = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -364,7 +365,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     CriadaPorUsuario = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     ModificadaPorUsuario = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     DataModificacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Escopo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Escopo = table.Column<long>(type: "bigint", nullable: true),
                     IdPlano = table.Column<long>(type: "bigint", nullable: true),
                     IdUsuario = table.Column<long>(type: "bigint", nullable: true),
                     IdAtivo = table.Column<int>(type: "int", nullable: true),
@@ -544,7 +545,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     CriadaPorUsuario = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     ModificadaPorUsuario = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     DataModificacao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Escopo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Escopo = table.Column<long>(type: "bigint", nullable: true),
                     IdAtivo = table.Column<int>(type: "int", nullable: true),
                     IdLi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     DnsIot = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),

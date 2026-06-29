@@ -40,6 +40,9 @@
         <None Update="CatBoost\libcatboostmodel.so"> <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
+        <None Update="CatBoost\catboost_model.cbm">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -56,6 +59,10 @@
       <Content Remove="app_pm_back.Tests\**" />
       <EmbeddedResource Remove="app_pm_back.Tests\**" />
       <None Remove="app_pm_back.Tests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Migrations\" />
     </ItemGroup>
 
 </Project>

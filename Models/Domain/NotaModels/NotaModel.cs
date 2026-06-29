@@ -23,7 +23,7 @@ namespace app_pm_back.Models.Domain;
 ///     IdAtivo = 150
 /// };
 /// </example>
-public class NotaModel : IClassifiable
+public class NotaModel : IClassifiable, IAuditable
 {
     #region Identificação e Controle
 
@@ -246,8 +246,7 @@ public class NotaModel : IClassifiable
     /// <summary>
     /// O escopo da nota/pordem
     /// </summary>
-    [MaxLength(100, ErrorMessage = "O escopo não pode exceder 100 caracteres.")]
-    public string? Escopo { get; set; } = "N/A";
+    public long? Escopo { get; set; }
 
     /// <summary>
     /// Chave estrangeira para o plano de manutenção associado.

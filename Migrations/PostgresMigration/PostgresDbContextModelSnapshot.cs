@@ -10,7 +10,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations
+namespace app_pm_back.Migrations.PostgresMigration
 {
     [DbContext(typeof(PostgresDbContext))]
     partial class PostgresDbContextModelSnapshot : ModelSnapshot
@@ -626,9 +626,8 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("Escopo")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                    b.Property<long?>("Escopo")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("FimDesejado")
                         .HasColumnType("timestamp without time zone");
@@ -783,9 +782,8 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("Escopo")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                    b.Property<long?>("Escopo")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("FimPlanejado")
                         .HasColumnType("timestamp without time zone");
@@ -1080,8 +1078,12 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<long?>("IdEscopo")
-                        .HasColumnType("bigint");
+                    b.Property<List<long>>("Escopos")
+                        .IsRequired()
+                        .HasColumnType("bigint[]");
+
+                    b.Property<int?>("NivelPermissao")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(150)
