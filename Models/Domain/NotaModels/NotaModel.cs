@@ -56,6 +56,13 @@ public class NotaModel : IClassifiable
     public DateTime? DataNota { get; set; }
     
     /// <summary>
+    /// Data e hora de criação da nota no sistema.
+    /// Registra quando a ocorrência foi reportada ou documentada.
+    /// </summary>
+    /// <example>2024-01-15T14:30:00</example>
+    public DateTime? DataFim{ get; set; }
+    
+    /// <summary>
     /// Tipo da nota que define a natureza da manutenção ou ocorrência.
     /// Campo obrigatório para categorização primária da nota.
     /// </summary>
