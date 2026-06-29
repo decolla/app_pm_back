@@ -14,6 +14,8 @@ public class VariavelNotaDto
 
     [SheetColumn("Nota")] public long? IdNota { get; set; }
 
+    [SheetColumn("Nome variavel")] public string NomeVariavel { get; set; } = string.Empty;
+
     [SheetColumn("Valor numerico")] public double? ValorNumerico { get; set; }
 
     [SheetColumn("Unidade medida")] public string? UnidadeMedida { get; set; }

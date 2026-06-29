@@ -57,6 +57,16 @@
             <response code="400">ID fornecido inválido.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
+        <member name="M:app_pm_back.Controllers.AnexosController.DeletarAnexo(System.Int64)">
+            <summary>
+            Exclui um anexo pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do anexo.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o anexo.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Anexo não encontrado.</response>
+        </member>
         <member name="M:app_pm_back.Controllers.AnexosController.TryResolveReferencia(app_pm_back.DTO.UploadAnnexRequestDto,System.Nullable{System.Int64}@,System.Nullable{System.Int64}@,System.String@)">
             <summary>
             Função auxiliar para identificar o tipo da referência.
@@ -870,6 +880,70 @@
             <response code="200">Sucesso ao classificar.</response>
             <response code="400">Erros na validação do usuário ou ID informado inválido.</response>
             <response code="404">Registro não encontrado.</response>
+        </member>
+        <member name="T:app_pm_back.Controllers.VariaveisController">
+            <summary>
+            Classe VariaveisController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.VariaveisController.#ctor(app_pm_back.Services.Manutencao.VariavelNotaService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.VariaveisController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.VariaveisController.CriarVariavel(app_pm_back.DTO.VariavelNotaDto)">
+            <summary>
+            Cria um novo registro de variável.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.VariaveisController.ListarVariaveis(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros de variáveis cadastrados com paginação.
+            </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.VariaveisController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.VariaveisController.ContarVariaveis">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.VariaveisController.AtualizarVariavel(System.Int64,app_pm_back.DTO.VariavelNotaDto)">
+            <summary>
+            Atualiza um registro de variável existente.
+            </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.VariaveisController.DeletarVariavel(System.Int64)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
         <member name="T:app_pm_back.Controllers.OrdensController">
             <summary>
@@ -3618,6 +3692,16 @@
             <param name="categoria">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
+        <member name="M:app_pm_back.Services.AnnexService.DeleteAnexo(System.Int64)">
+            <summary>
+            Deleta um anexo pelo seu identificador.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.AnnexService.UpdateAnexo(System.Int64,Microsoft.AspNetCore.Http.IFormFile,System.Nullable{app_pm_back.Models.Domain.CategoriaAnexo})">
+            <summary>
+            Atualiza um anexo pelo seu identificador.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Services.BaseCrudService`1">
             <summary>
             Classe BaseCrudService.
@@ -4296,6 +4380,16 @@
             <param name="atualizado">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.VariavelNotaService">
+            <summary>
+            Classe VariavelNotaService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.VariavelNotaService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.VariavelNotaService"/>.
+            </summary>
         </member>
         <member name="M:app_pm_back.Services.IReportService.CriticalException(app_pm_back.Models.Status)">
             <summary>

@@ -127,6 +127,7 @@ builder.Services.AddScoped<GenericSearchService>();
 builder.Services.AddScoped<NotaManutencaoService>();
 builder.Services.AddScoped<OrdemService>();
 builder.Services.AddScoped<ItemNotaService>();
+builder.Services.AddScoped<VariavelNotaService>();
 builder.Services.AddScoped<PlanoManutencaoService>();
 builder.Services.AddScoped<EstrategiaService>();
 builder.Services.AddScoped<TipoEstrategiaService>();

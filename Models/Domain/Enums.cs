@@ -208,3 +208,31 @@ public enum PermissoesTabela
     // combinação de todas as permissões
     Tudo = Notas | Ordens | Itens | Gpms | Ctms | Cpms | Almoxarifados | Planos | Estrategias | TiposManutencao
 }
+
+// ======================= CONFIGURAÇÕES GLOBAIS ==========================
+
+public enum OrigemFichasConfiabilidade
+{
+    ApenasConfirmadasUsuario = 1,
+    ConsiderarTambemAlgoritmo = 2
+}
+
+public enum ModoClassificacaoAutomatica
+{
+    NaoClassificar = 0,
+    ClassificarCatBoost = 1,
+    ClassificarPalavrasChave = 2
+}
+
+public enum CriterioDataRenovacao
+{
+    ApenasFichasPreventivas = 1,
+    ApenasFichasCorretivas = 2,
+    ConsiderarTodasClassificacoes = 3
+}
+
+public enum CriterioConfiabilidadeRenovacao
+{
+    ApenasRenovacoesConfirmadasUsuario = 1,
+    ConsiderarTambemAlgoritmo = 2
+}

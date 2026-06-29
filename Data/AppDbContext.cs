@@ -45,6 +45,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<OrdemModel>().HasKey(e => e.IdOrdem);
         modelBuilder.Entity<AnexoOrdemModel>().HasKey(e => e.IdAnexoOrdem);
         modelBuilder.Entity<DadosRenovacaoModel>().HasKey(e => e.IdDados);
+        modelBuilder.Entity<ConfiguracaoGlobalModel>().HasKey(c => c.Id);
 
         // 1-to-1: CTM e GPM 
         modelBuilder.Entity<CtmModel>()
@@ -124,6 +125,16 @@ public class AppDbContext : DbContext
                     j.HasKey("IdCTM", "IdUsuario");
                     j.ToTable("PM_CtmUsuario");
                 });
+        
+        // adiciona um valor padrão inicial caso a tabela esteja vazia nas migrations
+        modelBuilder.Entity<ConfiguracaoGlobalModel>().HasData(new ConfiguracaoGlobalModel
+        {
+            Id = 1,
+            FichasConfiabilidade = OrigemFichasConfiabilidade.ApenasConfirmadasUsuario,
+            ClassificacaoAutomatica = ModoClassificacaoAutomatica.NaoClassificar,
+            CriterioDataRenovacao = CriterioDataRenovacao.ConsiderarTodasClassificacoes,
+            CriterioConfiabilidadeRenovacao = CriterioConfiabilidadeRenovacao.ApenasRenovacoesConfirmadasUsuario
+        });
 
         // FILTROS DE ESCOPO
         // TODO: arrumar escopos para funcionar com as permissões do EF Core

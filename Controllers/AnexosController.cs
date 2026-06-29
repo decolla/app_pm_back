@@ -94,6 +94,35 @@ public class AnexosController : ControllerBase
         return Ok(list);
     }
 
+        
+    /// <summary>
+    /// Exclui um anexo pelo seu identificador.
+    /// </summary>
+    /// <param name="id">Identificador exclusivo do anexo.</param>
+    /// <returns>Mensagem de confirmação da exclusão.</returns>
+    /// <response code="200">Sucesso ao deletar o anexo.</response>
+    /// <response code="400">ID fornecido inválido.</response>
+    /// <response code="404">Anexo não encontrado.</response>
+    [HttpDelete("{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeletarAnexo([FromRoute] long id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest(new { message = "Id do anexo inválido. Envie id maior que zero." });
+        }
+
+        var deleted = await _annexService.DeleteAnexo(id);
+        if (!deleted)
+        {
+            return NotFound(new { message = "Anexo não encontrado." });
+        }
+
+        return Ok(new { message = "Anexo deletado com sucesso." });
+    }
+        
     /// <summary>
     /// Função auxiliar para identificar o tipo da referência.
     /// </summary>

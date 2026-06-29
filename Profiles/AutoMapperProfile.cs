@@ -94,6 +94,9 @@ public class AutoMapperProfile : Profile
  .ForMember(dest => dest.DataAquisicao, opt => opt.MapFrom(src => src.DataAquisicao ?? DateTime.MinValue));
 
  CreateMap<DadosRenovacaoDto, DadosRenovacaoModel>();
+
+ CreateMap<ItemNotaManutencaoDto, ItemNotaModel>();
+ CreateMap<VariavelNotaDto, VariavelNotaModel>();
  }
 
 }
