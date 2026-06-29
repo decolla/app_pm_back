@@ -25,6 +25,11 @@ public class NotaManutencaoDto
 
     [SheetColumn("Classificado por")] public string? ClassificadoPor { get; set; }
 
+    [SheetColumn("DnsIot")] public string? DnsIot { get; set; }
+    
+    [SheetColumn("Gpm")] public long? IdGpm { get; set; }
+    
+    [SheetColumn("Data Fim")] public DateTime? DataFim{ get; set; }
     [SheetColumn("Plano manut.")] public long? IdPlano { get; set; }
 
     [SheetColumn("Data classificação")] public DateTime? DataClassificacao { get; set; }
