@@ -64,6 +64,7 @@ public class NotasController : ControllerBase
             // Normalização de chaves estrangeiras
             if (novaNota.IdPlano <= 0) novaNota.IdPlano = null;
             if (novaNota.IdUsuario <= 0) novaNota.IdUsuario = null;
+            if (novaNota.IdGpm <= 0) novaNota.IdGpm = null;
 
             var notaCriada = await _notaService.CreateAsync(novaNota);
             return CreatedAtAction(nameof(ObterPorId), new { id = notaCriada.IdNota }, notaCriada);

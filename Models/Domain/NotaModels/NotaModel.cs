@@ -119,13 +119,6 @@ public class NotaModel : IClassifiable, IAuditable
     /// <example>2024-01-15</example>
     public DateTime? DataAvaria { get; set; }
 
-    /// <summary>
-    /// Hora específica em que a avaria ocorreu.
-    /// Complementa a DataAvaria com informação de horário preciso.
-    /// </summary>
-    /// <example>14:30:00</example>
-    public TimeSpan? HoraAvaria { get; set; }
-
     #endregion
 
     #region StatusFichas e Disponibilidade
@@ -254,7 +247,7 @@ public class NotaModel : IClassifiable, IAuditable
     /// </summary>
     /// <example>2024</example>
     public long? IdPlano { get; set; }
-
+    
     /// <summary>
     /// Chave estrangeira para o usuário criador da nota.
     /// Estabelece relacionamento com a entidade de usuário responsável.
@@ -262,6 +255,7 @@ public class NotaModel : IClassifiable, IAuditable
     /// <example>42</example>
     public long? IdUsuario { get; set; }
 
+    
     /// <summary>
     /// Chave estrangeira para o ativo associado à nota.
     /// Identifica qual equipamento ou item está relacionado à ocorrência.
@@ -275,6 +269,11 @@ public class NotaModel : IClassifiable, IAuditable
     /// </summary>
     [MaxLength(100)]
     public string? IdLi { get; set; }
+    
+    /// <summary>
+    /// Chave estrangeira para o GPM
+    /// </summary>
+    public long? IdGpm { get; set; }
     
     /// <summary>
     /// Nomeclatura alternativa para o ativo, também usada para verificar se existe no APM
@@ -299,14 +298,20 @@ public class NotaModel : IClassifiable, IAuditable
     /// </summary>
     [ForeignKey(nameof(IdPlano))]
     public virtual PlanoModel? Plano { get; set; }
-
+    
     /// <summary>
     /// Propriedade de navegação para o usuário criador.
     /// Fornece acesso aos dados completos do usuário responsável pela criação.
     /// </summary>
     [ForeignKey(nameof(IdUsuario))]
     public virtual UsuarioModel? Usuario { get; set; }
-
+    
+    /// <summary>
+    /// GPM responsável pela Nota
+    /// </summary>
+    [ForeignKey(nameof(IdGpm))]
+    public virtual GpmModel? GPM { get; set; }
+    
     #endregion
 
     #region Coleções

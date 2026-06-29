@@ -53,8 +53,6 @@ public class NotaManutencaoDto
 
     [SheetColumn("InícioAvar")] public DateTime? DataAvaria { get; set; }
 
-    [SheetColumn("HoraInícioAvar.")] public TimeSpan? HoraAvaria { get; set; }
-
     [SheetColumn("Equipamento")] public string? EquipamentoDisponivel { get; set; }
 
     [SheetColumn("CondInstApósMed")]public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }

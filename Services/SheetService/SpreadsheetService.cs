@@ -514,7 +514,6 @@ public class SpreadsheetService
             Prioridade = prioridade,
             FimDesejado = dto.FimDesejado,
             DataAvaria = dto.DataAvaria,
-            HoraAvaria = dto.HoraAvaria,
             EquipamentoDisponivel = dto.EquipamentoDisponivel,
             AnomaliaObservada = dto.AnomaliaObservada,
             ObservacoesComplementares = dto.ObservacoesComplementares,

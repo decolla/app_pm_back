@@ -9316,32 +9316,40 @@
     ]
   },
   "packageFolders": {
-    "/home/decolla/.nuget/packages/": {}
+    "C:\\Users\\lucas\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\lucas\\Desktop\\PM-back\\app_pm_back\\app_pm_back.Tests\\app_pm_back.Tests.csproj",
       "projectName": "app_pm_back.Tests",
-      "projectPath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj",
-      "packagesPath": "/home/decolla/.nuget/packages/",
-      "outputPath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/",
+      "projectPath": "C:\\Users\\lucas\\Desktop\\PM-back\\app_pm_back\\app_pm_back.Tests\\app_pm_back.Tests.csproj",
+      "packagesPath": "C:\\Users\\lucas\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\lucas\\Desktop\\PM-back\\app_pm_back\\app_pm_back.Tests\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/home/decolla/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\lucas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj": {
-              "projectPath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj"
+            "C:\\Users\\lucas\\Desktop\\PM-back\\app_pm_back\\app_pm_back.csproj": {
+              "projectPath": "C:\\Users\\lucas\\Desktop\\PM-back\\app_pm_back\\app_pm_back.csproj"
             }
           }
         }
@@ -9350,6 +9358,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -9408,7 +9421,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.128/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.421/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
