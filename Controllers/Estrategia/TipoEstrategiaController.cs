@@ -149,7 +149,7 @@ public class TipoEstrategiaController : ControllerBase
     {
         try
         {
-            var notas = await _tipoEstrategiaService.CountNotasAsync();
+            var notas = await _tipoEstrategiaService.CountAsync();
             return Ok(new { count = notas });
         }
         catch (Exception)

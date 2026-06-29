@@ -15,6 +15,24 @@ namespace app_pm_back.Migrations.PostgresMigration
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "ConfiguracaoGlobalModel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FichasConfiabilidade = table.Column<int>(type: "integer", nullable: false),
+                    ClassificacaoAutomatica = table.Column<int>(type: "integer", nullable: false),
+                    CriterioDataRenovacao = table.Column<int>(type: "integer", nullable: false),
+                    CriterioConfiabilidadeRenovacao = table.Column<int>(type: "integer", nullable: false),
+                    DataModificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModificadoPorUsuario = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConfiguracaoGlobalModel", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Estrategias",
                 columns: table => new
                 {
@@ -51,19 +69,22 @@ namespace app_pm_back.Migrations.PostgresMigration
                 });
 
             migrationBuilder.CreateTable(
-                name: "PM_ClassificationRules",
+                name: "PM_Auditorias",
                 columns: table => new
                 {
-                    IdRegra = table.Column<long>(type: "bigint", nullable: false)
+                    IdAuditoria = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PalavraChave = table.Column<string>(type: "text", nullable: false),
-                    CampoAlvo = table.Column<string>(type: "text", nullable: false),
-                    ClassificacaoAplicada = table.Column<int>(type: "integer", nullable: false),
-                    OrdemPrioridade = table.Column<int>(type: "integer", nullable: false)
+                    IdUsuario = table.Column<int>(type: "integer", nullable: true),
+                    NomeTabela = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Acao = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    ChavePrimaria = table.Column<string>(type: "text", nullable: false),
+                    ValoresAntigos = table.Column<string>(type: "text", nullable: true),
+                    ValoresNovos = table.Column<string>(type: "text", nullable: true),
+                    DataAlteracao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PM_ClassificationRules", x => x.IdRegra);
+                    table.PrimaryKey("PK_PM_Auditorias", x => x.IdAuditoria);
                 });
 
             migrationBuilder.CreateTable(
@@ -322,6 +343,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     SapCode = table.Column<string>(type: "text", nullable: true),
                     NumeroNota = table.Column<long>(type: "bigint", nullable: false),
                     DataNota = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    DataFim = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     TipoNota = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ReferenciaLocalizacaoAtivo = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     Finalidade = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: true),
@@ -747,6 +769,11 @@ namespace app_pm_back.Migrations.PostgresMigration
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "ConfiguracaoGlobalModel",
+                columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 6, 29, 14, 32, 37, 550, DateTimeKind.Utc).AddTicks(5552), 2, null });
+
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
                 table: "DadosRenovacao",
@@ -912,6 +939,9 @@ namespace app_pm_back.Migrations.PostgresMigration
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ConfiguracaoGlobalModel");
+
+            migrationBuilder.DropTable(
                 name: "DadosRenovacao");
 
             migrationBuilder.DropTable(
@@ -924,7 +954,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                 name: "PM_AnexosOrdem");
 
             migrationBuilder.DropTable(
-                name: "PM_ClassificationRules");
+                name: "PM_Auditorias");
 
             migrationBuilder.DropTable(
                 name: "PM_CtmUsuario");

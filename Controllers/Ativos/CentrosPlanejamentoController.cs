@@ -142,7 +142,7 @@ public class CentrosPlanejamentoController : ControllerBase
     {
         try
         {
-            var count = await _service.CountNotasAsync();
+            var count = await _service.CountAsync();
             return Ok(new { count });
         }
         catch (Exception)

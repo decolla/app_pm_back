@@ -461,6 +461,33 @@
             <param name="idLi">Local de instalação.</param>
             <returns>Lista com id, classificação, descrição e data de criação.</returns>
         </member>
+        <member name="T:app_pm_back.Controllers.ConfiguracaoGlobalController">
+            <summary>
+            Controller para configurações globais do sistema.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ConfiguracaoGlobalController.#ctor(app_pm_back.Services.ConfiguracaoGlobalService,app_pm_back.Interfaces.IUserContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.ConfiguracaoGlobalController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ConfiguracaoGlobalController.GetConfiguracao">
+            <summary>
+            Obtém a configuração global do sistema (linha única).
+            </summary>
+            <returns>O objeto de configuração global cadastrado.</returns>
+            <response code="200">Sucesso ao obter a configuração global.</response>
+            <response code="400">Erro ao processar a requisição.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.ConfiguracaoGlobalController.UpdateConfiguracao(app_pm_back.DTO.ConfiguracaoGlobalDto)">
+            <summary>
+            Salva/atualiza a configuração global do sistema.
+            </summary>
+            <param name="dto">DTO contendo os novos dados de configuração global.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Configuração global salva com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+        </member>
         <member name="T:app_pm_back.Controllers.Estrategia.EstrategiaController">
             <summary>
             Endpoints de estrategia de manutencao .
@@ -939,6 +966,70 @@
         <member name="M:app_pm_back.Controllers.VariaveisController.DeletarVariavel(System.Int64)">
             <summary>
             Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="T:app_pm_back.Controllers.OperacoesController">
+            <summary>
+            Classe OperacoesController para gerenciar OperacaoModel.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.OperacoesController.#ctor(app_pm_back.Services.Manutencao.TarefaService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.OperacoesController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.OperacoesController.CriarOperacao(app_pm_back.DTO.TarefaDto)">
+            <summary>
+            Cria um novo registro de operação.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.OperacoesController.ListarOperacoes(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista as operações registradas com paginação.
+            </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.OperacoesController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém uma operação pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.OperacoesController.ContarOperacoes">
+            <summary>
+            Obtém o total de operações cadastradas.
+            </summary>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.OperacoesController.AtualizarOperacao(System.Int64,app_pm_back.DTO.TarefaDto)">
+            <summary>
+            Atualiza uma operação existente.
+            </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.OperacoesController.DeletarOperacao(System.Int64)">
+            <summary>
+            Exclui uma operação pelo seu identificador.
             </summary>
             <param name="id">Identificador exclusivo do registro a ser excluído.</param>
             <returns>Mensagem de confirmação da exclusão.</returns>
@@ -1857,6 +1948,41 @@
             Data que ocorreu tal alteração.
             </summary>
         </member>
+        <member name="T:app_pm_back.Models.Domain.ConfiguracaoGlobalModel">
+            <summary>
+            Representa as configurações globais do sistema. Esta tabela possuirá apenas o ID = 1.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.FichasConfiabilidade">
+            <summary>
+            Fichas que serão usadas para calcular a confiabilidade.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.ClassificacaoAutomatica">
+            <summary>
+            Métodos para classificar automaticamente as fichas.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.CriterioDataRenovacao">
+            <summary>
+            Critérios que serão utilizados para a renovação baseada na última data
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.CriterioConfiabilidadeRenovacao">
+            <summary>
+            Critérios para definir a confiabilidade de uma renovação
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.DataModificacao">
+            <summary>
+            Data da última modificação da configuração global.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.ModificadoPorUsuario">
+            <summary>
+            Usuário que realizou a última modificação na configuração global
+            </summary>
+        </member>
         <member name="T:app_pm_back.Models.Domain.Prioridade">
             <summary>
             Nivel de prioridade do plano.
@@ -2104,84 +2230,6 @@
         <member name="P:app_pm_back.Models.Domain.EstrategiaModel.Planos">
             <summary>
             Lista de planos de manutenção que estão baseados nesta estratégia.
-            </summary>
-        </member>
-        <member name="T:app_pm_back.Models.Domain.OperacaoModel">
-            <summary>
-            Representa uma operação técnica dentro de uma ordem de manutenção.
-            Exemplo: "Troca de óleo", "Inspeção visual".
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdOperacao">
-            <summary>
-            Identificador único da operação.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Nome">
-            <summary>
-            Nome ou título da operação.
-            Exemplo: "Lubrificação de mancais".
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Descricao">
-            <summary>
-            Detalhamento técnico do que deve ser executado.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Duracao">
-            <summary>
-            Duração estimada para a conclusão em horas.
-            Exemplo: 1.5
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.NdeProfissionais">
-            <summary>
-            Quantidade de profissionais necessários para a tarefa.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.InicioEsperado">
-            <summary>
-            Data e hora prevista para o início.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.FimEsperado">
-            <summary>
-            Data e hora prevista para a conclusão.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdCTM">
-            <summary>
-            Chave estrangeira para o Centro de Trabalho Móvel (CTM).
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdTipoManutencao">
-            <summary>
-            Chave estrangeira para a categoria de manutenção.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdOrdem">
-            <summary>
-            Chave estrangeira para a Ordem de Manutenção pai.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Ctm">
-            <summary>
-            Objeto de navegação para o CTM associado.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.TipoManutencao">
-            <summary>
-            Objeto de navegação para o Tipo de Manutenção associado.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Ordem">
-            <summary>
-            Objeto de navegação para a Ordem de Manutenção associada.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Ferramentas">
-            <summary>
-            Lista de ferramentas vinculadas a esta operação.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.PlanoModel">
@@ -2648,6 +2696,13 @@
             </summary>
             <example>2024-01-15T14:30:00</example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.DataFim">
+            <summary>
+            Data e hora de criação da nota no sistema.
+            Registra quando a ocorrência foi reportada ou documentada.
+            </summary>
+            <example>2024-01-15T14:30:00</example>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.TipoNota">
             <summary>
             Tipo da nota que define a natureza da manutenção ou ocorrência.
@@ -2963,6 +3018,84 @@
             <summary>
             Propriedade de navegação para a entidade Ordem relacionada.
             Permite o carregamento (Eager ou Lazy Loading) dos dados da ordem.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.OperacaoModel">
+            <summary>
+            Representa uma operação técnica dentro de uma ordem de manutenção.
+            Exemplo: "Troca de óleo", "Inspeção visual".
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdOperacao">
+            <summary>
+            Identificador único da operação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Nome">
+            <summary>
+            Nome ou título da operação.
+            Exemplo: "Lubrificação de mancais".
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Descricao">
+            <summary>
+            Detalhamento técnico do que deve ser executado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Duracao">
+            <summary>
+            Duração estimada para a conclusão em horas.
+            Exemplo: 1.5
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.NdeProfissionais">
+            <summary>
+            Quantidade de profissionais necessários para a tarefa.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.InicioEsperado">
+            <summary>
+            Data e hora prevista para o início.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.FimEsperado">
+            <summary>
+            Data e hora prevista para a conclusão.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdCTM">
+            <summary>
+            Chave estrangeira para o Centro de Trabalho Móvel (CTM).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdTipoManutencao">
+            <summary>
+            Chave estrangeira para a categoria de manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdOrdem">
+            <summary>
+            Chave estrangeira para a Ordem de Manutenção pai.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Ctm">
+            <summary>
+            Objeto de navegação para o CTM associado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.TipoManutencao">
+            <summary>
+            Objeto de navegação para o Tipo de Manutenção associado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Ordem">
+            <summary>
+            Objeto de navegação para a Ordem de Manutenção associada.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Ferramentas">
+            <summary>
+            Lista de ferramentas vinculadas a esta operação.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.OrdemModel">

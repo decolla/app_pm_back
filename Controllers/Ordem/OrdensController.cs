@@ -140,7 +140,7 @@ public class OrdensController : ControllerBase
     {
         try
         {
-            var notas = await _ordemService.CountNotasAsync();
+            var notas = await _ordemService.CountAsync();
             return Ok(new { count = notas });
         }
         catch (Exception)

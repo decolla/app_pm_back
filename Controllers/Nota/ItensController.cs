@@ -141,7 +141,7 @@ public class ItensController : ControllerBase
     {
         try
         {
-            var count = await _itemNotaService.CountNotasAsync();
+            var count = await _itemNotaService.CountAsync();
             return Ok(new { count });
         }
         catch (Exception)

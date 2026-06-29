@@ -104,7 +104,7 @@ public class TipoManutencaoController : ControllerBase
     {
         try
         {
-            var total = await _tipoManutencaoService.CountNotasAsync();
+            var total = await _tipoManutencaoService.CountAsync();
             return Ok(new { count = total });
         }
         catch (Exception)
@@ -357,7 +357,7 @@ public class TipoPlanoController : ControllerBase
     {
         try
         {
-            var notas = await _tipoPlanoService.CountNotasAsync();
+            var notas = await _tipoPlanoService.CountAsync();
             return Ok(new { count = notas });
         }
         catch (Exception)

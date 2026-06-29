@@ -5,7 +5,7 @@ namespace app_pm_back.DTO;
 #pragma warning disable CS1591
 
 /// <summary>
-/// DTO de operacao de ordem de manutencao .
+/// DTO de operacao de ordem de manutencao.
 /// </summary>
 public class OperacaoOrdemDto
 {
@@ -25,7 +25,6 @@ public class OperacaoOrdemDto
 
     [SheetColumn("Data fim")] public DateTime? FimEsperado { get; set; }
 
-    // Relacionamentos opcionais
     public long? IdCTM { get; set; }
 
     public long? IdTipoManutencao { get; set; }

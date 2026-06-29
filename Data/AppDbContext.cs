@@ -130,10 +130,10 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<ConfiguracaoGlobalModel>().HasData(new ConfiguracaoGlobalModel
         {
             Id = 1,
-            FichasConfiabilidade = OrigemFichasConfiabilidade.ApenasConfirmadasUsuario,
+            FichasConfiabilidade = OrigemFichasConfiabilidade.ConsiderarTambemAlgoritmo,
             ClassificacaoAutomatica = ModoClassificacaoAutomatica.NaoClassificar,
             CriterioDataRenovacao = CriterioDataRenovacao.ConsiderarTodasClassificacoes,
-            CriterioConfiabilidadeRenovacao = CriterioConfiabilidadeRenovacao.ApenasRenovacoesConfirmadasUsuario
+            CriterioConfiabilidadeRenovacao = CriterioConfiabilidadeRenovacao.ConsiderarTambemAlgoritmo
         });
 
         // FILTROS DE ESCOPO

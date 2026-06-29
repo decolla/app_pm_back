@@ -92,7 +92,7 @@ public class DadosRenovacaoController : ControllerBase
     {
         try
         {
-            var count = await _dadosRenovacaoService.CountNotasAsync();
+            var count = await _dadosRenovacaoService.CountAsync();
             return new ObjectResult(new { count });
         }
         catch (Exception e)

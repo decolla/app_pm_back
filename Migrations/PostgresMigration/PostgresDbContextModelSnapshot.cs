@@ -99,33 +99,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.ToTable("PM_GpmUsuario", (string)null);
                 });
 
-            modelBuilder.Entity("app_pm_back.DTO.RuleClassificationDto", b =>
-                {
-                    b.Property<long>("IdRegra")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdRegra"));
-
-                    b.Property<string>("CampoAlvo")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ClassificacaoAplicada")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("OrdemPrioridade")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("PalavraChave")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("IdRegra");
-
-                    b.ToTable("PM_ClassificationRules");
-                });
-
             modelBuilder.Entity("app_pm_back.Models.Domain.AlmoxarifadoModel", b =>
                 {
                     b.Property<long>("IdAlmoxarifado")
@@ -225,6 +198,87 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.HasIndex("IdOrdem");
 
                     b.ToTable("PM_AnexosOrdem");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.AuditoriaModel", b =>
+                {
+                    b.Property<long>("IdAuditoria")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdAuditoria"));
+
+                    b.Property<string>("Acao")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("ChavePrimaria")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DataAlteracao")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("IdUsuario")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NomeTabela")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ValoresAntigos")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ValoresNovos")
+                        .HasColumnType("text");
+
+                    b.HasKey("IdAuditoria");
+
+                    b.ToTable("PM_Auditorias");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.ConfiguracaoGlobalModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClassificacaoAutomatica")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CriterioConfiabilidadeRenovacao")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CriterioDataRenovacao")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("DataModificacao")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("FichasConfiabilidade")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ModificadoPorUsuario")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ConfiguracaoGlobalModel");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClassificacaoAutomatica = 0,
+                            CriterioConfiabilidadeRenovacao = 2,
+                            CriterioDataRenovacao = 3,
+                            DataModificacao = new DateTime(2026, 6, 29, 14, 32, 37, 550, DateTimeKind.Utc).AddTicks(5552),
+                            FichasConfiabilidade = 2
+                        });
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.CpmModel", b =>
@@ -606,6 +660,9 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DataClassificacao")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("DataFim")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("DataModificacao")

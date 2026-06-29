@@ -145,7 +145,7 @@ public class VariaveisController : ControllerBase
     {
         try
         {
-            var count = await _variavelNotaService.CountNotasAsync();
+            var count = await _variavelNotaService.CountAsync();
             return Ok(new { count });
         }
         catch (Exception)

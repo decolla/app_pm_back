@@ -149,6 +149,7 @@ builder.Services.AddScoped<AlmoxarifadoService>();
 builder.Services.AddScoped<ClassificationService<NotaModel>>();
 builder.Services.AddScoped<ClassificationService<OrdemModel>>();
 builder.Services.AddScoped<AnnexService>();
+builder.Services.AddScoped<ConfiguracaoGlobalService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<DadosRenovacaoService>();
 builder.Services.AddScoped<LinhaTemporalService>();

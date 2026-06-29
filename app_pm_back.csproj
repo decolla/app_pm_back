@@ -61,8 +61,4 @@
       <None Remove="app_pm_back.Tests\**" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Migrations\" />
-    </ItemGroup>
-
 </Project>

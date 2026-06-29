@@ -98,33 +98,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.ToTable("PM_GpmUsuario", "dbo");
                 });
 
-            modelBuilder.Entity("app_pm_back.DTO.RuleClassificationDto", b =>
-                {
-                    b.Property<long>("IdRegra")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdRegra"));
-
-                    b.Property<string>("CampoAlvo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ClassificacaoAplicada")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrdemPrioridade")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PalavraChave")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IdRegra");
-
-                    b.ToTable("PM_ClassificationRules", "dbo");
-                });
-
             modelBuilder.Entity("app_pm_back.Models.Domain.AlmoxarifadoModel", b =>
                 {
                     b.Property<long>("IdAlmoxarifado")
@@ -224,6 +197,87 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.HasIndex("IdOrdem");
 
                     b.ToTable("PM_AnexosOrdem", "dbo");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.AuditoriaModel", b =>
+                {
+                    b.Property<long>("IdAuditoria")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdAuditoria"));
+
+                    b.Property<string>("Acao")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("ChavePrimaria")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DataAlteracao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("IdUsuario")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NomeTabela")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ValoresAntigos")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ValoresNovos")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdAuditoria");
+
+                    b.ToTable("PM_Auditorias", "dbo");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.ConfiguracaoGlobalModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClassificacaoAutomatica")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CriterioConfiabilidadeRenovacao")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CriterioDataRenovacao")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataModificacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FichasConfiabilidade")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPorUsuario")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ConfiguracaoGlobalModel", "dbo");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClassificacaoAutomatica = 0,
+                            CriterioConfiabilidadeRenovacao = 2,
+                            CriterioDataRenovacao = 3,
+                            DataModificacao = new DateTime(2026, 6, 29, 14, 33, 8, 221, DateTimeKind.Utc).AddTicks(5568),
+                            FichasConfiabilidade = 2
+                        });
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.CpmModel", b =>
@@ -605,6 +659,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DataClassificacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataFim")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DataModificacao")

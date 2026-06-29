@@ -141,16 +141,6 @@ public abstract class BaseCrudService<T> where T : class
     }
 
     /// <summary>
-    /// Cria notas em massa, somente após lido verifica tudo de uma vez no banco
-    /// </summary>
-    /// <param name="notas"></param>
-    [Obsolete("Use CreateRangeAsync instead.")]
-    public async Task CreateNotasEmMassaAsync(List<T> notas)
-    {
-        await CreateRangeAsync(notas);
-    }
-
-    /// <summary>
     /// Atualiza uma nota
     /// </summary>
     /// <param name="nota"></param>
@@ -193,16 +183,6 @@ public abstract class BaseCrudService<T> where T : class
     public async Task<bool> DeleteNotaAsync(long id)
     {
         return await DeleteAsync(id);
-    }
-
-    /// <summary>
-    /// Retorna a contagem total de notas
-    /// </summary>
-    /// <returns></returns>
-    [Obsolete("Use CountAsync instead.")]
-    public async Task<long> CountNotasAsync()
-    {
-        return await CountAsync();
     }
     
     /// <summary>

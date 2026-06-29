@@ -138,7 +138,7 @@ public class PlanoManutencaoController : ControllerBase
     {
         try
         {
-            var notas = await _planoManutencaoService.CountNotasAsync();
+            var notas = await _planoManutencaoService.CountAsync();
             return Ok(new { count = notas });
         }
         catch (Exception)

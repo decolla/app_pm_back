@@ -155,7 +155,7 @@ public class NotasController : ControllerBase
     {
         try
         {
-            var notas = await _notaService.CountNotasAsync();
+            var notas = await _notaService.CountAsync();
             return Ok(new { count = notas });
         }
         catch (Exception)

@@ -105,7 +105,7 @@ public class EstrategiaController : ControllerBase
     {
         try
         {
-            var notas = await _estrategiaService.CountNotasAsync();
+            var notas = await _estrategiaService.CountAsync();
             return Ok(new { count = notas });
         }
         catch (Exception)

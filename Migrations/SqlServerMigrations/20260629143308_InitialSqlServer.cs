@@ -15,6 +15,25 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 name: "dbo");
 
             migrationBuilder.CreateTable(
+                name: "ConfiguracaoGlobalModel",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FichasConfiabilidade = table.Column<int>(type: "int", nullable: false),
+                    ClassificacaoAutomatica = table.Column<int>(type: "int", nullable: false),
+                    CriterioDataRenovacao = table.Column<int>(type: "int", nullable: false),
+                    CriterioConfiabilidadeRenovacao = table.Column<int>(type: "int", nullable: false),
+                    DataModificacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModificadoPorUsuario = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConfiguracaoGlobalModel", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Estrategias",
                 schema: "dbo",
                 columns: table => new
@@ -53,20 +72,23 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PM_ClassificationRules",
+                name: "PM_Auditorias",
                 schema: "dbo",
                 columns: table => new
                 {
-                    IdRegra = table.Column<long>(type: "bigint", nullable: false)
+                    IdAuditoria = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PalavraChave = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CampoAlvo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClassificacaoAplicada = table.Column<int>(type: "int", nullable: false),
-                    OrdemPrioridade = table.Column<int>(type: "int", nullable: false)
+                    IdUsuario = table.Column<int>(type: "int", nullable: true),
+                    NomeTabela = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Acao = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    ChavePrimaria = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ValoresAntigos = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ValoresNovos = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DataAlteracao = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PM_ClassificationRules", x => x.IdRegra);
+                    table.PrimaryKey("PK_PM_Auditorias", x => x.IdAuditoria);
                 });
 
             migrationBuilder.CreateTable(
@@ -345,6 +367,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     SapCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NumeroNota = table.Column<long>(type: "bigint", nullable: false),
                     DataNota = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DataFim = table.Column<DateTime>(type: "datetime2", nullable: true),
                     TipoNota = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ReferenciaLocalizacaoAtivo = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     Finalidade = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: true),
@@ -813,6 +836,12 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                schema: "dbo",
+                table: "ConfiguracaoGlobalModel",
+                columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 6, 29, 14, 33, 8, 221, DateTimeKind.Utc).AddTicks(5568), 2, null });
+
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
                 schema: "dbo",
@@ -1010,6 +1039,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ConfiguracaoGlobalModel",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "DadosRenovacao",
                 schema: "dbo");
 
@@ -1026,7 +1059,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_ClassificationRules",
+                name: "PM_Auditorias",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
