@@ -141,20 +141,19 @@ public class AppDbContext : DbContext
         });
 
         // FILTROS DE ESCOPO
-        // TODO: arrumar escopos para funcionar com as permissões do EF Core
-
-        modelBuilder.Entity<UsuarioModel>().HasQueryFilter(e =>
-            e.Escopos.Any(escopoBanco => _userContext.GetEscoposDoUsuario().Contains(escopoBanco)));
-        modelBuilder.Entity<NotaModel>().HasQueryFilter(e =>
-            e.Escopo != null && _userContext.GetEscoposDoUsuario().Contains(e.Escopo.Value));
-        modelBuilder.Entity<OrdemModel>().HasQueryFilter(e =>
-            e.Escopo != null && _userContext.GetEscoposDoUsuario().Contains(e.Escopo.Value));
-        modelBuilder.Entity<CpmModel>().HasQueryFilter(e =>
-            e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
-        modelBuilder.Entity<AlmoxarifadoModel>().HasQueryFilter(e =>
-            e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
-        modelBuilder.Entity<FerramentaModel>().HasQueryFilter(e =>
-            e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
+        //
+        // modelBuilder.Entity<UsuarioModel>().HasQueryFilter(e =>
+        //     e.Escopos.Any(escopoBanco => _userContext.GetEscoposDoUsuario().Contains(escopoBanco)));
+        // modelBuilder.Entity<NotaModel>().HasQueryFilter(e =>
+        //     e.Escopo != null && _userContext.GetEscoposDoUsuario().Contains(e.Escopo.Value));
+        // modelBuilder.Entity<OrdemModel>().HasQueryFilter(e =>
+        //     e.Escopo != null && _userContext.GetEscoposDoUsuario().Contains(e.Escopo.Value));
+        // modelBuilder.Entity<CpmModel>().HasQueryFilter(e =>
+        //     e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
+        // modelBuilder.Entity<AlmoxarifadoModel>().HasQueryFilter(e =>
+        //     e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
+        // modelBuilder.Entity<FerramentaModel>().HasQueryFilter(e =>
+        //     e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
     }
 
     public DbSet<TipoManutencaoModel> PM_TiposManutencao { get; set; }

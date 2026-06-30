@@ -17,17 +17,20 @@ namespace app_pm_back.Services;
 public class ClassificationService<T> where T : class, IClassifiable
 {
     protected readonly AppDbContext _context;
+    protected readonly ConfiguracaoGlobalService _configuracaoService;
     protected readonly DbSet<T> _dbSet;
     protected readonly DbSet<RuleClassificationDto> _classificationModel;
     protected readonly Cbm? _cbm;
     protected readonly ModelMeta? _meta;
+
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="ClassificationService{T}"/>.
     /// </summary>
-
-    public ClassificationService(AppDbContext context, Cbm? modeloCatboost = null, ModelMeta? meta = null)
+    public ClassificationService(AppDbContext context, ConfiguracaoGlobalService configuracaoService,
+        Cbm? modeloCatboost = null, ModelMeta? meta = null)
     {
         _context = context;
+        _configuracaoService = configuracaoService;
         _dbSet = context.Set<T>();
         _classificationModel = context.Set<RuleClassificationDto>();
         _cbm = modeloCatboost;
@@ -51,7 +54,7 @@ public class ClassificationService<T> where T : class, IClassifiable
         await _context.SaveChangesAsync();
         return nota;
     }
-    
+
     /// <summary>
     /// Cria uma regra de palavras
     /// </summary>
@@ -144,21 +147,23 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         bool isNota = typeof(T) == typeof(NotaModel);
 
-        Dictionary<string, string> tradutor = isNota ? new Dictionary<string, string>()
-        {
-            { "Tipo de nota", "StatusNota" },
-            { "Txt.grp.codific", "StatusNota" },
-            { "Descrição", "DescricaoBreve" },
-            { "Tipo prioridade", "Prioridade" },
-            { "Txt.code codif.", "StatusNota" },
-            { "Equipamento", "IdAtivo" }
-        } : new Dictionary<string, string>()
-        {
-            { "Tipo de nota", "StatusOrdem" },
-            { "Descrição", "DescricaoBreve" },
-            { "Tipo prioridade", "Criticidade" },
-            { "Equipamento", "IdAtivo" }
-        };
+        Dictionary<string, string> tradutor = isNota
+            ? new Dictionary<string, string>()
+            {
+                { "Tipo de nota", "StatusNota" },
+                { "Txt.grp.codific", "StatusNota" },
+                { "Descrição", "DescricaoBreve" },
+                { "Tipo prioridade", "Prioridade" },
+                { "Txt.code codif.", "StatusNota" },
+                { "Equipamento", "IdAtivo" }
+            }
+            : new Dictionary<string, string>()
+            {
+                { "Tipo de nota", "StatusOrdem" },
+                { "Descrição", "DescricaoBreve" },
+                { "Tipo prioridade", "Criticidade" },
+                { "Equipamento", "IdAtivo" }
+            };
 
         var cachePropsNotas = new Dictionary<string, PropertyInfo>();
         foreach (var kvp in tradutor)
@@ -169,7 +174,9 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         while (true)
         {
-            var query = _dbSet.Where(n => n.Classificacao == Classificacao.NAOCLASSIFICADA && n.MetodoClassificacao != MetodoClassificacao.CATBOOST).AsQueryable();
+            var query = _dbSet.Where(n =>
+                n.Classificacao == Classificacao.NAOCLASSIFICADA &&
+                n.MetodoClassificacao != MetodoClassificacao.CATBOOST).AsQueryable();
 
             if (isNota)
             {
@@ -199,6 +206,7 @@ public class ClassificationService<T> where T : class, IClassifiable
 
                     rowCat[j] = NormalizeAsciiLower(valor, feature);
                 }
+
                 catFeatures[i] = rowCat;
 
                 var rowText = new string[_meta.text_features.Count];
@@ -214,6 +222,7 @@ public class ClassificationService<T> where T : class, IClassifiable
 
                     rowText[j] = NormalizeAsciiLower(valor, feature);
                 }
+
                 textFeatures[i] = rowText;
             }
 
@@ -242,12 +251,12 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         return notasAtualizadas;
     }
+
     /// <summary>
     /// Executa a ação correspondente.
     /// </summary>
     /// <param name="columnName">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-
     public static string NormalizeAsciiLower(string? s, string columnName)
     {
         if (string.IsNullOrEmpty(s))
