@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.Domain;
 
@@ -11,6 +12,7 @@ public class TipoManutencaoModel
     /// Identificador único do Tipo de Manutenção.
     /// </summary>
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdTipoManutencao { get; set; }
 
     /// <summary>

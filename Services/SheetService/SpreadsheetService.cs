@@ -505,7 +505,6 @@ public class SpreadsheetService
         Enum.TryParse<Prioridade>(dto.Prioridade, out Prioridade prioridade);
         return new NotaModel
         {
-            IdNota = dto.IdNota != 0 ? dto.IdNota : dto.NumeroNota,
             NumeroNota = dto.NumeroNota,
             Classificacao = dto.Classificacao,
             MetodoClassificacao = dto.MetodoClassificacao,
@@ -534,7 +533,6 @@ public class SpreadsheetService
     {
         return new OrdemModel
         {
-            IdOrdem = dto.IdOrdem != 0 ? dto.IdOrdem : (dto.NumeroOrdem ?? 0),
             NumeroOrdem = dto.NumeroOrdem,
             TipoOrdem = dto.TipoOrdem,
             Classificacao = dto.Classificacao,

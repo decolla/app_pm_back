@@ -23,7 +23,7 @@ public class OrdemModel : IClassifiable, IAuditable
     /// </summary>
     /// <example>100001</example>
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdOrdem { get; set; }
     
     /// <summary>

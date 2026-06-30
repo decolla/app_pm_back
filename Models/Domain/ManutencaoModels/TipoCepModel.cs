@@ -13,6 +13,7 @@ public class TipoCepModel
     /// Identificador único do Tipo de CEP.
     /// </summary>
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdTipoCep { get; set; }
 
     /// <summary>

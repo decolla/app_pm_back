@@ -56,10 +56,6 @@ public class NotasController : ControllerBase
             }
 
             var novaNota = _mapper.Map<NotaModel>(dto);
-            if (novaNota.IdNota <= 0)
-            {
-                return BadRequest(new { message = "Id da nota invalido. Envie IdNota ou NumeroNota maior que zero." });
-            }
 
             // Normalização de chaves estrangeiras
             if (novaNota.IdPlano <= 0) novaNota.IdPlano = null;
@@ -212,19 +208,17 @@ public class NotasController : ControllerBase
                 return BadRequest(new { message = "Id da nota invalido na rota. Envie id maior que zero." });
             }
 
-            if (dto.IdNota <= 0)
+            var notaExistente = await _notaService.GetByIdAsync(id);
+            if (notaExistente == null)
             {
-                dto.IdNota = id;
-            }
-
-            if (dto.IdNota != id)
-            {
-                return BadRequest(new { message = "Id da rota e IdNota do corpo da requisição devem ser iguais." });
+                return NotFound(new { message = $"Nota com Id {id} não encontrada." });
             }
 
             var nota = _mapper.Map<NotaModel>(dto);
+            nota.IdNota = id; // garante que o Id usado é sempre o da rota
             nota.DataModificacao = DateTime.UtcNow;
             // adicionar dps quem modificou a nota aqui
+
             var result = await _notaService.UpdateNotaAsync(nota);
             return Ok(new { message = "Nota atualizada com sucesso: " + result.IdNota });
         }

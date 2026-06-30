@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.Domain;
 
@@ -11,6 +12,7 @@ public class AlmoxarifadoModel
     /// Identificador único do Almoxarifado.
     /// </summary>
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdAlmoxarifado { get; set; }
 
     /// <summary>

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using app_pm_back.Data;
@@ -10,12 +11,14 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     [DbContext(typeof(PostgresDbContext))]
-    partial class PostgresDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260630164250_InitialPostgres")]
+    partial class InitialPostgres
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -276,7 +279,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 6, 30, 12, 42, 48, 949, DateTimeKind.Utc).AddTicks(9000),
+                            DataModificacao = new DateTime(2026, 6, 30, 16, 42, 49, 290, DateTimeKind.Utc).AddTicks(515),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -314,6 +317,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             modelBuilder.Entity("app_pm_back.Models.Domain.CtmModel", b =>
                 {
                     b.Property<long>("IdCTM")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
                     b.Property<string>("AreaCTM")
@@ -636,7 +640,10 @@ namespace app_pm_back.Migrations.PostgresMigration
             modelBuilder.Entity("app_pm_back.Models.Domain.NotaModel", b =>
                 {
                     b.Property<long>("IdNota")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdNota"));
 
                     b.Property<string>("AnomaliaObservada")
                         .HasMaxLength(1000)
@@ -803,7 +810,10 @@ namespace app_pm_back.Migrations.PostgresMigration
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemModel", b =>
                 {
                     b.Property<long>("IdOrdem")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdOrdem"));
 
                     b.Property<int>("Classificacao")
                         .HasColumnType("integer");

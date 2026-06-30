@@ -12,6 +12,7 @@ public class FerramentaModel
     /// Identificador único da ferramenta.
     /// </summary>
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdFerramenta { get; set; }
 
     /// <summary>

@@ -32,7 +32,7 @@ public class NotaModel : IClassifiable, IAuditable
     /// Este valor é definido manualmente e não é auto-incrementado pelo banco de dados.
     /// </summary>
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdNota { get; set; }
     
     /// <summary>

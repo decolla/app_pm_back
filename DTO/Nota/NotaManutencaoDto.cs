@@ -11,8 +11,6 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class NotaManutencaoDto
 {
-    [SheetColumn("Id Nota")] public long IdNota { get; set; }
-    
     [SheetColumn("Nota")] public long NumeroNota { get; set; }
 
     [SheetColumn("Tipo de nota")] public string? TipoNota { get; set; }

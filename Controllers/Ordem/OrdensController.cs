@@ -195,22 +195,15 @@ public class OrdensController : ControllerBase
             {
                 return BadRequest(new { message = "Id da ordem invalido na rota. Envie id maior que zero." });
             }
-
-            if (dto.IdOrdem <= 0)
+            var OrdemExistente  = await _ordemService.GetByIdAsync(id);
+            if (OrdemExistente == null)
             {
-                dto.IdOrdem = id;
-            }
-
-            if (dto.IdOrdem != id)
-            {
-                return BadRequest(new { message = "Id da rota e IdOrdem do corpo da requisição devem ser iguais." });
+                return NotFound(new { message = $"Nota com Id {id} não encontrada." });
             }
 
             var ordem = _mapper.Map<OrdemModel>(dto);
-            if (ordem.IdOrdem <= 0)
-            {
-                return BadRequest(new { message = "Id da ordem invalido. Envie IdOrdem maior que zero." });
-            }
+            ordem.IdNota = id; // garante que o Id usado é sempre o da rota
+            ordem.DataModificacao = DateTime.UtcNow;
 
             var result = await _ordemService.UpdateNotaAsync(ordem);
             return Ok(new { message = "Ordem atualizada com sucesso: " + result.IdOrdem });

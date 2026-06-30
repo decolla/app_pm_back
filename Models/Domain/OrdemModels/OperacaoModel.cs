@@ -13,6 +13,7 @@ public class OperacaoModel
     /// Identificador único da operação.
     /// </summary>
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdOperacao { get; set; }
 
     /// <summary>

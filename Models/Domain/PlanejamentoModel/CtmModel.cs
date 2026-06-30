@@ -12,7 +12,7 @@ public class CtmModel
     /// Identificador único do GPM associado ao CTM.
     /// </summary>
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdCTM { get; set; }
     
     /// <summary>

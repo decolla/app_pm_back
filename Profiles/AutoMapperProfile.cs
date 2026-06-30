@@ -9,10 +9,10 @@ public class AutoMapperProfile : Profile
  public AutoMapperProfile()
  {
  CreateMap<NotaManutencaoDto, NotaModel>()
- .ForMember(dest => dest.IdNota, opt => opt.MapFrom(src => src.IdNota > 0 ? src.IdNota : src.NumeroNota))
- .ForMember(dest => dest.Itens, opt => opt.Ignore())
- .ForMember(dest => dest.Variaveis, opt => opt.Ignore())
- .ForMember(dest => dest.Anexos, opt => opt.Ignore());
+  .ForMember(dest => dest.IdNota, opt => opt.Ignore())
+  .ForMember(dest => dest.Itens, opt => opt.Ignore())
+  .ForMember(dest => dest.Variaveis, opt => opt.Ignore())
+  .ForMember(dest => dest.Anexos, opt => opt.Ignore());
 
  CreateMap<OrdemManutencaoDto, OrdemModel>()
  .ForMember(dest => dest.Criticidade, opt => opt.MapFrom(src => src.Prioridade.HasValue ? src.Prioridade.Value.ToString() : src.Criticidade))

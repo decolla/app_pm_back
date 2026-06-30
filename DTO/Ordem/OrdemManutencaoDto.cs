@@ -11,7 +11,6 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class OrdemManutencaoDto
 {
-    [SheetColumn("Id Ordem")] public long IdOrdem { get; set; }
 
     [SheetColumn("numero_ordem")] public long? NumeroOrdem { get; set; }
 

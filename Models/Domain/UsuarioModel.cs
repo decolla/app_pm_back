@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.Domain;
 
@@ -12,6 +13,7 @@ public class UsuarioModel
     /// Identificador único do usuário.
     /// </summary>
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdUsuario { get; set; }
 
     /// <summary>
