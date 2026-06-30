@@ -214,12 +214,11 @@ public class NotasController : ControllerBase
                 return NotFound(new { message = $"Nota com Id {id} não encontrada." });
             }
 
-            var nota = _mapper.Map<NotaModel>(dto);
-            nota.IdNota = id; // garante que o Id usado é sempre o da rota
-            nota.DataModificacao = DateTime.UtcNow;
+            _mapper.Map(dto, notaExistente);
+            notaExistente.DataModificacao = DateTime.UtcNow;
             // adicionar dps quem modificou a nota aqui
 
-            var result = await _notaService.UpdateNotaAsync(nota);
+            var result = await _notaService.UpdateNotaAsync(notaExistente);
             return Ok(new { message = "Nota atualizada com sucesso: " + result.IdNota });
         }
         catch (Exception)
