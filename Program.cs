@@ -248,7 +248,9 @@ using (var scope = app.Services.CreateScope())
         {
             Console.WriteLine("PostgreSQL detectado. A tentar aplicar as migrations no banco de dados...");
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
-            dbContext.Database.ExecuteSqlRaw("DROP SCHEMA COMGAS CASCADE; CREATE SCHEMA COMGAS;");
+            var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+            var targetSchema = string.IsNullOrWhiteSpace(dbSchema) ? "public" : dbSchema;
+            dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA IF EXISTS {targetSchema} CASCADE; CREATE SCHEMA {targetSchema};");
 
             // Garante que a conexão é aberta com o search_path configurado antes do Migrate()
             var conn = dbContext.Database.GetDbConnection();
