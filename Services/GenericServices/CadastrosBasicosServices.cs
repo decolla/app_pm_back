@@ -4,19 +4,6 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Services.Manutencao;
 
 /// <summary>
-/// Classe UsuarioService.
-/// </summary>
-public class UsuarioService : BaseCrudService<UsuarioModel>
-{
-    /// <summary>
-    /// Inicializa uma nova instância da classe <see cref="UsuarioService"/>.
-    /// </summary>
-    public UsuarioService(AppDbContext context) : base(context)
-    {
-    }
-}
-
-/// <summary>
 /// Classe CpmService.
 /// </summary>
 public class CpmService : BaseCrudService<CpmModel>

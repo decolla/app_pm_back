@@ -220,6 +220,31 @@ public class UsuariosController : ControllerBase
             return BadRequest(new { message = $"Erro ao deletar {_operador}." });
         }
     }
+        
+    /// <summary>
+    /// Atribui a responsabilidade de uma ordem para um usuário
+    /// </summary>
+    /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+    [HttpPost("atribuir")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AtribuirOrdem([FromQuery] string nome, [FromQuery] long ordem)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(nome) || ordem <= 0)
+            {
+                return ValidationProblem(ModelState);
+            }
+            
+
+            var resposta = await _service.AtribuirPermissao(nome,ordem);
+            return Ok(resposta);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao criar {_operador}: {e.Message}." });
+        }
+    }
 
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {

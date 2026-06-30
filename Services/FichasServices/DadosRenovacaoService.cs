@@ -19,7 +19,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     private const int TAMANHO_LOTE_LI = 50;
     private readonly HttpClient _httpClient;
     private readonly string _apmBaseUrl;
-    private readonly DbSet<DadosRenovacaoModel> _dadosRenovacao;
+
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="DadosRenovacaoService"/>.
@@ -31,7 +31,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         HttpClient httpClient)
         : base(context)
     {
-        _dadosRenovacao = _context.Set<DadosRenovacaoModel>();
+
         _logger = logger;
         _httpClient = httpClient;
         _apmBaseUrl = configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
@@ -663,7 +663,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
         int? pagina,
         int? tamanho)
     {
-        var renovacoesQuery = _dadosRenovacao.AsNoTracking().AsQueryable();
+        var renovacoesQuery = _dbSet.AsQueryable();
 
         renovacoesQuery = renovacoesQuery.AplicarOrdenacao(_context);
         

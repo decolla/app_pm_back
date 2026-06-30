@@ -48,6 +48,11 @@ public class UsuarioModel
     /// Coleção de notas associadas ao usuário.
     /// </summary>
     public virtual ICollection<NotaModel> Notas { get; set; } = new List<NotaModel>();
+    
+    /// <summary>
+    /// Coleção de ordens que o usuário é responsável
+    /// </summary>
+    public virtual ICollection<OrdemModel> Ordens { get; set; } = new List<OrdemModel>();
 
     /// <summary>
     /// Coleção de dados de renovação vinculados.

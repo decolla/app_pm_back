@@ -56,7 +56,7 @@ public class OrdemManutencaoDto
 
     [SheetColumn("cdnotamanutencao")] public long? IdNota { get; set; }
 
-    public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
+    [SheetColumn("confiabilidade")]public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
 
     [SheetColumn("Escopo")] public long? Escopo { get; set; }
 }
