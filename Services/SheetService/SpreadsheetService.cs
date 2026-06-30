@@ -502,7 +502,6 @@ public class SpreadsheetService
     private static NotaModel MapNotaDto(NotaManutencaoDto dto)
     {
         // converte string em tipo Prioridade
-        Enum.TryParse<Prioridade>(dto.Prioridade, out Prioridade prioridade);
         return new NotaModel
         {
             NumeroNota = dto.NumeroNota,
@@ -510,7 +509,7 @@ public class SpreadsheetService
             MetodoClassificacao = dto.MetodoClassificacao,
             StatusNota = StatusFichas.EmAndamento,
             DataNota = dto.DataNota,
-            Prioridade = prioridade,
+            Prioridade = dto.Prioridade,
             FimDesejado = dto.FimDesejado,
             DataAvaria = dto.DataAvaria,
             EquipamentoDisponivel = dto.EquipamentoDisponivel,

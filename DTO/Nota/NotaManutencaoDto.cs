@@ -36,7 +36,7 @@ public class NotaManutencaoDto
 
     [SheetColumn("Data da nota")] public DateTime? DataNota { get; set; }
 
-    [SheetColumn("Prioridade")] public string? Prioridade { get; set; }
+    [SheetColumn("Prioridade")] public Prioridade? Prioridade { get; set; }
 
     [SheetColumn("data_expectativa_nota")] public DateTime? FimDesejado { get; set; }
 
