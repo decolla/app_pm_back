@@ -250,7 +250,7 @@ using (var scope = app.Services.CreateScope())
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
             var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
             var targetSchema = string.IsNullOrWhiteSpace(dbSchema) ? "public" : dbSchema;
-            dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA IF EXISTS {targetSchema} CASCADE; CREATE SCHEMA {targetSchema};");
+            dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA IF EXISTS \"{targetSchema}\" CASCADE; CREATE SCHEMA \"{targetSchema}\";");
 
             // Garante que a conexão é aberta com o search_path configurado antes do Migrate()
             var conn = dbContext.Database.GetDbConnection();
