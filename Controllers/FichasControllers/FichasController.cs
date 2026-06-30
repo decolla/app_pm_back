@@ -18,6 +18,7 @@ public class FichasController : ControllerBase
 {
     private readonly SynchronizeAPMService _synchronizeApmService;
     private readonly ILogger<FichasController> _logger;
+    private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
     private readonly GenericSearchService _searchService;
     private readonly ClassificationService<NotaModel> _notaService;
     private readonly ClassificationService<OrdemModel> _ordemService;
@@ -25,10 +26,12 @@ public class FichasController : ControllerBase
 
     public FichasController(SynchronizeAPMService synchronizeApmService, ILogger<FichasController> logger,
         GenericSearchService searchService, 
+        ConfiguracaoGlobalService configuracaoGlobalService,
         ClassificationService<NotaModel> notaService,
         ClassificationService<OrdemModel> ordemService, ImportSheetService spreadsheetOrchestrator)
 
     {
+        _configuracaoGlobalService = configuracaoGlobalService;
         _searchService = searchService;
         _synchronizeApmService = synchronizeApmService;
         _logger = logger;
@@ -120,6 +123,12 @@ public class FichasController : ControllerBase
     [HttpGet("classificacao/filtro")]
     public async Task<IActionResult> ClassificacaoPalavrasNotaCongas(Fichas buscaTabela)
     {
+        var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
+        if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarPalavrasChave)
+        {
+            return BadRequest(new { message = "Classificação por palavras desativada nas configurações globais." });
+        }
+        
         try
         {
             // passar uma lista vazia por enquanto 
@@ -157,6 +166,12 @@ public class FichasController : ControllerBase
     [HttpGet("classificacao/catboost")]
     public async Task<IActionResult> ClassificacaoCatboostNota(Fichas buscaTabela)
     {
+        var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
+        if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarCatBoost)
+        {
+            return BadRequest(new { message = "Classificação por catboost desativada nas configurações globais." });
+        }
+        
         try
         {
             var message = "";

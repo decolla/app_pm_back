@@ -55,6 +55,32 @@ public class ClassificationService<T> where T : class, IClassifiable
         return nota;
     }
 
+    public async Task<List<T>> AutoClassify()
+    {
+        var config = await _configuracaoService.ObterConfiguracaoAsync();
+        if(config.ClassificacaoAutomatica == ModoClassificacaoAutomatica.ClassificarCatBoost)
+        {
+            return await CatboostClassification();
+        }
+        
+        if (config.ClassificacaoAutomatica == ModoClassificacaoAutomatica.ClassificarPalavrasChave)
+        {
+            return await WordsClassification(null);
+        }
+        
+        throw new InvalidOperationException("Modo de classificação automática não habilitada nas classificações globais.");
+
+    }
+    
+    /// <summary>
+    /// Recebe todas as regras de classificação de palavras do banco de dados, ordenadas por prioridade.
+    /// </summary>
+    /// <returns>Lista de regras cadastradas </returns>
+    public async Task<List<RuleClassificationDto>> GetAllRules()
+    {
+        return await _classificationModel.OrderBy(r => r.OrdemPrioridade).ToListAsync();
+    }
+
     /// <summary>
     /// Cria uma regra de palavras
     /// </summary>
@@ -76,6 +102,12 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// <returns>Todas as notas que não tinham sido classificadas juntamente as reclassificadas</returns>
     public async Task<List<T>> WordsClassification(List<T>? notasComClassificacao)
     {
+        var config = await _configuracaoService.ObterConfiguracaoAsync();
+        if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarPalavrasChave)
+        {
+            throw new InvalidOperationException("Modo de classificação automática não habilitada nas classificações globais.");
+        }
+        
         // busco todas as notas/ordems sem classificação
         // remover comentário caso deve reavaliar regras já avaladas
         var notasSemClassificacao =
@@ -139,6 +171,10 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// </summary>
     public async Task<List<T>> CatboostClassification()
     {
+        var config = await _configuracaoService.ObterConfiguracaoAsync();
+        if(config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarCatBoost)
+            throw new InvalidOperationException("Modo de classificação por catboost não habilitada nas classificações globais.");
+        
         if (_cbm == null || _meta == null)
             throw new InvalidOperationException("Modelo CatBoost não carregado.");
 

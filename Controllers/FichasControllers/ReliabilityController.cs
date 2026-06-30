@@ -66,7 +66,7 @@ public class ReliabilityController : ControllerBase
         [FromQuery] List<MetodoClassificacao> Metodos)
     {
         try
-        { ;
+        { 
             // 1. Começamos com a base da consulta (ainda não foi no banco de dados)
             var (listLI, houveMudanca) = await _reliabilityService.FiltraFichas(Classificacoes, Metodos);
 

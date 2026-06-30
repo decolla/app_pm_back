@@ -13,6 +13,7 @@ namespace app_pm_back.DTO;
 public class ReliabilityService
 {
     private readonly AppDbContext _context;
+    private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
     private readonly DbSet<NotaModel> _notaModels;
     private readonly DbSet<OrdemModel> _ordemModels;
     private readonly ILogger<ReliabilityService> _logger;
@@ -21,7 +22,8 @@ public class ReliabilityService
     private readonly string _reliabilityBaseUrl;
 
     public ReliabilityService(AppDbContext context, ExternIntegrationService externIntegrationService,
-        ILogger<ReliabilityService> logger, IConfiguration configuration, HttpClient httpClient)
+        ILogger<ReliabilityService> logger, ConfiguracaoGlobalService configuracaoGlobalService,
+        IConfiguration configuration, HttpClient httpClient)
     {
         _context = context;
         _notaModels = context.PM_Notas;
@@ -38,7 +40,6 @@ public class ReliabilityService
         var nomesBusca = new List<string> { idLi };
         try
         {
-
             if (!string.IsNullOrWhiteSpace(nomeAlternativo))
             {
                 nomesBusca.Add(nomeAlternativo);
@@ -194,102 +195,102 @@ public class ReliabilityService
         }
     }
 
-public async Task<(List<string> IdsAfetados, bool HouveMudanca)> FiltraFichas(
-    List<Classificacao> classificacoes,
-    List<MetodoClassificacao> metodos)
-{
-    classificacoes ??= new List<Classificacao>();
-    metodos ??= new List<MetodoClassificacao>();
-
-    var idsComMudanca = new HashSet<string>();
-
-    try
+    public async Task<(List<string> IdsAfetados, bool HouveMudanca)> FiltraFichas(
+        List<Classificacao> classificacoes,
+        List<MetodoClassificacao> metodos)
     {
-        // --- Notas ---
-        var notasQuery = _context.PM_Notas.AsQueryable();
-        if (classificacoes.Any())
-            notasQuery = notasQuery.Where(n => classificacoes.Contains(n.Classificacao));
-        if (metodos.Any())
-            notasQuery = notasQuery.Where(n => metodos.Contains(n.MetodoClassificacao));
+        classificacoes ??= new List<Classificacao>();
+        metodos ??= new List<MetodoClassificacao>();
 
-        var dicionarioNotas = await notasQuery
-            .Where(n => n.IdLi != null)
-            .GroupBy(n => n.IdLi)
-            .ToDictionaryAsync(
-                grupo => grupo.Key!,
-                grupo => grupo.Select(n => n.IdNota).ToList()
-            );
+        var idsComMudanca = new HashSet<string>();
 
-        // --- Ordens ---
-        var ordensQuery = _context.PM_Ordens.AsQueryable();
-        if (classificacoes.Any())
-            ordensQuery = ordensQuery.Where(o => classificacoes.Contains(o.Classificacao));
-        if (metodos.Any())
-            ordensQuery = ordensQuery.Where(o => metodos.Contains(o.MetodoClassificacao));
-
-        var dicionarioOrdens = await ordensQuery
-            .Where(o => o.IdLi != null)
-            .GroupBy(o => o.IdLi)
-            .ToDictionaryAsync(
-                grupo => grupo.Key!,
-                grupo => grupo.Select(o => o.IdOrdem).ToList()
-            );
-
-        var idsLiAfetados = dicionarioNotas.Keys
-            .Union(dicionarioOrdens.Keys)
-            .Distinct()
-            .ToList();
-
-        var registrosReliability = await _context.PM_Reliability
-            .Where(r => idsLiAfetados.Contains(r.IdLi))
-            .ToListAsync();
-
-        foreach (var reliability in registrosReliability)
+        try
         {
-            var idLi = reliability.IdLi;
+            // --- Notas ---
+            var notasQuery = _context.PM_Notas.AsQueryable();
+            if (classificacoes.Any())
+                notasQuery = notasQuery.Where(n => classificacoes.Contains(n.Classificacao));
+            if (metodos.Any())
+                notasQuery = notasQuery.Where(n => metodos.Contains(n.MetodoClassificacao));
 
-            var novasNotas  = dicionarioNotas.TryGetValue(idLi, out var n)  ? n : new List<long>();
-            var novasOrdens = dicionarioOrdens.TryGetValue(idLi, out var o) ? o : new List<long>();
+            var dicionarioNotas = await notasQuery
+                .Where(n => n.IdLi != null)
+                .GroupBy(n => n.IdLi)
+                .ToDictionaryAsync(
+                    grupo => grupo.Key!,
+                    grupo => grupo.Select(n => n.IdNota).ToList()
+                );
 
-            var notasAlteradas  = !new HashSet<long>(reliability.IdsNotas  ?? new()).SetEquals(novasNotas);
-            var ordensAlteradas = !new HashSet<long>(reliability.IdsOrdens ?? new()).SetEquals(novasOrdens);
+            // --- Ordens ---
+            var ordensQuery = _context.PM_Ordens.AsQueryable();
+            if (classificacoes.Any())
+                ordensQuery = ordensQuery.Where(o => classificacoes.Contains(o.Classificacao));
+            if (metodos.Any())
+                ordensQuery = ordensQuery.Where(o => metodos.Contains(o.MetodoClassificacao));
 
-            if (notasAlteradas || ordensAlteradas)
+            var dicionarioOrdens = await ordensQuery
+                .Where(o => o.IdLi != null)
+                .GroupBy(o => o.IdLi)
+                .ToDictionaryAsync(
+                    grupo => grupo.Key!,
+                    grupo => grupo.Select(o => o.IdOrdem).ToList()
+                );
+
+            var idsLiAfetados = dicionarioNotas.Keys
+                .Union(dicionarioOrdens.Keys)
+                .Distinct()
+                .ToList();
+
+            var registrosReliability = await _context.PM_Reliability
+                .Where(r => idsLiAfetados.Contains(r.IdLi))
+                .ToListAsync();
+
+            foreach (var reliability in registrosReliability)
             {
-                reliability.IdsNotas  = novasNotas;
-                reliability.IdsOrdens = novasOrdens;
-                idsComMudanca.Add(idLi);
+                var idLi = reliability.IdLi;
+
+                var novasNotas = dicionarioNotas.TryGetValue(idLi, out var n) ? n : new List<long>();
+                var novasOrdens = dicionarioOrdens.TryGetValue(idLi, out var o) ? o : new List<long>();
+
+                var notasAlteradas = !new HashSet<long>(reliability.IdsNotas ?? new()).SetEquals(novasNotas);
+                var ordensAlteradas = !new HashSet<long>(reliability.IdsOrdens ?? new()).SetEquals(novasOrdens);
+
+                if (notasAlteradas || ordensAlteradas)
+                {
+                    reliability.IdsNotas = novasNotas;
+                    reliability.IdsOrdens = novasOrdens;
+                    idsComMudanca.Add(idLi);
+                }
             }
+
+            // IdLis que vieram nos filtros mas não existem no Reliability (adições)
+            var idsExistentes = registrosReliability.Select(r => r.IdLi).ToHashSet();
+            foreach (var idLi in idsLiAfetados.Where(id => !idsExistentes.Contains(id)))
+                idsComMudanca.Add(idLi);
+
+            if (idsComMudanca.Any())
+                await _context.SaveChangesAsync();
+
+            return (idsComMudanca.ToList(), idsComMudanca.Any());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao tentar sincronizar notas e ordens no Reliability.");
+            throw;
+        }
+    }
+
+    public async Task<object?> DatasReliability(List<string>? idLi)
+    {
+        if (idLi == null || !idLi.Any())
+        {
+            return new
+            {
+                SapName = "Nenhum LI informado",
+                Datas = new List<DateTime>()
+            };
         }
 
-        // IdLis que vieram nos filtros mas não existem no Reliability (adições)
-        var idsExistentes = registrosReliability.Select(r => r.IdLi).ToHashSet();
-        foreach (var idLi in idsLiAfetados.Where(id => !idsExistentes.Contains(id)))
-            idsComMudanca.Add(idLi);
-
-        if (idsComMudanca.Any())
-            await _context.SaveChangesAsync();
-
-        return (idsComMudanca.ToList(), idsComMudanca.Any());
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Erro ao tentar sincronizar notas e ordens no Reliability.");
-        throw;
-    }
-}
-
-public async Task<object?> DatasReliability(List<string>? idLi)
-{
-    if (idLi == null || !idLi.Any())
-    {
-        return new
-        {
-            SapName = "Nenhum LI informado",
-            Datas = new List<DateTime>()
-        };
-    }
-    
         try
         {
             //Busca IdLi na tabela Reliability
@@ -304,21 +305,33 @@ public async Task<object?> DatasReliability(List<string>? idLi)
             var todosIdsOrdens = reliabilities.Where(r => r.IdsOrdens != null).SelectMany(r => r.IdsOrdens).Distinct()
                 .ToList();
 
+            // config global para calcular confiabilidade 
+            var configuracaoGlobal = await _configuracaoGlobalService.ObterConfiguracaoAsync();
+            // verifica se a opção é a de classificação apenas de usuario
+            bool requisitoCalculo = configuracaoGlobal.FichasConfiabilidade ==
+                                    OrigemFichasConfiabilidade.ApenasConfirmadasUsuario;
+
             //Consultas ao banco trazendo os IDs junto com as datas
             var notasBd = todosIdsNotas.Any()
                 ? await _notaModels.AsNoTracking()
-                    .Where(n => todosIdsNotas.Contains(n.IdNota) && n.DataNota.HasValue)
+                    .Where(n => todosIdsNotas.Contains(n.IdNota)
+                                && n.DataNota.HasValue
+                                && (!requisitoCalculo || n.MetodoClassificacao !=
+                                    MetodoClassificacao.CATBOOST))
                     .Select(n => new { n.IdNota, Data = n.DataNota!.Value })
                     .ToListAsync()
                 : new();
 
             var ordensBd = todosIdsOrdens.Any()
                 ? await _ordemModels.AsNoTracking()
-                    .Where(o => todosIdsOrdens.Contains(o.IdOrdem) && o.DataCriacao.HasValue)
+                    .Where(o => todosIdsOrdens.Contains(o.IdOrdem)
+                                && o.DataCriacao.HasValue
+                                && (!requisitoCalculo || o.MetodoClassificacao !=
+                                    MetodoClassificacao.CATBOOST))
                     .Select(o => new { o.IdOrdem, Data = o.DataCriacao!.Value })
                     .ToListAsync()
                 : new();
-
+            
             //Monta o payload na MEMÓRIA
             var payload = reliabilities.Select(rel =>
             {

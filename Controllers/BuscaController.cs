@@ -25,7 +25,7 @@ public class BuscaController : ControllerBase
         _searchService = searchService;
     }
 
-        /// <summary>
+    /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
     /// <param name="pagina">Número da página (1-based) para paginação.</param>

@@ -3806,16 +3806,16 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
+        <member name="T:app_pm_back.Migrations.InitialPostgres">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
@@ -3912,7 +3912,7 @@
             </summary>
             <typeparam name="T">Tipo genérico para qualquer parâmetro classificável (nota ou ordem)</typeparam>
         </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.#ctor(app_pm_back.Data.AppDbContext,teste_catboost_cs.Cbm,teste_catboost_cs.ModelMeta)">
+        <member name="M:app_pm_back.Services.ClassificationService`1.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ConfiguracaoGlobalService,teste_catboost_cs.Cbm,teste_catboost_cs.ModelMeta)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ClassificationService`1"/>.
             </summary>
