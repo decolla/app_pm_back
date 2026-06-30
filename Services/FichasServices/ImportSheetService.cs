@@ -1,4 +1,4 @@
-﻿using app_pm_back.Data;
+using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services.ExternIntegationsServices;
 using app_pm_back.Services.Manutencao;
@@ -39,7 +39,7 @@ public class ImportSheetService
         IFormFile file, 
         bool sobrescrever, 
         bool adicionarNovas, 
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
         if (dbSchema == "cg")

@@ -101,7 +101,7 @@ public class SpreadsheetService
     /// <returns>Resultado da operação.</returns>
     public virtual async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(
         IFormFile spreadSheet,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var resultado = new ResultadoPlanilha();
 

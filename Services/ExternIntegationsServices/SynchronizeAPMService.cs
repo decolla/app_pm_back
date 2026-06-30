@@ -37,7 +37,7 @@ public class SynchronizeAPMService
     /// Sincroniza os dados de APM (Asset Performance Management) com as notas e ordens de serviço do sistema.
     /// </summary>
     /// <returns> Bool se a operação ocorreu corretamente</returns>
-    public virtual async Task<bool> SynchronizeAPMAsync(CancellationToken cancellationToken)
+    public virtual async Task<bool> SynchronizeAPMAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Iniciando a sincronização dos dados do APM com as Notas e Ordens.");
 

@@ -21,7 +21,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
     /// </summary>
     /// <param name="ordens">Parâmetro do método.</param>
     public virtual async Task ImportarOrdensEmLoteSeguroAsync(List<OrdemModel> ordens, bool sobrescrever,
-        bool adicionarNovas, CancellationToken cancellationToken)
+        bool adicionarNovas, CancellationToken cancellationToken = default)
     {
         if (ordens == null || !ordens.Any()) return;
 

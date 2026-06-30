@@ -1,4 +1,4 @@
-﻿using app_pm_back.Data;
+using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,9 +13,9 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="UsuarioService"/>.
     /// </summary>
-    public UsuarioService(AppDbContext context, ILogger<UsuarioService> logger) : base(context)
+    public UsuarioService(AppDbContext context, ILogger<UsuarioService>? logger = null) : base(context)
     {
-        _logger = logger;
+        _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<UsuarioService>.Instance;
     }
 
     /// <summary>

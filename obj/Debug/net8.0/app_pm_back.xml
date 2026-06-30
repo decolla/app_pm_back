@@ -77,339 +77,6 @@
             <param name="error">Erro de retorno em caso de erro</param>
             <returns>Booleano de se a referência é válida ou não.</returns>
         </member>
-        <member name="T:app_pm_back.Controllers.CentrosPlanejamentoController">
-            <summary>
-            Classe CentrosPlanejamentoController.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.#ctor(app_pm_back.Services.Manutencao.CpmService,AutoMapper.IMapper)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.CentrosPlanejamentoController"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Criar(app_pm_back.DTO.CentroPlanejamentoManutencaoDto)">
-            <summary>
-            Cria um novo centro de planejamento e manutenção.
-            </summary>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>O objeto criado com status 201 (Created).</returns>
-            <response code="201">Registro criado com sucesso.</response>
-            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Lista os Centros de Planejamento cadastrados com paginação.
-            </summary>
-            <param name="pagina">Número da página (1-based) para paginação.</param>
-            <param name="tamanho">Quantidade de itens por página.</param>
-            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
-            <response code="200">Sucesso ao listar registros.</response>
-            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.ObterPorId(System.Int64)">
-            <summary>
-            Obtém um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
-            <returns>O objeto correspondente cadastrado.</returns>
-            <response code="200">Sucesso ao obter o registro.</response>
-            <response code="400">ID fornecido inválido.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Contar">
-            <summary>
-            Obtém o total de registros cadastrados.
-            </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Atualizar(System.Int64,app_pm_back.DTO.CentroPlanejamentoManutencaoDto)">
-            <summary>
-            Atualiza um registro existente.
-            </summary>
-            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
-            <param name="dto">DTO contendo os novos dados para atualização.</param>
-            <returns>Mensagem de confirmação da atualização.</returns>
-            <response code="200">Sucesso ao atualizar o registro.</response>
-            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Deletar(System.Int64)">
-            <summary>
-            Exclui um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
-            <returns>Mensagem de confirmação da exclusão.</returns>
-            <response code="200">Sucesso ao deletar o registro.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Verifica se a paginação passada é valida
-            </summary>
-            <param name="pagina">Numero da página</param>
-            <param name="tamanho">Quantidade de elementos de uma página</param>
-            <returns></returns>
-        </member>
-        <member name="T:app_pm_back.Controllers.CentrosTrabalhoController">
-            <summary>
-            Classe CentrosTrabalhoController.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.#ctor(app_pm_back.Services.Manutencao.CtmService,AutoMapper.IMapper)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.CentrosTrabalhoController"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Criar(app_pm_back.DTO.CentroTrabalhoDto)">
-            <summary>
-            Cria um novo Centro de Trabalho.
-            </summary>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>O objeto criado com status 201 (Created).</returns>
-            <response code="201">Registro criado com sucesso.</response>
-            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Lista os registros cadastrados com paginação.
-            </summary>
-            <param name="pagina">Número da página (1-based) para paginação.</param>
-            <param name="tamanho">Quantidade de itens por página.</param>
-            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
-            <response code="200">Sucesso ao listar registros.</response>
-            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.ObterPorId(System.Int64)">
-            <summary>
-            Obtém um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
-            <returns>O objeto correspondente cadastrado.</returns>
-            <response code="200">Sucesso ao obter o registro.</response>
-            <response code="400">ID fornecido inválido.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Contar">
-            <summary>
-            Obtém o total de registros cadastrados.
-            </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Atualizar(System.Int64,app_pm_back.DTO.CentroTrabalhoDto)">
-            <summary>
-            Atualiza um registro existente.
-            </summary>
-            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
-            <param name="dto">DTO contendo os novos dados para atualização.</param>
-            <returns>Mensagem de confirmação da atualização.</returns>
-            <response code="200">Sucesso ao atualizar o registro.</response>
-            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Deletar(System.Int64)">
-            <summary>
-            Exclui um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
-            <returns>Mensagem de confirmação da exclusão.</returns>
-            <response code="200">Sucesso ao deletar o registro.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
-        <member name="T:app_pm_back.Controllers.GruposPlanejamentoController">
-            <summary>
-            Classe GruposPlanejamentoController.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.#ctor(app_pm_back.Services.Manutencao.GpmService,AutoMapper.IMapper)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.GruposPlanejamentoController"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Criar(app_pm_back.DTO.GrupoPlanejamentoManutencaoDto)">
-            <summary>
-            Cria um novo registro.
-            </summary>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>O objeto criado com status 201 (Created).</returns>
-            <response code="201">Registro criado com sucesso.</response>
-            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Lista os registros cadastrados com paginação.
-            </summary>
-            <param name="pagina">Número da página (1-based) para paginação.</param>
-            <param name="tamanho">Quantidade de itens por página.</param>
-            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
-            <response code="200">Sucesso ao listar registros.</response>
-            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.ObterPorId(System.Int64)">
-            <summary>
-            Obtém um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
-            <returns>O objeto correspondente cadastrado.</returns>
-            <response code="200">Sucesso ao obter o registro.</response>
-            <response code="400">ID fornecido inválido.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Contar">
-            <summary>
-            Obtém o total de registros cadastrados.
-            </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-        </member>
-        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Atualizar(System.Int64,app_pm_back.DTO.GrupoPlanejamentoManutencaoDto)">
-            <summary>
-            Atualiza um registro existente.
-            </summary>
-            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
-            <param name="dto">DTO contendo os novos dados para atualização.</param>
-            <returns>Mensagem de confirmação da atualização.</returns>
-            <response code="200">Sucesso ao atualizar o registro.</response>
-            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Deletar(System.Int64)">
-            <summary>
-            Exclui um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
-            <returns>Mensagem de confirmação da exclusão.</returns>
-            <response code="200">Sucesso ao deletar o registro.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
-        <member name="T:app_pm_back.Controllers.ImobilizadosController">
-            <summary>
-            Classe ImobilizadosController.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.ImobilizadosController.#ctor(app_pm_back.Services.Manutencao.ImobilizadoService,AutoMapper.IMapper)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.ImobilizadosController"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.ImobilizadosController.Criar(app_pm_back.DTO.ImobilizadoDto)">
-            <summary>
-            Cria um novo registro.
-            </summary>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>O objeto criado com status 201 (Created).</returns>
-            <response code="201">Registro criado com sucesso.</response>
-            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.ImobilizadosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Lista os registros cadastrados com paginação.
-            </summary>
-            <param name="pagina">Número da página (1-based) para paginação.</param>
-            <param name="tamanho">Quantidade de itens por página.</param>
-            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
-            <response code="200">Sucesso ao listar registros.</response>
-            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.ImobilizadosController.ObterPorId(System.Int64)">
-            <summary>
-            Obtém um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
-            <returns>O objeto correspondente cadastrado.</returns>
-            <response code="200">Sucesso ao obter o registro.</response>
-            <response code="400">ID fornecido inválido.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.ImobilizadosController.Contar">
-            <summary>
-            Obtém o total de registros cadastrados.
-            </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-        </member>
-        <member name="M:app_pm_back.Controllers.ImobilizadosController.Atualizar(System.Int64,app_pm_back.DTO.ImobilizadoDto)">
-            <summary>
-            Atualiza um registro existente.
-            </summary>
-            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
-            <param name="dto">DTO contendo os novos dados para atualização.</param>
-            <returns>Mensagem de confirmação da atualização.</returns>
-            <response code="200">Sucesso ao atualizar o registro.</response>
-            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.ImobilizadosController.Deletar(System.Int64)">
-            <summary>
-            Exclui um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
-            <returns>Mensagem de confirmação da exclusão.</returns>
-            <response code="200">Sucesso ao deletar o registro.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
-        <member name="T:app_pm_back.Controllers.UsuariosController">
-            <summary>
-            Classe UsuariosController.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.#ctor(app_pm_back.Services.Manutencao.UsuarioService,AutoMapper.IMapper)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.UsuariosController"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Criar(app_pm_back.DTO.UsuarioDto)">
-            <summary>
-            Cria um novo registro.
-            </summary>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>O objeto criado com status 201 (Created).</returns>
-            <response code="201">Registro criado com sucesso.</response>
-            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Lista os registros cadastrados com paginação.
-            </summary>
-            <param name="pagina">Número da página (1-based) para paginação.</param>
-            <param name="tamanho">Quantidade de itens por página.</param>
-            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
-            <response code="200">Sucesso ao listar registros.</response>
-            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.ObterPorId(System.Int64)">
-            <summary>
-            Obtém um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
-            <returns>O objeto correspondente cadastrado.</returns>
-            <response code="200">Sucesso ao obter o registro.</response>
-            <response code="400">ID fornecido inválido.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Contar">
-            <summary>
-            Obtém o total de registros cadastrados.
-            </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Atualizar(System.Int64,app_pm_back.DTO.UsuarioDto)">
-            <summary>
-            Atualiza um registro existente.
-            </summary>
-            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
-            <param name="dto">DTO contendo os novos dados para atualização.</param>
-            <returns>Mensagem de confirmação da atualização.</returns>
-            <response code="200">Sucesso ao atualizar o registro.</response>
-            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Deletar(System.Int64)">
-            <summary>
-            Exclui um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
-            <returns>Mensagem de confirmação da exclusão.</returns>
-            <response code="200">Sucesso ao deletar o registro.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
         <member name="T:app_pm_back.Controllers.BuscaController">
             <summary>
             Classe BuscaController.
@@ -758,6 +425,274 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:app_pm_back.Controllers.CentrosPlanejamentoController">
+            <summary>
+            Classe CentrosPlanejamentoController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.#ctor(app_pm_back.Services.Manutencao.CpmService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.CentrosPlanejamentoController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Criar(app_pm_back.DTO.CentroPlanejamentoManutencaoDto)">
+            <summary>
+            Cria um novo centro de planejamento e manutenção.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os Centros de Planejamento cadastrados com paginação.
+            </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Atualizar(System.Int64,app_pm_back.DTO.CentroPlanejamentoManutencaoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.Deletar(System.Int64)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosPlanejamentoController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Verifica se a paginação passada é valida
+            </summary>
+            <param name="pagina">Numero da página</param>
+            <param name="tamanho">Quantidade de elementos de uma página</param>
+            <returns></returns>
+        </member>
+        <member name="T:app_pm_back.Controllers.CentrosTrabalhoController">
+            <summary>
+            Classe CentrosTrabalhoController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.#ctor(app_pm_back.Services.Manutencao.CtmService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.CentrosTrabalhoController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Criar(app_pm_back.DTO.CentroTrabalhoDto)">
+            <summary>
+            Cria um novo Centro de Trabalho.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Atualizar(System.Int64,app_pm_back.DTO.CentroTrabalhoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Deletar(System.Int64)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="T:app_pm_back.Controllers.GruposPlanejamentoController">
+            <summary>
+            Classe GruposPlanejamentoController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.#ctor(app_pm_back.Services.Manutencao.GpmService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.GruposPlanejamentoController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Criar(app_pm_back.DTO.GrupoPlanejamentoManutencaoDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Atualizar(System.Int64,app_pm_back.DTO.GrupoPlanejamentoManutencaoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Deletar(System.Int64)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="T:app_pm_back.Controllers.ImobilizadosController">
+            <summary>
+            Classe ImobilizadosController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.#ctor(app_pm_back.Services.Manutencao.ImobilizadoService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.ImobilizadosController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Criar(app_pm_back.DTO.ImobilizadoDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Atualizar(System.Int64,app_pm_back.DTO.ImobilizadoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.ImobilizadosController.Deletar(System.Int64)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
         <member name="T:app_pm_back.Controllers.ItensController">
             <summary>
             Classe ItensController.
@@ -982,7 +917,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.OperacoesController"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OperacoesController.CriarOperacao(app_pm_back.DTO.TarefaDto)">
+        <member name="M:app_pm_back.Controllers.OperacoesController.CriarOperacao(app_pm_back.DTO.OperacaoOrdemDto)">
             <summary>
             Cria um novo registro de operação.
             </summary>
@@ -1017,7 +952,7 @@
             </summary>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.OperacoesController.AtualizarOperacao(System.Int64,app_pm_back.DTO.TarefaDto)">
+        <member name="M:app_pm_back.Controllers.OperacoesController.AtualizarOperacao(System.Int64,app_pm_back.DTO.OperacaoOrdemDto)">
             <summary>
             Atualiza uma operação existente.
             </summary>
@@ -1177,6 +1112,77 @@
             <returns>Mensagem de confirmação da exclusão.</returns>
             <response code="200">Sucesso ao deletar o registro.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="T:app_pm_back.Controllers.UsuariosController">
+            <summary>
+            Classe UsuariosController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.#ctor(app_pm_back.Services.Manutencao.UsuarioService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.UsuariosController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.Criar(app_pm_back.DTO.UsuarioDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.Atualizar(System.Int64,app_pm_back.DTO.UsuarioDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.Deletar(System.Int64)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.AtribuirOrdem(System.String,System.Int64)">
+            <summary>
+            Atribui a responsabilidade de uma ordem para um usuário
+            </summary>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.FerramentaController">
             <summary>
@@ -1734,7 +1740,7 @@
         </member>
         <member name="T:app_pm_back.DTO.OperacaoOrdemDto">
             <summary>
-            DTO de operacao de ordem de manutencao .
+            DTO de operacao de ordem de manutencao.
             </summary>
         </member>
         <member name="T:app_pm_back.DTO.OrdemManutencaoDto">
@@ -2745,13 +2751,6 @@
             </summary>
             <example>2024-01-15</example>
         </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.HoraAvaria">
-            <summary>
-            Hora específica em que a avaria ocorreu.
-            Complementa a DataAvaria com informação de horário preciso.
-            </summary>
-            <example>14:30:00</example>
-        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.StatusNota">
             <summary>
             StatusFichas atual da nota no fluxo de trabalho.
@@ -2874,6 +2873,11 @@
             Permite vincular a nota a um local específico de instalação.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.IdGpm">
+            <summary>
+            Chave estrangeira para o GPM
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.DnsIot">
             <summary>
             Nomeclatura alternativa para o ativo, também usada para verificar se existe no APM
@@ -2894,6 +2898,11 @@
             <summary>
             Propriedade de navegação para o usuário criador.
             Fornece acesso aos dados completos do usuário responsável pela criação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.GPM">
+            <summary>
+            GPM responsável pela Nota
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.Variaveis">
@@ -3267,6 +3276,11 @@
             </summary>
             <example>30001</example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdGpm">
+            <summary>
+            Chave estrangeira para o GPM
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.IdPlano">
             <summary>
             Identificador do plano de manutenção associado à ordem.
@@ -3282,6 +3296,11 @@
         <member name="P:app_pm_back.Models.Domain.OrdemModel.Plano">
             <summary>
             Plano de manutenção associado
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.GPM">
+            <summary>
+            GPM responsável pela Ordem
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.NomeEstrategia">
@@ -3675,6 +3694,11 @@
             Coleção de notas associadas ao usuário.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.Ordens">
+            <summary>
+            Coleção de ordens que o usuário é responsável
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.UsuarioModel.DadosRenovacao">
             <summary>
             Coleção de dados de renovação vinculados.
@@ -3834,118 +3858,6 @@
             <summary>
             Atualiza um anexo pelo seu identificador.
             </summary>
-        </member>
-        <member name="T:app_pm_back.Services.BaseCrudService`1">
-            <summary>
-            Classe BaseCrudService.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.BaseCrudService`1"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.CreateAsync(`0)">
-            <summary>
-            Cria uma nova entidade.
-            </summary>
-            <param name="entity">A entidade a ser criada.</param>
-            <returns>A entidade criada.</returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.CreateRangeAsync(System.Collections.Generic.List{`0})">
-            <summary>
-            Cria várias entidades em massa.
-            </summary>
-            <param name="entities">A lista de entidades.</param>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.UpdateAsync(`0)">
-            <summary>
-            Atualiza uma entidade existente.
-            </summary>
-            <param name="entity">A entidade a ser atualizada.</param>
-            <returns>A entidade atualizada.</returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.GetAllAsync">
-            <summary>
-            Retorna todas as entidades cadastradas.
-            </summary>
-            <returns>Lista de entidades.</returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.GetPagedAsync(System.Int32,System.Int32)">
-            <summary>
-            Retorna as entidades paginadas.
-            </summary>
-            <param name="page">Número da página.</param>
-            <param name="size">Tamanho da página.</param>
-            <returns>Objeto contendo o total de registros e a lista paginada.</returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.GetByIdAsync(System.Int64)">
-            <summary>
-            Busca uma entidade pelo ID.
-            </summary>
-            <param name="id">Identificador da entidade.</param>
-            <returns>A entidade correspondente ou null se não encontrada.</returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.DeleteAsync(System.Int64)">
-            <summary>
-            Deleta uma entidade pelo ID.
-            </summary>
-            <param name="id">Identificador da entidade.</param>
-            <returns>True se deletada com sucesso, False caso contrário.</returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.CountAsync">
-            <summary>
-            Retorna a contagem total de entidades.
-            </summary>
-            <returns>Número total de entidades.</returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.CreateNotasEmMassaAsync(System.Collections.Generic.List{`0})">
-            <summary>
-            Cria notas em massa, somente após lido verifica tudo de uma vez no banco
-            </summary>
-            <param name="notas"></param>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.UpdateNotaAsync(`0)">
-            <summary>
-            Atualiza uma nota
-            </summary>
-            <param name="nota"></param>
-            <returns></returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.GetAllNotasAsync">
-            <summary>
-            Retorna todas as notas cadastradas
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.GetNotasPaginadasAsync(System.Int32,System.Int32)">
-            <summary>
-            Retorna as notas paginadas
-            </summary>
-            <param name="pagina"></param>
-            <param name="tamanho"></param>
-            <returns></returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.DeleteNotaAsync(System.Int64)">
-            <summary>
-            Deleta uma nota pelo ID
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.CountNotasAsync">
-            <summary>
-            Retorna a contagem total de notas
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:app_pm_back.Services.BaseCrudService`1.UsuarioTemAcesso(app_pm_back.Models.Domain.UsuarioModel,app_pm_back.Models.Domain.PermissoesTabela)">
-            <summary>
-            Verifica se o usuário tem acesso a uma tabela específica
-            </summary>
-            <param name="usuario">Usuário a ser verificado</param>
-            <param name="tabelaRequerida">Tabela a ser verificada</param>
-            <returns>Boolean de se o usuário tem ou não acesso à tabela</returns>
         </member>
         <member name="M:app_pm_back.Services.Extensions.QueryExtensions.AplicarOrdenacao``1(System.Linq.IQueryable{``0},Microsoft.EntityFrameworkCore.DbContext)">
             <summary>
@@ -4161,86 +4073,105 @@
             <param name="ignoreProperties"></param>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="T:app_pm_back.Services.GenericSearchService">
+        <member name="T:app_pm_back.Services.BaseCrudService`1">
             <summary>
-            Classe para busca genérica entre as tabelas do banco de dados 
+            Classe BaseCrudService.
             </summary>
         </member>
-        <member name="T:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult">
+        <member name="M:app_pm_back.Services.BaseCrudService`1.#ctor(app_pm_back.Data.AppDbContext)">
             <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="Notas">Parâmetro do método.</param>
-            <param name="Ordens">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-        </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.#ctor(System.Collections.Generic.IReadOnlyList{System.Object},System.Collections.Generic.IReadOnlyList{System.Object})">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="Notas">Parâmetro do método.</param>
-            <param name="Ordens">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-        </member>
-        <member name="P:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.Notas">
-            <summary>Parâmetro do método.</summary>
-        </member>
-        <member name="P:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.Ordens">
-            <summary>Parâmetro do método.</summary>
-        </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.GenericSearchService"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.BaseCrudService`1"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.BuscarPorCampoAsync(System.String,System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Services.BaseCrudService`1.CreateAsync(`0)">
             <summary>
-            Obtém um registro específico em uma tabela.
+            Cria uma nova entidade.
             </summary>
-            <param name="tabela">Nome da tabela.</param>
-            <param name="campo">Campo de busca.</param>
-            <param name="valor">Valor atribuído ao campo.</param>
-            <param name="parcial"></param>
-            <returns>Resultado da operação.</returns>
+            <param name="entity">A entidade a ser criada.</param>
+            <returns>A entidade criada.</returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.BuscarNotaOrdemAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{app_pm_back.Models.Domain.Fichas})">
+        <member name="M:app_pm_back.Services.BaseCrudService`1.CreateRangeAsync(System.Collections.Generic.List{`0})">
             <summary>
-            Obtém um registro específico.
+            Cria várias entidades em massa.
             </summary>
-            <param name="busca">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="entities">A lista de entidades.</param>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.AtivoGerald(app_pm_back.Models.Domain.ComponentType)">
+        <member name="M:app_pm_back.Services.BaseCrudService`1.UpdateAsync(`0)">
             <summary>
-            Executa a ação correspondente.
+            Atualiza uma entidade existente.
             </summary>
-            <param name="ativo">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
+            <param name="entity">A entidade a ser atualizada.</param>
+            <returns>A entidade atualizada.</returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.BuscarTimelineAsync(System.DateTime,System.DateTime,System.String)">
+        <member name="M:app_pm_back.Services.BaseCrudService`1.GetAllAsync">
             <summary>
-            Obtém uma timeline de fichas de um ativo para um range de data específico
+            Retorna todas as entidades cadastradas.
             </summary>
+            <returns>Lista de entidades.</returns>
         </member>
-        <member name="T:app_pm_back.Services.Manutencao.ImobilizadoService">
+        <member name="M:app_pm_back.Services.BaseCrudService`1.GetPagedAsync(System.Int32,System.Int32)">
             <summary>
-            Classe ImobilizadoService.
+            Retorna as entidades paginadas.
             </summary>
+            <param name="page">Número da página.</param>
+            <param name="size">Tamanho da página.</param>
+            <returns>Objeto contendo o total de registros e a lista paginada.</returns>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.ImobilizadoService.#ctor(app_pm_back.Data.AppDbContext)">
+        <member name="M:app_pm_back.Services.BaseCrudService`1.GetByIdAsync(System.Int64)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.ImobilizadoService"/>.
+            Busca uma entidade pelo ID.
             </summary>
+            <param name="id">Identificador da entidade.</param>
+            <returns>A entidade correspondente ou null se não encontrada.</returns>
         </member>
-        <member name="T:app_pm_back.Services.Manutencao.UsuarioService">
+        <member name="M:app_pm_back.Services.BaseCrudService`1.DeleteAsync(System.Int64)">
             <summary>
-            Classe UsuarioService.
+            Deleta uma entidade pelo ID.
             </summary>
+            <param name="id">Identificador da entidade.</param>
+            <returns>True se deletada com sucesso, False caso contrário.</returns>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.UsuarioService.#ctor(app_pm_back.Data.AppDbContext)">
+        <member name="M:app_pm_back.Services.BaseCrudService`1.CountAsync">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.UsuarioService"/>.
+            Retorna a contagem total de entidades.
             </summary>
+            <returns>Número total de entidades.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.UpdateNotaAsync(`0)">
+            <summary>
+            Atualiza uma nota
+            </summary>
+            <param name="nota"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.GetAllNotasAsync">
+            <summary>
+            Retorna todas as notas cadastradas
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.GetNotasPaginadasAsync(System.Int32,System.Int32)">
+            <summary>
+            Retorna as notas paginadas
+            </summary>
+            <param name="pagina"></param>
+            <param name="tamanho"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.DeleteNotaAsync(System.Int64)">
+            <summary>
+            Deleta uma nota pelo ID
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.BaseCrudService`1.UsuarioTemAcesso(app_pm_back.Models.Domain.UsuarioModel,app_pm_back.Models.Domain.PermissoesTabela)">
+            <summary>
+            Verifica se o usuário tem acesso a uma tabela específica
+            </summary>
+            <param name="usuario">Usuário a ser verificado</param>
+            <param name="tabelaRequerida">Tabela a ser verificada</param>
+            <returns>Boolean de se o usuário tem ou não acesso à tabela</returns>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.CpmService">
             <summary>
@@ -4272,6 +4203,16 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.GpmService"/>.
             </summary>
         </member>
+        <member name="T:app_pm_back.Services.Manutencao.ImobilizadoService">
+            <summary>
+            Classe ImobilizadoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.ImobilizadoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.ImobilizadoService"/>.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Services.Manutencao.EstrategiaService">
             <summary>
             Classe EstrategiaService.
@@ -4286,69 +4227,6 @@
             <summary>
             Obtém um registro específico.
             </summary>
-            <returns>Resultado da operação.</returns>
-        </member>
-        <member name="T:app_pm_back.Services.Manutencao.FerramentaService">
-            <summary>
-            Classe FerramentaService.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.FerramentaService"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.BuscarPorTipoManutencaoAsync(System.Int64)">
-            <summary>
-            Obtém um registro específico.
-            </summary>
-            <param name="tipoManutencaoId">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-        </member>
-        <member name="T:app_pm_back.Services.Manutencao.ItemNotaService">
-            <summary>
-            Classe ItemNotaService.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.ItemNotaService.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.ItemNotaService"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.ItemNotaService.ImportarItensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.ItemNotaModel},System.Threading.CancellationToken)">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="itens">Parâmetro do método.</param>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.ItemNotaService.GetItemsByNotaIdAsync(System.Int64)">
-            <summary>
-            Obtém um registro específico.
-            </summary>
-            <param name="id">Identificador do registro.</param>
-            <returns>Resultado da operação.</returns>
-        </member>
-        <member name="T:app_pm_back.Services.Manutencao.NotaManutencaoService">
-            <summary>
-            Classe NotaManutencaoService.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.NotaManutencaoService"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.ImportarNotasEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel},System.Boolean,System.Boolean,System.Threading.CancellationToken)">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="notas">Parâmetro do método.</param>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.GetFichasPorAtivoAsync(app_pm_back.Models.Domain.ComponentType,System.String)">
-            <summary>
-            Obtém um registro específico.
-            </summary>
-            <param name="ativo">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.OrdemService">
@@ -4374,16 +4252,6 @@
             <param name="ativo">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="T:app_pm_back.Services.Manutencao.AlmoxarifadoService">
-            <summary>
-            Classe AlmoxarifadoService.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.AlmoxarifadoService.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.AlmoxarifadoService"/>.
-            </summary>
-        </member>
         <member name="T:app_pm_back.Services.Manutencao.PlanoManutencaoService">
             <summary>
             Classe PlanoManutencaoService.
@@ -4405,23 +4273,6 @@
             Cria um novo registro.
             </summary>
             <param name="novo">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-        </member>
-        <member name="T:app_pm_back.Services.Manutencao.TarefaService">
-            <summary>
-            Classe TarefaService.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.TarefaService.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.TarefaService"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.TarefaService.BuscarPorTipoManutencaoAsync(System.Int64)">
-            <summary>
-            Obtém um registro específico.
-            </summary>
-            <param name="tipoManutencaoId">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.TipoEstrategiaService">
@@ -4514,6 +4365,52 @@
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
+        <member name="T:app_pm_back.Services.Manutencao.ItemNotaService">
+            <summary>
+            Classe ItemNotaService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.ItemNotaService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.ItemNotaService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.ItemNotaService.ImportarItensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.ItemNotaModel},System.Threading.CancellationToken)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="itens">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.ItemNotaService.GetItemsByNotaIdAsync(System.Int64)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.NotaManutencaoService">
+            <summary>
+            Classe NotaManutencaoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.NotaManutencaoService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.ImportarNotasEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel},System.Boolean,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="notas">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.NotaManutencaoService.GetFichasPorAtivoAsync(app_pm_back.Models.Domain.ComponentType,System.String)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="ativo">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
         <member name="T:app_pm_back.Services.Manutencao.VariavelNotaService">
             <summary>
             Classe VariavelNotaService.
@@ -4522,6 +4419,126 @@
         <member name="M:app_pm_back.Services.Manutencao.VariavelNotaService.#ctor(app_pm_back.Data.AppDbContext)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.VariavelNotaService"/>.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.FerramentaService">
+            <summary>
+            Classe FerramentaService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.FerramentaService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.BuscarPorTipoManutencaoAsync(System.Int64)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="tipoManutencaoId">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.AlmoxarifadoService">
+            <summary>
+            Classe AlmoxarifadoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.AlmoxarifadoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.AlmoxarifadoService"/>.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.TarefaService">
+            <summary>
+            Classe TarefaService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TarefaService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.TarefaService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.TarefaService.BuscarPorTipoManutencaoAsync(System.Int64)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="tipoManutencaoId">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.UsuarioService">
+            <summary>
+            Classe UsuarioService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.UsuarioService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.Manutencao.UsuarioService})">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.UsuarioService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.UsuarioService.AtribuirPermissao(System.String,System.Nullable{System.Int64})">
+            <summary>
+            Atribui a reponsabilidade de uma ordem para um usuário
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.GenericSearchService">
+            <summary>
+            Classe para busca genérica entre as tabelas do banco de dados 
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="Notas">Parâmetro do método.</param>
+            <param name="Ordens">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.#ctor(System.Collections.Generic.IReadOnlyList{System.Object},System.Collections.Generic.IReadOnlyList{System.Object})">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="Notas">Parâmetro do método.</param>
+            <param name="Ordens">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="P:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.Notas">
+            <summary>Parâmetro do método.</summary>
+        </member>
+        <member name="P:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.Ordens">
+            <summary>Parâmetro do método.</summary>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.GenericSearchService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarPorCampoAsync(System.String,System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Obtém um registro específico em uma tabela.
+            </summary>
+            <param name="tabela">Nome da tabela.</param>
+            <param name="campo">Campo de busca.</param>
+            <param name="valor">Valor atribuído ao campo.</param>
+            <param name="parcial"></param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarNotaOrdemAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Nullable{app_pm_back.Models.Domain.Fichas})">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="busca">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.AtivoGerald(app_pm_back.Models.Domain.ComponentType)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="ativo">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarTimelineAsync(System.DateTime,System.DateTime,System.String)">
+            <summary>
+            Obtém uma timeline de fichas de um ativo para um range de data específico
             </summary>
         </member>
         <member name="M:app_pm_back.Services.IReportService.CriticalException(app_pm_back.Models.Status)">

@@ -14,6 +14,10 @@ public class AppDbContext : DbContext
 {
     private readonly IUserContext _userContext;
 
+    public AppDbContext(DbContextOptions options) : this(options, new DesignTimeUserContext())
+    {
+    }
+
     public AppDbContext(DbContextOptions options, IUserContext userContext) : base(options)
     {
         _userContext = userContext;

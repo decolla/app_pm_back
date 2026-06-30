@@ -2,10 +2,8 @@
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/app_pm_back.deps.json
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/app_pm_back.runtimeconfig.json
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/appsettings.json
-/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/Data/model_meta.json
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/global.json
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/catboostmodel.dll
-/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/Data/catboost_model.cbm
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/libcatboostmodel.so
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/app_pm_back
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/xunit.runner.visualstudio.dotnetcore.testadapter.dll
@@ -194,3 +192,5 @@
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.pdb
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.genruntimeconfig.cache
 /home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/ref/app_pm_back.Tests.dll
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/CatBoost/model_meta.json
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/CatBoost/catboost_model.cbm

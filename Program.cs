@@ -58,12 +58,33 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddMemoryCache();
 
 var databaseSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION")
+                       ?? builder.Configuration.GetConnectionString("DBConnection")
+                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
-if (databaseSchema == "cg")
+bool isPostgres = true; // Padrão é Postgres
+if (!string.IsNullOrEmpty(connectionString))
 {
-    var connectionString = builder.Configuration.GetConnectionString("DBConnection")
-                           ?? builder.Configuration.GetConnectionString("DefaultConnection");
+    if (connectionString.Contains("Host=", StringComparison.OrdinalIgnoreCase) ||
+        connectionString.Contains("Port=", StringComparison.OrdinalIgnoreCase) ||
+        connectionString.Contains("Username=", StringComparison.OrdinalIgnoreCase))
+    {
+        isPostgres = true;
+    }
+    else if (connectionString.Contains("Server=", StringComparison.OrdinalIgnoreCase) ||
+             connectionString.Contains("Data Source=", StringComparison.OrdinalIgnoreCase))
+    {
+        isPostgres = false;
+    }
+    else
+    {
+        // Se não puder identificar pela connection string, usa a lógica antiga baseada no schema
+        isPostgres = (databaseSchema != "cg");
+    }
+}
 
+if (!isPostgres)
+{
     // ef core para sql server
     builder.Services.AddDbContext<AppDbContext, SqlServerDbContext>(options =>
         options.UseSqlServer(connectionString));
@@ -78,8 +99,6 @@ if (databaseSchema == "cg")
 else
 {
     var targetSchema = string.IsNullOrWhiteSpace(databaseSchema) ? "public" : databaseSchema;
-    var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION")
-                           ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
     // criar o construtor da fonte de dados do PostgreSQL
     var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
@@ -225,15 +244,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = services.GetRequiredService<AppDbContext>();
-        var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
-
-        if (dbSchema == "cg")
-        {
-            Console.WriteLine("Ambiente 'cg' detectado. A tentar criar o banco de dados e as tabelas...");
-            dbContext.Database.Migrate();
-            Console.WriteLine("Banco de dados e tabelas criados/verificados com sucesso!");
-        }
-        else
+        if (dbContext is PostgresDbContext)
         {
             Console.WriteLine("PostgreSQL detectado. A tentar aplicar as migrations no banco de dados...");
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
@@ -247,6 +258,12 @@ using (var scope = app.Services.CreateScope())
 
             await conn.CloseAsync();
             Console.WriteLine("Migrations aplicadas com sucesso!");
+        }
+        else
+        {
+            Console.WriteLine("SQL Server detectado. A tentar criar o banco de dados e as tabelas...");
+            dbContext.Database.Migrate();
+            Console.WriteLine("Banco de dados e tabelas criados/verificados com sucesso!");
         }
     }
     catch (Exception ex)
