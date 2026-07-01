@@ -277,7 +277,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 1, 19, 46, 28, 861, DateTimeKind.Utc).AddTicks(8091),
+                            DataModificacao = new DateTime(2026, 7, 1, 19, 58, 46, 136, DateTimeKind.Utc).AddTicks(1665),
                             FichasConfiabilidade = 2
                         });
                 });

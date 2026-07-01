@@ -869,7 +869,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "ConfiguracaoGlobalModel",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 1, 19, 46, 46, 277, DateTimeKind.Utc).AddTicks(4033), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 1, 20, 7, 37, 980, DateTimeKind.Utc).AddTicks(3106), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

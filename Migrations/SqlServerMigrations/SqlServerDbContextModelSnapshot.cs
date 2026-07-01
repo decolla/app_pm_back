@@ -276,7 +276,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 1, 19, 46, 46, 277, DateTimeKind.Utc).AddTicks(4033),
+                            DataModificacao = new DateTime(2026, 7, 1, 20, 7, 37, 980, DateTimeKind.Utc).AddTicks(3106),
                             FichasConfiabilidade = 2
                         });
                 });
