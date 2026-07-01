@@ -120,4 +120,34 @@ public class OrdemService : BaseCrudService<OrdemModel>
             Fichas = fichas
         };
     }
+
+    /// <summary>
+    /// Obtém os usuários e grupos pertencentes a uma ordem.
+    /// </summary>
+    /// <param name="idOrdem">Id da ordem a ser realizada a busca</param>
+    /// <returns>GPM, CTM, e usuários dos respetivos grupos</returns>
+    public async Task<Object> GetGruposResponsaveis(long idOrdem)
+    {
+        OrdemModel? ordem = await _context.PM_Ordens.FindAsync(idOrdem);
+        
+        if (ordem == null) return new object();
+        
+        var usuariosGpm = await _context.PM_Usuarios
+            .Where(u => u.Gpms == ordem.GPM)
+            .Select(u => new { u.IdUsuario, u.Nome})
+            .ToListAsync();
+        
+        var usuariosCtm = await _context.PM_Usuarios
+            .Where(u => u.Ctms == ordem.CTM)
+            .Select(u => new { u.IdUsuario, u.Nome})
+            .ToListAsync();
+        
+        return new
+        {
+            GPM = ordem.GPM,
+            UsuariosGPM = usuariosGpm,
+            CTM = ordem.CTM,
+            UsuariosCTM = usuariosCtm
+        };
+    }
 }

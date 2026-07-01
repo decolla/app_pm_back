@@ -133,7 +133,36 @@ public class OrdensController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar ordem: {e.Message}." });
         }
     }
+        
+    /// <summary>
+    /// Obtém os grupos responsáveis pela ordem.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    [HttpGet("grupos/{id:long}")]
+    public async Task<IActionResult> ObterGruposResonponsaveis([FromRoute] long id)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id invalido. Envie id maior que zero." });
+            }
+            
+            var grupos = await _ordemService.GetGruposResponsaveis(id);
+            if (grupos == null)
+            {
+                return NotFound(new { message = "Ordem nao encontrada." });
+            }
 
+            return Ok(grupos);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar ordem: {e.Message}." });
+        }
+    }
+
+    
     /// <summary>
     /// Conta o número total de notas salvas no banco
     /// </summary>

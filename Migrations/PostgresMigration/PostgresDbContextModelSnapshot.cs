@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using app_pm_back.Data;
@@ -11,14 +10,12 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations
+namespace app_pm_back.Migrations.PostgresMigration
 {
     [DbContext(typeof(PostgresDbContext))]
-    [Migration("20260630164250_InitialPostgres")]
-    partial class InitialPostgres
+    partial class PostgresDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,8 +210,8 @@ namespace app_pm_back.Migrations
 
                     b.Property<string>("Acao")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("ChavePrimaria")
                         .IsRequired()
@@ -224,12 +221,13 @@ namespace app_pm_back.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("IdUsuario")
+                        .HasMaxLength(200)
                         .HasColumnType("integer");
 
                     b.Property<string>("NomeTabela")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("ValoresAntigos")
                         .HasColumnType("text");
@@ -279,7 +277,7 @@ namespace app_pm_back.Migrations
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 6, 30, 16, 42, 49, 290, DateTimeKind.Utc).AddTicks(515),
+                            DataModificacao = new DateTime(2026, 7, 1, 19, 46, 28, 861, DateTimeKind.Utc).AddTicks(8091),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -863,6 +861,9 @@ namespace app_pm_back.Migrations
                     b.Property<int?>("IdAtivo")
                         .HasColumnType("integer");
 
+                    b.Property<long?>("IdCtm")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("IdGpm")
                         .HasColumnType("bigint");
 
@@ -904,6 +905,8 @@ namespace app_pm_back.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("IdOrdem");
+
+                    b.HasIndex("IdCtm");
 
                     b.HasIndex("IdGpm");
 
@@ -1420,6 +1423,10 @@ namespace app_pm_back.Migrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemModel", b =>
                 {
+                    b.HasOne("app_pm_back.Models.Domain.CtmModel", "CTM")
+                        .WithMany()
+                        .HasForeignKey("IdCtm");
+
                     b.HasOne("app_pm_back.Models.Domain.GpmModel", "GPM")
                         .WithMany()
                         .HasForeignKey("IdGpm");
@@ -1435,6 +1442,8 @@ namespace app_pm_back.Migrations
                     b.HasOne("app_pm_back.Models.Domain.UsuarioModel", null)
                         .WithMany("Ordens")
                         .HasForeignKey("UsuarioModelIdUsuario");
+
+                    b.Navigation("CTM");
 
                     b.Navigation("GPM");
 

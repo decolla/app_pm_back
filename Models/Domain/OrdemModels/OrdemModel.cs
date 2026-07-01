@@ -219,6 +219,11 @@ public class OrdemModel : IClassifiable, IAuditable
     public long? IdGpm { get; set; }
     
     /// <summary>
+    /// Chave estrangeira para o CTM
+    /// </summary>
+    public long? IdCtm { get; set; }
+    
+    /// <summary>
     /// Identificador do plano de manutenção associado à ordem.
     /// Permite relacionar a ordem a um plano específico para análise de aderência e planejamento estratégico.
     /// </summary>
@@ -242,6 +247,12 @@ public class OrdemModel : IClassifiable, IAuditable
     /// </summary>
     [ForeignKey(nameof(IdGpm))]
     public virtual GpmModel? GPM { get; set; }
+    
+    /// <summary>
+    /// CTM responsável pela Ordem
+    /// </summary>
+    [ForeignKey(nameof(IdCtm))]
+    public virtual CtmModel? CTM { get; set; }
     
     /// <summary>
     /// Nome da estratégia relacionada ao Plano

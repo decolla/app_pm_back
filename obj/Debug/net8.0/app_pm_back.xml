@@ -111,14 +111,6 @@
             <param name="ativos"></param>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.BuscaAtivoDatas(System.String,System.String,app_pm_back.Models.Domain.Classificacao)">
-            <summary>
-            Busca as datas de renovação associadas ao LI, retorna um objeto com os dados relevantes
-            </summary>
-            <param name="idLi">LI (Local de Instalação) a ser procurada</param>
-            <param name="tipoDados">Tipo de dados da renovação</param>
-            <returns>Objeto com informações relevantes</returns>
-        </member>
         <member name="M:app_pm_back.Controllers.BuscaController.BuscarTimeline(System.String,System.String,System.String)">
             <summary>
             Busca notas e ordens por intervalo de data e IdLi.
@@ -347,6 +339,14 @@
             Busca todas as Fichas, Notas ou Ordens para preencher a tabela de Dados Renovacao
             </summary>
         </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.BuscaAtivoDatas(System.String,System.String)">
+            <summary>
+            Busca as datas de renovação de um LI e as próximas datas em que ocorrerá uma renovação
+            </summary>
+            <param name="idLi">LI (Local de Instalação) a ser procurada</param>
+            <param name="tipoDados">Tipo de dados da renovação</param>
+            <returns>Objeto com informações relevantes</returns>
+        </member>
         <!-- Badly formed XML comment ignored for member "T:app_pm_back.Controllers.FichasControllers.FichasController" -->
         <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.SynchronizeApm(System.Threading.CancellationToken)">
             <summary>
@@ -400,6 +400,11 @@
         <member name="M:app_pm_back.Controllers.FichasControllers.ReliabilityController.SyncReliability">
             <summary>
             Sincroniza todos os LI do apm e preenche a tabela de Reliability
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ReliabilityController.FiltrarOrdens(System.Collections.Generic.List{app_pm_back.Models.Domain.Classificacao},System.Collections.Generic.List{app_pm_back.Models.Domain.MetodoClassificacao})">
+            <summary>
+            Busca Todas as datas de notas e ordens de um LI
             </summary>
         </member>
         <member name="T:app_pm_back.Controllers.HealthController">
@@ -823,6 +828,7 @@
             </summary>
             <param name="id">Identificador exclusivo do registro a ser excluído.</param>
             <returns>Mensagem de confirmação da exclusão.</returns>
+            <returns>Mensagem de confirmação da exclusão.</returns>
             <response code="200">Sucesso ao deletar o registro.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
@@ -1005,6 +1011,12 @@
             Obtém um registro pelo id da ordem.
             </summary>
             <param name="id">Identificador do registro.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.OrdensController.ObterGruposResonponsaveis(System.Int64)">
+            <summary>
+            Obtém os grupos responsáveis pela ordem.
+            </summary>
             <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Controllers.OrdensController.ContarNotas">
@@ -3281,6 +3293,11 @@
             Chave estrangeira para o GPM
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdCtm">
+            <summary>
+            Chave estrangeira para o CTM
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.IdPlano">
             <summary>
             Identificador do plano de manutenção associado à ordem.
@@ -3301,6 +3318,11 @@
         <member name="P:app_pm_back.Models.Domain.OrdemModel.GPM">
             <summary>
             GPM responsável pela Ordem
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.CTM">
+            <summary>
+            CTM responsável pela Ordem
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.NomeEstrategia">
@@ -3806,16 +3828,16 @@
             Data de quando a classificacao ocorreu
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.InitialPostgres">
+        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
@@ -3968,12 +3990,13 @@
         </member>
         <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ImportarDadosNotaAsync(System.Collections.Generic.List{System.Int64},System.Collections.Generic.List{System.Int64},System.Threading.CancellationToken)">
             <summary>
-            Executa a ação correspondente.
+            Importa, analisa e atualiza o status de confiabilidade restaurada para um lote de Notas de Manutenção com base em seus itens e textos.
             </summary>
-            <param name="idsNotas">Parâmetro do método.</param>
-            <param name="idsItensNota">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="idsNotas">Lista de identificadores das Notas a serem processadas</param>
+            <param name="idsItensNota">Lista de identificadores dos Itens associados a essas notas</param>
+            <param name="cancellationToken">Token de cancelamento para interromper a operação assíncrona caso necessário</param>
+            <returns>A quantidade de registros atualizados e cadastrados na tabela de dados de renovação</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro na comunicação com o banco de dados ou regras de negócio</exception>
         </member>
         <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ImportarDadosOrdemAsync(System.Collections.Generic.List{System.Int64},System.Threading.CancellationToken)">
             <summary>
@@ -3985,12 +4008,32 @@
         </member>
         <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.CadastraDadosRenovacaoAsync(System.Collections.Generic.List{System.Int64},System.Boolean)">
             <summary>
-            Executa a ação correspondente.
+            Cadastra os dados de renovação em lote com base em uma lista de IDs de Notas ou Ordens de Manutenção.
             </summary>
-            <param name="ids">Parâmetro do método.</param>
-            <param name="ehNota">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+            <param name="ids">Lista de identificadores exclusivos das Notas ou Ordens</param>
+            <param name="ehNota">Sinalizador lógico indicando o tipo de entidade (true se for Nota, false se for Ordem)</param>
+            <returns>A quantidade total de registros criados ou modificados e persistidos no banco de dados</returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ProcessarPorConfiabilidadeAsync(System.Nullable{app_pm_back.Models.Domain.ConfiabilidadeRestaurada},System.Nullable{app_pm_back.Models.Domain.ComponentType},System.Nullable{System.Int64},System.Nullable{System.Int64},System.DateTime,app_pm_back.Models.Domain.OrigemUR,System.String,app_pm_back.Models.Domain.Classificacao)">
+            <summary>
+            Processa a atualização de registros com base no tipo de confiabilidade restaurada (RestauraAtivo ou RestauraLI).
+            </summary>
+            <param name="confiabilidade">O nível de restauração de confiabilidade a ser aplicado</param>
+            <param name="idAtivo">Identificador opcional do ativo (ComponentType)</param>
+            <param name="idNota">Identificador opcional da Nota associada</param>
+            <param name="idOrdem">Identificador opcional da Ordem associada</param>
+            <param name="dataSource">Data de origem da ocorrência</param>
+            <param name="origem">Origem do apontamento (OrigemUR)</param>
+            <param name="idLi">Identificador do Local de Instalação (LI)</param>
+            <param name="tipoDados">Classificação do tipo de dado (Corretiva, Preventiva, etc.)</param>
+            <returns>A quantidade de registros inseridos ou atualizados imediatamente</returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ProcessarLoteLiAsync(System.Collections.Generic.List{System.ValueTuple{System.String,System.Nullable{System.Int64},System.Nullable{System.Int64},System.DateTime,app_pm_back.Models.Domain.OrigemUR,app_pm_back.Models.Domain.Classificacao}})">
+            <summary>
+            Processa um lote de Locais de Instalação (LIs), busca seus ativos associados via API APM e registra as atualizações no banco de dados.
+            </summary>
+            <param name="liComContexto">Lista de tuplas contendo o ID do LI e seu contexto operacional (Nota, Ordem, DataOrigem, Origem e TipoDados)</param>
+            <returns>A quantidade total de registros processados e salvos no banco de dados</returns>
         </member>
         <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ObterAtivosDoLoteLiAsync(System.Collections.Generic.List{System.String})">
             <summary>
@@ -4011,6 +4054,14 @@
             </summary>
             <param name="busca">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.AtivoDatas(System.String,System.String)">
+            <summary>
+            A partir de um LI, busca a última data de renovação e as próximas renovações definidas em um plano
+            <param name="idLi">Identificador principal do Local de Instalação (LI)</param>
+            <param name="nomAlternativo">Nome alternativo opcional associado ao LI</param>
+            <returns>Objeto anônimo contendo o nome SAP (LIs agrupados), data da última renovação, lista de renovação e tempo de ciclo</returns>
+            </summary>
         </member>
         <member name="T:app_pm_back.Services.FichasServices.ApmResponse">
             <summary>
@@ -4209,6 +4260,13 @@
             </summary>
             <param name="ativo">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.GetGruposResponsaveis(System.Int64)">
+            <summary>
+            Obtém os usuários e grupos pertencentes a uma ordem.
+            </summary>
+            <param name="idOrdem">Id da ordem a ser realizada a busca</param>
+            <returns>GPM, CTM, e usuários dos respetivos grupos</returns>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.PlanoManutencaoService">
             <summary>

@@ -209,8 +209,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     b.Property<string>("Acao")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("ChavePrimaria")
                         .IsRequired()
@@ -220,12 +220,13 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("IdUsuario")
+                        .HasMaxLength(200)
                         .HasColumnType("int");
 
                     b.Property<string>("NomeTabela")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("ValoresAntigos")
                         .HasColumnType("nvarchar(max)");
@@ -275,7 +276,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 6, 30, 12, 43, 12, 588, DateTimeKind.Utc).AddTicks(5788),
+                            DataModificacao = new DateTime(2026, 7, 1, 19, 46, 46, 277, DateTimeKind.Utc).AddTicks(4033),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -313,6 +314,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
             modelBuilder.Entity("app_pm_back.Models.Domain.CtmModel", b =>
                 {
                     b.Property<long>("IdCTM")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
                     b.Property<string>("AreaCTM")
@@ -635,7 +637,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
             modelBuilder.Entity("app_pm_back.Models.Domain.NotaModel", b =>
                 {
                     b.Property<long>("IdNota")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdNota"));
 
                     b.Property<string>("AnomaliaObservada")
                         .HasMaxLength(1000)
@@ -802,7 +807,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemModel", b =>
                 {
                     b.Property<long>("IdOrdem")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdOrdem"));
 
                     b.Property<int>("Classificacao")
                         .HasColumnType("int");
@@ -852,6 +860,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<int?>("IdAtivo")
                         .HasColumnType("int");
 
+                    b.Property<long?>("IdCtm")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("IdGpm")
                         .HasColumnType("bigint");
 
@@ -893,6 +904,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("bigint");
 
                     b.HasKey("IdOrdem");
+
+                    b.HasIndex("IdCtm");
 
                     b.HasIndex("IdGpm");
 
@@ -1409,6 +1422,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemModel", b =>
                 {
+                    b.HasOne("app_pm_back.Models.Domain.CtmModel", "CTM")
+                        .WithMany()
+                        .HasForeignKey("IdCtm");
+
                     b.HasOne("app_pm_back.Models.Domain.GpmModel", "GPM")
                         .WithMany()
                         .HasForeignKey("IdGpm");
@@ -1424,6 +1441,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.HasOne("app_pm_back.Models.Domain.UsuarioModel", null)
                         .WithMany("Ordens")
                         .HasForeignKey("UsuarioModelIdUsuario");
+
+                    b.Navigation("CTM");
 
                     b.Navigation("GPM");
 
