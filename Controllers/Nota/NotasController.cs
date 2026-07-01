@@ -61,6 +61,7 @@ public class NotasController : ControllerBase
             if (novaNota.IdPlano <= 0) novaNota.IdPlano = null;
             if (novaNota.IdUsuario <= 0) novaNota.IdUsuario = null;
             if (novaNota.IdGpm <= 0) novaNota.IdGpm = null;
+            if (novaNota.NumeroNota <= 0) novaNota.NumeroNota = novaNota.IdNota;
 
             var notaCriada = await _notaService.CreateAsync(novaNota);
             return CreatedAtAction(nameof(ObterPorId), new { id = notaCriada.IdNota }, notaCriada);

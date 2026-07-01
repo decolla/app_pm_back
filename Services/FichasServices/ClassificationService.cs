@@ -68,6 +68,11 @@ public class ClassificationService<T> where T : class, IClassifiable
             return await WordsClassification(null);
         }
         
+        if (config.ClassificacaoAutomatica == ModoClassificacaoAutomatica.NaoClassificar)
+        {
+            return new List<T>();
+        }
+        
         throw new InvalidOperationException("Modo de classificação automática não habilitada nas classificações globais.");
 
     }

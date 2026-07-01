@@ -56,6 +56,8 @@ public class OrdensController : ControllerBase
             {
                 return BadRequest(new { message = "Id da ordem invalido. Envie IdOrdem maior que zero." });
             }
+            
+            if(ordem.NumeroOrdem <= 0 || ordem.NumeroOrdem == null) ordem.NumeroOrdem = ordem.IdOrdem; // se não for informado, usa o IdOrdem como NumeroOrdem
 
             var notaCriada = await _ordemService.CreateAsync(ordem);
             return CreatedAtAction(nameof(ObterPorId), new { id = notaCriada.IdOrdem }, notaCriada);
