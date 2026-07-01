@@ -18,7 +18,6 @@ public class GenericSearchService
     private readonly DbSet<NotaModel> _notaModels;
     private readonly DbSet<OrdemModel> _ordemModels;
     private readonly DbSet<PlanoModel> _planoModels;
-    private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
     private static readonly Dictionary<string, Type> Tabelas = BuildTabelas();
 
     /// <summary>
@@ -46,7 +45,6 @@ public class GenericSearchService
         _notaModels = context.PM_Notas;
         _ordemModels = context.PM_Ordens;
         _planoModels = context.PM_Planos;
-        _configuracaoGlobalService = configuracaoGlobalService;
     }
 
     public IReadOnlyDictionary<string, IReadOnlyList<string>> ListarTabelasCampos()
@@ -478,111 +476,6 @@ public class GenericSearchService
             DataInicio = ultimoPlano?.DataInicios,
             DataConclusao = ultimoPlano?.DataConclusao,
             Confiabilidade = 100
-        };
-    }
-
-    public async Task<object?> AtivoDatas(string idLi, string? nomAlternativo, Classificacao tipoDados)
-    {
-        //Monta a lista com os nomes de busca
-        var nomesBusca = new List<string> { idLi };
-        if (!string.IsNullOrWhiteSpace(nomAlternativo))
-        {
-            nomesBusca.Add(nomAlternativo);
-        }
-
-        //Busca a data da última renovação verificando TODOS os nomes
-        // O OrderByDescending garante que pegaremos a data mais recente, independente de qual LI ela pertence
-        DadosRenovacaoModel? ultimaRenovacao = null;
-
-        // acessa as configurações globais do sistema par obter o critério para última data de renovação
-        var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
-        switch (config.CriterioDataRenovacao)
-        {
-            case CriterioDataRenovacao.ApenasFichasCorretivas:
-                // critério de apenas fichas corretivas
-                ultimaRenovacao = await _context.PM_DadosRenovacao
-                    .AsNoTracking()
-                    .Where(d => nomesBusca.Contains(d.IdLi) && d.TipoDados == tipoDados &&
-                                d.TipoDados == Classificacao.CORRETIVA)
-                    .OrderByDescending(d => d.UltimaRenovacao)
-                    .FirstOrDefaultAsync();
-                break;
-            case CriterioDataRenovacao.ApenasFichasPreventivas:
-                // critério de apenas fichas preventivas
-                ultimaRenovacao = await _context.PM_DadosRenovacao
-                    .AsNoTracking()
-                    .Where(d => nomesBusca.Contains(d.IdLi) && d.TipoDados == tipoDados &&
-                                d.TipoDados == Classificacao.PREVENTIVA)
-                    .OrderByDescending(d => d.UltimaRenovacao)
-                    .FirstOrDefaultAsync();
-                break;
-            default:
-                ultimaRenovacao = await _context.PM_DadosRenovacao
-                    .AsNoTracking()
-                    .Where(d => nomesBusca.Contains(d.IdLi) && d.TipoDados == tipoDados)
-                    .OrderByDescending(d => d.UltimaRenovacao)
-                    .FirstOrDefaultAsync();
-                break;
-        }
-
-        //Busca TODOS os planos relacionados a qualquer um dos LIs
-        var planos = await _planoModels
-            .Where(p => nomesBusca.Contains(p.IdLi))
-            // .Include(p => p.Estrategia) <-- Dica: Adicione isso se 'Estrategia' vier null por causa do Lazy Loading
-            .ToListAsync();
-
-        // Se nenhum plano for encontrado para nenhum dos LIs, retorna o fallback
-        if (!planos.Any())
-        {
-            return new
-            {
-                SapName = string.Join(" / ", nomesBusca),
-                UltimaData = ultimaRenovacao?.UltimaRenovacao,
-                ListaRenovacao = new List<object>(),
-                TempoCiclo = 120
-            };
-        }
-
-        // Extrai os IDs de todos os planos que encontramos
-        List<long> idsPlanos = planos
-            .Where(p => p.IdPlano != null)
-            .Select(p => p.IdPlano)
-            .ToList();
-
-        // Busca apenas UM TipoPlano (o primeiro que encontrar, ou nulo se não existir)
-        var tipoPlanoRenovacao = await _context.PM_TiposPlano
-            .Include(tp => tp.TipoManutencao)
-            .AsNoTracking()
-            .Where(tp => tp.IdPlano != null && // ← Verifica se não é nulo primeiro
-                         idsPlanos.Contains(tp.IdPlano.Value) && // ← Usa o .Value
-                         tp.Categoria == CategoriaTipoManutencao.Renovacao)
-            .FirstOrDefaultAsync();
-
-        // Como agora temos um objeto único (ou nulo), montamos a lista assim:
-        var listaRenovacao = tipoPlanoRenovacao != null
-            ? new List<object>
-            {
-                new
-                {
-                    Meses = (double?)(tipoPlanoRenovacao.Dias / 30.0),
-                    Continua = tipoPlanoRenovacao.Continua,
-                    Confiabilidade = tipoPlanoRenovacao.TipoManutencao?.Confiabilidade
-                }
-            }
-            : new List<object>(); // Se for nulo, retorna lista vazia
-
-        // Tenta pegar o ciclo do primeiro plano que tiver a Estrategia.Ciclos preenchida
-        var tempoCiclo = planos
-            .Where(p => p.Estrategia?.Ciclos != null)
-            .Select(p => p.Estrategia!.Ciclos)
-            .FirstOrDefault();
-
-        return new
-        {
-            SapName = string.Join(" / ", nomesBusca), // Mantendo o mesmo padrão da refatoração anterior
-            UltimaData = ultimaRenovacao?.UltimaRenovacao,
-            ListaRenovacao = listaRenovacao,
-            TempoCiclo = tempoCiclo
         };
     }
 

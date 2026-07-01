@@ -21,6 +21,8 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 
     private const int TAMANHO_LOTE_LI = 50;
     private readonly HttpClient _httpClient;
+    private readonly DbSet<PlanoModel> _planoModels;
+    private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
     private readonly string _apmBaseUrl;
 
 
@@ -37,17 +39,19 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     {
         _logger = logger;
         _httpClient = httpClient;
+        _planoModels = context.PM_Planos;
+        _configuracaoGlobalService = configuracaoGlobalService;
         _apmBaseUrl = configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
     }
 
-//Faz tratamento em caso de notas +itens
     /// <summary>
-    /// Executa a ação correspondente.
+    /// Importa, analisa e atualiza o status de confiabilidade restaurada para um lote de Notas de Manutenção com base em seus itens e textos.
     /// </summary>
-    /// <param name="idsNotas">Parâmetro do método.</param>
-    /// <param name="idsItensNota">Parâmetro do método.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="idsNotas">Lista de identificadores das Notas a serem processadas</param>
+    /// <param name="idsItensNota">Lista de identificadores dos Itens associados a essas notas</param>
+    /// <param name="cancellationToken">Token de cancelamento para interromper a operação assíncrona caso necessário</param>
+    /// <returns>A quantidade de registros atualizados e cadastrados na tabela de dados de renovação</returns>
+    /// <exception cref="System.Exception">Lançada em caso de erro na comunicação com o banco de dados ou regras de negócio</exception>
     public virtual async Task<int> ImportarDadosNotaAsync(
         List<long> idsNotas,
         List<long> idsItensNota,
@@ -63,107 +67,87 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         }
 
         try
+    {
+        //Repassando o cancellationToken para os métodos assíncronos
+        var notas = await _context.PM_Notas
+            .Where(n => idsNotas.Contains(n.IdNota))
+            .ToListAsync(cancellationToken);
+
+        _logger.LogInformation("Carregadas {QtdNotas} notas do banco", notas.Count);
+
+        var itens = (idsItensNota == null || idsItensNota.Count == 0)
+            ? new List<ItemNotaModel>()
+            : await _context.PM_ItensNota
+                .Where(i => idsItensNota.Contains(i.IdItemNota))
+                .ToListAsync(cancellationToken);
+
+        _logger.LogInformation("Carregados {QtdItens} itens do banco", itens.Count);
+
+        //Transforma em um HashSet de Ids para busca ultrarrápida O(1)
+        var notasComItensRenovacao = new HashSet<long>(
+            itens.Where(i => ContemPalavraChaveItem(i.Causa, i.Sintoma)).Select(i => i.IdNota)
+        );
+
+        if (notasComItensRenovacao.Count == 0)
+            _logger.LogWarning("Nenhuma nota com palavras-chave de renovação encontrada relacionada aos itens");
+        else
+            _logger.LogInformation("Identificadas {QtdNotas} notas com itens de renovação", notasComItensRenovacao.Count);
+
+        // Arrays de palavras-chave (mantidos fora do loop para não recriar na memória)
+        var palavrasRenovacao = new[] { "START", "RENOVAÇÃO", "RENOVACAO" };
+        var palavrasTroca = new[] { "TROCA", "SUBSTITUIÇÃO", "SUBSTITUICAO" };
+
+        //Um ÚNICO loop para verifcar confiabilidade
+        foreach (var nota in notas)
         {
-            //Busca notas e itens no banco
-            var notas = await _context.PM_Notas
-                .Where(n => idsNotas.Contains(n.IdNota))
-                .ToListAsync();
+            cancellationToken.ThrowIfCancellationRequested();
 
-            _logger.LogInformation("Carregadas {QtdNotas} notas do banco", notas.Count);
+            var textosNota = $"{nota.DescricaoBreve} {nota.AnomaliaObservada} {nota.ObservacoesComplementares}".ToUpperInvariant();
+            
+            bool temRenovacao = palavrasRenovacao.Any(p => textosNota.Contains(p));
+            bool temTroca = palavrasTroca.Any(p => textosNota.Contains(p));
 
-            var itens = idsItensNota == null || idsItensNota.Count == 0
-                ? new List<ItemNotaModel>()
-                : await _context.PM_ItensNota
-                    .Where(i => idsItensNota.Contains(i.IdItemNota))
-                    .ToListAsync();
-
-            _logger.LogInformation("Carregados {QtdItens} itens do banco", itens.Count);
-
-            //Identifica as notas que possuem itens com palavras-chave de renovação
-            var idsNotasRenovacao = itens
-                .Where(i => ContemPalavraChaveItem(i.Causa, i.Sintoma))
-                .Select(i => i.IdNota)
-                .Distinct()
-                .ToList();
-
-            _logger.LogInformation("Identificadas {QtdNotas} notas com itens de renovação", idsNotasRenovacao.Count);
-
-            if (idsNotasRenovacao.Count == 0)
+            if (temRenovacao)
             {
-                _logger.LogWarning("Nenhuma nota com palavras-chave de renovação encontrada relacionada aos itens");
+                nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraLI;
+                _logger.LogDebug("Nota {IdNota} marcada como RestauraLI por texto (renovação)", nota.IdNota);
             }
-
-            //Filtra as notas que devem ser marcadas com base nos ids retornados anteriormente
-            var notasParaAtualizar = notas
-                .Where(n => idsNotasRenovacao.Contains(n.IdNota))
-                .ToList();
-
-            //para cada nota indentificada, verifica se ela renova ativo ou LI
-            foreach (var nota in notasParaAtualizar)
+            else if (temTroca && nota.IdAtivo.HasValue)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
+                nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
+                _logger.LogDebug("Nota {IdNota} marcada como RestauraAtivo por texto (troca)", nota.IdNota);
+            }
+            else if (notasComItensRenovacao.Contains(nota.IdNota))
+            {
+                // Se as regras de texto não pegaram, cai na regra de item (fallback)
                 if (nota.IdAtivo.HasValue)
                 {
-                    // Se IdAtivo está preenchido → RestauraAtivo
                     nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
-                    _logger.LogDebug("Nota {IdNota} marcada como RestauraAtivo (IdAtivo={IdAtivo})",
-                        nota.IdNota, nota.IdAtivo);
+                    _logger.LogDebug("Nota {IdNota} marcada como RestauraAtivo pelo Item (IdAtivo={IdAtivo})", nota.IdNota, nota.IdAtivo);
                 }
                 else if (!string.IsNullOrWhiteSpace(nota.IdLi))
                 {
-                    // Se IdAtivo vazio mas IdLI preenchido → RestauraLI
                     nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraLI;
-                    _logger.LogDebug("Nota {IdNota} marcada como RestauraLI (IdLI={IdLI})",
-                        nota.IdNota, nota.IdLi);
-                }
-                // Se ambos vazios, não faz nada
-            }
-
-            //Agora faz uma nova busca em todas as notas que recebeu, não apenas as que tem item
-            var palavrasRenovacao = new[] { "START", "RENOVAÇÃO", "RENOVACAO" };
-            var palavrasTroca = new[] { "TROCA", "SUBSTITUIÇÃO", "SUBSTITUICAO" };
-
-            foreach (var nota in notas)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var textosNota =
-                    $"{nota.DescricaoBreve ?? string.Empty} {nota.AnomaliaObservada ?? string.Empty} {nota.ObservacoesComplementares ?? string.Empty}"
-                        .ToUpperInvariant();
-
-                bool temRenovacao = palavrasRenovacao.Any(p => textosNota.Contains(p));
-                bool temTroca = palavrasTroca.Any(p => textosNota.Contains(p));
-
-                //para cada nota indentificada, verifica se ela renova ativo ou LI
-                if (temRenovacao)
-                {
-                    nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraLI;
-                    _logger.LogDebug("Nota {IdNota} marcada como RestauraLI por texto (renovação)", nota.IdNota);
-                }
-                else if (temTroca && nota.IdAtivo.HasValue)
-                {
-                    nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
-                    _logger.LogDebug("Nota {IdNota} marcada como RestauraAtivo por texto (troca)", nota.IdNota);
+                    _logger.LogDebug("Nota {IdNota} marcada como RestauraLI pelo Item (IdLI={IdLI})", nota.IdNota, nota.IdLi);
                 }
             }
-
-
-            //Salva e Cadastra dados de renovação
-            await _context.SaveChangesAsync();
-            _logger.LogInformation("Alterações salvas no banco de dados");
-
-            var resultado = await CadastraDadosRenovacaoAsync(idsNotas, ehNota: true);
-            _logger.LogInformation("ImportarDadosNotaAsync concluído com {QtdRegistros} registros criados/atualizados",
-                resultado);
-
-            return resultado;
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao processar notas em ImportarDadosNotaAsync");
-            throw;
-        }
+
+        //CancellationToken repassado
+        await _context.SaveChangesAsync(cancellationToken);
+        _logger.LogInformation("Alterações salvas no banco de dados");
+        
+        var resultado = await CadastraDadosRenovacaoAsync(idsNotas, ehNota: true);
+        
+        _logger.LogInformation("ImportarDadosNotaAsync concluído com {QtdRegistros} registros criados/atualizados", resultado);
+
+        return resultado;
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Erro ao processar notas em ImportarDadosNotaAsync");
+        throw; // Esse throw propaga a exceção respeitando sua declaração XML original
+    }
     }
 
 // Verifica se Causa ou Sintoma contém palavras-chave
@@ -253,12 +237,11 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     }
 
     /// <summary>
-    /// Executa a ação correspondente.
+    /// Cadastra os dados de renovação em lote com base em uma lista de IDs de Notas ou Ordens de Manutenção.
     /// </summary>
-    /// <param name="ids">Parâmetro do método.</param>
-    /// <param name="ehNota">Parâmetro do método.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="ids">Lista de identificadores exclusivos das Notas ou Ordens</param>
+    /// <param name="ehNota">Sinalizador lógico indicando o tipo de entidade (true se for Nota, false se for Ordem)</param>
+    /// <returns>A quantidade total de registros criados ou modificados e persistidos no banco de dados</returns>
     public async Task<int> CadastraDadosRenovacaoAsync(
         List<long> ids,
         bool ehNota) // true = nota, false = ordem
@@ -275,122 +258,101 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         _liParaRestaurar.Clear(); // Limpar lista no início
         var registrosCriados = 0;
         try
+    {
+        //Uma estrutura de dados comum para evitar duplicar toda a lógica de loops e lotes
+        var itensParaProcessar = new List<(ConfiabilidadeRestaurada? Conf, ComponentType? Ativo, long? NotaId, long? OrdemId, DateTime Data, OrigemUR Origem, string Li, Classificacao Classif)>();
+
+        //Chunk para AMBOS os cenários, garantindo segurança contra limites do banco de dados
+        foreach (var loteIds in ids.Chunk(2000))
         {
             if (ehNota)
             {
-                var notas = new List<NotaModel>();
-                foreach (var loteIds in ids.Chunk(2000))
-                {
-                    //Busca no banco em lotes
-                    var notasDoLote = await _context.PM_Notas
-                        .Where(n => loteIds.Contains(n.IdNota) &&
-                                    n.ConfiabilidadeRestaurada != ConfiabilidadeRestaurada.NaoRestaura)
-                        .ToListAsync();
-
-                    //Guarda resultado em lotes
-                    notas.AddRange(notasDoLote);
-                }
-
-                _logger.LogInformation("Carregadas {QtdNotas} notas para cadastro de dados de renovação", notas.Count);
-
-                //Cadastra cada nota 
-                foreach (var nota in notas)
-                {
-                    _logger.LogDebug("Processando nota {IdNota} com ConfiabilidadeRestaurada={Conf}",
-                        nota.IdNota, nota.ConfiabilidadeRestaurada);
-                    var inseridos = await ProcessarPorConfiabilidadeAsync(
-                        nota.ConfiabilidadeRestaurada,
-                        nota.IdAtivo,
-                        nota.IdNota,
-                        null,
-                        nota.DataNota ?? DateTime.UtcNow,
-                        OrigemUR.Nota,
-                        nota.IdLi ?? string.Empty,
-                        nota.Classificacao);
-                    registrosCriados += inseridos;
-
-                    if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
-                    {
-                        _logger.LogInformation("Atingido tamanho de lote ({TamanhoLote}). Processando lote de LI's...",
-                            TAMANHO_LOTE_LI);
-                        var lotePorProcessar = _liParaRestaurar
-                            .Take(TAMANHO_LOTE_LI)
-                            .DistinctBy(li => li.IdLi) // ← Remover duplicatas por IdLi
-                            .ToList();
-                        registrosCriados += await ProcessarLoteLiAsync(lotePorProcessar);
-                        _liParaRestaurar.RemoveRange(0, Math.Min(TAMANHO_LOTE_LI, _liParaRestaurar.Count));
-                    }
-                }
-            }
-            else
-
-            {
-                var ordens = await _context.PM_Ordens
-                    .Where(o => ids.Contains(o.IdOrdem))
+                var notasLote = await _context.PM_Notas
+                    .Where(n => loteIds.Contains(n.IdNota) && n.ConfiabilidadeRestaurada != ConfiabilidadeRestaurada.NaoRestaura)
                     .ToListAsync();
 
-                //Cadastra cada ordem
-                _logger.LogInformation("Carregadas {QtdOrdens} ordens para cadastro de dados de renovação",
-                    ordens.Count);
-
-                foreach (var ordem in ordens)
-                {
-                    _logger.LogDebug("Processando ordem {IdOrdem} com ConfiabilidadeRestaurada={Conf}",
-                        ordem.IdOrdem, ordem.ConfiabilidadeRestaurada);
-
-
-                    var inseridos = await ProcessarPorConfiabilidadeAsync(
-                        ordem.ConfiabilidadeRestaurada,
-                        ordem.IdAtivo,
-                        null,
-                        ordem.IdOrdem,
-                        ordem.DataCriacao ?? DateTime.UtcNow,
-                        OrigemUR.Ordem,
-                        ordem.IdLi ?? string.Empty,
-                        ordem.Classificacao);
-                    registrosCriados += inseridos;
-
-                    if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
-                    {
-                        _logger.LogInformation("Atingido tamanho de lote ({TamanhoLote}). Processando lote de LI's...",
-                            TAMANHO_LOTE_LI);
-                        var lotePorProcessar = _liParaRestaurar.Take(TAMANHO_LOTE_LI).Distinct().ToList();
-                        registrosCriados += await ProcessarLoteLiAsync(lotePorProcessar);
-                        _liParaRestaurar.RemoveRange(0, Math.Min(TAMANHO_LOTE_LI, _liParaRestaurar.Count));
-                    }
-                }
-            }
-
-            if (_liParaRestaurar.Any())
-            {
-                _logger.LogInformation("Processando {QtdLI} LI's restantes", _liParaRestaurar.Count);
-                var restantes = _liParaRestaurar
-                    .DistinctBy(li => li.IdLi) // ← Remover duplicatas
-                    .ToList();
-                registrosCriados += await ProcessarLoteLiAsync(restantes);
-                _liParaRestaurar.Clear();
-            }
-
-            if (registrosCriados > 0)
-            {
-                await _context.SaveChangesAsync();
-                _logger.LogInformation("Salvos {QtdRegistros} registros de dados de renovação", registrosCriados);
+                itensParaProcessar.AddRange(notasLote.Select(n => (
+                    n.ConfiabilidadeRestaurada, n.IdAtivo, (long?)n.IdNota, (long?)null, n.DataNota ?? DateTime.UtcNow, OrigemUR.Nota, n.IdLi ?? string.Empty, n.Classificacao
+                )));
             }
             else
             {
-                _logger.LogWarning("Nenhum registro de dados de renovação foi criado ou atualizado");
-            }
+                var ordensLote = await _context.PM_Ordens
+                    .Where(o => loteIds.Contains(o.IdOrdem))
+                    .ToListAsync();
 
-            return registrosCriados;
+                itensParaProcessar.AddRange(ordensLote.Select(o => (
+                    o.ConfiabilidadeRestaurada, o.IdAtivo, (long?)null, (long?)o.IdOrdem, o.DataCriacao ?? DateTime.UtcNow, OrigemUR.Ordem, o.IdLi ?? string.Empty, o.Classificacao
+                )));
+            }
         }
-        catch (Exception ex)
+
+        _logger.LogInformation("Carregados {Qtd} registros de {Tipo} para processamento", itensParaProcessar.Count, ehNota ? "Notas" : "Ordens");
+        
+        //processa ordens e notas
+        foreach (var item in itensParaProcessar)
         {
-            _logger.LogError(ex, "Erro ao cadastrar dados de renovação para {Tipo}", ehNota);
-            throw;
+            _logger.LogDebug("Processando item. Nota={IdNota}, Ordem={IdOrdem}, Confiabilidade={Conf}", item.NotaId, item.OrdemId, item.Conf);
+
+            registrosCriados += await ProcessarPorConfiabilidadeAsync(
+                item.Conf, item.Ativo, item.NotaId, item.OrdemId, item.Data, item.Origem, item.Li, item.Classif
+            );
+            
+            // Processa o lote inteiro acumulado, limpamos a fila e evitamos bugs de deslocamento de índice.
+            if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
+            {
+                _logger.LogInformation("Atingido tamanho de lote ({TamanhoLote}). Processando lote de LI's...", TAMANHO_LOTE_LI);
+                
+                var lotePorProcessar = _liParaRestaurar
+                    .DistinctBy(li => li.IdLi) 
+                    .ToList();
+
+                registrosCriados += await ProcessarLoteLiAsync(lotePorProcessar);
+                _liParaRestaurar.Clear(); 
+            }
         }
+
+        // Processa qualquer LI remanescente que sobrou na fila
+        if (_liParaRestaurar.Any())
+        {
+            _logger.LogInformation("Processando {QtdLI} LI's restantes", _liParaRestaurar.Count);
+            var restantes = _liParaRestaurar.DistinctBy(li => li.IdLi).ToList();
+            registrosCriados += await ProcessarLoteLiAsync(restantes);
+            _liParaRestaurar.Clear();
+        }
+
+        // Finaliza persistindo as alterações geradas pelos métodos internos
+        if (registrosCriados > 0)
+        {
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Salvos {QtdRegistros} registros de dados de renovação com sucesso", registrosCriados);
+        }
+        else
+        {
+            _logger.LogWarning("Nenhum registro de dados de renovação foi criado ou atualizado");
+        }
+
+        return registrosCriados;
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Erro ao cadastrar dados de renovação para {Tipo}", ehNota ? "Nota" : "Ordem");
+        throw;
+    }
     }
 
-    //Trata dois casos, se a nota restaura apenas um ativo especifico ou toda a LI
+    /// <summary>
+    /// Processa a atualização de registros com base no tipo de confiabilidade restaurada (RestauraAtivo ou RestauraLI).
+    /// </summary>
+    /// <param name="confiabilidade">O nível de restauração de confiabilidade a ser aplicado</param>
+    /// <param name="idAtivo">Identificador opcional do ativo (ComponentType)</param>
+    /// <param name="idNota">Identificador opcional da Nota associada</param>
+    /// <param name="idOrdem">Identificador opcional da Ordem associada</param>
+    /// <param name="dataSource">Data de origem da ocorrência</param>
+    /// <param name="origem">Origem do apontamento (OrigemUR)</param>
+    /// <param name="idLi">Identificador do Local de Instalação (LI)</param>
+    /// <param name="tipoDados">Classificação do tipo de dado (Corretiva, Preventiva, etc.)</param>
+    /// <returns>A quantidade de registros inseridos ou atualizados imediatamente</returns>
     private async Task<int> ProcessarPorConfiabilidadeAsync(
         ConfiabilidadeRestaurada? confiabilidade,
         ComponentType? idAtivo,
@@ -402,67 +364,67 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         Classificacao tipoDados)
     {
         if (confiabilidade == null)
-        {
-            _logger.LogDebug("ConfiabilidadeRestaurada é nula, nenhum processamento realizado");
-            return 0;
-        }
-
-
-        var inseridos = 0;
-
-        if (confiabilidade == ConfiabilidadeRestaurada.RestauraAtivo)
-        {
-            if (idAtivo.HasValue)
-            {
-                _logger.LogDebug("Processando RestauraAtivo para IdAtivo={IdAtivo}", idAtivo.Value);
-                inseridos = await InserirOuAtualizarPorAtivoAsync(
-                    idAtivo.Value,
-                    idNota,
-                    idOrdem,
-                    dataSource,
-                    origem,
-                    idLi,
-                    tipoDados
-                );
-            }
-            else
-            {
-                _logger.LogWarning("RestauraAtivo com IdAtivo nulo. Gravando com IdAtivo = null na LI={IdLi}", idLi);
-
-                inseridos = await InserirOuAtualizarPorAtivoAsync(
-                    null,
-                    idNota, idOrdem, dataSource, origem, idLi, tipoDados);
-            }
-        }
-        else if (confiabilidade == ConfiabilidadeRestaurada.RestauraLI)
-        {
-            if (!string.IsNullOrWhiteSpace(idLi))
-            {
-                _logger.LogDebug("RestauraLI identificado - adicionando IdLi={IdLi} à fila de processamento", idLi);
-
-                var existente = _liParaRestaurar.FirstOrDefault(li => li.IdLi == idLi);
-
-                if (existente == default)
-                {
-                    _liParaRestaurar.Add((idLi, idNota, idOrdem, dataSource, origem, tipoDados)); // ← INCLUIR tipoDados
-                    _logger.LogDebug("IdLi {IdLi} adicionado à fila com origem. Total na fila: {Total}",
-                        idLi, _liParaRestaurar.Count);
-                }
-                else
-                {
-                    _logger.LogDebug("IdLi {IdLi} já existe na fila, mantendo primeira ocorrência", idLi);
-                }
-            }
-            else
-            {
-                _logger.LogWarning("RestauraLI marcado mas IdLi nulo ou vazio para Nota={IdNota}, Ordem={IdOrdem}",
-                    idNota, idOrdem);
-            }
-        }
-
-        return inseridos;
+    {
+        _logger.LogDebug("ConfiabilidadeRestaurada é nula, nenhum processamento realizado");
+        return 0;
     }
 
+    var inseridos = 0;
+
+    if (confiabilidade == ConfiabilidadeRestaurada.RestauraAtivo)
+    {
+        // OTIMIZAÇÃO: Removemos o if/else redundante. 
+        // O método já aceita idAtivo nulo, então repassamos o valor diretamente.
+        if (idAtivo.HasValue)
+            _logger.LogDebug("Processando RestauraAtivo para IdAtivo={IdAtivo}", idAtivo.Value);
+        else
+            _logger.LogWarning("RestauraAtivo com IdAtivo nulo. Gravando com IdAtivo = null na LI={IdLi}", idLi);
+
+        inseridos = await InserirOuAtualizarPorAtivoAsync(
+            idAtivo: idAtivo, // ← Passa o parâmetro anulável direto
+            idNota,
+            idOrdem,
+            dataSource,
+            origem,
+            idLi,
+            tipoDados
+        );
+    }
+    else if (confiabilidade == ConfiabilidadeRestaurada.RestauraLI)
+    {
+        if (!string.IsNullOrWhiteSpace(idLi))
+        {
+            _logger.LogDebug("RestauraLI identificado - adicionando IdLi={IdLi} à fila de processamento", idLi);
+
+            // OTIMIZAÇÃO: Uso de .Any() em vez de FirstOrDefault para checagem booleana
+            bool jaExisteNaFila = _liParaRestaurar.Any(li => li.IdLi == idLi);
+
+            if (!jaExisteNaFila)
+            {
+                _liParaRestaurar.Add((idLi, idNota, idOrdem, dataSource, origem, tipoDados));
+                _logger.LogDebug("IdLi {IdLi} adicionado à fila com origem. Total na fila: {Total}",
+                    idLi, _liParaRestaurar.Count);
+            }
+            else
+            {
+                _logger.LogDebug("IdLi {IdLi} já existe na fila, mantendo primeira ocorrência", idLi);
+            }
+        }
+        else
+        {
+            _logger.LogWarning("RestauraLI marcado mas IdLi nulo ou vazio para Nota={IdNota}, Ordem={IdOrdem}",
+                idNota, idOrdem);
+        }
+    }
+
+    return inseridos;
+    }
+
+    /// <summary>
+    /// Processa um lote de Locais de Instalação (LIs), busca seus ativos associados via API APM e registra as atualizações no banco de dados.
+    /// </summary>
+    /// <param name="liComContexto">Lista de tuplas contendo o ID do LI e seu contexto operacional (Nota, Ordem, DataOrigem, Origem e TipoDados)</param>
+    /// <returns>A quantidade total de registros processados e salvos no banco de dados</returns>
     private async Task<int> ProcessarLoteLiAsync(
         List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, Classificacao TipoDados)>
             liComContexto)
@@ -473,76 +435,78 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             return 0;
         }
 
-        var lis = liComContexto.Select(li => li.IdLi).ToList();
-        _logger.LogInformation("Iniciando processamento de lote com {QtdLI} LI's", lis.Count);
+        //Extrai apenas LIs únicos, caso haja LIs repetidos no lote
+        var lis = liComContexto.Select(li => li.IdLi).Distinct().ToList();
+        _logger.LogInformation("Iniciando processamento de lote com {QtdLI} LI's únicas", lis.Count);
 
+        //Cria um dicionário para busca instantânea (O(1)). 
+        // O GroupBy garante que não dê erro caso o liComContexto tenha IDs duplicados.
+        var contextoDict = liComContexto
+            .GroupBy(li => li.IdLi)
+            .ToDictionary(g => g.Key, g => g.First());
+        
         try
-        {
-            // Chama a API da APM para obter os ativos associados às LI's
-            var ativosDoLote = await ObterAtivosDoLoteLiAsync(lis);
+    {
+        var ativosDoLote = await ObterAtivosDoLoteLiAsync(lis);
 
-            if (!ativosDoLote.Any())
+        if (!ativosDoLote.Any())
+        {
+            _logger.LogWarning("Nenhum ativo foi retornado para o lote de LI's");
+            return 0;
+        }
+
+        int registrosProcessados = 0;
+
+        foreach (var assetComponent in ativosDoLote)
+        {
+            if (string.IsNullOrWhiteSpace(assetComponent.Name))
             {
-                _logger.LogWarning("Nenhum ativo foi retornado para o lote de LI's");
-                return 0;
+                _logger.LogWarning("AssetComponent sem nome retornado pela APM.");
+                continue;
             }
 
-            int registrosProcessados = 0;
-
-            // Para cada LI (Name) e seus ativos (ComponentTypes)
-            foreach (var assetComponent in ativosDoLote)
+            // Busca o contexto pelo Dicionário
+            if (!contextoDict.TryGetValue(assetComponent.Name, out var contextoDaLi))
             {
-                if (string.IsNullOrWhiteSpace(assetComponent.Name))
-                {
-                    _logger.LogWarning("AssetComponent sem nome retornado pela APM.");
-                    continue;
-                }
-
-                var contextoDaLi = liComContexto.FirstOrDefault(li => li.IdLi == assetComponent.Name);
-
-                // Se ComponentTypes for nulo ou vazio, grava na tabela com IdAtivo = null
-                if (assetComponent.ComponentTypes == null || !assetComponent.ComponentTypes.Any())
-                {
-                    _logger.LogDebug("LI {IdLi} sem ativos. Inserindo registro com IdAtivo nulo.", assetComponent.Name);
-
-                    registrosProcessados += await InserirOuAtualizarPorAtivoAsync(
-                        idAtivo: null, // ← PASSANDO NULL AQUI
-                        idNota: contextoDaLi.IdNota,
-                        idOrdem: contextoDaLi.IdOrdem,
-                        dataSource: contextoDaLi.DataOrigem,
-                        origem: contextoDaLi.Origem,
-                        idLi: assetComponent.Name,
-                        tipoDados: contextoDaLi.TipoDados
-                    );
-                }
-                else
-                {
-                    // Se vieram ativos, itera e grava para cada um deles (como já era antes)
-                    foreach (var idAtivo in assetComponent.ComponentTypes)
-                    {
-                        registrosProcessados += await InserirOuAtualizarPorAtivoAsync(
-                            idAtivo,
-                            idNota: contextoDaLi.IdNota,
-                            idOrdem: contextoDaLi.IdOrdem,
-                            dataSource: contextoDaLi.DataOrigem,
-                            origem: contextoDaLi.Origem,
-                            idLi: assetComponent.Name,
-                            tipoDados: contextoDaLi.TipoDados
-                        );
-                    }
-                }
+                _logger.LogWarning("LI {IdLi} retornada pela APM não estava no contexto original.", assetComponent.Name);
+                continue;
             }
 
-            _logger.LogInformation("Lote de LI's processado com sucesso. {QtdRegistros} ativos adicionados",
-                registrosProcessados);
+            // Unifica a lógica para não repetir o InserirOuAtualizarPorAtivoAsync duas vezes.
+            var idsParaProcessar = (assetComponent.ComponentTypes == null || !assetComponent.ComponentTypes.Any())
+                ? new List<dynamic> { null! } 
+                : assetComponent.ComponentTypes.Cast<dynamic>().ToList();
 
-            return registrosProcessados;
+            if (idsParaProcessar.Count == 1 && idsParaProcessar[0] == null)
+            {
+                _logger.LogDebug("LI {IdLi} sem ativos. Inserindo registro com IdAtivo nulo.", assetComponent.Name);
+            }
+
+            // O laço vai rodar 1 vez se for nulo, ou N vezes para os ativos que existirem
+            foreach (var idAtivo in idsParaProcessar)
+            {
+                registrosProcessados += await InserirOuAtualizarPorAtivoAsync(
+                    idAtivo: idAtivo,
+                    idNota: contextoDaLi.IdNota,
+                    idOrdem: contextoDaLi.IdOrdem,
+                    dataSource: contextoDaLi.DataOrigem,
+                    origem: contextoDaLi.Origem,
+                    idLi: assetComponent.Name,
+                    tipoDados: contextoDaLi.TipoDados
+                );
+            }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro ao processar lote de LI's");
-            throw;
-        }
+
+        _logger.LogInformation("Lote de LI's processado com sucesso. {QtdRegistros} registros gravados/atualizados",
+            registrosProcessados);
+
+        return registrosProcessados;
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Erro ao processar lote de LI's");
+        throw;
+    }
     }
 
     /// <summary>
@@ -703,6 +667,98 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             pagina = p,
             Tamanho = t,
             Result = itensPaginados
+        };
+    }
+
+    /// <summary>
+    /// A partir de um LI, busca a última data de renovação e as próximas renovações definidas em um plano
+    /// <param name="idLi">Identificador principal do Local de Instalação (LI)</param>
+    /// <param name="nomAlternativo">Nome alternativo opcional associado ao LI</param>
+    /// <returns>Objeto anônimo contendo o nome SAP (LIs agrupados), data da última renovação, lista de renovação e tempo de ciclo</returns>
+    /// </summary>
+    public async Task<object?> AtivoDatas(string idLi, string? nomeAlternativo)
+    {
+        //Monta a lista com os nomes de busca
+        var nomesBusca = new List<string> { idLi };
+        if (!string.IsNullOrWhiteSpace(nomeAlternativo))
+        {
+            nomesBusca.Add(nomeAlternativo);
+        }
+
+        //Busca a data da última renovação verificando TODOS os nomes
+        var queryRenovacao = _context.PM_DadosRenovacao
+            .AsNoTracking()
+            .Where(d => nomesBusca.Contains(d.IdLi));
+
+        var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
+
+        if (config.CriterioDataRenovacao == CriterioDataRenovacao.ApenasFichasCorretivas)
+            queryRenovacao = queryRenovacao.Where(d => d.TipoDados == Classificacao.CORRETIVA);
+        else if (config.CriterioDataRenovacao == CriterioDataRenovacao.ApenasFichasPreventivas)
+            queryRenovacao = queryRenovacao.Where(d => d.TipoDados == Classificacao.PREVENTIVA);
+
+        // Traz APENAS a data do banco, economizando tráfego de dados (não traz a linha inteira)
+        var ultimaData = await queryRenovacao
+            .OrderByDescending(d => d.UltimaRenovacao)
+            .Select(d => (DateTime?)d.UltimaRenovacao)
+            .FirstOrDefaultAsync();
+
+        // Busca TODOS os planos relacionados a qualquer um dos LIs
+        var planos = await _planoModels
+            .Include(p => p.Estrategia)
+            .Where(p => nomesBusca.Contains(p.IdLi))
+            .ToListAsync();
+
+        // Se nenhum plano for encontrado, retorna o fallback
+        if (!planos.Any())
+        {
+            return new
+            {
+                SapName = string.Join(" / ", nomesBusca),
+                UltimaData = ultimaData,
+                ListaRenovacao = new List<object>(),
+                TempoCiclo = 120
+            };
+        }
+        
+        //se existe plano, busca ele
+        List<long> idsPlanos = planos
+            .Select(p => p.IdPlano)
+            .ToList();
+
+        // Busca apenas UM TipoPlano
+        var tipoPlanoRenovacao = await _context.PM_TiposPlano
+            .Include(tp => tp.TipoManutencao)
+            .AsNoTracking()
+            .Where(tp => tp.IdPlano != null &&
+                         idsPlanos.Contains(tp.IdPlano.Value) &&
+                         tp.Categoria == CategoriaTipoManutencao.Renovacao)
+            .FirstOrDefaultAsync();
+
+        var listaRenovacao = tipoPlanoRenovacao != null
+            ? new List<object>
+            {
+                new
+                {
+                    Meses = (double?)(tipoPlanoRenovacao.Dias / 30.0),
+                    Continua = tipoPlanoRenovacao.Continua,
+                    Confiabilidade = tipoPlanoRenovacao.TipoManutencao?.Confiabilidade
+                }
+            }
+            : new List<object>();
+
+        // Extrai o tempo de ciclo
+        var tempoCiclo = planos
+            .Where(p => p.Estrategia?.Ciclos != null)
+            .Select(p => p.Estrategia!.Ciclos)
+            .FirstOrDefault();
+
+        return new
+        {
+            SapName = string.Join(" / ", nomesBusca),
+            UltimaData = ultimaData,
+            ListaRenovacao = listaRenovacao,
+            TempoCiclo = tempoCiclo
         };
     }
 }

@@ -220,7 +220,7 @@ public class NotasController : ControllerBase
             // adicionar dps quem modificou a nota aqui
 
             var result = await _notaService.UpdateNotaAsync(notaExistente);
-            return Ok(new { message = "Nota atualizada com sucesso: " + result.IdNota });
+            return Ok( result);
         }
         catch (Exception)
         {
@@ -232,6 +232,7 @@ public class NotasController : ControllerBase
     /// Delete uma nota de mesmo Id
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+    /// <returns>Mensagem de confirmação da exclusão.</returns>
     /// <returns>Mensagem de confirmação da exclusão.</returns>
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>

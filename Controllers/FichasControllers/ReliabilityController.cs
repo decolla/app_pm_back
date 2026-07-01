@@ -61,6 +61,9 @@ public class ReliabilityController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Busca Todas as datas de notas e ordens de um LI
+    /// </summary>
     [HttpGet("filtrar")]
     public async Task<IActionResult> FiltrarOrdens([FromQuery] List<Classificacao> Classificacoes,
         [FromQuery] List<MetodoClassificacao> Metodos)

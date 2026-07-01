@@ -15,18 +15,19 @@ public class AuditoriaModel
     /// <summary>
     /// O Id de quem fez a alteração.
     /// </summary>
+    [MaxLength(200)]
     public int? IdUsuario { get; set; } 
     
     /// <summary>
     /// Nome da tabela que foi alterada.
     /// </summary>
-    [MaxLength(100)]
+    [MaxLength(200)]
     public string NomeTabela { get; set; } = string.Empty;
 
     /// <summary>
     /// Ação realizada na tabela.
     /// </summary>
-    [MaxLength(20)]
+    [MaxLength(30)]
     public string Acao { get; set; } = string.Empty;
     
     /// <summary>

@@ -202,13 +202,11 @@ public class OrdensController : ControllerBase
             {
                 return NotFound(new { message = $"Nota com Id {id} não encontrada." });
             }
+            _mapper.Map(dto, OrdemExistente);
+            OrdemExistente.DataModificacao = DateTime.UtcNow;
 
-            var ordem = _mapper.Map<OrdemModel>(dto);
-            ordem.IdNota = id; // garante que o Id usado é sempre o da rota
-            ordem.DataModificacao = DateTime.UtcNow;
-
-            var result = await _ordemService.UpdateNotaAsync(ordem);
-            return Ok(new { message = "Ordem atualizada com sucesso: " + result.IdOrdem });
+            var result = await _ordemService.UpdateNotaAsync(OrdemExistente);
+            return Ok(result);
         }
         catch (Exception)
         {

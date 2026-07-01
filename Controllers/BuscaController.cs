@@ -136,39 +136,6 @@ public class BuscaController : ControllerBase
     }
 
     /// <summary>
-    /// Busca as datas de renovação associadas ao LI, retorna um objeto com os dados relevantes
-    /// </summary>
-    /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
-    /// <param name="tipoDados">Tipo de dados da renovação</param>
-    /// <returns>Objeto com informações relevantes</returns>
-    [HttpGet("ativo/datas")]
-    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] string idLi, [FromQuery] string? SapId, [FromQuery] Classificacao tipoDados)
-    {
-        try
-        {
-
-            if (string.IsNullOrWhiteSpace(idLi))
-            {
-                return BadRequest(new { message = "Parametro idLi obrigatorio." });
-            }
-
-            if (!Enum.IsDefined(typeof(Classificacao), tipoDados))
-            {
-                return BadRequest(new { message = "Parametro tipoDados invalido." });
-            }
-
-            var obj = await _searchService.AtivoDatas(idLi, SapId, tipoDados);
-            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
-
-            return Ok(obj);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
-        }
-    }
-
-    /// <summary>
     /// Busca notas e ordens por intervalo de data e IdLi.
     /// </summary>
     /// <param name="dataInicio">Data inicial do intervalo.</param>
