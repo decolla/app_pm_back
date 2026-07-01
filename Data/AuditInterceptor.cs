@@ -1,65 +1,54 @@
 using app_pm_back.Interfaces;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace app_pm_back.Data;
 
-/// <summary>
-/// Interceptor de auditoria. Captura compliance e logs pré salvamento em banco
-/// </summary>
 public class AuditInterceptor : SaveChangesInterceptor
 {
     private readonly IUserContext _userContext;
+
+    // guarda o "diff" capturado em SavingChangesAsync até poder ser persistido em SavedChangesAsync
+    private List<(EntityEntry Entry, AuditoriaModel Auditoria)> _pendentes = new();
+
+    // trava contra reentrância: o SaveChangesAsync chamado dentro de SavedChangesAsync
+    // dispara este mesmo interceptor de novo; sem essa trava, se algum dia AuditoriaModel
+    // vier a implementar IAuditable, isso vira loop infinito
+    private bool _gravandoAuditoria;
 
     public AuditInterceptor(IUserContext userContext)
     {
         _userContext = userContext;
     }
 
+    // SavingChangesAsync captura o diff (PKs de Modified/Deleted e OriginalValue só existem antes do save);
+    // SavedChangesAsync resolve a PK dos Added e persiste o log, pois exige um 2º SaveChanges separado.
+    // Caso a aplicação caia entre os dois saves, o dado principal fica gravado sem o log correspondente.
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        // verifica se o contexto existe
         var context = eventData.Context;
-        if (context == null) return base.SavingChangesAsync(eventData, result, cancellationToken);
+        if (context == null || _gravandoAuditoria)
+            return base.SavingChangesAsync(eventData, result, cancellationToken);
 
-        var auditorias = new List<AuditoriaModel>();
+        _pendentes = new List<(EntityEntry, AuditoriaModel)>();
         int? usuarioId = _userContext.GetUsuarioIdAtual();
 
-        // varre as entidades que contém a interface Auditable
         foreach (var entry in context.ChangeTracker.Entries<IAuditable>())
         {
-            if (entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+            if (entry.State is EntityState.Detached or EntityState.Unchanged)
                 continue;
-
-            // base do log
-            var auditoria = new AuditoriaModel
-            {
-                IdUsuario = usuarioId,
-                NomeTabela = entry.Metadata.GetTableName() ?? entry.Metadata.Name,
-                Acao = entry.State.ToString(),
-                DataAlteracao = DateTime.UtcNow
-            };
-
-            // procura a chave primária
-            var primaryKey = entry.Metadata.FindPrimaryKey();
-            if (primaryKey != null && primaryKey.Properties.Count == 1)
-            {
-                var pkName = primaryKey.Properties[0].Name;
-                auditoria.ChavePrimaria = entry.Property(pkName).CurrentValue?.ToString() ?? "N/A";
-            }
 
             var valoresAntigos = new Dictionary<string, object?>();
             var valoresNovos = new Dictionary<string, object?>();
 
-            // varre as propriedades para capturar os valores antigos e novos
             foreach (var property in entry.Properties)
             {
-                if (property.IsTemporary) continue; // ignora propriedades temporárias
-
+                if (property.IsTemporary) continue; // ex: PK de identity ainda não gerada pelo banco
                 string nome = property.Metadata.Name;
 
                 switch (entry.State)
@@ -67,32 +56,92 @@ public class AuditInterceptor : SaveChangesInterceptor
                     case EntityState.Added:
                         valoresNovos[nome] = property.CurrentValue;
                         break;
-                    case EntityState.Modified:
-                        if (property.IsModified)
-                        {
-                            valoresAntigos[nome] = property.OriginalValue;
-                            valoresNovos[nome] = property.CurrentValue;
-                        }
+                    case EntityState.Modified when property.IsModified:
+                        valoresAntigos[nome] = property.OriginalValue;
+                        valoresNovos[nome] = property.CurrentValue;
                         break;
                     case EntityState.Deleted:
                         valoresAntigos[nome] = property.OriginalValue;
                         break;
                 }
-                
-                // serializa os valores antigos e novos para o log
-                auditoria.ValoresAntigos = valoresAntigos.Count > 0 ? System.Text.Json.JsonSerializer.Serialize(valoresAntigos) : null;
-                auditoria.ValoresNovos = valoresNovos.Count > 0 ? System.Text.Json.JsonSerializer.Serialize(valoresNovos) : null;
-                
-                auditorias.Add(auditoria);
             }
-        }
 
-        if (auditorias.Count > 0)
-        {
-            // adiciona as auditorias no contexto
-            context.Set<AuditoriaModel>().AddRange(auditorias);
+            // em Modified/Deleted a PK já é conhecida agora; em Added ela só existe
+            // depois que o banco gerar o identity, então fica null e é resolvida em SavedChangesAsync
+            string? chave = null;
+            if (entry.State != EntityState.Added)
+            {
+                var pk = entry.Metadata.FindPrimaryKey();
+                if (pk?.Properties.Count == 1)
+                    chave = entry.Property(pk.Properties[0].Name).CurrentValue?.ToString();
+            }
+
+            var auditoria = new AuditoriaModel
+            {
+                IdUsuario = usuarioId,
+                NomeTabela = entry.Metadata.GetTableName() ?? entry.Metadata.Name,
+                Acao = entry.State.ToString(),
+                ChavePrimaria = chave,
+                ValoresAntigos = valoresAntigos.Count > 0 ? System.Text.Json.JsonSerializer.Serialize(valoresAntigos) : null,
+                ValoresNovos = valoresNovos.Count > 0 ? System.Text.Json.JsonSerializer.Serialize(valoresNovos) : null,
+                DataAlteracao = DateTime.UtcNow
+            };
+
+            _pendentes.Add((entry, auditoria));
         }
 
         return base.SavingChangesAsync(eventData, result, cancellationToken);
+    }
+
+    public override async ValueTask<int> SavedChangesAsync(
+        SaveChangesCompletedEventData eventData,
+        int result,
+        CancellationToken cancellationToken = default)
+    {
+        var context = eventData.Context;
+        if (context == null || _pendentes.Count == 0 || _gravandoAuditoria)
+            return await base.SavedChangesAsync(eventData, result, cancellationToken);
+
+        // resolve a PK dos registros Added agora que o INSERT já rodou e o identity foi gerado
+        foreach (var (entry, auditoria) in _pendentes)
+        {
+            if (auditoria.ChavePrimaria != null) continue;
+            var pk = entry.Metadata.FindPrimaryKey();
+            if (pk?.Properties.Count == 1)
+                auditoria.ChavePrimaria = entry.Property(pk.Properties[0].Name).CurrentValue?.ToString() ?? "N/A";
+        }
+
+        var auditorias = _pendentes.Select(p => p.Auditoria).ToList();
+        _pendentes.Clear();
+
+        try
+        {
+            _gravandoAuditoria = true; // impede reentrância no SaveChangesAsync abaixo
+            context.Set<AuditoriaModel>().AddRange(auditorias);
+            await context.SaveChangesAsync(cancellationToken); // segunda ida ao banco, só para o log
+        }
+        finally
+        {
+            _gravandoAuditoria = false;
+        }
+
+        return await base.SavedChangesAsync(eventData, result, cancellationToken);
+    }
+
+    // garante que o estado não fique "sujo" para a próxima operação em caso de erro no save
+    public override Task SaveChangesFailedAsync(
+        DbContextErrorEventData eventData,
+        CancellationToken cancellationToken = default)
+    {
+        _pendentes.Clear();
+        _gravandoAuditoria = false;
+        return base.SaveChangesFailedAsync(eventData, cancellationToken);
+    }
+
+    public override void SaveChangesFailed(DbContextErrorEventData eventData)
+    {
+        _pendentes.Clear();
+        _gravandoAuditoria = false;
+        base.SaveChangesFailed(eventData);
     }
 }
