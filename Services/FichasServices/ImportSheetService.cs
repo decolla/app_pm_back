@@ -61,7 +61,7 @@ public class ImportSheetService
             idNotas = notasDeduplicadas.Select(n => n.IdNota).ToList();
             if (idItens.Count > 1) 
             {
-                bool sinc = await _synchronizeApmService.SynchronizeAPMAsync(cancellationToken); 
+                bool sinc = await _synchronizeApmService.SynchronizeApmAsync(cancellationToken); 
                 Console.WriteLine($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
                 await _dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens, cancellationToken);
             }
@@ -79,7 +79,7 @@ public class ImportSheetService
             
             var idOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
             
-            bool sinc = await _synchronizeApmService.SynchronizeAPMAsync(cancellationToken); 
+            bool sinc = await _synchronizeApmService.SynchronizeApmAsync(cancellationToken); 
             Console.WriteLine($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
             await _dadosRenovacaoService.ImportarDadosOrdemAsync(idOrdens, cancellationToken);
             

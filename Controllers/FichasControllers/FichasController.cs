@@ -49,7 +49,7 @@ public class FichasController : ControllerBase
         _logger.LogInformation("Recebida requisição GET em /synchronize-apm.");
         try
         {
-            var result = await _synchronizeApmService.SynchronizeAPMAsync(cancellationToken);
+            var result = await _synchronizeApmService.SynchronizeApmAsync(cancellationToken);
 
             if (result)
             {
@@ -214,7 +214,7 @@ public class FichasController : ControllerBase
     {
         try
         {
-            // Validações básicas e rápidas da requisição
+            // validações
             if (!sobrescrever && !adicionarNovas)
                 return BadRequest(new
                     { message = "Nenhuma ação selecionada. Marque 'sobrescrever' ou 'adicionarNovas'." });
@@ -222,10 +222,15 @@ public class FichasController : ControllerBase
             if (file == null || file.Length == 0)
                 return BadRequest(new { message = "Arquivo inválido ou vazio." });
 
-            // 3. Toda a mágica pesada acontece dentro do serviço!
             var inseridas = await _spreadsheetOrchestrator
                 .ProcessarPlanilhaAsync(file, sobrescrever, adicionarNovas, cancellationToken);
 
+            if (inseridas > 0)
+            {
+                await _notaService.AutoClassify();
+                await _ordemService.AutoClassify();
+            }
+            
             return Ok(new { message = inseridas });
         }
         catch (OperationCanceledException)
