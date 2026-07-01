@@ -2,6 +2,7 @@ using app_pm_back.DTO;
 using app_pm_back.Interfaces;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
@@ -64,7 +65,14 @@ public class ConfiguracaoGlobalController : ControllerBase
             var usuarioId = _userContext.GetUsuarioIdAtual()?.ToString() ?? "Sistema";
             await _configuracaoService.SalvarConfiguracaoAsync(dto, usuarioId);
             
-            return Ok(new { message = "Configuração global salva com sucesso." });
+            // instancia automaticamente a classificação automática em segundo plano se a configuração permitir
+            if (dto.ClassificacaoAutomatica != ModoClassificacaoAutomatica.NaoClassificar)
+            {
+                BackgroundJob.Enqueue<ClassificationService<NotaModel>>(service => service.AutoClassify());
+                BackgroundJob.Enqueue<ClassificationService<OrdemModel>>(service => service.AutoClassify());
+            }
+            
+            return Ok(new { message = "Configuração global salva com sucesso. A reclassificação foi iniciada em segundo plano." });
         }
         catch (Exception e)
         {

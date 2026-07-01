@@ -28,6 +28,7 @@ public class ReliabilityService
         _context = context;
         _notaModels = context.PM_Notas;
         _ordemModels = context.PM_Ordens;
+        _configuracaoGlobalService = configuracaoGlobalService;
         _externIntegrationService = externIntegrationService;
         _logger = logger;
         _reliabilityBaseUrl = configuration["APIs:Reliability"] ?? "http://10.3.192.200:60170";

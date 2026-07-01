@@ -3900,7 +3900,7 @@
             <param name="externIntegrationService"></param>
             <param name="logger"></param>
         </member>
-        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.SynchronizeAPMAsync(System.Threading.CancellationToken)">
+        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.SynchronizeApmAsync(System.Threading.CancellationToken)">
             <summary>
             Sincroniza os dados de APM (Asset Performance Management) com as notas e ordens de serviço do sistema.
             </summary>
@@ -3921,6 +3921,12 @@
             <summary>
             Classificação manual de notas/ordens.
             </summary>
+        </member>
+        <member name="M:app_pm_back.Services.ClassificationService`1.GetAllRules">
+            <summary>
+            Recebe todas as regras de classificação de palavras do banco de dados, ordenadas por prioridade.
+            </summary>
+            <returns>Lista de regras cadastradas </returns>
         </member>
         <member name="M:app_pm_back.Services.ClassificationService`1.CreateRule(app_pm_back.DTO.RuleClassificationDto)">
             <summary>
@@ -3955,7 +3961,7 @@
             Classe DadosRenovacaoService.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.FichasServices.DadosRenovacaoService},Microsoft.Extensions.Configuration.IConfiguration,System.Net.Http.HttpClient)">
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.FichasServices.DadosRenovacaoService},Microsoft.Extensions.Configuration.IConfiguration,app_pm_back.Services.ConfiguracaoGlobalService,System.Net.Http.HttpClient)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.FichasServices.DadosRenovacaoService"/>.
             </summary>
@@ -3992,6 +3998,12 @@
             </summary>
             <param name="lis">Lista de LocalInstalacoes (LI's)</param>
             <returns>Lista de AssetComponentTypesDTO com os ativos para cada LI</returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.InserirOuAtualizarPorAtivoAsync(System.Nullable{app_pm_back.Models.Domain.ComponentType},System.Nullable{System.Int64},System.Nullable{System.Int64},System.DateTime,app_pm_back.Models.Domain.OrigemUR,System.String,app_pm_back.Models.Domain.Classificacao)">
+            <summary>
+            Dado o ativo que será restaurado, verifica se ele já existe ou não na tabela DadosRenovacao
+            </summary>
+            <returns>Inteiro representando sucesso ou falha da operação</returns>
         </member>
         <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.BuscarRenovacaoAsync(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
@@ -4507,7 +4519,7 @@
         <member name="P:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.Ordens">
             <summary>Parâmetro do método.</summary>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.#ctor(app_pm_back.Data.AppDbContext)">
+        <member name="M:app_pm_back.Services.GenericSearchService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ConfiguracaoGlobalService)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.GenericSearchService"/>.
             </summary>

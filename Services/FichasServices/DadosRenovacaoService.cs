@@ -14,8 +14,11 @@ namespace app_pm_back.Services.FichasServices;
 public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 {
     private readonly ILogger<DadosRenovacaoService> _logger;
-    private List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, Classificacao TipoDados)> _liParaRestaurar 
+
+    private List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, Classificacao
+        TipoDados)> _liParaRestaurar
         = new List<(string, long?, long?, DateTime, OrigemUR, Classificacao)>();
+
     private const int TAMANHO_LOTE_LI = 50;
     private readonly HttpClient _httpClient;
     private readonly string _apmBaseUrl;
@@ -25,13 +28,13 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     /// Inicializa uma nova instância da classe <see cref="DadosRenovacaoService"/>.
     /// </summary>
     public DadosRenovacaoService(
-        AppDbContext context, 
+        AppDbContext context,
         ILogger<DadosRenovacaoService> logger,
         IConfiguration configuration,
+        ConfiguracaoGlobalService configuracaoGlobalService,
         HttpClient httpClient)
         : base(context)
     {
-
         _logger = logger;
         _httpClient = httpClient;
         _apmBaseUrl = configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
@@ -99,7 +102,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             foreach (var nota in notasParaAtualizar)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                
+
                 if (nota.IdAtivo.HasValue)
                 {
                     // Se IdAtivo está preenchido → RestauraAtivo
@@ -124,7 +127,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             foreach (var nota in notas)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                
+
                 var textosNota =
                     $"{nota.DescricaoBreve ?? string.Empty} {nota.AnomaliaObservada ?? string.Empty} {nota.ObservacoesComplementares ?? string.Empty}"
                         .ToUpperInvariant();
@@ -197,11 +200,11 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             var ordens = await _context.PM_Ordens
                 .Where(n => idsOrdens.Contains(n.IdOrdem))
                 .ToListAsync();
-            
+
 
             // Não filtrar por ConfiabilidadeRestaurada antes da classificação por descrição de texto, 
             // caso contrário ordens com NaoRestaura nunca seriam classificadas/processadas.
-            
+
 
             _logger.LogInformation("Carregadas {QtdOrdens} ordens do banco", ordens.Count);
 
@@ -280,9 +283,10 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                 {
                     //Busca no banco em lotes
                     var notasDoLote = await _context.PM_Notas
-                        .Where(n => loteIds.Contains(n.IdNota) && n.ConfiabilidadeRestaurada != ConfiabilidadeRestaurada.NaoRestaura)
+                        .Where(n => loteIds.Contains(n.IdNota) &&
+                                    n.ConfiabilidadeRestaurada != ConfiabilidadeRestaurada.NaoRestaura)
                         .ToListAsync();
-                
+
                     //Guarda resultado em lotes
                     notas.AddRange(notasDoLote);
                 }
@@ -304,13 +308,14 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                         nota.IdLi ?? string.Empty,
                         nota.Classificacao);
                     registrosCriados += inseridos;
-                    
+
                     if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
                     {
-                        _logger.LogInformation("Atingido tamanho de lote ({TamanhoLote}). Processando lote de LI's...", TAMANHO_LOTE_LI);
+                        _logger.LogInformation("Atingido tamanho de lote ({TamanhoLote}). Processando lote de LI's...",
+                            TAMANHO_LOTE_LI);
                         var lotePorProcessar = _liParaRestaurar
                             .Take(TAMANHO_LOTE_LI)
-                            .DistinctBy(li => li.IdLi)  // ← Remover duplicatas por IdLi
+                            .DistinctBy(li => li.IdLi) // ← Remover duplicatas por IdLi
                             .ToList();
                         registrosCriados += await ProcessarLoteLiAsync(lotePorProcessar);
                         _liParaRestaurar.RemoveRange(0, Math.Min(TAMANHO_LOTE_LI, _liParaRestaurar.Count));
@@ -332,7 +337,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                 {
                     _logger.LogDebug("Processando ordem {IdOrdem} com ConfiabilidadeRestaurada={Conf}",
                         ordem.IdOrdem, ordem.ConfiabilidadeRestaurada);
-                    
+
 
                     var inseridos = await ProcessarPorConfiabilidadeAsync(
                         ordem.ConfiabilidadeRestaurada,
@@ -344,21 +349,23 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                         ordem.IdLi ?? string.Empty,
                         ordem.Classificacao);
                     registrosCriados += inseridos;
-                    
+
                     if (_liParaRestaurar.Count >= TAMANHO_LOTE_LI)
                     {
-                        _logger.LogInformation("Atingido tamanho de lote ({TamanhoLote}). Processando lote de LI's...", TAMANHO_LOTE_LI);
+                        _logger.LogInformation("Atingido tamanho de lote ({TamanhoLote}). Processando lote de LI's...",
+                            TAMANHO_LOTE_LI);
                         var lotePorProcessar = _liParaRestaurar.Take(TAMANHO_LOTE_LI).Distinct().ToList();
                         registrosCriados += await ProcessarLoteLiAsync(lotePorProcessar);
                         _liParaRestaurar.RemoveRange(0, Math.Min(TAMANHO_LOTE_LI, _liParaRestaurar.Count));
                     }
                 }
             }
+
             if (_liParaRestaurar.Any())
             {
                 _logger.LogInformation("Processando {QtdLI} LI's restantes", _liParaRestaurar.Count);
                 var restantes = _liParaRestaurar
-                    .DistinctBy(li => li.IdLi)  // ← Remover duplicatas
+                    .DistinctBy(li => li.IdLi) // ← Remover duplicatas
                     .ToList();
                 registrosCriados += await ProcessarLoteLiAsync(restantes);
                 _liParaRestaurar.Clear();
@@ -373,7 +380,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             {
                 _logger.LogWarning("Nenhum registro de dados de renovação foi criado ou atualizado");
             }
-            
+
             return registrosCriados;
         }
         catch (Exception ex)
@@ -399,7 +406,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             _logger.LogDebug("ConfiabilidadeRestaurada é nula, nenhum processamento realizado");
             return 0;
         }
-        
+
 
         var inseridos = 0;
 
@@ -416,14 +423,14 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                     origem,
                     idLi,
                     tipoDados
-                    ); 
+                );
             }
             else
             {
                 _logger.LogWarning("RestauraAtivo com IdAtivo nulo. Gravando com IdAtivo = null na LI={IdLi}", idLi);
 
                 inseridos = await InserirOuAtualizarPorAtivoAsync(
-                    null, 
+                    null,
                     idNota, idOrdem, dataSource, origem, idLi, tipoDados);
             }
         }
@@ -437,8 +444,8 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 
                 if (existente == default)
                 {
-                    _liParaRestaurar.Add((idLi, idNota, idOrdem, dataSource, origem, tipoDados));  // ← INCLUIR tipoDados
-                    _logger.LogDebug("IdLi {IdLi} adicionado à fila com origem. Total na fila: {Total}", 
+                    _liParaRestaurar.Add((idLi, idNota, idOrdem, dataSource, origem, tipoDados)); // ← INCLUIR tipoDados
+                    _logger.LogDebug("IdLi {IdLi} adicionado à fila com origem. Total na fila: {Total}",
                         idLi, _liParaRestaurar.Count);
                 }
                 else
@@ -448,70 +455,58 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             }
             else
             {
-                _logger.LogWarning("RestauraLI marcado mas IdLi nulo ou vazio para Nota={IdNota}, Ordem={IdOrdem}", 
+                _logger.LogWarning("RestauraLI marcado mas IdLi nulo ou vazio para Nota={IdNota}, Ordem={IdOrdem}",
                     idNota, idOrdem);
             }
         }
 
         return inseridos;
     }
+
     private async Task<int> ProcessarLoteLiAsync(
-        List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, Classificacao TipoDados)> liComContexto)
+        List<(string IdLi, long? IdNota, long? IdOrdem, DateTime DataOrigem, OrigemUR Origem, Classificacao TipoDados)>
+            liComContexto)
     {
-    if (!liComContexto.Any())
-    {
-        _logger.LogDebug("Lista de LI's vazia, nenhum processamento realizado");
-        return 0;
-    }
-    var lis = liComContexto.Select(li => li.IdLi).ToList();
-    _logger.LogInformation("Iniciando processamento de lote com {QtdLI} LI's", lis.Count);
-
-     try
-    {
-        // Chama a API da APM para obter os ativos associados às LI's
-        var ativosDoLote = await ObterAtivosDoLoteLiAsync(lis);
-
-        if (!ativosDoLote.Any())
+        if (!liComContexto.Any())
         {
-            _logger.LogWarning("Nenhum ativo foi retornado para o lote de LI's");
+            _logger.LogDebug("Lista de LI's vazia, nenhum processamento realizado");
             return 0;
         }
 
-        int registrosProcessados = 0;
+        var lis = liComContexto.Select(li => li.IdLi).ToList();
+        _logger.LogInformation("Iniciando processamento de lote com {QtdLI} LI's", lis.Count);
 
-        // Para cada LI (Name) e seus ativos (ComponentTypes)
-        foreach (var assetComponent in ativosDoLote)
+        try
         {
-            if (string.IsNullOrWhiteSpace(assetComponent.Name))
+            // Chama a API da APM para obter os ativos associados às LI's
+            var ativosDoLote = await ObterAtivosDoLoteLiAsync(lis);
+
+            if (!ativosDoLote.Any())
             {
-                _logger.LogWarning("AssetComponent sem nome retornado pela APM.");
-                continue;
+                _logger.LogWarning("Nenhum ativo foi retornado para o lote de LI's");
+                return 0;
             }
 
-            var contextoDaLi = liComContexto.FirstOrDefault(li => li.IdLi == assetComponent.Name);
+            int registrosProcessados = 0;
 
-            // Se ComponentTypes for nulo ou vazio, grava na tabela com IdAtivo = null
-            if (assetComponent.ComponentTypes == null || !assetComponent.ComponentTypes.Any())
+            // Para cada LI (Name) e seus ativos (ComponentTypes)
+            foreach (var assetComponent in ativosDoLote)
             {
-                _logger.LogDebug("LI {IdLi} sem ativos. Inserindo registro com IdAtivo nulo.", assetComponent.Name);
-        
-                registrosProcessados += await InserirOuAtualizarPorAtivoAsync(
-                    idAtivo: null, // ← PASSANDO NULL AQUI
-                    idNota: contextoDaLi.IdNota,
-                    idOrdem: contextoDaLi.IdOrdem,
-                    dataSource: contextoDaLi.DataOrigem,
-                    origem: contextoDaLi.Origem,
-                    idLi: assetComponent.Name,
-                    tipoDados: contextoDaLi.TipoDados
-                );
-            }
-            else
-            {
-                // Se vieram ativos, itera e grava para cada um deles (como já era antes)
-                foreach (var idAtivo in assetComponent.ComponentTypes)
+                if (string.IsNullOrWhiteSpace(assetComponent.Name))
                 {
+                    _logger.LogWarning("AssetComponent sem nome retornado pela APM.");
+                    continue;
+                }
+
+                var contextoDaLi = liComContexto.FirstOrDefault(li => li.IdLi == assetComponent.Name);
+
+                // Se ComponentTypes for nulo ou vazio, grava na tabela com IdAtivo = null
+                if (assetComponent.ComponentTypes == null || !assetComponent.ComponentTypes.Any())
+                {
+                    _logger.LogDebug("LI {IdLi} sem ativos. Inserindo registro com IdAtivo nulo.", assetComponent.Name);
+
                     registrosProcessados += await InserirOuAtualizarPorAtivoAsync(
-                        idAtivo,
+                        idAtivo: null, // ← PASSANDO NULL AQUI
                         idNota: contextoDaLi.IdNota,
                         idOrdem: contextoDaLi.IdOrdem,
                         dataSource: contextoDaLi.DataOrigem,
@@ -520,95 +515,115 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                         tipoDados: contextoDaLi.TipoDados
                     );
                 }
+                else
+                {
+                    // Se vieram ativos, itera e grava para cada um deles (como já era antes)
+                    foreach (var idAtivo in assetComponent.ComponentTypes)
+                    {
+                        registrosProcessados += await InserirOuAtualizarPorAtivoAsync(
+                            idAtivo,
+                            idNota: contextoDaLi.IdNota,
+                            idOrdem: contextoDaLi.IdOrdem,
+                            dataSource: contextoDaLi.DataOrigem,
+                            origem: contextoDaLi.Origem,
+                            idLi: assetComponent.Name,
+                            tipoDados: contextoDaLi.TipoDados
+                        );
+                    }
+                }
             }
+
+            _logger.LogInformation("Lote de LI's processado com sucesso. {QtdRegistros} ativos adicionados",
+                registrosProcessados);
+
+            return registrosProcessados;
         }
-
-        _logger.LogInformation("Lote de LI's processado com sucesso. {QtdRegistros} ativos adicionados", 
-            registrosProcessados);
-        
-        return registrosProcessados;
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Erro ao processar lote de LI's");
-        throw;
-    }
-}
-
-/// <summary>
-/// Chama a API da APM (PUT) para obter os ativos (ComponentTypes) associados às LI's.
-/// </summary>
-/// <param name="lis">Lista de LocalInstalacoes (LI's)</param>
-/// <returns>Lista de AssetComponentTypesDTO com os ativos para cada LI</returns>
-private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<string> lis)
-{
-    try
-    {
-        var url = $"{_apmBaseUrl}/api/V1/Asset/Components";
-        
-        _logger.LogInformation("Chamando API APM: PUT {Url} com {QtdLI} LI's no body", url, lis.Count);
-
-        // Criar o body com a lista de nomes
-        var jsonContent = System.Text.Json.JsonSerializer.Serialize(lis);  
-        var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
-
-        // Fazer requisição PUT com body
-        var request = new HttpRequestMessage(HttpMethod.Put, url)
+        catch (Exception ex)
         {
-            Content = content
-        };
-        
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
-        var response = await _httpClient.SendAsync(request);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            _logger.LogError("Erro ao chamar API APM. StatusCode: {StatusCode}, ReasonPhrase: {ReasonPhrase}", 
-                response.StatusCode, 
-                response.ReasonPhrase);
-            _logger.LogError("Conteudo enviado: {content}", jsonContent);
-            response.EnsureSuccessStatusCode();
+            _logger.LogError(ex, "Erro ao processar lote de LI's");
+            throw;
         }
+    }
 
-        var responseContent = await response.Content.ReadAsStringAsync();
-        _logger.LogDebug("Resposta recebida da APM: {Response}", responseContent);
-
-        // Desserializar a resposta
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        
-        // A resposta pode ser um array ou um único objeto, vamos tratar como array
-        List<AssetComponentTypesDTO> resultado;
-        
+    /// <summary>
+    /// Chama a API da APM (PUT) para obter os ativos (ComponentTypes) associados às LI's.
+    /// </summary>
+    /// <param name="lis">Lista de LocalInstalacoes (LI's)</param>
+    /// <returns>Lista de AssetComponentTypesDTO com os ativos para cada LI</returns>
+    private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<string> lis)
+    {
         try
         {
-            // Tentar desserializar como array primeiro
-            resultado = JsonSerializer.Deserialize<List<AssetComponentTypesDTO>>(responseContent, options) 
-                ?? new List<AssetComponentTypesDTO>();
+            var url = $"{_apmBaseUrl}/api/V1/Asset/Components";
+
+            _logger.LogInformation("Chamando API APM: PUT {Url} com {QtdLI} LI's no body", url, lis.Count);
+
+            // Criar o body com a lista de nomes
+            var jsonContent = System.Text.Json.JsonSerializer.Serialize(lis);
+            var content = new StringContent(jsonContent, System.Text.Encoding.UTF8, "application/json");
+
+            // Fazer requisição PUT com body
+            var request = new HttpRequestMessage(HttpMethod.Put, url)
+            {
+                Content = content
+            };
+
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
+            var response = await _httpClient.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogError("Erro ao chamar API APM. StatusCode: {StatusCode}, ReasonPhrase: {ReasonPhrase}",
+                    response.StatusCode,
+                    response.ReasonPhrase);
+                _logger.LogError("Conteudo enviado: {content}", jsonContent);
+                response.EnsureSuccessStatusCode();
+            }
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            _logger.LogDebug("Resposta recebida da APM: {Response}", responseContent);
+
+            // Desserializar a resposta
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            // A resposta pode ser um array ou um único objeto, vamos tratar como array
+            List<AssetComponentTypesDTO> resultado;
+
+            try
+            {
+                // Tentar desserializar como array primeiro
+                resultado = JsonSerializer.Deserialize<List<AssetComponentTypesDTO>>(responseContent, options)
+                            ?? new List<AssetComponentTypesDTO>();
+            }
+            catch
+            {
+                // Se não for array, tentar como objeto único
+                var singleResult = JsonSerializer.Deserialize<AssetComponentTypesDTO>(responseContent, options);
+                resultado = singleResult != null
+                    ? new List<AssetComponentTypesDTO> { singleResult }
+                    : new List<AssetComponentTypesDTO>();
+            }
+
+            _logger.LogInformation("Obtidos {QtdResultados} conjuntos de ativos da API APM", resultado.Count);
+
+            return resultado;
         }
-        catch
+        catch (HttpRequestException ex)
         {
-            // Se não for array, tentar como objeto único
-            var singleResult = JsonSerializer.Deserialize<AssetComponentTypesDTO>(responseContent, options);
-            resultado = singleResult != null ? new List<AssetComponentTypesDTO> { singleResult } : new List<AssetComponentTypesDTO>();
+            _logger.LogError(ex, "Erro na requisição HTTP para API APM");
+            throw;
         }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, "Erro ao desserializar resposta da API APM");
+            throw;
+        }
+    }
 
-        _logger.LogInformation("Obtidos {QtdResultados} conjuntos de ativos da API APM", resultado.Count);
-        
-        return resultado;
-    }
-    catch (HttpRequestException ex)
-    {
-        _logger.LogError(ex, "Erro na requisição HTTP para API APM");
-        throw;
-    }
-    catch (JsonException ex)
-    {
-        _logger.LogError(ex, "Erro ao desserializar resposta da API APM");
-        throw;
-    }
-}
-
-//Dado o ativo que será restaurado, verifica se ele já existe ou não na tabela DadosRenovacao
+    /// <summary>
+    /// Dado o ativo que será restaurado, verifica se ele já existe ou não na tabela DadosRenovacao
+    /// </summary>
+    /// <returns>Inteiro representando sucesso ou falha da operação</returns>
     private async Task<int> InserirOuAtualizarPorAtivoAsync(
         ComponentType? idAtivo,
         long? idNota,
@@ -636,7 +651,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
                     IdAtivo = idAtivo,
                     IdNota = idNota ?? null,
                     IdOrdem = idOrdem ?? null,
-                    IdLi = idLi, 
+                    IdLi = idLi,
                     IdUsuario = null
                 };
                 _context.PM_DadosRenovacao.Add(novo);
@@ -645,6 +660,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
                     idAtivo, origem, dataSource);
                 return 1;
             }
+
             return 0;
         }
         catch (Exception ex)
@@ -666,7 +682,7 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
         var renovacoesQuery = _dbSet.AsQueryable();
 
         renovacoesQuery = renovacoesQuery.AplicarOrdenacao(_context);
-        
+
         //Cálculos da paginação
         int totalGeral = await renovacoesQuery.CountAsync().ConfigureAwait(false);
         int p = pagina ?? 1;
@@ -680,14 +696,13 @@ private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<s
             .ToListAsync()
             .ConfigureAwait(false);
 
-        return new 
-        { 
-            Total = totalGeral, 
+        return new
+        {
+            Total = totalGeral,
             TotalPaginas = totalPaginas,
-            pagina = p, 
+            pagina = p,
             Tamanho = t,
-            Result = itensPaginados 
+            Result = itensPaginados
         };
     }
-
 }

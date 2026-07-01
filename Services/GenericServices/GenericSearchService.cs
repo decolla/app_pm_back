@@ -18,6 +18,7 @@ public class GenericSearchService
     private readonly DbSet<NotaModel> _notaModels;
     private readonly DbSet<OrdemModel> _ordemModels;
     private readonly DbSet<PlanoModel> _planoModels;
+    private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
     private static readonly Dictionary<string, Type> Tabelas = BuildTabelas();
 
     /// <summary>
@@ -39,12 +40,13 @@ public class GenericSearchService
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="GenericSearchService"/>.
     /// </summary>
-    public GenericSearchService(AppDbContext context)
+    public GenericSearchService(AppDbContext context, ConfiguracaoGlobalService configuracaoGlobalService)
     {
         _context = context;
         _notaModels = context.PM_Notas;
         _ordemModels = context.PM_Ordens;
         _planoModels = context.PM_Planos;
+        _configuracaoGlobalService = configuracaoGlobalService;
     }
 
     public IReadOnlyDictionary<string, IReadOnlyList<string>> ListarTabelasCampos()
@@ -103,186 +105,186 @@ public class GenericSearchService
     /// </summary>
     /// <param name="busca">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-public async Task<object> BuscarNotaOrdemAsync(
+    public async Task<object> BuscarNotaOrdemAsync(
         dynamic busca,
         int? pagina,
         int? tamanho,
         Fichas? Tfichas)
-{
-    if (busca == null)
     {
-        throw new ArgumentNullException(nameof(busca));
-    }
+        if (busca == null)
+        {
+            throw new ArgumentNullException(nameof(busca));
+        }
 
-    // Includes para buscar o Plano e, em seguida, a Estratégia
-    var notasQuery = _notaModels
-        .Include(n => n.Plano)
+        // Includes para buscar o Plano e, em seguida, a Estratégia
+        var notasQuery = _notaModels
+            .Include(n => n.Plano)
             .ThenInclude(p => p.Estrategia)
-        .AsNoTracking()
-        .AsQueryable();
+            .AsNoTracking()
+            .AsQueryable();
 
-    var ordensQuery = _ordemModels
-        .Include(o => o.Plano)
+        var ordensQuery = _ordemModels
+            .Include(o => o.Plano)
             .ThenInclude(p => p.Estrategia)
-        .AsNoTracking()
-        .AsQueryable();
+            .AsNoTracking()
+            .AsQueryable();
 
-    // Safe check for properties of dynamic/anonymous object
-    var buscaType = (Type)busca.GetType();
+        // Safe check for properties of dynamic/anonymous object
+        var buscaType = (Type)busca.GetType();
 
-    StatusFichas? statusNota = buscaType.GetProperty("StatusNota")?.GetValue(busca);
-    if (statusNota.HasValue)
-    {
-        notasQuery = notasQuery.Where(n => n.StatusNota == statusNota.Value);
+        StatusFichas? statusNota = buscaType.GetProperty("StatusNota")?.GetValue(busca);
+        if (statusNota.HasValue)
+        {
+            notasQuery = notasQuery.Where(n => n.StatusNota == statusNota.Value);
+        }
+
+        var notaIdInicioVal = buscaType.GetProperty("NotaIdInicio")?.GetValue(busca);
+        long? notaIdInicio = notaIdInicioVal != null ? Convert.ToInt64(notaIdInicioVal) : null;
+        if (notaIdInicio.HasValue)
+        {
+            notasQuery = notasQuery.Where(n => n.NumeroNota >= notaIdInicio.Value);
+        }
+
+        var notaIdFimVal = buscaType.GetProperty("NotaIdFim")?.GetValue(busca);
+        long? notaIdFim = notaIdFimVal != null ? Convert.ToInt64(notaIdFimVal) : null;
+        if (notaIdFim.HasValue)
+        {
+            notasQuery = notasQuery.Where(n => n.NumeroNota <= notaIdFim.Value);
+        }
+
+        var ordemIdInicioVal = buscaType.GetProperty("OrdemIdInicio")?.GetValue(busca);
+        long? ordemIdInicio = ordemIdInicioVal != null ? Convert.ToInt64(ordemIdInicioVal) : null;
+        if (ordemIdInicio.HasValue)
+        {
+            ordensQuery = ordensQuery.Where(o => o.NumeroOrdem >= ordemIdInicio.Value);
+        }
+
+        var ordemIdFimVal = buscaType.GetProperty("OrdemIdFim")?.GetValue(busca);
+        long? ordemIdFim = ordemIdFimVal != null ? Convert.ToInt64(ordemIdFimVal) : null;
+        if (ordemIdFim.HasValue)
+        {
+            ordensQuery = ordensQuery.Where(o => o.NumeroOrdem <= ordemIdFim.Value);
+        }
+
+        string? localInstalacaoInicio = buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca);
+        if (!string.IsNullOrEmpty(localInstalacaoInicio))
+        {
+            notasQuery = notasQuery.Where(n => string.Compare(n.IdLi, localInstalacaoInicio) <= 0);
+            ordensQuery = ordensQuery.Where(o => string.Compare(o.IdLi, localInstalacaoInicio) <= 0);
+        }
+
+        string? localInstalacaoFim = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca);
+        if (!string.IsNullOrEmpty(localInstalacaoInicio))
+        {
+            notasQuery = notasQuery.Where(n => string.Compare(n.IdLi, localInstalacaoInicio) >= 0);
+            ordensQuery = ordensQuery.Where(o => string.Compare(o.IdLi, localInstalacaoInicio) >= 0);
+        }
+
+        var listaAtivosRaw = buscaType.GetProperty("ListaAtivos")?.GetValue(busca);
+        if (listaAtivosRaw != null)
+        {
+            // converte par uma lista de ComponentType?
+            var listaAtivosConvertida = ((IEnumerable)listaAtivosRaw)
+                .Cast<ComponentType?>()
+                .ToList();
+
+            notasQuery = notasQuery.Where(n => listaAtivosConvertida.Contains(n.IdAtivo));
+            ordensQuery = ordensQuery.Where(o => listaAtivosConvertida.Contains(o.IdAtivo));
+        }
+
+        DateTime? notaDataInicio = buscaType.GetProperty("NotaDataInicio")?.GetValue(busca) as DateTime?;
+        if (notaDataInicio.HasValue)
+        {
+            notasQuery = notasQuery.Where(n => n.DataNota >= notaDataInicio.Value);
+        }
+
+        DateTime? notaDataFim = buscaType.GetProperty("NotaDataFim")?.GetValue(busca) as DateTime?;
+        if (notaDataFim.HasValue)
+        {
+            notasQuery = notasQuery.Where(n => n.DataNota <= notaDataFim.Value);
+        }
+
+        DateTime? ordemDataInicio = buscaType.GetProperty("OrdemDataInicio")?.GetValue(busca) as DateTime?;
+        if (ordemDataInicio.HasValue)
+        {
+            ordensQuery = ordensQuery.Where(o => o.DataCriacao >= ordemDataInicio.Value);
+        }
+
+        DateTime? ordemDataFim = buscaType.GetProperty("OrdemDataFim")?.GetValue(busca) as DateTime?;
+        if (ordemDataFim.HasValue)
+        {
+            ordensQuery = ordensQuery.Where(o => o.DataCriacao <= ordemDataFim.Value);
+        }
+
+        var prioridadeInicioVal = buscaType.GetProperty("PrioridadeInicio")?.GetValue(busca);
+        Prioridade? prioridadeInicio = prioridadeInicioVal as Prioridade?;
+        if (prioridadeInicio.HasValue)
+        {
+            notasQuery = notasQuery.Where(n => n.Prioridade >= prioridadeInicio.Value);
+        }
+
+        var prioridadeFimVal = buscaType.GetProperty("PrioridadeFim")?.GetValue(busca);
+        Prioridade? prioridadeFim = prioridadeFimVal as Prioridade?;
+        if (prioridadeFim.HasValue)
+        {
+            notasQuery = notasQuery.Where(n => n.Prioridade <= prioridadeFim.Value);
+        }
+
+        var classificacaoVal = buscaType.GetProperty("Classificacao")?.GetValue(busca);
+        Classificacao? classificacao = classificacaoVal as Classificacao?;
+        if (classificacao.HasValue)
+        {
+            notasQuery = notasQuery.Where(n => n.Classificacao == classificacao.Value);
+            ordensQuery = ordensQuery.Where(o => o.Classificacao == classificacao.Value);
+        }
+
+        StatusFichas? statusOrdem = buscaType.GetProperty("StatusOrdem")?.GetValue(busca);
+        if (statusOrdem.HasValue)
+        {
+            ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem.Value);
+        }
+
+        var listaUnica = new List<object>();
+
+        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Notas)
+        {
+            notasQuery = notasQuery.AplicarOrdenacao(_context);
+            var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
+            listaUnica.AddRange(todasNotas);
+        }
+
+        // Busca Ordens apenas se for Ambas (0) ou Ordens (2)
+        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Ordens)
+        {
+            ordensQuery = ordensQuery.AplicarOrdenacao(_context);
+            var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
+            listaUnica.AddRange(todasOrdens);
+        }
+
+        //Cálculos da paginação
+        int totalGeral = listaUnica.Count;
+        int p = pagina ?? 1;
+        int t = tamanho ?? 20;
+        int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
+
+        //Pega os 'n' primeiros itens dependendo da página
+        var itensPaginados = listaUnica.Skip((p - 1) * t).Take(t).ToList();
+
+        //Separa de volta para preencher o NotaOrdemSearchResult
+        var notasResult = itensPaginados.OfType<NotaModel>().ToList();
+        var ordensResult = itensPaginados.OfType<OrdemModel>().ToList();
+
+        var result = new NotaOrdemSearchResult(notasResult, ordensResult);
+
+        return new
+        {
+            Total = totalGeral,
+            TotalPaginas = totalPaginas,
+            pagina = p,
+            Tamanho = t,
+            Result = result
+        };
     }
-
-    var notaIdInicioVal = buscaType.GetProperty("NotaIdInicio")?.GetValue(busca);
-    long? notaIdInicio = notaIdInicioVal != null ? Convert.ToInt64(notaIdInicioVal) : null;
-    if (notaIdInicio.HasValue)
-    {
-        notasQuery = notasQuery.Where(n => n.NumeroNota >= notaIdInicio.Value);
-    }
-
-    var notaIdFimVal = buscaType.GetProperty("NotaIdFim")?.GetValue(busca);
-    long? notaIdFim = notaIdFimVal != null ? Convert.ToInt64(notaIdFimVal) : null;
-    if (notaIdFim.HasValue)
-    {
-        notasQuery = notasQuery.Where(n => n.NumeroNota <= notaIdFim.Value);
-    }
-
-    var ordemIdInicioVal = buscaType.GetProperty("OrdemIdInicio")?.GetValue(busca);
-    long? ordemIdInicio = ordemIdInicioVal != null ? Convert.ToInt64(ordemIdInicioVal) : null;
-    if (ordemIdInicio.HasValue)
-    {
-        ordensQuery = ordensQuery.Where(o => o.NumeroOrdem >= ordemIdInicio.Value);
-    }
-
-    var ordemIdFimVal = buscaType.GetProperty("OrdemIdFim")?.GetValue(busca);
-    long? ordemIdFim = ordemIdFimVal != null ? Convert.ToInt64(ordemIdFimVal) : null;
-    if (ordemIdFim.HasValue)
-    {
-        ordensQuery = ordensQuery.Where(o => o.NumeroOrdem <= ordemIdFim.Value);
-    }
-
-    string? localInstalacaoInicio = buscaType.GetProperty("LocalInstalacaoInicio")?.GetValue(busca);
-    if (!string.IsNullOrEmpty(localInstalacaoInicio))
-    {
-        notasQuery = notasQuery.Where(n => string.Compare(n.IdLi,localInstalacaoInicio) <= 0);
-        ordensQuery = ordensQuery.Where(o => string.Compare(o.IdLi,localInstalacaoInicio) <= 0);
-    }
-
-    string? localInstalacaoFim = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca);
-    if (!string.IsNullOrEmpty(localInstalacaoInicio))
-    {
-        notasQuery = notasQuery.Where(n => string.Compare(n.IdLi,localInstalacaoInicio) >= 0);
-        ordensQuery = ordensQuery.Where(o => string.Compare(o.IdLi,localInstalacaoInicio) >= 0);
-    }
-    
-    var listaAtivosRaw = buscaType.GetProperty("ListaAtivos")?.GetValue(busca);
-    if (listaAtivosRaw != null)
-    {
-        // converte par uma lista de ComponentType?
-        var listaAtivosConvertida = ((IEnumerable)listaAtivosRaw)
-            .Cast<ComponentType?>()
-            .ToList();
-
-        notasQuery = notasQuery.Where(n => listaAtivosConvertida.Contains(n.IdAtivo));
-        ordensQuery = ordensQuery.Where(o => listaAtivosConvertida.Contains(o.IdAtivo));
-    }
-    
-    DateTime? notaDataInicio = buscaType.GetProperty("NotaDataInicio")?.GetValue(busca) as DateTime?;
-    if (notaDataInicio.HasValue)
-    {
-        notasQuery = notasQuery.Where(n => n.DataNota >= notaDataInicio.Value);
-    }
-
-    DateTime? notaDataFim = buscaType.GetProperty("NotaDataFim")?.GetValue(busca) as DateTime?;
-    if (notaDataFim.HasValue)
-    {
-        notasQuery = notasQuery.Where(n => n.DataNota <= notaDataFim.Value);
-    }
-
-    DateTime? ordemDataInicio = buscaType.GetProperty("OrdemDataInicio")?.GetValue(busca) as DateTime?;
-    if (ordemDataInicio.HasValue)
-    {
-        ordensQuery = ordensQuery.Where(o => o.DataCriacao >= ordemDataInicio.Value);
-    }
-
-    DateTime? ordemDataFim = buscaType.GetProperty("OrdemDataFim")?.GetValue(busca) as DateTime?;
-    if (ordemDataFim.HasValue)
-    {
-        ordensQuery = ordensQuery.Where(o => o.DataCriacao <= ordemDataFim.Value);
-    }
-
-    var prioridadeInicioVal = buscaType.GetProperty("PrioridadeInicio")?.GetValue(busca);
-    Prioridade? prioridadeInicio = prioridadeInicioVal as Prioridade?;
-    if (prioridadeInicio.HasValue)
-    {
-        notasQuery = notasQuery.Where(n => n.Prioridade >= prioridadeInicio.Value);
-    }
-
-    var prioridadeFimVal = buscaType.GetProperty("PrioridadeFim")?.GetValue(busca);
-    Prioridade? prioridadeFim = prioridadeFimVal as Prioridade?;
-    if (prioridadeFim.HasValue)
-    {
-        notasQuery = notasQuery.Where(n => n.Prioridade <= prioridadeFim.Value);
-    }
-    
-    var classificacaoVal = buscaType.GetProperty("Classificacao")?.GetValue(busca);
-    Classificacao? classificacao = classificacaoVal as Classificacao?;
-    if (classificacao.HasValue)
-    {
-        notasQuery = notasQuery.Where(n => n.Classificacao == classificacao.Value);
-        ordensQuery = ordensQuery.Where(o => o.Classificacao == classificacao.Value);
-    }
-
-    StatusFichas? statusOrdem = buscaType.GetProperty("StatusOrdem")?.GetValue(busca); 
-    if (statusOrdem.HasValue)
-    {
-        ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem.Value);
-    }
-
-    var listaUnica = new List<object>();
-    
-    if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Notas)
-    {
-        notasQuery = notasQuery.AplicarOrdenacao(_context);
-        var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
-        listaUnica.AddRange(todasNotas);
-    }
-
-    // Busca Ordens apenas se for Ambas (0) ou Ordens (2)
-    if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Ordens)
-    {
-        ordensQuery = ordensQuery.AplicarOrdenacao(_context);
-        var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
-        listaUnica.AddRange(todasOrdens);
-    }
-
-    //Cálculos da paginação
-    int totalGeral = listaUnica.Count;
-    int p = pagina ?? 1;
-    int t = tamanho ?? 20;
-    int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
-
-    //Pega os 'n' primeiros itens dependendo da página
-    var itensPaginados = listaUnica.Skip((p - 1) * t).Take(t).ToList();
-
-    //Separa de volta para preencher o NotaOrdemSearchResult
-    var notasResult = itensPaginados.OfType<NotaModel>().ToList(); 
-    var ordensResult = itensPaginados.OfType<OrdemModel>().ToList(); 
-
-    var result = new NotaOrdemSearchResult(notasResult, ordensResult);
-
-    return new 
-    { 
-        Total = totalGeral, 
-        TotalPaginas = totalPaginas,
-        pagina = p, 
-        Tamanho = t,
-        Result = result 
-    };
-}
 
     private async Task<object> BuscarInternoAsync<T>(
         string campo,
@@ -341,7 +343,7 @@ public async Task<object> BuscarNotaOrdemAsync(
         }
 
         var result = await query.Cast<object>().ToListAsync().ConfigureAwait(false);
-        return new {Total = count ,Result = result};
+        return new { Total = count, Result = result };
     }
 
     private static PropertyInfo BuscarPropriedade(Type tipo, string campo)
@@ -479,84 +481,110 @@ public async Task<object> BuscarNotaOrdemAsync(
         };
     }
 
-public async Task<object?> AtivoDatas(string idLi, string? nomAlternativo, Classificacao tipoDados)
-{
-    //Monta a lista com os nomes de busca
-    var nomesBusca = new List<string> { idLi };
-    if (!string.IsNullOrWhiteSpace(nomAlternativo))
+    public async Task<object?> AtivoDatas(string idLi, string? nomAlternativo, Classificacao tipoDados)
     {
-        nomesBusca.Add(nomAlternativo);
-    }
+        //Monta a lista com os nomes de busca
+        var nomesBusca = new List<string> { idLi };
+        if (!string.IsNullOrWhiteSpace(nomAlternativo))
+        {
+            nomesBusca.Add(nomAlternativo);
+        }
 
-    //Busca a data da última renovação verificando TODOS os nomes
-    // O OrderByDescending garante que pegaremos a data mais recente, independente de qual LI ela pertence
-    DadosRenovacaoModel? ultimaRenovacao = await _context.PM_DadosRenovacao
-        .AsNoTracking()
-        .Where(d => nomesBusca.Contains(d.IdLi) && d.TipoDados == tipoDados)
-        .OrderByDescending(d => d.UltimaRenovacao)
-        .FirstOrDefaultAsync();
+        //Busca a data da última renovação verificando TODOS os nomes
+        // O OrderByDescending garante que pegaremos a data mais recente, independente de qual LI ela pertence
+        DadosRenovacaoModel? ultimaRenovacao = null;
 
-    //Busca TODOS os planos relacionados a qualquer um dos LIs
-    var planos = await _planoModels
-        .Where(p => nomesBusca.Contains(p.IdLi))
-        // .Include(p => p.Estrategia) <-- Dica: Adicione isso se 'Estrategia' vier null por causa do Lazy Loading
-        .ToListAsync();
+        // acessa as configurações globais do sistema par obter o critério para última data de renovação
+        var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
+        switch (config.CriterioDataRenovacao)
+        {
+            case CriterioDataRenovacao.ApenasFichasCorretivas:
+                // critério de apenas fichas corretivas
+                ultimaRenovacao = await _context.PM_DadosRenovacao
+                    .AsNoTracking()
+                    .Where(d => nomesBusca.Contains(d.IdLi) && d.TipoDados == tipoDados &&
+                                d.TipoDados == Classificacao.CORRETIVA)
+                    .OrderByDescending(d => d.UltimaRenovacao)
+                    .FirstOrDefaultAsync();
+                break;
+            case CriterioDataRenovacao.ApenasFichasPreventivas:
+                // critério de apenas fichas preventivas
+                ultimaRenovacao = await _context.PM_DadosRenovacao
+                    .AsNoTracking()
+                    .Where(d => nomesBusca.Contains(d.IdLi) && d.TipoDados == tipoDados &&
+                                d.TipoDados == Classificacao.PREVENTIVA)
+                    .OrderByDescending(d => d.UltimaRenovacao)
+                    .FirstOrDefaultAsync();
+                break;
+            default:
+                ultimaRenovacao = await _context.PM_DadosRenovacao
+                    .AsNoTracking()
+                    .Where(d => nomesBusca.Contains(d.IdLi) && d.TipoDados == tipoDados)
+                    .OrderByDescending(d => d.UltimaRenovacao)
+                    .FirstOrDefaultAsync();
+                break;
+        }
 
-    // Se nenhum plano for encontrado para nenhum dos LIs, retorna o fallback
-    if (!planos.Any())
-    {
+        //Busca TODOS os planos relacionados a qualquer um dos LIs
+        var planos = await _planoModels
+            .Where(p => nomesBusca.Contains(p.IdLi))
+            // .Include(p => p.Estrategia) <-- Dica: Adicione isso se 'Estrategia' vier null por causa do Lazy Loading
+            .ToListAsync();
+
+        // Se nenhum plano for encontrado para nenhum dos LIs, retorna o fallback
+        if (!planos.Any())
+        {
+            return new
+            {
+                SapName = string.Join(" / ", nomesBusca),
+                UltimaData = ultimaRenovacao?.UltimaRenovacao,
+                ListaRenovacao = new List<object>(),
+                TempoCiclo = 120
+            };
+        }
+
+        // Extrai os IDs de todos os planos que encontramos
+        List<long> idsPlanos = planos
+            .Where(p => p.IdPlano != null)
+            .Select(p => p.IdPlano)
+            .ToList();
+
+        // Busca apenas UM TipoPlano (o primeiro que encontrar, ou nulo se não existir)
+        var tipoPlanoRenovacao = await _context.PM_TiposPlano
+            .Include(tp => tp.TipoManutencao)
+            .AsNoTracking()
+            .Where(tp => tp.IdPlano != null && // ← Verifica se não é nulo primeiro
+                         idsPlanos.Contains(tp.IdPlano.Value) && // ← Usa o .Value
+                         tp.Categoria == CategoriaTipoManutencao.Renovacao)
+            .FirstOrDefaultAsync();
+
+        // Como agora temos um objeto único (ou nulo), montamos a lista assim:
+        var listaRenovacao = tipoPlanoRenovacao != null
+            ? new List<object>
+            {
+                new
+                {
+                    Meses = (double?)(tipoPlanoRenovacao.Dias / 30.0),
+                    Continua = tipoPlanoRenovacao.Continua,
+                    Confiabilidade = tipoPlanoRenovacao.TipoManutencao?.Confiabilidade
+                }
+            }
+            : new List<object>(); // Se for nulo, retorna lista vazia
+
+        // Tenta pegar o ciclo do primeiro plano que tiver a Estrategia.Ciclos preenchida
+        var tempoCiclo = planos
+            .Where(p => p.Estrategia?.Ciclos != null)
+            .Select(p => p.Estrategia!.Ciclos)
+            .FirstOrDefault();
+
         return new
         {
-            SapName = string.Join(" / ", nomesBusca),
+            SapName = string.Join(" / ", nomesBusca), // Mantendo o mesmo padrão da refatoração anterior
             UltimaData = ultimaRenovacao?.UltimaRenovacao,
-            ListaRenovacao = new List<object>(),
-            TempoCiclo = 120
+            ListaRenovacao = listaRenovacao,
+            TempoCiclo = tempoCiclo
         };
     }
-
-    // Extrai os IDs de todos os planos que encontramos
-    List<long> idsPlanos = planos
-        .Where(p => p.IdPlano != null) 
-        .Select(p => p.IdPlano)        
-        .ToList();
-
-    // Busca apenas UM TipoPlano (o primeiro que encontrar, ou nulo se não existir)
-    var tipoPlanoRenovacao = await _context.PM_TiposPlano
-        .Include(tp => tp.TipoManutencao)
-        .AsNoTracking()
-        .Where(tp => tp.IdPlano != null && // ← Verifica se não é nulo primeiro
-                     idsPlanos.Contains(tp.IdPlano.Value) && // ← Usa o .Value
-                     tp.Categoria == CategoriaTipoManutencao.Renovacao)
-        .FirstOrDefaultAsync();
-
-// Como agora temos um objeto único (ou nulo), montamos a lista assim:
-    var listaRenovacao = tipoPlanoRenovacao != null 
-        ? new List<object> 
-        { 
-            new 
-            {
-                Meses = (double?)(tipoPlanoRenovacao.Dias / 30.0),
-                Continua = tipoPlanoRenovacao.Continua,
-                Confiabilidade = tipoPlanoRenovacao.TipoManutencao?.Confiabilidade
-            } 
-        } 
-        : new List<object>(); // Se for nulo, retorna lista vazia
-
-    // Tenta pegar o ciclo do primeiro plano que tiver a Estrategia.Ciclos preenchida
-    var tempoCiclo = planos
-        .Where(p => p.Estrategia?.Ciclos != null)
-        .Select(p => p.Estrategia!.Ciclos)
-        .FirstOrDefault();
-
-    return new
-    {
-        SapName = string.Join(" / ", nomesBusca), // Mantendo o mesmo padrão da refatoração anterior
-        UltimaData = ultimaRenovacao?.UltimaRenovacao,
-        ListaRenovacao = listaRenovacao,
-        TempoCiclo = tempoCiclo
-    };
-}
-    
 
 
     /// <summary>
@@ -609,5 +637,4 @@ public async Task<object?> AtivoDatas(string idLi, string? nomAlternativo, Class
 
         return timeline;
     }
-    
 }

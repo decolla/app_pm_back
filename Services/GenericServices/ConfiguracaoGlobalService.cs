@@ -8,15 +8,9 @@ namespace app_pm_back.Services;
 public class ConfiguracaoGlobalService
 {
     private readonly AppDbContext _context;
-    private readonly ClassificationService<NotaModel> _classificationNotaService;
-    private readonly ClassificationService<OrdemModel> _classificationOrdemService;
 
-
-    public ConfiguracaoGlobalService(AppDbContext context, ClassificationService<NotaModel> classificationNotaService,
-        ClassificationService<OrdemModel> classificationOrdemService)
+    public ConfiguracaoGlobalService(AppDbContext context)
     {
-        _classificationNotaService = classificationNotaService;
-        _classificationOrdemService = classificationOrdemService;
         _context = context;
     }
 
@@ -47,8 +41,5 @@ public class ConfiguracaoGlobalService
         config.ModificadoPorUsuario = usuario;
         
         await _context.SaveChangesAsync();
-        
-        await _classificationNotaService.AutoClassify();
-        await _classificationOrdemService.AutoClassify();
     }
 }
