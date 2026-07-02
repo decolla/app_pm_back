@@ -69,6 +69,12 @@ public class NotaManutencaoDto
     [SheetColumn("Id Usuario")] public int? IdUsuario { get; set; }
     
     [SheetColumn("Escopo")] public long? Escopo { get; set; }
+    
+    public  ICollection<ItemNotaManutencaoDto> Variaveis { get; set; } = new List<ItemNotaManutencaoDto>();
+    
+    public  ICollection<VariavelNotaDto> Itens { get; set; } = new List<VariavelNotaDto>();
+    
+    public  ICollection<AnexoNotaDto> Anexos { get; set; } = new List<AnexoNotaDto>();
 }
 
 #pragma warning restore CS1591
