@@ -31,6 +31,8 @@ public class AuditInterceptor : SaveChangesInterceptor
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
+        var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+        
         var context = eventData.Context;
         if (context == null || _gravandoAuditoria)
             return base.SavingChangesAsync(eventData, result, cancellationToken);
@@ -42,7 +44,10 @@ public class AuditInterceptor : SaveChangesInterceptor
         {
             if (entry.State is EntityState.Detached or EntityState.Unchanged)
                 continue;
-
+            
+            if (dbSchema == "cg" && entry.State == EntityState.Added)
+                continue;
+            
             var valoresAntigos = new Dictionary<string, object?>();
             var valoresNovos = new Dictionary<string, object?>();
 
