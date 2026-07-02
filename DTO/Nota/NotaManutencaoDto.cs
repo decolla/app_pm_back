@@ -71,9 +71,9 @@ public class NotaManutencaoDto
 
     [SheetColumn("Escopo")] public long? Escopo { get; set; }
 
-    public List<ItemNotaManutencaoDto>? Variaveis { get; set; } = new List<ItemNotaManutencaoDto>();
+    public List<VariavelNotaDto>? Variaveis { get; set; } = new List<VariavelNotaDto>();
 
-    public List<VariavelNotaDto>? Itens { get; set; } = new List<VariavelNotaDto>();
+    public List<ItemNotaManutencaoDto>? Itens { get; set; } = new List<ItemNotaManutencaoDto>();
 
     public List<AnexoNotaDto>? Anexos { get; set; } = new List<AnexoNotaDto>();
 }

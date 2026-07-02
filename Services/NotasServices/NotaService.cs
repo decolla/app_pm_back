@@ -113,4 +113,80 @@ public class NotaService : BaseCrudService<NotaModel>
             Fichas = fichas
         };
     }
+    
+    /// <summary>
+    /// Atualiza uma nota por completo com base no DTO da tela do frontend.
+    /// </summary>
+    /// <param name="notaTela">Nota completa</param>
+    /// <returns>Nota atualizada</returns>
+    public async Task<NotaModel> AtualizarNotaCompletaAsync(NotaModel notaTela)
+    {
+        // busca a nota no banco de dados
+        var notaDoBanco = await _dbSet
+            .Include(n => n.Itens)
+            .Include(n => n.Variaveis)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(n => n.IdNota == notaTela.IdNota);
+
+        if (notaDoBanco == null)
+            throw new Exception("Nota não encontrada.");
+
+        // atualiza o cabeçalho da nota
+        _context.Entry(notaDoBanco).CurrentValues.SetValues(notaTela);
+        _context.Entry(notaDoBanco).State = EntityState.Modified;
+        
+        // sincroniza itens 
+        var idsItens = notaTela.Itens.Select(i => i.IdItemNota).ToList();
+        
+        // deleta
+        foreach (var itemBanco in notaDoBanco.Itens.Where(i => !idsItens.Contains(i.IdItemNota)))
+        {
+            _context.Entry(itemBanco).State = EntityState.Deleted;
+        }
+        
+        // add/ update processando o que vier do frontend
+        foreach (var itemTela in notaTela.Itens)
+        {
+            if (itemTela.IdItemNota == 0)
+            {
+                // caso de novo item
+                itemTela.IdNota = notaDoBanco.IdNota;
+                _context.Entry(itemTela).State = EntityState.Added;
+            }
+            else
+            {
+                // caso de item update
+                _context.Entry(itemTela).State = EntityState.Modified;
+            }
+        }
+
+        // sincroniza variáveis
+        var idsVariaveis = notaTela.Variaveis.Select(v => v.IdVariavel).ToList();
+    
+        // deleta
+        foreach (var varBanco in notaDoBanco.Variaveis.Where(v => !idsVariaveis.Contains(v.IdVariavel)))
+        {
+            _context.Entry(varBanco).State = EntityState.Deleted;
+        }
+
+        foreach (var varTela in notaTela.Variaveis)
+        {
+            if (varTela.IdVariavel == 0)
+            {
+                // caso de nova variável
+                varTela.IdNota = notaDoBanco.IdNota;
+                _context.Entry(varTela).State = EntityState.Added;
+            }
+            else
+            {
+                // caso de update
+                _context.Entry(varTela).State = EntityState.Modified;
+            }
+        }
+
+        // salva bb
+        await _context.SaveChangesAsync();
+
+        return notaDoBanco;
+    }
 }
