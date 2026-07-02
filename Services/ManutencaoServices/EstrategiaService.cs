@@ -9,11 +9,17 @@ namespace app_pm_back.Services.Manutencao;
 /// </summary>
 public class EstrategiaService : BaseCrudService<EstrategiaModel>
 {
+    private readonly DbSet<TipoManutencaoModel> _tipoManutencaoModels;
+    private readonly DbSet<EstrategiaModel> _estrategiaModels;
+    private readonly DbSet<TipoEstrategiaModel> _tipoEstrategiaModels;
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="EstrategiaService"/>.
     /// </summary>
     public EstrategiaService(AppDbContext context) : base(context)
     {
+        _tipoManutencaoModels = context.PM_TiposManutencao;
+        _estrategiaModels = context.PM_Estrategias;
+        _tipoEstrategiaModels = context.PM_TiposEstrategia;
     }
 
     /// <summary>
@@ -59,5 +65,56 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
         }
 
         return await query.ToListAsync();
+    }
+    
+    /// <summary>
+    /// Cria um tipo manutenção, tipo estratégia e uma estratégia para cada tipo de LI
+    /// </summary>
+    public async Task<object?> GerarTemplates()
+    {
+        try
+        {
+            foreach (TiposLI tipo in Enum.GetValues<TiposLI>())
+            {
+                var novoTManutencao = new TipoManutencaoModel
+                {
+                    Nome = $"mock{tipo}",
+                    TipoLI = $"{tipo}",
+                    Categoria = CategoriaTipoManutencao.Renovacao,
+                    Confiabilidade = 1.0,
+                    Habilitada = true
+                };
+                _tipoManutencaoModels.Add(novoTManutencao);
+                
+                var novaEstrategia = new EstrategiaModel
+                {
+                    Nome = $"mock{tipo}",
+                    TipoAtivoAplicavel = $"{tipo}",
+                    Habilitada = true,
+                    Ciclos = 7300,
+                    CicloContinuo = true,
+                    NumeroCiclos = 1
+                };
+                _estrategiaModels.Add(novaEstrategia);
+                
+                var novoTEstrategia = new TipoEstrategiaModel
+                {
+                    Categoria = CategoriaTipoManutencao.Renovacao,
+                    Dias = 365,
+                    ToleranciaPositiva = 5,
+                    ToleranciaNegativa = 5,
+                    Continua = true,
+                    IdEstrategia = novaEstrategia.IdEstrategia,
+                    IdTipoManutencao = novoTManutencao.IdTipoManutencao
+                };
+                _tipoEstrategiaModels.Add(novoTEstrategia);
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            return e.Message;
+        }
     }
 }

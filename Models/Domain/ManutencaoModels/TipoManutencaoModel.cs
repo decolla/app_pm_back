@@ -33,7 +33,7 @@ public class TipoManutencaoModel
     /// </summary>
     [MaxLength(100)]
     [Required(ErrorMessage = "O campo TipoAtivo é obrigatório.")]
-    public required string TipoAtivo { get; set; }
+    public required string TipoLI { get; set; }
 
     /// <summary>
     /// Índice de confiabilidade esperado.

@@ -257,6 +257,36 @@ public class EstrategiaController : ControllerBase
             return BadRequest(new { message = $"Erro ao procurar {_operador}." });
         }
     }
+    
+    /// <summary>
+    /// Cria um tipo estratégia e uma estratégia para cada tipo de LI
+    /// </summary>
+    /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+    /// <returns>O objeto correspondente cadastrado.</returns>
+    /// <response code="200">Sucesso ao obter o registro.</response>
+    /// <response code="400">ID fornecido inválido.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
+    [HttpGet("template")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CriaTemplate()
+    {
+        try
+        {
+
+            var obj = await _estrategiaService.GerarTemplates();
+            if (obj == null)
+            {
+                return NotFound(new { message = $"{_operador} não encontrado(a)." });
+            }
+
+            return Ok(obj);
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = $"Erro ao procurar {_operador}." });
+        }
+    }
 
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {

@@ -44,7 +44,7 @@ public class TipoManutencaoService : BaseCrudService<TipoManutencaoModel>
 
         existente.Categoria = atualizado.Categoria;
         existente.Nome = atualizado.Nome;
-        existente.TipoAtivo = atualizado.TipoAtivo;
+        existente.TipoLI = atualizado.TipoLI;
         existente.Confiabilidade = atualizado.Confiabilidade;
         existente.Habilitada = atualizado.Habilitada;
 

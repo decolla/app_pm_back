@@ -126,6 +126,25 @@ public enum ComponentType
 }
 
 /// <summary>
+/// Tipos possiveis de LI
+/// </summary>
+public enum TiposLI
+{
+    Erp = 0,
+    Crm = 1,
+    Odorant = 2,
+    Cable = 3,
+    Substation = 4,
+    CircuitBreaker = 5,
+    Transformer = 6,
+    Disconnector = 7,
+    Bar = 8,
+    ElectricMotor = 9,
+    GenericEletricalCharge = 10,
+    Feeder = 11
+}
+
+/// <summary>
 /// Usado para requisições no APM específica para ativos/LI
 /// </summary>
 public enum OriginType
