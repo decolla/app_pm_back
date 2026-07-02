@@ -9,32 +9,11 @@ namespace app_pm_back.Services.Manutencao;
 /// </summary>
 public class ItemNotaService : BaseCrudService<ItemNotaModel>
 {
-    private readonly DbSet<NotaModel> _notaModels;
-    private readonly DbSet<ItemNotaModel> _itemNotaModels;
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="ItemNotaService"/>.
     /// </summary>
     public ItemNotaService(AppDbContext context) : base(context)
     {
-        _notaModels = context.PM_Notas;
-        _itemNotaModels = context.PM_ItensNota;
-    }
-    
-    public override async Task<ItemNotaModel> CreateAsync(ItemNotaModel itemModel)
-    {
-        //verifica se a nota existe
-        var nota = await _notaModels
-            .Include(n => n.Itens)
-            .FirstOrDefaultAsync(n => n.IdNota == itemModel.IdNota);
-
-        if (nota == null)
-            throw new InvalidOperationException($"Nota com Id {itemModel.IdNota} não encontrada.");
-
-        // Se existir, isso já cadastra na tabela de itens de nota e coloca o item de nota na lista de notas
-        nota.Itens.Add(itemModel);
-        await _context.SaveChangesAsync();
-
-        return itemModel;
     }
 
     /// <summary>

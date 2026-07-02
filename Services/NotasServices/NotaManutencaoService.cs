@@ -15,6 +15,18 @@ public class NotaManutencaoService : BaseCrudService<NotaModel>
     public NotaManutencaoService(AppDbContext context) : base(context)
     {
     }
+    
+    /// <summary>
+    /// Override necessário para incluir os relacionamentos que devem ser retornados ao front end.
+    /// </summary>
+    protected override IQueryable<NotaModel> AplicarIncludes(IQueryable<NotaModel> query)
+    {
+        return query
+            .Include(n => n.Itens)
+            .Include(n => n.Variaveis)
+            .Include(n => n.Anexos)
+            .Include(n => n.Ordens);
+    }
 
     /// <summary>
     /// Executa a ação correspondente.

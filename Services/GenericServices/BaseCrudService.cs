@@ -103,16 +103,30 @@ public abstract class BaseCrudService<T> where T : class
         
         return new { Total = count, Result = result }; 
     }
-
     /// <summary>
-    /// Busca uma entidade pelo ID.
+    /// hook de extensão: por padrão não adiciona nenhum Include (comportamento genérico e leve).
+    /// Services que precisam trazer coleções relacionadas (ex: NotaService) sobrescrevem este método
+    /// para declarar quais navegações incluir, sem precisar reescrever o GetByIdAsync inteiro.
+    /// <summary>
+    protected virtual IQueryable<T> AplicarIncludes(IQueryable<T> query) => query;
+    
+    /// <summary>
+    /// Busca uma entidade pelo ID. O query é necessário em casos de Include para buscar uma lista de objetos
     /// </summary>
     /// <param name="id">Identificador da entidade.</param>
     /// <returns>A entidade correspondente ou null se não encontrada.</returns>
-    public async Task<T?> GetByIdAsync(long id)
+    public virtual async Task<T?> GetByIdAsync(long id)
     {
-        var keyValue = BuildPrimaryKeyValue(id);
-        return await _dbSet.FindAsync(keyValue);
+        var pkName = _context.Model.FindEntityType(typeof(T))?
+            .FindPrimaryKey()?.Properties.FirstOrDefault()?.Name;
+
+        if (pkName == null)
+            return null;
+
+        var query = AplicarIncludes(_dbSet.AsQueryable());
+
+        // EF.Property permite filtrar por nome de propriedade dinâmico sem montar Expression Tree manual
+        return await query.FirstOrDefaultAsync(e => EF.Property<long>(e, pkName) == id);
     }
 
     /// <summary>
