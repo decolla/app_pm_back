@@ -124,7 +124,7 @@ builder.Services.AddScoped<ConvertService>();
 builder.Services.AddScoped<SpreadsheetService>();
 builder.Services.AddScoped<ImportSheetService>();
 builder.Services.AddScoped<GenericSearchService>();
-builder.Services.AddScoped<NotaManutencaoService>();
+builder.Services.AddScoped<NotaService>();
 builder.Services.AddScoped<OrdemService>();
 builder.Services.AddScoped<ItemNotaService>();
 builder.Services.AddScoped<VariavelNotaService>();

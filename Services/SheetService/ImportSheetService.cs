@@ -10,7 +10,7 @@ public class ImportSheetService
 {
     private readonly AppDbContext _dbContext;
     private readonly SpreadsheetService _spreadsheetService;
-    private readonly NotaManutencaoService _notaManutencaoService;
+    private readonly NotaService _notaService;
     private readonly OrdemService _ordemService;
     private readonly ItemNotaService _itemNotaService;
     private readonly DadosRenovacaoService _dadosRenovacaoService;
@@ -20,7 +20,7 @@ public class ImportSheetService
     public ImportSheetService(
         AppDbContext dbContext,
         SpreadsheetService spreadsheetService,
-        NotaManutencaoService notaManutencaoService,
+        NotaService notaService,
         OrdemService ordemService,
         ItemNotaService itemNotaService,
         DadosRenovacaoService dadosRenovacaoService,
@@ -28,7 +28,7 @@ public class ImportSheetService
     {
         _dbContext = dbContext;
         _spreadsheetService = spreadsheetService;
-        _notaManutencaoService = notaManutencaoService;
+        _notaService = notaService;
         _ordemService = ordemService;
         _itemNotaService = itemNotaService;
         _dadosRenovacaoService = dadosRenovacaoService;
@@ -56,7 +56,7 @@ public class ImportSheetService
 
             List<NotaModel> notasDeduplicadas = resultadoPlanilha.Notas.DistinctBy(o => o.NumeroNota).ToList();
 
-            await _notaManutencaoService.ImportarNotasEmLoteSeguroAsync(notasDeduplicadas, sobrescrever, adicionarNovas, cancellationToken);
+            await _notaService.ImportarNotasEmLoteSeguroAsync(notasDeduplicadas, sobrescrever, adicionarNovas, cancellationToken);
             
             idNotas = notasDeduplicadas.Select(n => n.IdNota).ToList();
             if (idItens.Count > 1) 

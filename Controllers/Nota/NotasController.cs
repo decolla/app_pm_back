@@ -16,7 +16,7 @@ namespace app_pm_back.Controllers;
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/notas")]
 public class NotasController : ControllerBase
 {
-    private readonly NotaManutencaoService _notaService;
+    private readonly NotaService _notaService;
     private readonly ItemNotaService _itemNotaService;
     private readonly ClassificationService<NotaModel> _classificationService;
     private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ public class NotasController : ControllerBase
     /// Inicializa uma nova instância da classe <see cref="NotasController"/>.
     /// </summary>
     public NotasController(
-        NotaManutencaoService notaService,
+        NotaService notaService,
         ItemNotaService itemNotaService,
         ClassificationService<NotaModel> classificationService,
         IMapper mapper)
@@ -61,9 +61,15 @@ public class NotasController : ControllerBase
             if (novaNota.IdPlano <= 0) novaNota.IdPlano = null;
             if (novaNota.IdUsuario <= 0) novaNota.IdUsuario = null;
             if (novaNota.IdGpm <= 0) novaNota.IdGpm = null;
-            if (novaNota.NumeroNota <= 0) novaNota.NumeroNota = novaNota.IdNota;
 
             var notaCriada = await _notaService.CreateAsync(novaNota);
+            
+            if (notaCriada.NumeroNota <= 0) 
+            {
+                notaCriada.NumeroNota = notaCriada.IdNota;
+                await _notaService.UpdateAsync(notaCriada);
+            }
+            
             return CreatedAtAction(nameof(ObterPorId), new { id = notaCriada.IdNota }, notaCriada);
         }
         catch (Exception e)

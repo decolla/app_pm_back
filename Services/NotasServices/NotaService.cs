@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 namespace app_pm_back.Services.Manutencao;
 
 /// <summary>
-/// Classe NotaManutencaoService.
+/// Classe NotaService.
 /// </summary>
-public class NotaManutencaoService : BaseCrudService<NotaModel>
+public class NotaService : BaseCrudService<NotaModel>
 {
     /// <summary>
-    /// Inicializa uma nova instância da classe <see cref="NotaManutencaoService"/>.
+    /// Inicializa uma nova instância da classe <see cref="NotaService"/>.
     /// </summary>
-    public NotaManutencaoService(AppDbContext context) : base(context)
+    public NotaService(AppDbContext context) : base(context)
     {
     }
     

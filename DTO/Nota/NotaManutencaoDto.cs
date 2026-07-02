@@ -14,20 +14,21 @@ public class NotaManutencaoDto
     [SheetColumn("Nota")] public long NumeroNota { get; set; }
 
     [SheetColumn("Tipo de nota")] public string? TipoNota { get; set; }
-    
-    [SheetColumn("cdnotamanutencao")]public string? SapCode { get; set; }
+
+    [SheetColumn("cdnotamanutencao")] public string? SapCode { get; set; }
 
     [SheetColumn("Classificação")] public Classificacao Classificacao { get; set; } = Classificacao.NAOCLASSIFICADA;
 
-    [SheetColumn("Método classificação")] public MetodoClassificacao MetodoClassificacao { get; set; } = MetodoClassificacao.NAOCLASSIFICADA;
+    [SheetColumn("Método classificação")]
+    public MetodoClassificacao MetodoClassificacao { get; set; } = MetodoClassificacao.NAOCLASSIFICADA;
 
     [SheetColumn("Classificado por")] public string? ClassificadoPor { get; set; }
 
     [SheetColumn("DnsIot")] public string? DnsIot { get; set; }
-    
+
     [SheetColumn("Gpm")] public long? IdGpm { get; set; }
-    
-    [SheetColumn("Data Fim")] public DateTime? DataFim{ get; set; }
+
+    [SheetColumn("Data Fim")] public DateTime? DataFim { get; set; }
     [SheetColumn("Plano manut.")] public long? IdPlano { get; set; }
 
     [SheetColumn("Data classificação")] public DateTime? DataClassificacao { get; set; }
@@ -58,7 +59,7 @@ public class NotaManutencaoDto
 
     [SheetColumn("Equipamento")] public string? EquipamentoDisponivel { get; set; }
 
-    [SheetColumn("CondInstApósMed")]public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
+    [SheetColumn("CondInstApósMed")] public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
 
     [SheetColumn("Descrição")] public string? AnomaliaObservada { get; set; }
 
@@ -67,14 +68,14 @@ public class NotaManutencaoDto
     [SheetColumn("Campo seleção")] public string? DescricaoBreve { get; set; }
 
     [SheetColumn("Id Usuario")] public int? IdUsuario { get; set; }
-    
+
     [SheetColumn("Escopo")] public long? Escopo { get; set; }
-    
-    public  ICollection<ItemNotaManutencaoDto> Variaveis { get; set; } = new List<ItemNotaManutencaoDto>();
-    
-    public  ICollection<VariavelNotaDto> Itens { get; set; } = new List<VariavelNotaDto>();
-    
-    public  ICollection<AnexoNotaDto> Anexos { get; set; } = new List<AnexoNotaDto>();
+
+    public List<ItemNotaManutencaoDto>? Variaveis { get; set; } = new List<ItemNotaManutencaoDto>();
+
+    public List<VariavelNotaDto>? Itens { get; set; } = new List<VariavelNotaDto>();
+
+    public List<AnexoNotaDto>? Anexos { get; set; } = new List<AnexoNotaDto>();
 }
 
 #pragma warning restore CS1591
