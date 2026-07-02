@@ -121,6 +121,9 @@ public class NotaService : BaseCrudService<NotaModel>
     /// <returns>Nota atualizada</returns>
     public async Task<NotaModel> AtualizarNotaCompletaAsync(NotaModel notaTela)
     {
+        // limpa o change tracker
+        _context.ChangeTracker.Clear();
+
         // busca a nota no banco de dados
         var notaDoBanco = await _dbSet
             .Include(n => n.Itens)
