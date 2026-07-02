@@ -104,9 +104,9 @@ public class NotasController : ControllerBase
             var todasNotas = await _notaService.GetAllNotasAsync();
             return Ok(todasNotas);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return BadRequest(new { message = "Erro ao processar notas ." });
+            return BadRequest(new { message = $"Erro ao processar notas {e.Message}" });
         }
     }
 
@@ -156,9 +156,9 @@ public class NotasController : ControllerBase
             var notas = await _notaService.CountAsync();
             return Ok(new { count = notas });
         }
-        catch (Exception)
+        catch (Exception e )
         {
-            return NotFound(new { message = "Erro ao procurar notas ." });
+            return NotFound(new { message = $"Erro ao procurar notas {e.Message}." });
         }
     }
 
@@ -178,9 +178,9 @@ public class NotasController : ControllerBase
             var resultado = await _notaService.GetFichasPorAtivoAsync(ativo, type);
             return Ok(resultado);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return BadRequest(new { message = "Erro ao buscar fichas do ativo ." });
+            return BadRequest(new { message = $"Erro ao buscar fichas do ativo {e.Message}." });
         }
     }
 
@@ -222,9 +222,9 @@ public class NotasController : ControllerBase
             var result = await _notaService.UpdateNotaAsync(notaExistente);
             return Ok( result);
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            return BadRequest(new { message = "Erro ao atualizar nota ." });
+            return BadRequest(new { message = $"Erro ao atualizar nota: {e.Message}." });
         }
     }
 

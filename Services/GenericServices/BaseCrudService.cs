@@ -39,7 +39,7 @@ public abstract class BaseCrudService<T> where T : class
     /// </summary>
     /// <param name="entity">A entidade a ser criada.</param>
     /// <returns>A entidade criada.</returns>
-    public async Task<T> CreateAsync(T entity)
+    public virtual async Task<T> CreateAsync(T entity)
     {
         _dbSet.Add(entity);
         await _context.SaveChangesAsync();
