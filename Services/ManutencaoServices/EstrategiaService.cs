@@ -108,9 +108,9 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
                     IdTipoManutencao = novoTManutencao.IdTipoManutencao
                 };
                 _tipoEstrategiaModels.Add(novoTEstrategia);
+                
+                await _context.SaveChangesAsync();
             }
-            
-            await _context.SaveChangesAsync();
 
             return true;
         }
