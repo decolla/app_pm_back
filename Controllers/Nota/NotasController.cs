@@ -46,7 +46,7 @@ public class NotasController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CriarNota([FromBody] NotaManutencaoDto dto)
+    public async Task<IActionResult> CriarNota([FromBody] NotaDto dto)
     {
         try
         {
@@ -201,7 +201,7 @@ public class NotasController : ControllerBase
     [HttpPut("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AtualizarNota([FromRoute] long id, [FromBody] NotaManutencaoDto dto)
+    public async Task<IActionResult> AtualizarNota([FromRoute] long id, [FromBody] NotaDto dto)
     {
         try
         {
@@ -235,7 +235,7 @@ public class NotasController : ControllerBase
     }
     
     /// <summary>
-    /// Atualiza uma nota pelo DTO.
+    /// Atualiza uma nota pelo DTO completo da nota, atualizando juntamente as variáveis e itens.
     /// </summary>
     /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
     /// <param name="dto">DTO contendo os novos dados para atualização.</param>
@@ -245,7 +245,7 @@ public class NotasController : ControllerBase
     [HttpPut("complete/{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AtualizarNotaCompleta([FromRoute] long id, [FromBody] NotaManutencaoDto dto)
+    public async Task<IActionResult> AtualizarNotaCompleta([FromRoute] long id, [FromBody] NotaDto dto)
     {
         try
         {

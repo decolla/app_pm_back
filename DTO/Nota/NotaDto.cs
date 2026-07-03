@@ -9,7 +9,7 @@ namespace app_pm_back.DTO;
 /// <summary>
 /// DTO de importacao de notas de manutencao .
 /// </summary>
-public class NotaManutencaoDto
+public class NotaDto
 {
     [SheetColumn("Nota")] public long NumeroNota { get; set; }
 

@@ -42,7 +42,7 @@ public class OrdensController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CriarOrdem([FromBody] OrdemManutencaoDto dto)
+    public async Task<IActionResult> CriarOrdem([FromBody] OrdemDto dto)
     {
         try
         {
@@ -213,7 +213,7 @@ public class OrdensController : ControllerBase
     [HttpPut("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AtualizarOrdem([FromRoute] long id, [FromBody] OrdemManutencaoDto dto)
+    public async Task<IActionResult> AtualizarOrdem([FromRoute] long id, [FromBody] OrdemDto dto)
     {
         try
         {
@@ -240,6 +240,52 @@ public class OrdensController : ControllerBase
         catch (Exception)
         {
             return BadRequest(new { message = "Erro ao atualizar ordem ." });
+        }
+    }
+    
+    /// <summary>
+    /// Atualiza uma ordem pelo DTO completo da ordem, atualizando juntamente as operações.
+    /// </summary>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="dto">DTO contendo os novos dados para atualização.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+    [HttpPut("complete/{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AtualizarNotaCompleta([FromRoute] long id, [FromBody] NotaDto dto)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id da ordem invalido na rota. Envie id maior que zero." });
+            }
+
+            var ordemExistente = await _ordemService.GetByIdAsync(id);
+            if (ordemExistente == null)
+            {
+                return NotFound(new { message = $"Ordem com Id {id} não encontrada." });
+            }
+
+            var dtoParaMapear = dto; 
+    
+            _mapper.Map(dtoParaMapear, ordemExistente);
+            
+            ordemExistente.DataModificacao = DateTime.UtcNow;
+
+            var result = await _ordemService.AtualizarOrdemCompletaAsync(ordemExistente);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao atualizar nota: {e.Message}." });
         }
     }
 

@@ -150,4 +150,57 @@ public class OrdemService : BaseCrudService<OrdemModel>
             UsuariosCTM = usuariosCtm
         };
     }
+    
+    /// <summary>
+    /// Atualiza uma nota por completo com base no DTO da tela do frontend.
+    /// </summary>
+    /// <param name="ordemTela">Nota completa</param>
+    /// <returns>Nota atualizada</returns>
+    public async Task<OrdemModel> AtualizarOrdemCompletaAsync(OrdemModel ordemTela)
+    {
+        // limpa o change tracker
+        _context.ChangeTracker.Clear();
+
+        // busca a ordem no banco de dados
+        var ordemDoBanco = await _dbSet
+            .Include(n => n.Operacoes)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(n => n.IdOrdem == ordemTela.IdOrdem);
+
+        if (ordemDoBanco == null)
+            throw new Exception("Ordem não encontrada.");
+
+        // atualiza o cabeçalho da ordem
+        _context.Entry(ordemDoBanco).CurrentValues.SetValues(ordemTela);
+        _context.Entry(ordemDoBanco).State = EntityState.Modified;
+
+        // sincroniza operações
+        var idOperacoes = ordemTela.Operacoes.Select(v => v.IdOperacao).ToList();
+    
+        // deleta
+        foreach (var opBanco in ordemDoBanco.Operacoes.Where(v => !idOperacoes.Contains(v.IdOperacao)))
+        {
+            _context.Entry(opBanco).State = EntityState.Deleted;
+        }
+
+        foreach (var opTela in ordemTela.Operacoes)
+        {
+            if (opTela.IdOperacao == 0)
+            {
+                // caso de nova variável
+                opTela.IdOrdem = ordemDoBanco.IdOrdem;
+                _context.Entry(opTela).State = EntityState.Added;
+            }
+            else
+            {
+                // caso de update
+                _context.Entry(opTela).State = EntityState.Modified;
+            }
+        }
+
+        // salva bb
+        await _context.SaveChangesAsync();
+
+        return ordemDoBanco;
+    }
 }

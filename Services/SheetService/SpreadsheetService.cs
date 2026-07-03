@@ -226,12 +226,12 @@ public class SpreadsheetService
 
             if (resultado.TipoIdentificado == "NOTA")
             {
-                var dto = ReadLineForModel<NotaManutencaoDto>(row, columns);
+                var dto = ReadLineForModel<NotaDto>(row, columns);
                 resultado.Notas.Add(MapNotaDto(dto));
             }
             else if (resultado.TipoIdentificado == "ORDEM")
             {
-                var dto = ReadLineForModel<OrdemManutencaoDto>(row, columns);
+                var dto = ReadLineForModel<OrdemDto>(row, columns);
                 resultado.Ordens.Add(MapOrdemDto(dto));
             }
             else if (resultado.TipoIdentificado == "ITEM")
@@ -499,7 +499,7 @@ public class SpreadsheetService
         return builder.ToString().Normalize(NormalizationForm.FormC);
     }
 
-    private static NotaModel MapNotaDto(NotaManutencaoDto dto)
+    private static NotaModel MapNotaDto(NotaDto dto)
     {
         // converte string em tipo Prioridade
         return new NotaModel
@@ -528,7 +528,7 @@ public class SpreadsheetService
         };
     }
 
-    private static OrdemModel MapOrdemDto(OrdemManutencaoDto dto)
+    private static OrdemModel MapOrdemDto(OrdemDto dto)
     {
         return new OrdemModel
         {

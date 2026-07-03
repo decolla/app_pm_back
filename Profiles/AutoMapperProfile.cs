@@ -8,16 +8,14 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<NotaManutencaoDto, NotaModel>()
+        CreateMap<NotaDto, NotaModel>()
             .ForMember(dest => dest.IdNota, opt => opt.Ignore())
             .ForMember(dest => dest.Ordens, opt => opt.Ignore());
 
-        CreateMap<OrdemManutencaoDto, OrdemModel>()
+        CreateMap<OrdemDto, OrdemModel>()
             .ForMember(dest => dest.Criticidade,
                 opt => opt.MapFrom(src => src.Prioridade.HasValue ? src.Prioridade.Value.ToString() : src.Criticidade))
-            .ForMember(dest => dest.Nota, opt => opt.Ignore())
-            .ForMember(dest => dest.Anexos, opt => opt.Ignore())
-            .ForMember(dest => dest.Operacoes, opt => opt.Ignore());
+            .ForMember(dest => dest.Nota, opt => opt.Ignore());
 
         CreateMap<EstrategiaManutencaoDto, EstrategiaModel>();
 
@@ -102,5 +100,7 @@ public class AutoMapperProfile : Profile
         CreateMap<VariavelNotaDto, VariavelNotaModel>();
 
         CreateMap<AnexoNotaDto, AnexoNotaModel>();
+
+        CreateMap<AnexoOrdemDto, AnexoOrdemModel>();
     }
 }

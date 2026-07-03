@@ -135,17 +135,15 @@ public class AnnexService
     /// <summary>
     /// Atualiza um anexo pelo seu identificador.
     /// </summary>
-    public virtual async Task<bool> UpdateAnexo(long id, IFormFile? file, CategoriaAnexo? categoria)
+    public virtual async Task<bool> UpdateAnexo(long id, string? nome, CategoriaAnexo? categoria)
     {
         var anexoNota = await _context.PM_AnexosNota.FindAsync(id);
         if (anexoNota != null)
         {
-            if (file != null && file.Length > 0)
+            if (nome != null && nome.Length > 0)
             {
                 await using var stream = new MemoryStream();
-                await file.CopyToAsync(stream);
-                anexoNota.Nome = file.FileName;
-                anexoNota.TipoArquivo = file.ContentType;
+                anexoNota.Nome = nome;
                 anexoNota.Dados = stream.ToArray();
             }
 
@@ -157,12 +155,10 @@ public class AnnexService
         var anexoOrdem = await _context.PM_AnexosOrdem.FindAsync(id);
         if (anexoOrdem != null)
         {
-            if (file != null && file.Length > 0)
+            if (nome != null && nome.Length > 0)
             {
                 await using var stream = new MemoryStream();
-                await file.CopyToAsync(stream);
-                anexoOrdem.Nome = file.FileName;
-                anexoOrdem.TipoArquivo = file.ContentType;
+                anexoOrdem.Nome = nome;
                 anexoOrdem.Dados = stream.ToArray();
             }
 

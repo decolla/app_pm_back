@@ -122,6 +122,41 @@ public class AnexosController : ControllerBase
 
         return Ok(new { message = "Anexo deletado com sucesso." });
     }
+    
+    /// <summary>
+    /// Atualiza um anexo existente.
+    /// </summary>
+    /// <param name="id">Identificador exclusivo do anexo.</param>
+    /// <param name="arquivo">Novo arquivo para substituição (opcional).</param>
+    /// <param name="categoria">Nova categoria do anexo (opcional).</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o anexo.</response>
+    /// <response code="400">Dados inválidos ou ID inválido.</response>
+    /// <response code="404">Anexo não encontrado.</response>
+    [HttpPut("{id:long}")]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AtualizarAnexo(
+        [FromRoute] long id,
+        [FromForm] string? nome,
+        [FromForm] CategoriaAnexo? categoria)
+    {
+        if (id <= 0)
+        {
+            return BadRequest(new { message = "Id do anexo inválido na rota. Envie id maior que zero." });
+        }
+
+        var updated = await _annexService.UpdateAnexo(id, nome, categoria);
+        if (!updated)
+        {
+            return NotFound(new { message = "Anexo não encontrado." });
+        }
+
+        return Ok(new { message = "Anexo atualizado com sucesso." });
+    }
+
         
     /// <summary>
     /// Função auxiliar para identificar o tipo da referência.

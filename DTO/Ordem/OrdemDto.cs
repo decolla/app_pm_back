@@ -9,7 +9,7 @@ namespace app_pm_back.DTO;
 /// <summary>
 /// DTO de ordem de manutencao .
 /// </summary>
-public class OrdemManutencaoDto
+public class OrdemDto
 {
 
     [SheetColumn("numero_ordem")] public long? NumeroOrdem { get; set; }
@@ -58,6 +58,10 @@ public class OrdemManutencaoDto
     [SheetColumn("confiabilidade")]public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
 
     [SheetColumn("Escopo")] public long? Escopo { get; set; }
+    
+    public List<OperacaoOrdemDto> Operacoes { get; set; } = new List<OperacaoOrdemDto>();
+    
+    public List<AnexoOrdemDto> Anexos { get; set; } = new List<AnexoOrdemDto>();
 }
 
 #pragma warning restore CS1591
