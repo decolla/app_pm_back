@@ -97,6 +97,8 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
                 };
                 _estrategiaModels.Add(novaEstrategia);
                 
+                await _context.SaveChangesAsync();
+                
                 var novoTEstrategia = new TipoEstrategiaModel
                 {
                     Categoria = CategoriaTipoManutencao.Renovacao,
@@ -109,8 +111,9 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
                 };
                 _tipoEstrategiaModels.Add(novoTEstrategia);
                 
-                await _context.SaveChangesAsync();
             }
+            
+            await _context.SaveChangesAsync();
 
             return true;
         }
