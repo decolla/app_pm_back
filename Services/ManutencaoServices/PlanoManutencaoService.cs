@@ -95,6 +95,7 @@ public class PlanoManutencaoService : BaseCrudService<PlanoModel>
         };
         
         await _context.PM_Planos.AddRangeAsync(novoPlano);
+        await _context.SaveChangesAsync();
         
         var tiposEstrategias = await _context.PM_TiposEstrategia
             .Where(te => te.IdEstrategia == estrategia.IdEstrategia)
