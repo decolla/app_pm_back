@@ -70,4 +70,59 @@ public class PlanoManutencaoService : BaseCrudService<PlanoModel>
 
         return criado;
     }
+    
+    /// <summary>
+    /// Cria um novo plano de forma simplificada a partir de nomeLi e nomeEstrategia
+    /// </summary>
+    public async Task<PlanoModel> CadastroSimples(string nomeLi, string nomeEstrategia)
+    {
+        try{
+        var estrategia = await _context.PM_Estrategias
+            .FirstOrDefaultAsync(e => e.Nome == nomeEstrategia);
+
+        if (estrategia == null)
+        {
+            throw new Exception("Estrategia informada nao encontrada.");
+        }
+        
+        var novoPlano = new PlanoModel
+        {
+            Nome = $"Plano {nomeLi}",
+            DataInicios = DateTime.Now,
+            GerarAutomaticamente = GerarAutomaticamente.Nenhum,
+            IdLi = nomeLi,
+            IdEstrategia = estrategia.IdEstrategia
+        };
+        
+        await _context.PM_Planos.AddRangeAsync(novoPlano);
+        
+        var tiposEstrategias = await _context.PM_TiposEstrategia
+            .Where(te => te.IdEstrategia == estrategia.IdEstrategia)
+            .ToListAsync();
+        
+        var tiposPlanos = tiposEstrategias.Select(te => new TipoPlanoModel
+        {
+            IdPlano = novoPlano.IdPlano,
+            IdTipoEstrategia = te.IdTipoEstrategia,
+            Dias = te.Dias,
+            ToleranciaPositiva = te.ToleranciaPositiva,
+            ToleranciaNegativa = te.ToleranciaNegativa,
+            Continua = te.Continua,
+            Categoria = te.Categoria,
+            IdTipoCep = te.IdTipoCep,
+            IdTipoManutencao = te.IdTipoManutencao,
+            Visivel = true
+        }).ToList();
+
+        await _context.PM_TiposPlano.AddRangeAsync(tiposPlanos);
+        await _context.SaveChangesAsync();
+        
+        return novoPlano;
+        
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
 }

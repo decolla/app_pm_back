@@ -221,6 +221,28 @@ public class PlanoManutencaoController : ControllerBase
             return BadRequest(new { message = $"Erro ao deletar um(a) {_operador}." });
         }
     }
+        
+    /// <summary>
+    /// Cria um novo plano de forma simplificada a partir de nomeLi e nomeEstrategia
+    /// </summary>
+    [HttpPost("simplificado")]
+    public async Task<IActionResult> CriarSimplifcado([FromBody] string nomeLi, string nomeEstrategia)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var novoObj = await _planoManutencaoService.CadastroSimples(nomeLi, nomeEstrategia);
+            return Ok(novoObj);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao criar {_operador}: {e.Message}." });
+        }
+    }
 
 
     /// <summary>
