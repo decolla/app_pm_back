@@ -6,7 +6,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     /// <inheritdoc />
     public partial class InitialPostgres : Migration
@@ -166,7 +166,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Categoria = table.Column<int>(type: "integer", maxLength: 100, nullable: true),
                     Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    TipoAtivo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    TipoLI = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Confiabilidade = table.Column<double>(type: "double precision", nullable: true),
                     Habilitada = table.Column<bool>(type: "boolean", nullable: true)
                 },
@@ -797,7 +797,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "ConfiguracaoGlobalModel",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 1, 19, 58, 46, 136, DateTimeKind.Utc).AddTicks(1665), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 3, 12, 5, 38, 87, DateTimeKind.Utc).AddTicks(475), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
