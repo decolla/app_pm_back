@@ -84,7 +84,7 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
                     Confiabilidade = 1.0,
                     Habilitada = true
                 };
-                _tipoManutencaoModels.Add(novoTManutencao);
+                 _tipoManutencaoModels.Add(novoTManutencao);
                 
                 var novaEstrategia = new EstrategiaModel
                 {
@@ -109,6 +109,8 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
                 };
                 _tipoEstrategiaModels.Add(novoTEstrategia);
             }
+            
+            await _context.SaveChangesAsync();
 
             return true;
         }
