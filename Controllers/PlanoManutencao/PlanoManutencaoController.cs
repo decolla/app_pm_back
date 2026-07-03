@@ -226,7 +226,7 @@ public class PlanoManutencaoController : ControllerBase
     /// Cria um novo plano de forma simplificada a partir de nomeLi e nomeEstrategia
     /// </summary>
     [HttpPost("simplificado")]
-    public async Task<IActionResult> CriarSimplifcado([FromBody] string nomeLi, string nomeEstrategia)
+    public async Task<IActionResult> CriarSimplifcado([FromQuery] string nomeLi, [FromQuery] string nomeEstrategia)
     {
         try
         {
