@@ -26,7 +26,7 @@ public class AnnexService
     /// <param name="tipoReferencia">Parâmetro do método.</param>
     /// <param name="categoria">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    public virtual async Task<object> UploadAnexo(IFormFile file, long? notaId, long? ordemId, string tipoReferencia,
+    public virtual async Task<object> UploadAnexo(IFormFile file, long? notaId, long? ordemId, string? tipoReferencia,
         CategoriaAnexo categoria)
     {
         ValidateAssociacao(notaId, ordemId);
