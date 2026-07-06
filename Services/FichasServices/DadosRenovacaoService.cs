@@ -41,7 +41,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         _httpClient = httpClient;
         _planoModels = context.PM_Planos;
         _configuracaoGlobalService = configuracaoGlobalService;
-        _apmBaseUrl = configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
+        _apmBaseUrl = Config.RouteConfig.GetApmBaseUrl(configuration);
     }
 
     /// <summary>

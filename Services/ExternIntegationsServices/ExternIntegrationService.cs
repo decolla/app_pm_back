@@ -24,7 +24,8 @@ public class ExternIntegrationService
     /// <returns></returns>
     public async Task<string> GetDataAsync(string rota, CancellationToken cancellationToken = default)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, rota);
+        var relativeRoute = rota.StartsWith("/") ? rota.Substring(1) : rota;
+        var request = new HttpRequestMessage(HttpMethod.Get, relativeRoute);
         request.Headers.Authorization = 
             new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
 
@@ -48,7 +49,8 @@ public class ExternIntegrationService
         var json = JsonSerializer.Serialize(payload);
         var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-        var request = new HttpRequestMessage(HttpMethod.Post, rota)
+        var relativeRoute = rota.StartsWith("/") ? rota.Substring(1) : rota;
+        var request = new HttpRequestMessage(HttpMethod.Post, relativeRoute)
         {
             Content = content
         };

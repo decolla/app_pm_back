@@ -31,7 +31,7 @@ public class AuditInterceptor : SaveChangesInterceptor
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
     {
-        var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+        var dbSchema = Config.RouteConfig.GetDatabaseSchema();
         
         var context = eventData.Context;
         if (context == null || _gravandoAuditoria)

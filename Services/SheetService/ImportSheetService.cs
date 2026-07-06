@@ -41,7 +41,7 @@ public class ImportSheetService
         bool adicionarNovas, 
         CancellationToken cancellationToken = default)
     {
-        var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+        var dbSchema = Config.RouteConfig.GetDatabaseSchema();
         if (dbSchema == "cg")
             throw new ArgumentException("PEDRO ADVERTE: Importação de planilhas desabilitada para o schema CG.");
 

@@ -57,7 +57,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 //  Memory Cache para LinhaTemporal
 builder.Services.AddMemoryCache();
 
-var databaseSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+var databaseSchema = app_pm_back.Config.RouteConfig.GetDatabaseSchema();
 
 if (databaseSchema == "cg")
 {
@@ -158,13 +158,18 @@ builder.Services.AddScoped<ReliabilityService>();
 // configuração de clientes http
 builder.Services.AddHttpClient<ExternIntegrationService>(client =>
     {
-        // busca a URL do APM
-        var urlBase = builder.Configuration.GetValue<string>("APIs:APM");
+        // busca a URL do APM 
+        var urlBase = app_pm_back.Config.RouteConfig.GetApmBaseUrl(builder.Configuration);
 
         if (string.IsNullOrEmpty(urlBase))
         {
             throw new InvalidOperationException(
                 "A URL do APM não está configurada. Verifique as configurações de 'APIs:APM'.");
+        }
+
+        if (!urlBase.EndsWith("/"))
+        {
+            urlBase += "/";
         }
 
         client.BaseAddress = new Uri(urlBase);
@@ -176,11 +181,17 @@ builder.Services.AddHttpClient<ExternIntegrationService>(client =>
 
 builder.Services.AddHttpClient<ReliabilityService>(client =>
 {
-    var urlBase = builder.Configuration.GetValue<string>("APIs:Reliability");
+    // busca a URL do reliability
+    var urlBase = app_pm_back.Config.RouteConfig.GetReliabilityBaseUrl(builder.Configuration);
 
     if (string.IsNullOrEmpty(urlBase))
         throw new InvalidOperationException(
             "A URL do Reliability não está configurada. Verifique as configurações de 'APIs:Reliability'.");
+
+    if (!urlBase.EndsWith("/"))
+    {
+        urlBase += "/";
+    }
 
     client.BaseAddress = new Uri(urlBase);
     client.DefaultRequestHeaders.Add("Accept", "application/json");
@@ -225,7 +236,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = services.GetRequiredService<AppDbContext>();
-        var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+        var dbSchema = app_pm_back.Config.RouteConfig.GetDatabaseSchema();
 
         if (dbSchema == "cg")
         {

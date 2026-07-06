@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using app_pm_back.Data;
@@ -31,7 +31,7 @@ public class ReliabilityService
         _configuracaoGlobalService = configuracaoGlobalService;
         _externIntegrationService = externIntegrationService;
         _logger = logger;
-        _reliabilityBaseUrl = configuration["APIs:Reliability"] ?? "http://10.3.192.200:60170";
+        _reliabilityBaseUrl = Config.RouteConfig.GetReliabilityBaseUrl(configuration);
         _httpClient = httpClient;
     }
 
