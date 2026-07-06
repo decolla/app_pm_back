@@ -242,7 +242,7 @@ public class DadosRenovacaoController : ControllerBase
     /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
     /// <param name="tipoDados">Tipo de dados da renovação</param>
     /// <returns>Objeto com informações relevantes</returns>
-    [HttpGet("/datas")]
+    [HttpGet("datas")]
     public async Task<IActionResult> BuscaAtivoDatas([FromQuery] string idLi, [FromQuery] string? SapId)
     {
         try
