@@ -309,6 +309,13 @@ public class SpreadsheetService
                             {
                                 valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
                             }
+                            else if (string.Equals(nomeColunaExcel, "confiabilidade",
+                                         StringComparison.OrdinalIgnoreCase) &&
+                                     tipo == typeof(ConfiabilidadeRestaurada) &&
+                                     valor == "1")
+                            {
+                                valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
+                            }
                             else if (tipo == typeof(StatusFichas) &&
                                      string.Equals(property.Name, "StatusNota", StringComparison.OrdinalIgnoreCase)
                                     )
