@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using app_pm_back.Data;
+using app_pm_back.DTO;
 using app_pm_back.Services.Extensions;
 using app_pm_back.Models.Domain;
 using app_pm_back.DTO.Restauracao;
@@ -763,10 +764,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     }
     
     /// <summary>
-    /// A partir de um LI, busca a última data de renovação e as próximas renovações definidas em um plano
-    /// <param name="idLi">Identificador principal do Local de Instalação (LI)</param>
-    /// <param name="nomAlternativo">Nome alternativo opcional associado ao LI</param>
-    /// <returns>Objeto anônimo contendo o nome SAP (LIs agrupados), data da última renovação, lista de renovação e tempo de ciclo</returns>
+    /// A partir de um LI, busca a última data de renovaçãano
     /// </summary>
     public async Task<object?> LiRenovacao(string idLi, string? nomeAlternativo)
     {
@@ -800,5 +798,58 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             SapName = string.Join(" / ", nomesBusca),
             UltimaData = ultimaData
         };
+    }
+    
+    /// <summary>
+    /// A partir de uma lista de LI, busca a última data de renovaçãano de cada um
+    /// </summary>
+    public async Task<object?> ListaLiRenovacao(List<NomesLi> nomesLi)
+    {
+        var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
+
+        // Junta TODOS os nomes de busca (idLi + nomeAlternativo) de todas as linhas, sem duplicar
+        var todosNomes = nomesLi
+            .SelectMany(l => new[] { l.IdLi, l.NomeAlternativo })
+            .Where(n => !string.IsNullOrWhiteSpace(n))
+            .Distinct()
+            .ToList();
+
+        var queryRenovacao = _context.PM_DadosRenovacao
+            .AsNoTracking()
+            .Where(d => todosNomes.Contains(d.IdLi));
+
+        if (config.CriterioDataRenovacao == CriterioDataRenovacao.ApenasFichasCorretivas)
+            queryRenovacao = queryRenovacao.Where(d => d.TipoDados == Classificacao.CORRETIVA);
+        else if (config.CriterioDataRenovacao == CriterioDataRenovacao.ApenasFichasPreventivas)
+            queryRenovacao = queryRenovacao.Where(d => d.TipoDados == Classificacao.PREVENTIVA);
+
+        // Traz do banco só o necessário (IdLi + data) para TODOS os nomes de uma vez
+        var dadosRenovacao = await queryRenovacao
+            .Select(d => new { d.IdLi, d.UltimaRenovacao })
+            .ToListAsync();
+
+        // Agora processa cada linha em memória (sem bater no banco de novo)
+        var resultado = new List<object>();
+
+        foreach (var Li in nomesLi)
+        {
+            var nomesBusca = new List<string> { Li.IdLi };
+            if (!string.IsNullOrWhiteSpace(Li.NomeAlternativo))
+                nomesBusca.Add(Li.NomeAlternativo);
+
+            var ultimaData = dadosRenovacao
+                .Where(d => nomesBusca.Contains(d.IdLi))
+                .OrderByDescending(d => d.UltimaRenovacao)
+                .Select(d => (DateTime?)d.UltimaRenovacao)
+                .FirstOrDefault();
+
+            resultado.Add(new
+            {
+                SapName = string.Join(" / ", nomesBusca),
+                UltimaData = ultimaData
+            });
+        }
+
+        return resultado;
     }
 }

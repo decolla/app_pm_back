@@ -288,4 +288,27 @@ public class DadosRenovacaoController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
         }
     }
+    
+    /// <summary>
+    /// Busca a última data de renovação do LI
+    /// </summary>
+    [HttpPut("lista-li")]
+    public async Task<IActionResult> BuscaListaLi([FromBody] List<NomesLi> nomesLi)
+    {
+        try
+        {
+
+            if (nomesLi == null || nomesLi.Count == 0)
+                return BadRequest("A lista não pode ser vazia.");
+
+            var obj = await _dadosRenovacaoService.ListaLiRenovacao(nomesLi);
+            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
+
+            return Ok(obj);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
+        }
+    }
 }
