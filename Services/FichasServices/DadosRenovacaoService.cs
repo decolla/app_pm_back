@@ -514,8 +514,8 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     /// Chama a API da APM (PUT) para obter os ativos (ComponentTypes) associados às LI's.
     /// </summary>
     /// <param name="lis">Lista de LocalInstalacoes (LI's)</param>
-    /// <returns>Lista de AssetComponentTypesDTO com os ativos para cada LI</returns>
-    private async Task<List<AssetComponentTypesDTO>> ObterAtivosDoLoteLiAsync(List<string> lis)
+    /// <returns>Lista de AssetComponentTypesDto com os ativos para cada LI</returns>
+    private async Task<List<AssetComponentTypesDto>> ObterAtivosDoLoteLiAsync(List<string> lis)
     {
         try
         {
@@ -552,21 +552,21 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
             // A resposta pode ser um array ou um único objeto, vamos tratar como array
-            List<AssetComponentTypesDTO> resultado;
+            List<AssetComponentTypesDto> resultado;
 
             try
             {
                 // Tentar desserializar como array primeiro
-                resultado = JsonSerializer.Deserialize<List<AssetComponentTypesDTO>>(responseContent, options)
-                            ?? new List<AssetComponentTypesDTO>();
+                resultado = JsonSerializer.Deserialize<List<AssetComponentTypesDto>>(responseContent, options)
+                            ?? new List<AssetComponentTypesDto>();
             }
             catch
             {
                 // Se não for array, tentar como objeto único
-                var singleResult = JsonSerializer.Deserialize<AssetComponentTypesDTO>(responseContent, options);
+                var singleResult = JsonSerializer.Deserialize<AssetComponentTypesDto>(responseContent, options);
                 resultado = singleResult != null
-                    ? new List<AssetComponentTypesDTO> { singleResult }
-                    : new List<AssetComponentTypesDTO>();
+                    ? new List<AssetComponentTypesDto> { singleResult }
+                    : new List<AssetComponentTypesDto>();
             }
 
             _logger.LogInformation("Obtidos {QtdResultados} conjuntos de ativos da API APM", resultado.Count);
@@ -803,7 +803,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     /// <summary>
     /// A partir de uma lista de LI, busca a última data de renovaçãano de cada um
     /// </summary>
-    public async Task<object?> ListaLiRenovacao(List<NomesLi> nomesLi)
+    public async Task<object?> ListaLiRenovacao(List<NomesLiDto> nomesLi)
     {
         var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
 

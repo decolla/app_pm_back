@@ -61,7 +61,7 @@ public class SynchronizeAPMService
             }
 
             var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var ativos = JsonSerializer.Deserialize<List<AssetComponentTypesDTO>>(jsonResponse, jsonOptions);
+            var ativos = JsonSerializer.Deserialize<List<AssetComponentTypesDto>>(jsonResponse, jsonOptions);
 
             if (ativos == null || !ativos.Any())
             {

@@ -293,7 +293,7 @@ public class DadosRenovacaoController : ControllerBase
     /// Busca a última data de renovação do LI
     /// </summary>
     [HttpPut("lista-li")]
-    public async Task<IActionResult> BuscaListaLi([FromBody] List<NomesLi> nomesLi)
+    public async Task<IActionResult> BuscaListaLi([FromBody] List<NomesLiDto> nomesLi)
     {
         try
         {

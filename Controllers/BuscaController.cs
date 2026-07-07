@@ -24,7 +24,18 @@ public class BuscaController : ControllerBase
     {
         _searchService = searchService;
     }
-
+    
+    /// <summary>
+    /// Lista os registros cadastrados com paginação.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    [HttpGet("tabelas")]
+    public IActionResult ListarTabelasCampos()
+    {
+        var tabelas = _searchService.ListarTabelasCampos();
+        return Ok(tabelas);
+    }
+    
     /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>

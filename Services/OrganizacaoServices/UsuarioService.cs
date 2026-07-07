@@ -10,6 +10,7 @@ namespace app_pm_back.Services.Manutencao;
 public class UsuarioService : BaseCrudService<UsuarioModel>
 {
     private readonly ILogger<UsuarioService> _logger;
+
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="UsuarioService"/>.
     /// </summary>
@@ -36,14 +37,27 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
                     return true;
                 }
             }
-                return false;
+
+            return false;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao adicionar responsabilidade da ordem {ordem} ao usuário {nomeUser}", ordem,nomeUser);
+            _logger.LogError(ex, "Erro ao adicionar responsabilidade da ordem {ordem} ao usuário {nomeUser}", ordem,
+                nomeUser);
             throw;
         }
+    }
+    
+    public async Task<List<UsuarioModel>> SearchUsuario(string? cpf, string? nome, string? funcao, int? schema)
+    {
+        var usuarios = await _context.Set<UsuarioModel>()
+            .Where(u => (string.IsNullOrEmpty(cpf) || u.CPF!.Contains(cpf)) &&
+                        (string.IsNullOrEmpty(nome) || u.Nome!.Contains(nome)) &&
+                        //(string.IsNullOrEmpty(funcao) || u.Funcao.Contains(funcao)) &&
+                        // TODO: Adicionar filtro por FUNÇÃO se necessário
+                        (!schema.HasValue || u.Escopos.Contains(schema.Value)))
+            .ToListAsync();
 
-
+        return usuarios;
     }
 }

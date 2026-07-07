@@ -245,6 +245,28 @@ public class UsuariosController : ControllerBase
             return BadRequest(new { message = $"Erro ao criar {_operador}: {e.Message}." });
         }
     }
+    
+    /// <summary>
+    /// Busca uma lista de funcionários com base nos filtros passados 
+    /// </summary>
+    /// <param name="cpf">CPF do usuário</param>
+    /// <param name="nome">Nome do usuário</param>
+    /// <param name="funcao">Função do usuário</param>
+    /// <param name="schema">Esquema do usuário</param>
+    /// <returns></returns>
+    [HttpGet("pesquisar")]
+    public async Task<IActionResult> Pesquisar([FromQuery] string? cpf, [FromQuery] string? nome, [FromQuery] string? funcao, [FromQuery] int? schema)
+    {
+        try
+        {
+            var usuarios = await _service.SearchUsuario(cpf, nome, funcao, schema);
+            return Ok(usuarios);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao pesquisar usuários: {e.Message}" });
+        }
+    }
 
     private static bool TemPaginacaoInvalida(int? pagina, int? tamanho)
     {

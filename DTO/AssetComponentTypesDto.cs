@@ -6,7 +6,7 @@ namespace app_pm_back.DTO.Restauracao;
 /// DTO para resposta da API de Ativos da APM.
 /// Representa um conjunto de componentes/ativos associados a uma LocalInstalacao (LI).
 /// </summary>
-public class AssetComponentTypesDTO
+public class AssetComponentTypesDto
 {
     /// <summary>
     /// Nome da LocalInstalacao (LI/Name)
