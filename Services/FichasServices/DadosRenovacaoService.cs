@@ -845,7 +845,8 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
 
             resultado.Add(new
             {
-                SapName = string.Join(" / ", nomesBusca),
+                idLi = Li.IdLi,
+                nomeAlternativo = Li.NomeAlternativo,
                 UltimaData = ultimaData
             });
         }
