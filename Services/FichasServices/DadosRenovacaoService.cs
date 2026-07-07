@@ -740,7 +740,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             {
                 new
                 {
-                    Meses = (double?)(tipoPlanoRenovacao.Dias / 30.0),
+                    Dias = tipoPlanoRenovacao.Dias,
                     Continua = tipoPlanoRenovacao.Continua,
                     Confiabilidade = tipoPlanoRenovacao.TipoManutencao?.Confiabilidade
                 }
