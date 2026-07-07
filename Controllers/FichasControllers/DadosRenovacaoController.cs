@@ -263,4 +263,29 @@ public class DadosRenovacaoController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
         }
     }
+    
+    /// <summary>
+    /// Busca a última data de renovação do LI
+    /// </summary>
+    [HttpGet("li")]
+    public async Task<IActionResult> BuscaLiRenovacao([FromQuery] string idLi, [FromQuery] string? SapId)
+    {
+        try
+        {
+
+            if (string.IsNullOrWhiteSpace(idLi))
+            {
+                return BadRequest(new { message = "Parametro idLi obrigatorio." });
+            }
+
+            var obj = await _dadosRenovacaoService.LiRenovacao(idLi, SapId);
+            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
+
+            return Ok(obj);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
+        }
+    }
 }

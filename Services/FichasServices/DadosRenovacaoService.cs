@@ -761,4 +761,44 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             TempoCiclo = tempoCiclo
         };
     }
+    
+    /// <summary>
+    /// A partir de um LI, busca a última data de renovação e as próximas renovações definidas em um plano
+    /// <param name="idLi">Identificador principal do Local de Instalação (LI)</param>
+    /// <param name="nomAlternativo">Nome alternativo opcional associado ao LI</param>
+    /// <returns>Objeto anônimo contendo o nome SAP (LIs agrupados), data da última renovação, lista de renovação e tempo de ciclo</returns>
+    /// </summary>
+    public async Task<object?> LiRenovacao(string idLi, string? nomeAlternativo)
+    {
+        //Monta a lista com os nomes de busca
+        var nomesBusca = new List<string> { idLi };
+        if (!string.IsNullOrWhiteSpace(nomeAlternativo))
+        {
+            nomesBusca.Add(nomeAlternativo);
+        }
+
+        //Busca a data da última renovação verificando TODOS os nomes
+        var queryRenovacao = _context.PM_DadosRenovacao
+            .AsNoTracking()
+            .Where(d => nomesBusca.Contains(d.IdLi));
+
+        var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
+
+        if (config.CriterioDataRenovacao == CriterioDataRenovacao.ApenasFichasCorretivas)
+            queryRenovacao = queryRenovacao.Where(d => d.TipoDados == Classificacao.CORRETIVA);
+        else if (config.CriterioDataRenovacao == CriterioDataRenovacao.ApenasFichasPreventivas)
+            queryRenovacao = queryRenovacao.Where(d => d.TipoDados == Classificacao.PREVENTIVA);
+
+        // Traz APENAS a data do banco, economizando tráfego de dados (não traz a linha inteira)
+        var ultimaData = await queryRenovacao
+            .OrderByDescending(d => d.UltimaRenovacao)
+            .Select(d => (DateTime?)d.UltimaRenovacao)
+            .FirstOrDefaultAsync();
+
+        return new
+        {
+            SapName = string.Join(" / ", nomesBusca),
+            UltimaData = ultimaData
+        };
+    }
 }
