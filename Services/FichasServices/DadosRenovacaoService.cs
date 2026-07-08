@@ -734,19 +734,17 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
             .Where(tp => tp.IdPlano != null &&
                          idsPlanos.Contains(tp.IdPlano.Value) &&
                          tp.Categoria == CategoriaTipoManutencao.Renovacao)
-            .FirstOrDefaultAsync();
+            .ToListAsync();
 
-        var listaRenovacao = tipoPlanoRenovacao != null
-            ? new List<object>
-            {
-                new
-                {
-                    Dias = tipoPlanoRenovacao.Dias,
-                    Continua = tipoPlanoRenovacao.Continua,
-                    Confiabilidade = tipoPlanoRenovacao.TipoManutencao?.Confiabilidade
-                }
-            }
-            : new List<object>();
+
+    var listaRenovacao = tipoPlanoRenovacao
+        .Select(tp => (object)new
+        {
+            Dias = tp.Dias,
+            Continua = tp.Continua,
+            Confiabilidade = tp.TipoManutencao?.Confiabilidade
+        })
+        .ToList();
 
         // Extrai o tempo de ciclo
         var tempoCiclo = planos
