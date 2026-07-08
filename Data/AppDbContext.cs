@@ -156,6 +156,8 @@ public class AppDbContext : DbContext
         //     e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
     }
 
+    // ================================ CRIAÇÃO DAS TABELAS ====================================
+    
     public DbSet<TipoManutencaoModel> PM_TiposManutencao { get; set; }
     public DbSet<TipoEstrategiaModel> PM_TiposEstrategia { get; set; }
     public DbSet<TipoCepModel> PM_TiposCep { get; set; }
@@ -196,6 +198,7 @@ public class SqlServerDbContext : AppDbContext
         // aplica as exclusividades do SQL Server
         modelBuilder.HasDefaultSchema("dbo");
 
+        // converter para JSON as ações de falha
         var converter = new ValueConverter<List<AcoesFalha>?, string>(
             v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
             v => JsonSerializer.Deserialize<List<AcoesFalha>>(v, (JsonSerializerOptions?)null) ?? new List<AcoesFalha>()

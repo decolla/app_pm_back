@@ -10,7 +10,6 @@ public class DbInitializer
     /// <summary>
     /// Inicializa o banco de dados.
     /// </summary>
-    /// <param name="app"></param>
     public static async Task SeedAsync (WebApplication app)
     {
         using (var scope = app.Services.CreateScope())
