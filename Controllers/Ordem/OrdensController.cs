@@ -52,10 +52,6 @@ public class OrdensController : ControllerBase
             }
 
             var ordem = _mapper.Map<OrdemModel>(dto);
-            if (ordem.IdOrdem <= 0)
-            {
-                return BadRequest(new { message = "Id da ordem invalido. Envie IdOrdem maior que zero." });
-            }
             
             if(ordem.NumeroOrdem <= 0 || ordem.NumeroOrdem == null) ordem.NumeroOrdem = ordem.IdOrdem; // se não for informado, usa o IdOrdem como NumeroOrdem
 
