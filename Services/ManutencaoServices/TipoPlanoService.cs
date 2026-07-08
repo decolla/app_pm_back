@@ -67,7 +67,7 @@ public class TipoPlanoService : BaseCrudService<TipoPlanoModel>
         }
         
 
-        if (novo.IdTipoManutencao == null)
+        if (novo.IdTipoManutencao != null)
         {
             var tipoManutencao = await _context.PM_TiposManutencao
                 .AsNoTracking()
