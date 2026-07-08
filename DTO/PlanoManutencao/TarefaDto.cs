@@ -19,10 +19,6 @@ public class TarefaDto
 
     [SheetColumn("Nº profissionais")] public int NdeProfissionais { get; set; }
 
-    [SheetColumn("Data início")] public DateTime? InicioEsperado { get; set; }
-
-    [SheetColumn("Data fim")] public DateTime? FimEsperado { get; set; }
-
     [SheetColumn("Id CTM")] public long? IdCTM { get; set; }
 
     [SheetColumn("Id Tipo Manutenção")] public long? IdTipoManutencao { get; set; }
