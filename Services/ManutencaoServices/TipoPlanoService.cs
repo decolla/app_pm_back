@@ -49,18 +49,41 @@ public class TipoPlanoService : BaseCrudService<TipoPlanoModel>
     /// <returns>Resultado da operação.</returns>
     public async Task<TipoPlanoModel> CreateComCopiaAsync(TipoPlanoModel novo)
     {
-        var tipoEstrategia = await _context.PM_TiposEstrategia
-            .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.IdTipoEstrategia == novo.IdTipoEstrategia);
-
-        if (tipoEstrategia == null)
+        if (novo.IdTipoEstrategia != null)
         {
-            throw new Exception("Tipo de estrategia nao encontrado.");
+
+            var tipoEstrategia = await _context.PM_TiposEstrategia
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.IdTipoEstrategia == novo.IdTipoEstrategia);
+            
+            if (tipoEstrategia == null)
+            {
+                throw new Exception("Tipo de estratégia informado não encontrado.");
+            }
+            
+            AplicarDadosTipoEstrategia(novo, tipoEstrategia);
+
+            return await CreateAsync(novo);
         }
+        
 
-        AplicarDadosTipoEstrategia(novo, tipoEstrategia);
-
-        return await CreateAsync(novo);
+        if (novo.IdTipoManutencao == null)
+        {
+            var tipoManutencao = await _context.PM_TiposManutencao
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.IdTipoManutencao == novo.IdTipoManutencao);
+            
+            if (tipoManutencao == null)
+            {
+                throw new Exception("Tipo de manutenção informado não encontrado.");
+            }
+            
+            AplicarDadosTipoManutencao(novo, tipoManutencao);
+            
+            return await CreateAsync(novo);
+        }
+        
+        throw new Exception("É necessário informar o IdTipoEstrategia ou IdTipoManutencao para criar um TipoPlano.");
     }
 
     private static void AplicarDadosTipoEstrategia(TipoPlanoModel destino, TipoEstrategiaModel origem)
@@ -72,6 +95,13 @@ public class TipoPlanoService : BaseCrudService<TipoPlanoModel>
         destino.Categoria = origem.Categoria;
         destino.IdTipoCep = origem.IdTipoCep;
         destino.IdTipoEstrategia = origem.IdTipoEstrategia;
+        destino.IdTipoManutencao = origem.IdTipoManutencao;
+    }
+    
+    private static void AplicarDadosTipoManutencao(TipoPlanoModel destino, TipoManutencaoModel origem)
+    {
+        destino.Categoria = origem.Categoria;
+        
         destino.IdTipoManutencao = origem.IdTipoManutencao;
     }
 

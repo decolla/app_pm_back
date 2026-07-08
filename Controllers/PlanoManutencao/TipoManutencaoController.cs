@@ -28,7 +28,7 @@ public class TipoManutencaoController : ControllerBase
         _mapper = mapper;
     }
 
-        /// <summary>
+    /// <summary>
     /// Cria um novo registro.
     /// </summary>
     /// <param name="dto">DTO contendo os dados da requisição.</param>
@@ -57,7 +57,7 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
     /// <param name="pagina">Número da página (1-based) para paginação.</param>
@@ -113,7 +113,7 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Obtém um registro específico.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
@@ -140,7 +140,7 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Atualiza um registro existente.
     /// </summary>
     /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
@@ -188,7 +188,7 @@ public class TipoManutencaoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Exclui um registro pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
@@ -239,7 +239,7 @@ public class TipoPlanoController : ControllerBase
         _mapper = mapper;
     }
 
-        /// <summary>
+    /// <summary>
     /// Cria um novo registro.
     /// </summary>
     /// <param name="dto">DTO contendo os dados da requisição.</param>
@@ -310,7 +310,7 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
     /// <param name="pagina">Número da página (1-based) para paginação.</param>
@@ -366,7 +366,7 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Obtém um registro específico.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
@@ -420,7 +420,7 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Atualiza um registro existente.
     /// </summary>
     /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
@@ -482,7 +482,7 @@ public class TipoPlanoController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Exclui um registro pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>

@@ -19,7 +19,7 @@ public class TipoManutencaoModel
     /// Categoria associada ao tipo de manutenção.
     /// </summary>
     [MaxLength(100)]
-    public CategoriaTipoManutencao? Categoria { get; set; }
+    public CategoriaTipoManutencao Categoria { get; set; }
 
     /// <summary>
     /// Nome descritivo do tipo de manutenção. Campo obrigatório.

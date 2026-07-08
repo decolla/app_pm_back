@@ -43,10 +43,6 @@ public class PlanoManutencaoController : ControllerBase
             }
 
             var obj = _mapper.Map<PlanoModel>(dto);
-            if (obj.IdPlano <= 0)
-            {
-                return BadRequest(new { message = "IdPlano invalido. Envie IdPlano maior que zero." });
-            }
 
             var novoObj = await _planoManutencaoService.CreateComTiposAsync(obj);
             return CreatedAtAction(nameof(ObterPorId), new { id = novoObj.IdPlano }, novoObj);
