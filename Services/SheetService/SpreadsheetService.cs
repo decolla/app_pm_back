@@ -513,7 +513,7 @@ public class SpreadsheetService
         {
             NumeroNota = dto.NumeroNota,
             Classificacao = dto.Classificacao,
-            MetodoClassificacao = dto.MetodoClassificacao,
+            MetodoClassificacao = MetodoClassificacao.NAOCLASSIFICADA,
             StatusNota = StatusFichas.EmAndamento,
             DataNota = dto.DataNota,
             Prioridade = dto.Prioridade,
@@ -542,7 +542,7 @@ public class SpreadsheetService
             NumeroOrdem = dto.NumeroOrdem,
             TipoOrdem = dto.TipoOrdem,
             Classificacao = dto.Classificacao,
-            MetodoClassificacao = dto.MetodoClassificacao,
+            MetodoClassificacao = MetodoClassificacao.NAOCLASSIFICADA,
             ClassificadoPor = dto.ClassificadoPor,
             DataClassificacao = dto.DataClassificacao,
             StatusOrdem = dto.StatusOrdem ?? StatusFichas.EmAndamento,
