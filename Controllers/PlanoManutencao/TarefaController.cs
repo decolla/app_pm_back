@@ -27,7 +27,7 @@ public class TarefaController : ControllerBase
         _mapper = mapper;
     }
 
-        /// <summary>
+    /// <summary>
     /// Cria um novo registro.
     /// </summary>
     /// <param name="dto">DTO contendo os dados da requisição.</param>
@@ -39,9 +39,6 @@ public class TarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Criar([FromBody] TarefaDto dto)
     {
-        if (!ModelState.IsValid) return ValidationProblem(ModelState);
-        if (!dto.IdTipoManutencao.HasValue || dto.IdTipoManutencao <= 0)
-            return BadRequest(new { message = "IdTipoManutencao obrigatorio." });
         if (string.IsNullOrWhiteSpace(dto.Nome)) return BadRequest(new { message = "Nome da tarefa obrigatorio." });
 
         var model = _mapper.Map<OperacaoModel>(dto);
@@ -49,7 +46,7 @@ public class TarefaController : ControllerBase
         return CreatedAtAction(nameof(BuscarPorId), new { id = criado.IdOperacao }, criado);
     }
 
-        /// <summary>
+    /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
     /// <param name="pagina">Número da página (1-based) para paginação.</param>
@@ -62,11 +59,11 @@ public class TarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Listar()
     {
-        var todas= await _service.GetAllAsync();
+        var todas = await _service.GetAllAsync();
         return Ok(todas);
     }
 
-        /// <summary>
+    /// <summary>
     /// Obtém um registro específico.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
@@ -85,7 +82,7 @@ public class TarefaController : ControllerBase
         return Ok(obj);
     }
 
-        /// <summary>
+    /// <summary>
     /// Atualiza um registro existente.
     /// </summary>
     /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
@@ -109,7 +106,7 @@ public class TarefaController : ControllerBase
         return Ok(atualizado);
     }
 
-        /// <summary>
+    /// <summary>
     /// Exclui um registro pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>

@@ -48,9 +48,9 @@ public class TipoManutencaoModel
     /// <summary>
     /// Relacionamentos e coleções associadas.
     /// </summary>
-    public virtual ICollection<TipoEstrategiaModel> TiposEstrategia { get; set; } = new List<TipoEstrategiaModel>();
+    public virtual ICollection<TipoEstrategiaModel>? TiposEstrategia { get; set; } = new List<TipoEstrategiaModel>();
     
-    public virtual ICollection<OperacaoModel> Operacoes { get; set; } = new List<OperacaoModel>();
+    public virtual ICollection<OperacaoModel>? Operacoes { get; set; } = new List<OperacaoModel>();
     
-    public virtual ICollection<TipoPlanoModel> TiposPlano { get; set; } = new List<TipoPlanoModel>();
+    public virtual ICollection<TipoPlanoModel>? TiposPlano { get; set; } = new List<TipoPlanoModel>();
 }
