@@ -55,17 +55,14 @@ public class OrdensController : ControllerBase
 
 
             var ordemCriada = await _ordemService.CreateAsync(ordem);
-            
-            ordemCriada.DataCriacao = DateTime.UtcNow;
 
             // se não for informado, usa o IdOrdem como NumeroOrdem
             if (ordemCriada.NumeroOrdem <= 0)
             {
                 ordemCriada.NumeroOrdem = ordemCriada.IdOrdem;
+                await _ordemService.UpdateAsync(ordemCriada);
             }
 
-            await _ordemService.UpdateAsync(ordemCriada);
-            
             if (ordemCriada.Classificacao != Classificacao.NAOCLASSIFICADA)
             {
                 await _classificationService.HumanClassification(ordemCriada.IdOrdem, ordemCriada.Classificacao,
