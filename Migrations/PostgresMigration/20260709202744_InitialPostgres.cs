@@ -6,7 +6,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     /// <inheritdoc />
     public partial class InitialPostgres : Migration
@@ -14,24 +14,6 @@ namespace app_pm_back.Migrations.PostgresMigration
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "ConfiguracaoGlobalModel",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FichasConfiabilidade = table.Column<int>(type: "integer", nullable: false),
-                    ClassificacaoAutomatica = table.Column<int>(type: "integer", nullable: false),
-                    CriterioDataRenovacao = table.Column<int>(type: "integer", nullable: false),
-                    CriterioConfiabilidadeRenovacao = table.Column<int>(type: "integer", nullable: false),
-                    DataModificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModificadoPorUsuario = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ConfiguracaoGlobalModel", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Estrategias",
                 columns: table => new
@@ -85,6 +67,24 @@ namespace app_pm_back.Migrations.PostgresMigration
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PM_Auditorias", x => x.IdAuditoria);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_ConfiguracoesGlobais",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FichasConfiabilidade = table.Column<int>(type: "integer", nullable: false),
+                    ClassificacaoAutomatica = table.Column<int>(type: "integer", nullable: false),
+                    CriterioDataRenovacao = table.Column<int>(type: "integer", nullable: false),
+                    CriterioConfiabilidadeRenovacao = table.Column<int>(type: "integer", nullable: false),
+                    DataModificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModificadoPorUsuario = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_ConfiguracoesGlobais", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -690,6 +690,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                     Descricao = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     Duracao = table.Column<double>(type: "double precision", nullable: true),
                     NdeProfissionais = table.Column<int>(type: "integer", nullable: true),
+                    InicioEsperado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    FimEsperado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     IdCTM = table.Column<long>(type: "bigint", nullable: true),
                     IdTipoManutencao = table.Column<long>(type: "bigint", nullable: true),
                     IdOrdem = table.Column<long>(type: "bigint", nullable: true)
@@ -788,14 +790,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                         name: "FK_PM_FerramentasOperacoes_PM_Operacoes_IdOperacao",
                         column: x => x.IdOperacao,
                         principalTable: "PM_Operacoes",
-                        principalColumn: "IdTarefa",
+                        principalColumn: "IdOperacao",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
-                table: "ConfiguracaoGlobalModel",
+                table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 9, 18, 18, 48, 844, DateTimeKind.Utc).AddTicks(8643), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 9, 20, 27, 44, 157, DateTimeKind.Utc).AddTicks(4749), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
@@ -845,7 +847,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.CreateIndex(
                 name: "IX_PM_FerramentasOperacoes_IdOperacao",
                 table: "PM_FerramentasOperacoes",
-                column: "IdTarefa");
+                column: "IdOperacao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_GpmLi_IdUsuario",
@@ -982,9 +984,6 @@ namespace app_pm_back.Migrations.PostgresMigration
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ConfiguracaoGlobalModel");
-
-            migrationBuilder.DropTable(
                 name: "DadosRenovacao");
 
             migrationBuilder.DropTable(
@@ -998,6 +997,9 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.DropTable(
                 name: "PM_Auditorias");
+
+            migrationBuilder.DropTable(
+                name: "PM_ConfiguracoesGlobais");
 
             migrationBuilder.DropTable(
                 name: "PM_CtmUsuario");
