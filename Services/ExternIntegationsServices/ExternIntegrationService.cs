@@ -24,12 +24,13 @@ public class ExternIntegrationService
     /// <returns></returns>
     public async Task<string> GetDataAsync(string rota, CancellationToken cancellationToken = default)
     {
-        // define token de autorização
-        _httpClient.DefaultRequestHeaders.Authorization = 
+        var relativeRoute = rota.StartsWith("/") ? rota.Substring(1) : rota;
+        var request = new HttpRequestMessage(HttpMethod.Get, relativeRoute);
+        request.Headers.Authorization = 
             new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
 
         // realiza requisição
-        var response = await _httpClient.GetAsync(rota, cancellationToken);
+        var response = await _httpClient.SendAsync(request, cancellationToken);
         
         // verifica se ocorreu
         response.EnsureSuccessStatusCode();
@@ -45,14 +46,18 @@ public class ExternIntegrationService
     /// <returns></returns>
     public async Task PostDataAsync(string rota, object payload, CancellationToken cancellationToken = default)
     {
-        // define token de autorização
-        _httpClient.DefaultRequestHeaders.Authorization = 
-            new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
-
         var json = JsonSerializer.Serialize(payload);
         var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+        var relativeRoute = rota.StartsWith("/") ? rota.Substring(1) : rota;
+        var request = new HttpRequestMessage(HttpMethod.Post, relativeRoute)
+        {
+            Content = content
+        };
+        request.Headers.Authorization = 
+            new AuthenticationHeaderValue("Bearer", TokenService.GenerateToken());
         
-        var response = await _httpClient.PostAsync(rota, content, cancellationToken);
+        var response = await _httpClient.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 }

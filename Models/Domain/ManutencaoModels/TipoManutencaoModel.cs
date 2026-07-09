@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.Domain;
 
@@ -11,13 +12,14 @@ public class TipoManutencaoModel
     /// Identificador único do Tipo de Manutenção.
     /// </summary>
     [Key]
-    public int IdTipoManutencao { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long IdTipoManutencao { get; set; }
 
     /// <summary>
     /// Categoria associada ao tipo de manutenção.
     /// </summary>
     [MaxLength(100)]
-    public CategoriaTipoManutencao? Categoria { get; set; }
+    public CategoriaTipoManutencao Categoria { get; set; }
 
     /// <summary>
     /// Nome descritivo do tipo de manutenção. Campo obrigatório.
@@ -31,7 +33,7 @@ public class TipoManutencaoModel
     /// </summary>
     [MaxLength(100)]
     [Required(ErrorMessage = "O campo TipoAtivo é obrigatório.")]
-    public required string TipoAtivo { get; set; }
+    public required string TipoLI { get; set; }
 
     /// <summary>
     /// Índice de confiabilidade esperado.
@@ -46,9 +48,9 @@ public class TipoManutencaoModel
     /// <summary>
     /// Relacionamentos e coleções associadas.
     /// </summary>
-    public virtual ICollection<TipoEstrategiaModel> TiposEstrategia { get; set; } = new List<TipoEstrategiaModel>();
+    public virtual ICollection<TipoEstrategiaModel>? TiposEstrategia { get; set; } = new List<TipoEstrategiaModel>();
     
-    public virtual ICollection<OperacaoModel> Operacoes { get; set; } = new List<OperacaoModel>();
+    public virtual ICollection<OperacaoModel>? Operacoes { get; set; } = new List<OperacaoModel>();
     
-    public virtual ICollection<TipoPlanoModel> TiposPlano { get; set; } = new List<TipoPlanoModel>();
+    public virtual ICollection<TipoPlanoModel>? TiposPlano { get; set; } = new List<TipoPlanoModel>();
 }

@@ -18,12 +18,22 @@ public class SpreadsheetService
 {
     private static readonly (ComponentType Type, string[] Terms)[] ComponentTypeMatchers =
     [
-        (ComponentType.Shutoff, new[] { "shut-off", "shutoff", "shut off", "sbr", "sdv", "bloqueio remoto", "sistema bloqueio remoto", "valvula saida"}),
+        (ComponentType.Shutoff,
+            new[]
+            {
+                "shut-off", "shutoff", "shut off", "sbr", "sdv", "bloqueio remoto", "sistema bloqueio remoto",
+                "valvula saida"
+            }),
         (ComponentType.PilotValve, new[] { "valvula piloto", "pilot valve", "pilot", "piloto" }),
         (ComponentType.RegulatorValve, new[] { "valvula reguladora", "regulator valve" }),
         (ComponentType.Regulator, new[] { "regulador", "regulator", "reguladores" }),
-        (ComponentType.FlowSensor, new[] { "flow", "flowtrail", "flow sensor", "flow trail", "sensor de vazao", "sensor de fluxo", "medidor" }),
-        (ComponentType.FillValveV9, new[] { "abastecimento de odorante", "valvula de abastecimento", "fill valve", "v9" }),
+        (ComponentType.FlowSensor,
+            new[]
+            {
+                "flow", "flowtrail", "flow sensor", "flow trail", "sensor de vazao", "sensor de fluxo", "medidor"
+            }),
+        (ComponentType.FillValveV9,
+            new[] { "abastecimento de odorante", "valvula de abastecimento", "fill valve", "v9" }),
         (ComponentType.OdorantPump, new[] { "bomba odorante", "bomba de odorante", "odorante bomba", "pump", "bomba" }),
         (ComponentType.OdorantTank, new[] { "tanque de odorante", "tanque odorante", "reservatorio de odorante" }),
         (ComponentType.ManifoldIn, new[] { "manifold in", "manifold entrada" }),
@@ -35,23 +45,26 @@ public class SpreadsheetService
         (ComponentType.AlimentationPanel, new[] { "painel de alimentacao", "nobreak" }),
         (ComponentType.Battery, new[] { "bateria", "baterias" }),
         (ComponentType.SolarPanel, new[] { "painel solar", "solar" }),
-        (ComponentType.CommunicationInterface, new[] { "comunicacao", "telemetria", "modem", "vsat", "antena", "chip", "ethernet", "serial" }),
+        (ComponentType.CommunicationInterface,
+            new[] { "comunicacao", "telemetria", "modem", "vsat", "antena", "chip", "ethernet", "serial" }),
         (ComponentType.Controller, new[] { "controlador", "scada", "ihm", "datalogger", "data logger" }),
         (ComponentType.ChargeControllerPanel, new[] { "controlador de carga", "painel controlador de carga" }),
         (ComponentType.Plc, new[] { "plc" })
     ];
 
     private readonly ConvertService _convertService;
-    private readonly DbSet<NotaModel> _notaModels;
+
+    private readonly AppDbContext _appDbContext;
+
     // memória temporária para evitar consultar o banco centenas de vezes
     private readonly Dictionary<string, long> _sapCodeCache = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="SpreadsheetService"/>.
     /// </summary>
-    public SpreadsheetService(ConvertService convertService, DbSet<NotaModel> notaModels)
+    public SpreadsheetService(ConvertService convertService, AppDbContext appDbContext)
     {
-        _notaModels = notaModels;
+        _appDbContext = appDbContext;
         _convertService = convertService;
     }
 
@@ -86,13 +99,16 @@ public class SpreadsheetService
     /// </summary>
     /// <param name="spreadSheet">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(IFormFile spreadSheet)
+    public virtual async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(
+        IFormFile spreadSheet,
+        CancellationToken cancellationToken = default)
     {
         var resultado = new ResultadoPlanilha();
 
         var extension = Path.GetExtension(spreadSheet.FileName).ToLower();
         Stream csvStream;
 
+        // se for Excel, converte para csv usando o serviço de conversão, se for csv, lê direto do arquivo enviado
         if (extension == ".xlsx")
         {
             await using var xlsxStream = spreadSheet.OpenReadStream();
@@ -110,6 +126,23 @@ public class SpreadsheetService
 
         csvStream.Position = 0;
 
+        // declara o parser para ler o arquivo csv, usando UTF-8 e detectando a codificação automaticamente,
+        // e configurando para usar ; como delimitador, sem campos entre aspas e para trimar os espaços em branco
+        string delimitador = ";";
+        using (var reader = new StreamReader(csvStream, Encoding.UTF8, true, 1024, leaveOpen: true))
+        {
+            var primeiraLinha = reader.ReadLine() ?? "";
+            
+            // se houver mais vírgulas do que ponto-e-vírgulas no cabeçalho, sabemos que é um CSV 
+            if (primeiraLinha.Count(c => c == ',') > primeiraLinha.Count(c => c == ';'))
+            {
+                delimitador = ",";
+            }
+        }
+        
+        // reseta a posição do stream para conseguir ler desde o início
+        csvStream.Position = 0; 
+
         CultureInfo culture = CultureInfo.GetCultureInfo("pt-BR");
 
         using TextFieldParser parser =
@@ -118,15 +151,20 @@ public class SpreadsheetService
                 TextFieldType = FieldType.Delimited
             };
 
-        parser.SetDelimiters(";");
-        parser.HasFieldsEnclosedInQuotes = false;
+        // delimitadro detectado
+        parser.SetDelimiters(delimitador);
+        
+        // impede quebras 
+        parser.HasFieldsEnclosedInQuotes = true; 
         parser.TrimWhiteSpace = true;
-
         string[]? headers = null;
         Dictionary<string, int> columns = new(StringComparer.OrdinalIgnoreCase);
 
         while (!parser.EndOfData)
         {
+            // interrompe o loop se o token for laçado
+            cancellationToken.ThrowIfCancellationRequested();
+            
             headers = parser.ReadFields();
             if (headers == null) continue;
 
@@ -140,8 +178,9 @@ public class SpreadsheetService
                 }
             }
 
-            if (columns.ContainsKey("Nota") ||
-                columns.ContainsKey("Ordem") ||
+            // verifica para colunas da petro
+            if (columns.ContainsKey("Nota") || columns.ContainsKey("status_nota") ||
+                columns.ContainsKey("Ordem") || columns.ContainsKey("numero_ordem") ||
                 columns.ContainsKey("Item") ||
                 columns.ContainsKey("Objeto") ||
                 columns.ContainsKey("Área operacion.")
@@ -153,8 +192,10 @@ public class SpreadsheetService
 
         if (columns.Count == 0) return resultado;
 
-        bool isNota = columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota");
-        bool isOrdem = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve");
+        bool isNota = (columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota")) ||
+                      (columns.ContainsKey("Nota") && columns.ContainsKey("status_nota"));
+        bool isOrdem = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve") ||
+                       (columns.ContainsKey("numero_ordem") && columns.ContainsKey("status_ordem"));
         bool isItem = columns.ContainsKey("Item") && columns.ContainsKey("Causa") &&
                       columns.ContainsKey("Texto da causa");
 
@@ -177,17 +218,20 @@ public class SpreadsheetService
 
         while (!parser.EndOfData)
         {
+            // interrompe o loop se o token for laçado
+            cancellationToken.ThrowIfCancellationRequested();
+            
             string[]? row = parser.ReadFields();
             if (row == null || row.All(string.IsNullOrWhiteSpace)) continue;
 
             if (resultado.TipoIdentificado == "NOTA")
             {
-                var dto = ReadLineForModel<NotaManutencaoDto>(row, columns);
+                var dto = ReadLineForModel<NotaDto>(row, columns);
                 resultado.Notas.Add(MapNotaDto(dto));
             }
             else if (resultado.TipoIdentificado == "ORDEM")
             {
-                var dto = ReadLineForModel<OrdemManutencaoDto>(row, columns);
+                var dto = ReadLineForModel<OrdemDto>(row, columns);
                 resultado.Ordens.Add(MapOrdemDto(dto));
             }
             else if (resultado.TipoIdentificado == "ITEM")
@@ -228,12 +272,60 @@ public class SpreadsheetService
                             {
                                 valorConvertido = TryTranslateComponentType(valor);
                             }
-
-                            if (tipo == typeof(long) &&
-                                string.Equals(property.Name, "IdNota", StringComparison.OrdinalIgnoreCase) &&
-                                string.Equals(nomeColunaExcel, "cdnotamanutencao", StringComparison.OrdinalIgnoreCase))
+                            else if (tipo == typeof(long) &&
+                                     string.Equals(property.Name, "IdNota", StringComparison.OrdinalIgnoreCase) &&
+                                     string.Equals(nomeColunaExcel, "cdnotamanutencao",
+                                         StringComparison.OrdinalIgnoreCase))
                             {
                                 valorConvertido = TryTranslateSapCode(valor);
+                            }
+                            else if (tipo == typeof(DateTime) &&
+                                     string.Equals(nomeColunaExcel, "data_expectativa_nota",
+                                         StringComparison.OrdinalIgnoreCase))
+                            {
+                                long.TryParse(valor, out long l);
+                                DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
+                                valorConvertido = dataOffset.UtcDateTime;
+                            }
+                            else if (tipo == typeof(DateTime))
+                            {
+                                if (DateTime.TryParse(valor, CultureInfo.GetCultureInfo("pt-BR"), DateTimeStyles.None,
+                                        out var dt))
+                                {
+                                    valorConvertido = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                                }
+                                else
+                                {
+                                    // caso de unix timestamp, converte para datetime
+                                    long.TryParse(valor, out long l);
+                                    DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
+                                    valorConvertido = dataOffset.UtcDateTime;
+                                }
+                            }
+                            else if (string.Equals(nomeColunaExcel, "CondInstApósMed",
+                                         StringComparison.OrdinalIgnoreCase) &&
+                                     tipo == typeof(ConfiabilidadeRestaurada) &&
+                                     valor.Contains("3"))
+                            {
+                                valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
+                            }
+                            else if (string.Equals(nomeColunaExcel, "confiabilidade",
+                                         StringComparison.OrdinalIgnoreCase) &&
+                                     tipo == typeof(ConfiabilidadeRestaurada) &&
+                                     valor == "1")
+                            {
+                                valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
+                            }
+                            else if (tipo == typeof(StatusFichas) &&
+                                     string.Equals(property.Name, "StatusNota", StringComparison.OrdinalIgnoreCase)
+                                    )
+                            {
+                                valorConvertido = TryTranslateStatusNota(valor);
+                            }
+                            else if (tipo == typeof(StatusFichas) &&
+                                     string.Equals(property.Name, "StatusOrdem", StringComparison.OrdinalIgnoreCase))
+                            {
+                                valorConvertido = TryTranslateStatusOrdem(valor);
                             }
                             else if (tipo.IsEnum)
                             {
@@ -264,14 +356,6 @@ public class SpreadsheetService
                                 if (TimeSpan.TryParse(valor, out var ts))
                                 {
                                     valorConvertido = ts;
-                                }
-                            }
-                            else if (tipo == typeof(DateTime))
-                            {
-                                if (DateTime.TryParse(valor, CultureInfo.GetCultureInfo("pt-BR"), DateTimeStyles.None,
-                                        out var dt))
-                                {
-                                    valorConvertido = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
                                 }
                             }
                             else if (tipo == typeof(Classificacao))
@@ -314,18 +398,18 @@ public class SpreadsheetService
 
         return null;
     }
-    
+
     public long? TryTranslateSapCode(string rawValue)
     {
         if (string.IsNullOrWhiteSpace(rawValue)) return null;
-        
+
         // verifica se ja foi consultado o banco para esse código SAP antes
         if (_sapCodeCache.TryGetValue(rawValue, out var cachedIdNota))
         {
             return cachedIdNota;
         }
-        
-        var result = _notaModels
+
+        var result = _appDbContext.PM_Notas
             .Where(n => n.SapCode == rawValue)
             .Select(n => (long?)n.IdNota)
             .FirstOrDefault();
@@ -334,9 +418,61 @@ public class SpreadsheetService
             _sapCodeCache[rawValue] = result.Value;
             return result;
         }
+
         return null;
     }
-    
+
+    public StatusFichas TryTranslateStatusNota(string rawValue)
+    {
+        var normalized = NormalizeText(rawValue);
+        if (string.IsNullOrEmpty(normalized))
+            return StatusFichas.EmAndamento;
+
+        if (normalized.Contains("concluida") || normalized.Contains("msen"))
+            return StatusFichas.Concluida;
+        if (normalized.Contains("aberta") || normalized.Contains("meab") || normalized.Contains("mspn") ||
+            normalized.Contains("mrel"))
+            return StatusFichas.Aberta;
+        if (normalized.Contains("reprovada") || normalized.Contains("mbar"))
+            return StatusFichas.Reprovada;
+
+        return StatusFichas.EmAndamento;
+    }
+
+    public StatusFichas TryTranslateStatusOrdem(string rawValue)
+    {
+        var normalized = NormalizeText(rawValue);
+        if (string.IsNullOrEmpty(normalized))
+            return StatusFichas.Concluida;
+
+        if (normalized.Contains("concluida")
+            || normalized.Contains("exco")
+            || normalized.Contains("ftec")
+            || normalized.Contains("enco")
+            || normalized.Contains("ente")
+            || normalized.Contains("ence")
+            || normalized.Contains("mrel")
+           )
+            return StatusFichas.Concluida;
+        if (normalized.Contains("aberta")
+            || normalized.Contains("impd")
+            || normalized.Contains("ppro")
+            || normalized.Contains("tria")
+            || normalized.Contains("pmau")
+            || normalized.Contains("abra")
+            || normalized.Contains("lib")
+           )
+            return StatusFichas.Aberta;
+        if (normalized.Contains("reprovada")
+            || normalized.Contains("scan")
+            || normalized.Contains("excl")
+            || normalized.Contains("pmvl")
+           )
+            return StatusFichas.Reprovada;
+
+        return StatusFichas.EmAndamento;
+    }
+
     private static Classificacao TryTranslateClassificacao(string rawValue)
     {
         var normalized = NormalizeText(rawValue);
@@ -370,22 +506,19 @@ public class SpreadsheetService
         return builder.ToString().Normalize(NormalizationForm.FormC);
     }
 
-    private static NotaModel MapNotaDto(NotaManutencaoDto dto)
+    private static NotaModel MapNotaDto(NotaDto dto)
     {
         // converte string em tipo Prioridade
-        Enum.TryParse<Prioridade>(dto.Prioridade, out Prioridade prioridade);
         return new NotaModel
         {
-            IdNota = dto.IdNota != 0 ? dto.IdNota : dto.NumeroNota,
             NumeroNota = dto.NumeroNota,
             Classificacao = dto.Classificacao,
-            MetodoClassificacao = dto.MetodoClassificacao,
-            StatusNota = Status.Concluida,
+            MetodoClassificacao = MetodoClassificacao.NAOCLASSIFICADA,
+            StatusNota = StatusFichas.EmAndamento,
             DataNota = dto.DataNota,
-            Prioridade = prioridade,
+            Prioridade = dto.Prioridade,
             FimDesejado = dto.FimDesejado,
             DataAvaria = dto.DataAvaria,
-            HoraAvaria = dto.HoraAvaria,
             EquipamentoDisponivel = dto.EquipamentoDisponivel,
             AnomaliaObservada = dto.AnomaliaObservada,
             ObservacoesComplementares = dto.ObservacoesComplementares,
@@ -402,20 +535,19 @@ public class SpreadsheetService
         };
     }
 
-    private static OrdemModel MapOrdemDto(OrdemManutencaoDto dto)
+    private static OrdemModel MapOrdemDto(OrdemDto dto)
     {
         return new OrdemModel
         {
-            IdOrdem = dto.IdOrdem != 0 ? dto.IdOrdem : (dto.NumeroOrdem ?? 0),
             NumeroOrdem = dto.NumeroOrdem,
             TipoOrdem = dto.TipoOrdem,
             Classificacao = dto.Classificacao,
-            MetodoClassificacao = dto.MetodoClassificacao,
+            MetodoClassificacao = MetodoClassificacao.NAOCLASSIFICADA,
             ClassificadoPor = dto.ClassificadoPor,
             DataClassificacao = dto.DataClassificacao,
-            StatusOrdem = dto.StatusOrdem ?? Status.Concluida,
+            StatusOrdem = dto.StatusOrdem ?? StatusFichas.EmAndamento,
             Criticidade = dto.Prioridade?.ToString() ?? dto.Criticidade,
-            DataCriacao = dto.DataCriacao ?? DateTime.UtcNow,
+            DataCriacao = dto.DataCriacao,
             CriadaPorUsuario = dto.CriadaPorUsuario,
             ModificadaPorUsuario = dto.ModificadaPorUsuario,
             DataModificacao = dto.DataModificacao,

@@ -14,7 +14,7 @@ public class TipoEstrategiaModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int IdTipoEstrategia { get; set; }
+    public long IdTipoEstrategia { get; set; }
 
     /// <summary>
     /// Quantidade de dias para o ciclo. Exemplo: 90
@@ -44,17 +44,17 @@ public class TipoEstrategiaModel
     /// <summary>
     /// Chave estrangeira para a Estratégia pai.
     /// </summary>
-    public int? IdEstrategia { get; set; }
+    public long? IdEstrategia { get; set; }
 
     /// <summary>
     /// Chave estrangeira para o Tipo de Manutenção.
     /// </summary>
-    public int? IdTipoManutencao { get; set; }
+    public long? IdTipoManutencao { get; set; }
 
     /// <summary>
     /// Chave estrangeira para o Tipo de CEP.
     /// </summary>
-    public int? IdTipoCep { get; set; }
+    public long? IdTipoCep { get; set; }
 
     /// <summary>
     /// Objeto de navegação da Estratégia.

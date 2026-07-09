@@ -13,7 +13,7 @@ public class UsuarioDto
     /// Identificador do usuario no SAP interno.
     /// </summary>
     [SheetColumn("ID")]
-    public int IdUsuario { get; set; }
+    public long IdUsuario { get; set; }
 
     /// <summary>
     /// Nome do usuario.
@@ -34,10 +34,10 @@ public class UsuarioDto
     public string? Permissoes { get; set; }
 
     /// <summary>
-    /// Escopo externo (apenas o ID).
+    /// Lista de escopos aos quais o usuário tem acesso.
     /// </summary>
     [SheetColumn("Id Escopo")]
-    public int? IdEscopo { get; set; }
+    public List<long> Escopos { get; set; } = new List<long>();
 }
 
 #pragma warning restore CS1591

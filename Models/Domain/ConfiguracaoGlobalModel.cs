@@ -1,0 +1,40 @@
+namespace app_pm_back.Models.Domain;
+
+/// <summary>
+/// Representa as configurações globais do sistema. Esta tabela possuirá apenas o ID = 1.
+/// </summary>
+public class ConfiguracaoGlobalModel
+{
+    [System.ComponentModel.DataAnnotations.Key]
+    public int Id { get; set; } = 1; // travado em 1 para garantir linha única
+
+    /// <summary>
+    /// Fichas que serão usadas para calcular a confiabilidade.
+    /// </summary>
+    public OrigemFichasConfiabilidade FichasConfiabilidade { get; set; }
+    
+    /// <summary>
+    /// Métodos para classificar automaticamente as fichas.
+    /// </summary>
+    public ModoClassificacaoAutomatica ClassificacaoAutomatica { get; set; }
+    
+    /// <summary>
+    /// Critérios que serão utilizados para a renovação baseada na última data
+    /// </summary>
+    public CriterioDataRenovacao CriterioDataRenovacao { get; set; }
+    
+    /// <summary>
+    /// Critérios para definir a confiabilidade de uma renovação
+    /// </summary>
+    public CriterioConfiabilidadeRenovacao CriterioConfiabilidadeRenovacao { get; set; }
+    
+    /// <summary>
+    /// Data da última modificação da configuração global.
+    /// </summary>
+    public DateTime DataModificacao { get; set; } = DateTime.UtcNow;
+    
+    /// <summary>
+    /// Usuário que realizou a última modificação na configuração global
+    /// </summary>
+    public string? ModificadoPorUsuario { get; set; }
+}

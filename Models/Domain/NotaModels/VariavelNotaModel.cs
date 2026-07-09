@@ -14,7 +14,7 @@ public class VariavelNotaModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int IdVariavel { get; set; }
+    public long IdVariavel { get; set; }
     
     /// <summary>
     /// Nome da variável registrada. Exemplo: "Temperatura", "Pressão", "Vibração".

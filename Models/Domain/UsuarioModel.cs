@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.Domain;
 
@@ -12,7 +13,8 @@ public class UsuarioModel
     /// Identificador único do usuário.
     /// </summary>
     [Key]
-    public int IdUsuario { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long IdUsuario { get; set; }
 
     /// <summary>
     /// Nome completo do usuário.
@@ -30,20 +32,29 @@ public class UsuarioModel
 
     /// <summary>
     /// Lista de permissões serializada ou descrição de acessos.
-    /// Exemplo: "ADMIN,USER_READ".
+    /// Exemplo: 7 -> NOTAS | ORDENS | ITENS.
     /// </summary>
-    [MaxLength(500)]
-    public string? Permissoes { get; set; }
+    public PermissoesTabela? Permissoes { get; set; } = PermissoesTabela.Nenhuma;
 
     /// <summary>
-    /// Identificador do escopo ao qual o usuário pertence.
+    /// Nível de permissão do usuário no sistema.
     /// </summary>
-    public int? IdEscopo { get; set; }
+    public NivelPermissao? NivelPermissao { get; set; } = Domain.NivelPermissao.Usuario;
+
+    /// <summary>
+    /// Lista de escopos aos quais o usuário tem acesso.
+    /// </summary>
+    public List<long> Escopos { get; set; } = new List<long>();
 
     /// <summary>
     /// Coleção de notas associadas ao usuário.
     /// </summary>
     public virtual ICollection<NotaModel> Notas { get; set; } = new List<NotaModel>();
+    
+    /// <summary>
+    /// Coleção de ordens que o usuário é responsável
+    /// </summary>
+    public virtual ICollection<OrdemModel> Ordens { get; set; } = new List<OrdemModel>();
 
     /// <summary>
     /// Coleção de dados de renovação vinculados.

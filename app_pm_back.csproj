@@ -10,6 +10,14 @@
         <NoWarn>$(NoWarn);1591;1573;1572;1587</NoWarn>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)' == 'Hml'">
+        <DefineConstants>$(DefineConstants);HML</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Dev'">
+        <DefineConstants>$(DefineConstants);DEV</DefineConstants>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
         <PackageReference Include="CsvHelper" Version="33.1.0" />
@@ -40,6 +48,9 @@
         <None Update="CatBoost\libcatboostmodel.so"> <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
+        <None Update="CatBoost\catboost_model.cbm">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>

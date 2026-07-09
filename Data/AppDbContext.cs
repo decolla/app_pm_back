@@ -1,5 +1,7 @@
 using System.Text.Json;
 using app_pm_back.Models.Domain;
+using app_pm_back.DTO;
+using app_pm_back.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -10,13 +12,19 @@ namespace app_pm_back.Data;
 /// </summary>
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions options) : base(options)
+    private readonly IUserContext _userContext;
+
+    public AppDbContext(DbContextOptions options) : this(options, new DesignTimeUserContext())
     {
+    }
+
+    public AppDbContext(DbContextOptions options, IUserContext userContext) : base(options)
+    {
+        _userContext = userContext;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
         base.OnModelCreating(modelBuilder);
 
         // configura as chaves primárias
@@ -41,6 +49,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<OrdemModel>().HasKey(e => e.IdOrdem);
         modelBuilder.Entity<AnexoOrdemModel>().HasKey(e => e.IdAnexoOrdem);
         modelBuilder.Entity<DadosRenovacaoModel>().HasKey(e => e.IdDados);
+        modelBuilder.Entity<ConfiguracaoGlobalModel>().HasKey(c => c.Id);
 
         // 1-to-1: CTM e GPM 
         modelBuilder.Entity<CtmModel>()
@@ -55,11 +64,12 @@ public class AppDbContext : DbContext
             .WithMany(f => f.Operacoes)
             .UsingEntity<Dictionary<string, object>>(
                 "FerramentasOperacoes",
-                j => j.HasOne<FerramentaModel>().WithMany().HasForeignKey("IdFerramenta").OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<OperacaoModel>().WithMany().HasForeignKey("IdOperacao").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<FerramentaModel>().WithMany().HasForeignKey("IdFerramenta")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<OperacaoModel>().WithMany().HasForeignKey("IdTarefa").OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("IdFerramenta", "IdOperacao");
+                    j.HasKey("IdFerramenta", "IdTarefa");
                     j.ToTable("PM_FerramentasOperacoes");
                 });
 
@@ -70,7 +80,8 @@ public class AppDbContext : DbContext
             .UsingEntity<Dictionary<string, object>>(
                 "AlmoxarifadoUsuario",
                 j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<AlmoxarifadoModel>().WithMany().HasForeignKey("IdAlmoxarifado").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<AlmoxarifadoModel>().WithMany().HasForeignKey("IdAlmoxarifado")
+                    .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
                     j.HasKey("IdAlmoxarifado", "IdUsuario");
@@ -118,12 +129,40 @@ public class AppDbContext : DbContext
                     j.HasKey("IdCTM", "IdUsuario");
                     j.ToTable("PM_CtmUsuario");
                 });
+        
+        // adiciona um valor padrão inicial caso a tabela esteja vazia nas migrations
+        modelBuilder.Entity<ConfiguracaoGlobalModel>().HasData(new ConfiguracaoGlobalModel
+        {
+            Id = 1,
+            FichasConfiabilidade = OrigemFichasConfiabilidade.ConsiderarTambemAlgoritmo,
+            ClassificacaoAutomatica = ModoClassificacaoAutomatica.NaoClassificar,
+            CriterioDataRenovacao = CriterioDataRenovacao.ConsiderarTodasClassificacoes,
+            CriterioConfiabilidadeRenovacao = CriterioConfiabilidadeRenovacao.ConsiderarTambemAlgoritmo
+        });
+
+        // FILTROS DE ESCOPO
+        //
+        // modelBuilder.Entity<UsuarioModel>().HasQueryFilter(e =>
+        //     e.Escopos.Any(escopoBanco => _userContext.GetEscoposDoUsuario().Contains(escopoBanco)));
+        // modelBuilder.Entity<NotaModel>().HasQueryFilter(e =>
+        //     e.Escopo != null && _userContext.GetEscoposDoUsuario().Contains(e.Escopo.Value));
+        // modelBuilder.Entity<OrdemModel>().HasQueryFilter(e =>
+        //     e.Escopo != null && _userContext.GetEscoposDoUsuario().Contains(e.Escopo.Value));
+        // modelBuilder.Entity<CpmModel>().HasQueryFilter(e =>
+        //     e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
+        // modelBuilder.Entity<AlmoxarifadoModel>().HasQueryFilter(e =>
+        //     e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
+        // modelBuilder.Entity<FerramentaModel>().HasQueryFilter(e =>
+        //     e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
     }
 
+    // ================================ CRIAÇÃO DAS TABELAS ====================================
+    
     public DbSet<TipoManutencaoModel> PM_TiposManutencao { get; set; }
     public DbSet<TipoEstrategiaModel> PM_TiposEstrategia { get; set; }
     public DbSet<TipoCepModel> PM_TiposCep { get; set; }
     public DbSet<OperacaoModel> PM_Operacoes { get; set; }
+    public DbSet<ConfiguracaoGlobalModel> PM_ConfiguracoesGlobais { get; set; }
     public DbSet<TipoPlanoModel> PM_TiposPlano { get; set; }
     public DbSet<EstrategiaModel> PM_Estrategias { get; set; }
     public DbSet<PlanoModel> PM_Planos { get; set; }
@@ -141,12 +180,14 @@ public class AppDbContext : DbContext
     public DbSet<OrdemModel> PM_Ordens { get; set; }
     public DbSet<AnexoOrdemModel> PM_AnexosOrdem { get; set; }
     public DbSet<DadosRenovacaoModel> PM_DadosRenovacao { get; set; }
-    
+    public DbSet<ReliabilityModel> PM_Reliability { get; set; }
+    public DbSet<AuditoriaModel> PM_Auditorias { get; set; }
 }
 
 public class SqlServerDbContext : AppDbContext
 {
-    public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options) : base(options)
+    public SqlServerDbContext(DbContextOptions<SqlServerDbContext> options, IUserContext userContext) : base(options,
+        userContext)
     {
     }
 
@@ -158,6 +199,7 @@ public class SqlServerDbContext : AppDbContext
         // aplica as exclusividades do SQL Server
         modelBuilder.HasDefaultSchema("dbo");
 
+        // converter para JSON as ações de falha
         var converter = new ValueConverter<List<AcoesFalha>?, string>(
             v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
             v => JsonSerializer.Deserialize<List<AcoesFalha>>(v, (JsonSerializerOptions?)null) ?? new List<AcoesFalha>()
@@ -167,12 +209,25 @@ public class SqlServerDbContext : AppDbContext
             .Property(e => e.AcoesFalha)
             .HasConversion(converter)
             .HasColumnType("nvarchar(max)");
+
+        modelBuilder.Entity<ReliabilityModel>()
+            .Property(e => e.IdsNotas)
+            .HasColumnType("nvarchar(max)");
+
+        modelBuilder.Entity<ReliabilityModel>()
+            .Property(e => e.IdsOrdens)
+            .HasColumnType("nvarchar(max)");
+
+        modelBuilder.Entity<UsuarioModel>()
+            .Property(e => e.Escopos)
+            .HasColumnType("nvarchar(max)");
     }
 }
 
 public class PostgresDbContext : AppDbContext
 {
-    public PostgresDbContext(DbContextOptions<PostgresDbContext> options) : base(options)
+    public PostgresDbContext(DbContextOptions<PostgresDbContext> options, IUserContext userContext) : base(options,
+        userContext)
     {
     }
 
@@ -180,9 +235,5 @@ public class PostgresDbContext : AppDbContext
     {
         // aplica as configurações globais primeiro
         base.OnModelCreating(modelBuilder);
-
-        // aplica as exclusividades do PostgreSQL
-        modelBuilder.HasDefaultSchema("public");
-        
     }
 }

@@ -7,7 +7,7 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class EstrategiaManutencaoDto
 {
-    [SheetColumn("Id Estratégia")] public int IdEstrategia { get; set; }
+    [SheetColumn("Id Estratégia")] public long IdEstrategia { get; set; }
 
     [SheetColumn("Estratégia")] public string? Nome { get; set; }
 
@@ -22,5 +22,5 @@ public class EstrategiaManutencaoDto
     [SheetColumn("Tipo ativo aplicável")] public string? TipoAtivoAplicavel { get; set; }
 
     // Escopo externo (apenas o ID).
-    [SheetColumn("Id Escopo")] public int? IdEscopo { get; set; }
+    [SheetColumn("Id Escopo")] public long? IdEscopo { get; set; }
 }

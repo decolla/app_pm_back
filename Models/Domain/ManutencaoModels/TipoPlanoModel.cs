@@ -14,7 +14,7 @@ public class TipoPlanoModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int IdTipoPlano { get; set; }
+    public long IdTipoPlano { get; set; }
 
     /// <summary>
     /// Define se o plano está visível no sistema.
@@ -48,14 +48,14 @@ public class TipoPlanoModel
 
     /// <summary>
     /// Categoria descritiva do plano.
-    /// Exemplo: "Manutenção ou renovação ou cep"
+    /// Exemplo: "Manutenção ou renovação"
     /// </summary>
     public CategoriaTipoManutencao Categoria { get; set; }
 
     /// <summary>
     /// FK para o Tipo de Estratégia.
     /// </summary>
-    public int? IdTipoEstrategia { get; set; }
+    public long? IdTipoEstrategia { get; set; }
 
     /// <summary>
     /// FK para o Plano.
@@ -65,7 +65,7 @@ public class TipoPlanoModel
     /// <summary>
     /// FK para o Tipo de Manutenção.
     /// </summary>
-    public int? IdTipoManutencao { get; set; }
+    public long? IdTipoManutencao { get; set; }
 
     /// <summary>
     /// FK para a Nota associada, se aplicável.
@@ -80,7 +80,7 @@ public class TipoPlanoModel
     /// <summary>
     /// FK para o Tipo de CEP associado, se aplicável.
     /// </summary>
-    public int? IdTipoCep { get; set; }
+    public long? IdTipoCep { get; set; }
 
     /// <summary>
     /// Objeto de navegação para a Estratégia vinculada.

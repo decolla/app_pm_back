@@ -1,0 +1,125 @@
+using app_pm_back.Data;
+using app_pm_back.Models.Domain;
+using Microsoft.EntityFrameworkCore;
+
+namespace app_pm_back.Services.Manutencao;
+
+/// <summary>
+/// Classe EstrategiaService.
+/// </summary>
+public class EstrategiaService : BaseCrudService<EstrategiaModel>
+{
+    private readonly DbSet<TipoManutencaoModel> _tipoManutencaoModels;
+    private readonly DbSet<EstrategiaModel> _estrategiaModels;
+    private readonly DbSet<TipoEstrategiaModel> _tipoEstrategiaModels;
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="EstrategiaService"/>.
+    /// </summary>
+    public EstrategiaService(AppDbContext context) : base(context)
+    {
+        _tipoManutencaoModels = context.PM_TiposManutencao;
+        _estrategiaModels = context.PM_Estrategias;
+        _tipoEstrategiaModels = context.PM_TiposEstrategia;
+    }
+
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    public async Task<List<EstrategiaModel>> BuscarAsync(
+        long? id,
+        string? nome,
+        string? tipoAtivo,
+        string? visao,
+        int? pagina,
+        int? tamanho)
+    {
+        var query = _context.PM_Estrategias
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (id.HasValue)
+        {
+            query = query.Where(e => e.IdEstrategia == id.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(nome))
+        {
+            var nomeNormalizado = nome.Trim().ToLower();
+            query = query.Where(e => e.Nome.ToLower().Contains(nomeNormalizado));
+        }
+
+        if (!string.IsNullOrWhiteSpace(tipoAtivo))
+        {
+            var tipoAtivoNormalizado = tipoAtivo.Trim().ToLower();
+            query = query.Where(e => e.TipoAtivoAplicavel != null && e.TipoAtivoAplicavel.ToLower().Contains(tipoAtivoNormalizado));
+        }
+
+        query = query.OrderBy(e => e.IdEstrategia);
+
+        if (pagina.HasValue || tamanho.HasValue)
+        {
+            var p = pagina ?? 1;
+            var t = tamanho ?? 20;
+            query = query.Skip((p - 1) * t).Take(t);
+        }
+
+        return await query.ToListAsync();
+    }
+    
+    /// <summary>
+    /// Cria um tipo manutenção, tipo estratégia e uma estratégia para cada tipo de LI
+    /// </summary>
+    public async Task<object?> GerarTemplates()
+    {
+        try
+        {
+            foreach (TiposLI tipo in Enum.GetValues<TiposLI>())
+            {
+                var novoTManutencao = new TipoManutencaoModel
+                {
+                    Nome = $"mock{tipo}",
+                    TipoLI = $"{tipo}",
+                    Categoria = CategoriaTipoManutencao.Renovacao,
+                    Confiabilidade = 1.0,
+                    Habilitada = true
+                };
+                 _tipoManutencaoModels.Add(novoTManutencao);
+                
+                var novaEstrategia = new EstrategiaModel
+                {
+                    Nome = $"mock{tipo}",
+                    TipoAtivoAplicavel = $"{tipo}",
+                    Habilitada = true,
+                    Ciclos = 7300,
+                    CicloContinuo = true,
+                    NumeroCiclos = 1
+                };
+                _estrategiaModels.Add(novaEstrategia);
+                
+                await _context.SaveChangesAsync();
+                
+                var novoTEstrategia = new TipoEstrategiaModel
+                {
+                    Categoria = CategoriaTipoManutencao.Renovacao,
+                    Dias = 365,
+                    ToleranciaPositiva = 5,
+                    ToleranciaNegativa = 5,
+                    Continua = true,
+                    IdEstrategia = novaEstrategia.IdEstrategia,
+                    IdTipoManutencao = novoTManutencao.IdTipoManutencao
+                };
+                _tipoEstrategiaModels.Add(novoTEstrategia);
+                
+            }
+            
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            return e.Message;
+        }
+    }
+}

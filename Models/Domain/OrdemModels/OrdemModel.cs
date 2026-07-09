@@ -13,7 +13,7 @@ namespace app_pm_back.Models.Domain;
 /// A ordem de trabalho é a entidade central para gerenciamento de atividades de manutenção,
 /// permitindo controle de prazos, recursos, criticidade e relacionamento com ativos e notas.
 /// </remarks>
-public class OrdemModel : IClassifiable
+public class OrdemModel : IClassifiable, IAuditable
 {
     #region Identificação e Controle
 
@@ -23,7 +23,7 @@ public class OrdemModel : IClassifiable
     /// </summary>
     /// <example>100001</example>
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdOrdem { get; set; }
     
     /// <summary>
@@ -38,19 +38,18 @@ public class OrdemModel : IClassifiable
     /// Utilizado para rastreamento temporal e relatórios de abertura.
     /// </summary>
     /// <example>2024-01-15T08:30:00</example>
-    [Required(ErrorMessage = "A data de criação é obrigatória.")]
     public DateTime? DataCriacao { get; set; }
 
     #endregion
 
-    #region Status e Classificação
+    #region StatusFichas e Classificação
 
     /// <summary>
-    /// Status atual da ordem de trabalho no fluxo de execução.
+    /// StatusFichas atual da ordem de trabalho no fluxo de execução.
     /// Indica o estado operacional da ordem para controle de workflow.
     /// </summary>
     /// <example>Aberta, Em Andamento, Aguardando Peças, Concluída, Cancelada</example>
-    public Status? StatusOrdem { get; set; }
+    public StatusFichas? StatusOrdem { get; set; }
 
     /// <summary>
     /// Nível de criticidade da ordem para priorização de execução.
@@ -183,8 +182,7 @@ public class OrdemModel : IClassifiable
     /// <summary>
     /// O escopo da nota/pordem
     /// </summary>
-    [MaxLength(100, ErrorMessage = "O escopo não pode exceder 100 caracteres.")]
-    public string? Escopo { get; set; } = "N/A";
+    public long? Escopo { get; set; }
 
     /// <summary>
     /// Identificador do ativo relacionado à ordem (referência externa).
@@ -215,6 +213,16 @@ public class OrdemModel : IClassifiable
     public long? IdNota { get; set; }
     
     /// <summary>
+    /// Chave estrangeira para o GPM
+    /// </summary>
+    public long? IdGpm { get; set; }
+    
+    /// <summary>
+    /// Chave estrangeira para o CTM
+    /// </summary>
+    public long? IdCtm { get; set; }
+    
+    /// <summary>
     /// Identificador do plano de manutenção associado à ordem.
     /// Permite relacionar a ordem a um plano específico para análise de aderência e planejamento estratégico.
     /// </summary>
@@ -232,6 +240,25 @@ public class OrdemModel : IClassifiable
     /// </summary>
     [ForeignKey(nameof(IdPlano))]
     public virtual PlanoModel? Plano { get; set; }
+    
+    /// <summary>
+    /// GPM responsável pela Ordem
+    /// </summary>
+    [ForeignKey(nameof(IdGpm))]
+    public virtual GpmModel? GPM { get; set; }
+    
+    /// <summary>
+    /// CTM responsável pela Ordem
+    /// </summary>
+    [ForeignKey(nameof(IdCtm))]
+    public virtual CtmModel? CTM { get; set; }
+    
+    /// <summary>
+    /// Nome da estratégia relacionada ao Plano
+    /// </summary>
+    [NotMapped]
+    [MaxLength(200)]
+    public string? NomeEstrategia => Plano?.Estrategia?.Nome;
 
     /// <summary>
     /// Coleção de anexos (arquivos) associados à ordem.

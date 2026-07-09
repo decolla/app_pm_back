@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.Domain;
 
@@ -11,7 +12,8 @@ public class CpmModel
     /// Identificador único do CPM.
     /// </summary>
     [Key]
-    public int IdCPM { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long IdCPM { get; set; }
 
     /// <summary>
     /// Nome do centro de planejamento.
@@ -34,7 +36,7 @@ public class CpmModel
     /// <summary>
     /// Identificador do escopo associado (armazena apenas o ID).
     /// </summary>
-    public int IdEscopo { get; set; } // Stores Escopo ID only
+    public long IdEscopo { get; set; } // Stores Escopo ID only
 
     public virtual ICollection<GpmModel> Gpms { get; set; } = new List<GpmModel>();
     public virtual ICollection<CtmModel> Ctms { get; set; } = new List<CtmModel>();

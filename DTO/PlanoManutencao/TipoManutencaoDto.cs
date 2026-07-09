@@ -10,13 +10,13 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class TipoManutencaoDto
 {
-    [SheetColumn("Id Tipo Manutenção")] public int IdTipoManutencao { get; set; }
+    [SheetColumn("Id Tipo Manutenção")] public long IdTipoManutencao { get; set; }
 
     [SheetColumn("Categoria")] public CategoriaTipoManutencao? Categoria { get; set; }
 
     [SheetColumn("Nome")] public string? Nome { get; set; }
 
-    [SheetColumn("Tipo Ativo")] public string? TipoAtivo { get; set; }
+    [SheetColumn("Tipo Ativo")] public string? TipoLI { get; set; }
 
     [SheetColumn("Confiabilidade")] public double? Confiabilidade { get; set; }
 

@@ -14,7 +14,7 @@ public class AnexoOrdemModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int IdAnexoOrdem { get; set; }
+    public long IdAnexoOrdem { get; set; }
 
     /// <summary>
     /// Nome do arquivo original com extensão.

@@ -54,15 +54,6 @@ public enum Visivel
 }
 
 /// <summary>
-/// Categoria da estrategia.
-/// </summary>
-/// public enum CategoriaTipoEstrategia
-/// {
-    ///Manutencao = 0,
-    ///Renovacao = 1
-///}
-
-/// <summary>
 /// Tipo de tipo de manutencao/plano.
 /// </summary>
 public enum CategoriaTipoManutencao
@@ -70,15 +61,6 @@ public enum CategoriaTipoManutencao
     Manutencao = 0,
     Renovacao = 1
 }
-
-/// <summary>
-/// Tipo de tipo de manutencao/plano.
-/// </summary>
-/// public enum TipoTipo
-/// {
-    /// Manutencao = 0,
-    /// Renovacao = 1
-/// }
 
 /// <summary>
 /// Unidade do ciclo.
@@ -144,6 +126,25 @@ public enum ComponentType
 }
 
 /// <summary>
+/// Tipos possiveis de LI
+/// </summary>
+public enum TiposLI
+{
+    Erp = 0,
+    Crm = 1,
+    Odorant = 2,
+    Cable = 3,
+    Substation = 4,
+    CircuitBreaker = 5,
+    Transformer = 6,
+    Disconnector = 7,
+    Bar = 8,
+    ElectricMotor = 9,
+    GenericEletricalCharge = 10,
+    Feeder = 11
+}
+
+/// <summary>
 /// Usado para requisições no APM específica para ativos/LI
 /// </summary>
 public enum OriginType
@@ -157,9 +158,9 @@ public enum OriginType
 /// </summary>
 public enum Classificacao
 {
-    PREVENTIVA = 0,
+    NAOCLASSIFICADA = 0,
     CORRETIVA = 1,
-    NAOCLASSIFICADA = 2,
+    PREVENTIVA= 2,
     SERVICO = 3
 }
 
@@ -168,12 +169,16 @@ public enum Classificacao
 /// </summary>
 public enum MetodoClassificacao
 {
-    HUMANA = 0,
+    NAOCLASSIFICADA = 0,
     ALGORITMO = 1,
     CATBOOST = 2,
-    NAOCLASSIFICADA = 3,
+    HUMANA = 3,
 }
-public enum Status
+
+/// <summary>
+/// Status atual das fichas geradas.
+/// </summary>
+public enum StatusFichas
 {
     Reprovada = 0,
     Aberta = 1,
@@ -181,9 +186,72 @@ public enum Status
     Concluida = 3
 }
 
+/// <summary>
+/// Tipo de fichas a serem geradas durante a busca de fichas.
+/// </summary>
 public enum Fichas
 {
     Ambas = 0,
     Notas = 1,
     Ordens =2
+}
+
+/// <summary>
+/// Define se um usuário é Admin ou não. ADICIONAR MAIS NÍVEIS DEPOIS
+/// </summary>
+public enum NivelPermissao
+{
+    Usuario = 0, 
+    Adm = 1
+}
+
+/// <summary>
+/// A quais tipos de tabela um usuário terá acesso 
+/// </summary>
+[Flags]
+public enum PermissoesTabela
+{
+    Nenhuma = 0,
+    Notas = 1,          // 2^0
+    Ordens = 2,         // 2^1
+    Itens = 4,          // 2^2
+    Gpms = 8,           
+    Ctms = 16,          
+    Cpms = 32, 
+    Planos = 64,
+    Estrategias = 128,
+    TiposManutencao = 256,
+    Almoxarifados = 512,
+    
+    
+    // combinação de todas as permissões
+    Tudo = Notas | Ordens | Itens | Gpms | Ctms | Cpms | Almoxarifados | Planos | Estrategias | TiposManutencao
+}
+
+// ======================= CONFIGURAÇÕES GLOBAIS ==========================
+
+public enum OrigemFichasConfiabilidade
+{
+    ApenasConfirmadasUsuario = 1,
+    ConsiderarTambemAlgoritmo = 2
+}
+
+public enum ModoClassificacaoAutomatica
+{
+    NaoClassificar = 0,
+    ClassificarCatBoost = 1,
+    ClassificarPalavrasChave = 2
+}
+
+public enum CriterioDataRenovacao
+{
+    ApenasFichasPreventivas = 1,
+    ApenasFichasCorretivas = 2,
+    ConsiderarTodasClassificacoes = 3
+}
+
+public enum CriterioConfiabilidadeRenovacao
+{
+    ApenasRenovacoesConfirmadasUsuario = 1,
+    ConsiderarTambemAlgoritmo = 2
 }

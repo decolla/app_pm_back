@@ -8,7 +8,9 @@ using System.Linq;
 
 public static class QueryExtensions
 {
-    
+    /// <summary>
+    /// Aplica uma ordenação padrão a uma consulta com base na chave primária da entidade.
+    /// </summary>
     public static IQueryable<T> AplicarOrdenacao<T>(this IQueryable<T> query, DbContext context) where T : class
     {
         var entityType = context.Model.FindEntityType(typeof(T));

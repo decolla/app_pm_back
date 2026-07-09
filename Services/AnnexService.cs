@@ -3,30 +3,31 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services;
+
 /// <summary>
 /// Classe AnnexService.
 /// </summary>
-
 public class AnnexService
 {
     private readonly AppDbContext _context;
+
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="AnnexService"/>.
     /// </summary>
-
     public AnnexService(AppDbContext context)
     {
         _context = context;
     }
+
     /// <summary>
     /// Executa a ação correspondente.
     /// </summary>
-    /// <param name="file">Parâmetro do método.</param>
+    /// <param name="file">Arquivo a ser armazen.</param>
     /// <param name="tipoReferencia">Parâmetro do método.</param>
     /// <param name="categoria">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-
-    public async Task<object> UploadAnexo(IFormFile file, long? notaId, long? ordemId, string tipoReferencia, CategoriaAnexo categoria)
+    public virtual async Task<object> UploadAnexo(IFormFile file, long? notaId, long? ordemId, string? tipoReferencia,
+        CategoriaAnexo categoria)
     {
         ValidateAssociacao(notaId, ordemId);
 
@@ -62,17 +63,15 @@ public class AnnexService
         }
     }
 
-    public async Task<(byte[] Dados, string MimeType, string Nome)?> DownloadAnexo(long id)
+    public virtual async Task<(byte[] Dados, string MimeType, string Nome)?> DownloadAnexo(long id)
     {
-        // Try searching in AnexosNota
-        var anexoNota = await _context.PM_AnexosNota.FindAsync((int)id);
+        var anexoNota = await _context.PM_AnexosNota.FindAsync(id);
         if (anexoNota != null && anexoNota.Dados != null)
         {
             return (anexoNota.Dados, anexoNota.TipoArquivo, anexoNota.Nome);
         }
 
-        // Try searching in AnexosOrdem
-        var anexoOrdem = await _context.PM_AnexosOrdem.FindAsync((int)id);
+        var anexoOrdem = await _context.PM_AnexosOrdem.FindAsync(id);
         if (anexoOrdem != null && anexoOrdem.Dados != null)
         {
             return (anexoOrdem.Dados, anexoOrdem.TipoArquivo, anexoOrdem.Nome);
@@ -81,7 +80,7 @@ public class AnnexService
         return null;
     }
 
-    public async Task<List<(long, string)>> BuscarAnexo(long? notaId, long? ordemId, string tipoReferencia)
+    public virtual async Task<List<(long, string)>> BuscarAnexo(long? notaId, long? ordemId, string tipoReferencia)
     {
         ValidateAssociacao(notaId, ordemId);
 
@@ -107,5 +106,72 @@ public class AnnexService
         {
             throw new ArgumentException("Informe apenas NotaId ou OrdemId para o anexo.");
         }
+    }
+
+    /// <summary>
+    /// Deleta um anexo pelo seu identificador.
+    /// </summary>
+    public virtual async Task<bool> DeleteAnexo(long id)
+    {
+        var anexoNota = await _context.PM_AnexosNota.FindAsync(id);
+        if (anexoNota != null)
+        {
+            _context.PM_AnexosNota.Remove(anexoNota);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        var anexoOrdem = await _context.PM_AnexosOrdem.FindAsync(id);
+        if (anexoOrdem != null)
+        {
+            _context.PM_AnexosOrdem.Remove(anexoOrdem);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Atualiza um anexo pelo seu identificador.
+    /// </summary>
+    public virtual async Task<bool> UpdateAnexo(long id, string? nome, CategoriaAnexo? categoria)
+    {
+        var anexoNota = await _context.PM_AnexosNota.FindAsync(id);
+        if (anexoNota != null)
+        {
+            if (nome != null && nome.Length > 0)
+            {
+                await using var stream = new MemoryStream();
+                anexoNota.Nome = nome;
+                anexoNota.Dados = stream.ToArray();
+            }
+
+            _context.PM_AnexosNota.Update(anexoNota);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        var anexoOrdem = await _context.PM_AnexosOrdem.FindAsync(id);
+        if (anexoOrdem != null)
+        {
+            if (nome != null && nome.Length > 0)
+            {
+                await using var stream = new MemoryStream();
+                anexoOrdem.Nome = nome;
+                anexoOrdem.Dados = stream.ToArray();
+            }
+
+            if (categoria.HasValue)
+            {
+                anexoOrdem.TipoAnexo = categoria.Value.ToString();
+            }
+
+            _context.PM_AnexosOrdem.Update(anexoOrdem);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        return false;
     }
 }

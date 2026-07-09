@@ -12,7 +12,8 @@ public class ImobilizadoModel
     /// Identificador único do imobilizado.
     /// </summary>
     [Key]
-    public int IdImobilizado { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long IdImobilizado { get; set; }
 
     /// <summary>
     /// Nome descritivo do item.

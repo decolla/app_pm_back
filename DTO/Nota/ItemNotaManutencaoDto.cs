@@ -10,7 +10,7 @@ namespace app_pm_back.DTO;
 public class ItemNotaManutencaoDto
 {
     // Identificacao
-    [SheetColumn("Id Item")] public int IdItemNota { get; set; }
+    [SheetColumn("Id Item")] public long IdItemNota { get; set; }
 
     [SheetColumn("Nota")] public long IdNota { get; set; }
 

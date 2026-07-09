@@ -10,9 +10,11 @@ namespace app_pm_back.DTO;
 public class VariavelNotaDto
 {
     // Identificacao
-    [SheetColumn("Id Variavel")] public int IdVariavel { get; set; }
+    [SheetColumn("Id Variavel")] public long IdVariavel { get; set; }
 
     [SheetColumn("Nota")] public long? IdNota { get; set; }
+
+    [SheetColumn("Nome variavel")] public string NomeVariavel { get; set; } = string.Empty;
 
     [SheetColumn("Valor numerico")] public double? ValorNumerico { get; set; }
 

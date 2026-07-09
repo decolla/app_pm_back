@@ -25,11 +25,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("AlmoxarifadoUsuario", b =>
                 {
-                    b.Property<int>("IdAlmoxarifado")
-                        .HasColumnType("int");
+                    b.Property<long>("IdAlmoxarifado")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
+                    b.Property<long>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdAlmoxarifado", "IdUsuario");
 
@@ -40,11 +40,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("CtmUsuario", b =>
                 {
-                    b.Property<int>("IdCTM")
-                        .HasColumnType("int");
+                    b.Property<long>("IdCTM")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
+                    b.Property<long>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdCTM", "IdUsuario");
 
@@ -55,26 +55,26 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("FerramentasOperacoes", b =>
                 {
-                    b.Property<int>("IdFerramenta")
-                        .HasColumnType("int");
+                    b.Property<long>("IdFerramenta")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdOperacao")
-                        .HasColumnType("int");
+                    b.Property<long>("IdTarefa")
+                        .HasColumnType("bigint");
 
-                    b.HasKey("IdFerramenta", "IdOperacao");
+                    b.HasKey("IdFerramenta", "IdTarefa");
 
-                    b.HasIndex("IdOperacao");
+                    b.HasIndex("IdTarefa");
 
                     b.ToTable("PM_FerramentasOperacoes", "dbo");
                 });
 
             modelBuilder.Entity("GpmLi", b =>
                 {
-                    b.Property<int>("IdGPM")
-                        .HasColumnType("int");
+                    b.Property<long>("IdGPM")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
+                    b.Property<long>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdGPM", "IdUsuario");
 
@@ -85,11 +85,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("GpmUsuario", b =>
                 {
-                    b.Property<int>("IdGPM")
-                        .HasColumnType("int");
+                    b.Property<long>("IdGPM")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
+                    b.Property<long>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.HasKey("IdGPM", "IdUsuario");
 
@@ -100,18 +100,18 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AlmoxarifadoModel", b =>
                 {
-                    b.Property<int>("IdAlmoxarifado")
+                    b.Property<long>("IdAlmoxarifado")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAlmoxarifado"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdAlmoxarifado"));
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<int>("IdEscopo")
-                        .HasColumnType("int");
+                    b.Property<long>("IdEscopo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -134,11 +134,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AnexoNotaModel", b =>
                 {
-                    b.Property<int>("IdAnexoNota")
+                    b.Property<long>("IdAnexoNota")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAnexoNota"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdAnexoNota"));
 
                     b.Property<byte[]>("Dados")
                         .HasColumnType("varbinary(max)");
@@ -165,11 +165,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AnexoOrdemModel", b =>
                 {
-                    b.Property<int>("IdAnexoOrdem")
+                    b.Property<long>("IdAnexoOrdem")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAnexoOrdem"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdAnexoOrdem"));
 
                     b.Property<byte[]>("Dados")
                         .HasColumnType("varbinary(max)");
@@ -199,20 +199,102 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.ToTable("PM_AnexosOrdem", "dbo");
                 });
 
-            modelBuilder.Entity("app_pm_back.Models.Domain.CpmModel", b =>
+            modelBuilder.Entity("app_pm_back.Models.Domain.AuditoriaModel", b =>
                 {
-                    b.Property<int>("IdCPM")
+                    b.Property<long>("IdAuditoria")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdAuditoria"));
+
+                    b.Property<string>("Acao")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("ChavePrimaria")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DataAlteracao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("IdUsuario")
+                        .HasMaxLength(200)
+                        .HasColumnType("int");
+
+                    b.Property<string>("NomeTabela")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ValoresAntigos")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ValoresNovos")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdAuditoria");
+
+                    b.ToTable("PM_Auditorias", "dbo");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.ConfiguracaoGlobalModel", b =>
+                {
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCPM"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClassificacaoAutomatica")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CriterioConfiabilidadeRenovacao")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CriterioDataRenovacao")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataModificacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FichasConfiabilidade")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ModificadoPorUsuario")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ConfiguracaoGlobalModel", "dbo");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClassificacaoAutomatica = 0,
+                            CriterioConfiabilidadeRenovacao = 2,
+                            CriterioDataRenovacao = 3,
+                            DataModificacao = new DateTime(2026, 7, 9, 18, 19, 1, 21, DateTimeKind.Utc).AddTicks(6270),
+                            FichasConfiabilidade = 2
+                        });
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.CpmModel", b =>
+                {
+                    b.Property<long>("IdCPM")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdCPM"));
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<int>("IdEscopo")
-                        .HasColumnType("int");
+                    b.Property<long>("IdEscopo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("NomeCentro")
                         .IsRequired()
@@ -231,8 +313,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.CtmModel", b =>
                 {
-                    b.Property<int>("IdCTM")
-                        .HasColumnType("int");
+                    b.Property<long>("IdCTM")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
 
                     b.Property<string>("AreaCTM")
                         .IsRequired()
@@ -243,8 +326,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<int>("IdCPM")
-                        .HasColumnType("int");
+                    b.Property<long>("IdCPM")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -260,11 +343,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.DadosRenovacaoModel", b =>
                 {
-                    b.Property<int>("IdDados")
+                    b.Property<long>("IdDados")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDados"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdDados"));
 
                     b.Property<double?>("Confiabilidade")
                         .HasColumnType("float");
@@ -273,6 +356,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("int");
 
                     b.Property<string>("IdLi")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -282,8 +366,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<long?>("IdOrdem")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("IdUsuario")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("OrigemUR")
                         .HasColumnType("int");
@@ -307,11 +391,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.EstrategiaModel", b =>
                 {
-                    b.Property<int>("IdEstrategia")
+                    b.Property<long>("IdEstrategia")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEstrategia"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdEstrategia"));
 
                     b.Property<bool?>("CicloContinuo")
                         .HasColumnType("bit");
@@ -322,8 +406,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<bool>("Habilitada")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("IdEscopo")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdEscopo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -345,11 +429,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.FerramentaModel", b =>
                 {
-                    b.Property<int>("IdFerramenta")
+                    b.Property<long>("IdFerramenta")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdFerramenta"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdFerramenta"));
 
                     b.Property<string>("Categoria")
                         .IsRequired()
@@ -371,11 +455,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<int>("IdAlmoxarifado")
-                        .HasColumnType("int");
+                    b.Property<long>("IdAlmoxarifado")
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("IdEscopo")
-                        .HasColumnType("int");
+                    b.Property<long>("IdEscopo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("IdLI")
                         .IsRequired()
@@ -434,18 +518,18 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.GpmModel", b =>
                 {
-                    b.Property<int>("IdGPM")
+                    b.Property<long>("IdGPM")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdGPM"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdGPM"));
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<int?>("IdCPM")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdCPM")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(150)
@@ -460,11 +544,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.ImobilizadoModel", b =>
                 {
-                    b.Property<int>("IdImobilizado")
+                    b.Property<long>("IdImobilizado")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdImobilizado"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdImobilizado"));
 
                     b.Property<DateTime?>("DataAquisicao")
                         .HasColumnType("datetime2");
@@ -522,11 +606,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.ItemNotaModel", b =>
                 {
-                    b.Property<int>("IdItemNota")
+                    b.Property<long>("IdItemNota")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdItemNota"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdItemNota"));
 
                     b.Property<string>("Causa")
                         .HasMaxLength(150)
@@ -553,7 +637,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
             modelBuilder.Entity("app_pm_back.Models.Domain.NotaModel", b =>
                 {
                     b.Property<long>("IdNota")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdNota"));
 
                     b.Property<string>("AnomaliaObservada")
                         .HasMaxLength(1000)
@@ -579,6 +666,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<DateTime?>("DataClassificacao")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DataFim")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("DataModificacao")
                         .HasColumnType("datetime2");
 
@@ -597,9 +687,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Escopo")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<long?>("Escopo")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("FimDesejado")
                         .HasColumnType("datetime2");
@@ -608,11 +697,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
 
-                    b.Property<TimeSpan?>("HoraAvaria")
-                        .HasColumnType("time");
-
                     b.Property<int?>("IdAtivo")
                         .HasColumnType("int");
+
+                    b.Property<long?>("IdGpm")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("IdLi")
                         .HasMaxLength(100)
@@ -621,8 +710,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<long?>("IdPlano")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("IdUsuario")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdUsuario")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("MetodoClassificacao")
                         .HasMaxLength(100)
@@ -658,6 +747,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     b.HasKey("IdNota");
 
+                    b.HasIndex("IdGpm");
+
                     b.HasIndex("IdPlano");
 
                     b.HasIndex("IdUsuario");
@@ -667,11 +758,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.OperacaoModel", b =>
                 {
-                    b.Property<int>("IdOperacao")
+                    b.Property<long>("IdTarefa")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdOperacao"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdTarefa"));
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(500)
@@ -680,20 +771,14 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<double?>("Duracao")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("FimEsperado")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("IdCTM")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdCTM")
+                        .HasColumnType("bigint");
 
                     b.Property<long?>("IdOrdem")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoManutencao")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("InicioEsperado")
-                        .HasColumnType("datetime2");
+                    b.Property<long?>("IdTipoManutencao")
+                        .HasColumnType("bigint");
 
                     b.Property<int?>("NdeProfissionais")
                         .HasColumnType("int");
@@ -702,7 +787,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.HasKey("IdOperacao");
+                    b.HasKey("IdTarefa");
 
                     b.HasIndex("IdCTM");
 
@@ -716,7 +801,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemModel", b =>
                 {
                     b.Property<long>("IdOrdem")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdOrdem"));
 
                     b.Property<int>("Classificacao")
                         .HasColumnType("int");
@@ -740,7 +828,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DataCriacao")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DataModificacao")
@@ -754,9 +841,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Escopo")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<long?>("Escopo")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("FimPlanejado")
                         .HasColumnType("datetime2");
@@ -766,6 +852,12 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     b.Property<int?>("IdAtivo")
                         .HasColumnType("int");
+
+                    b.Property<long?>("IdCtm")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("IdGpm")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("IdLi")
                         .HasMaxLength(100)
@@ -801,11 +893,20 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<long?>("UsuarioModelIdUsuario")
+                        .HasColumnType("bigint");
+
                     b.HasKey("IdOrdem");
+
+                    b.HasIndex("IdCtm");
+
+                    b.HasIndex("IdGpm");
 
                     b.HasIndex("IdNota");
 
                     b.HasIndex("IdPlano");
+
+                    b.HasIndex("UsuarioModelIdUsuario");
 
                     b.ToTable("PM_Ordens", "dbo");
                 });
@@ -833,8 +934,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<int?>("IdAtivo")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdEstrategia")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdEstrategia")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("IdLi")
                         .HasMaxLength(100)
@@ -855,13 +956,31 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.ToTable("PM_Planos", "dbo");
                 });
 
+            modelBuilder.Entity("app_pm_back.Models.Domain.ReliabilityModel", b =>
+                {
+                    b.Property<string>("IdLi")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("IdsNotas")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdsOrdens")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdLi");
+
+                    b.ToTable("PM_Reliability", "dbo");
+                });
+
             modelBuilder.Entity("app_pm_back.Models.Domain.TipoCepModel", b =>
                 {
-                    b.Property<int>("IdTipoCep")
+                    b.Property<long>("IdTipoCep")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipoCep"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdTipoCep"));
 
                     b.Property<string>("AcoesFalha")
                         .HasColumnType("nvarchar(max)");
@@ -886,11 +1005,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.TipoEstrategiaModel", b =>
                 {
-                    b.Property<int>("IdTipoEstrategia")
+                    b.Property<long>("IdTipoEstrategia")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipoEstrategia"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdTipoEstrategia"));
 
                     b.Property<int>("Categoria")
                         .HasColumnType("int");
@@ -901,14 +1020,14 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<int?>("Dias")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdEstrategia")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdEstrategia")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoCep")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdTipoCep")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoManutencao")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdTipoManutencao")
+                        .HasColumnType("bigint");
 
                     b.Property<double?>("ToleranciaNegativa")
                         .HasColumnType("float");
@@ -929,13 +1048,13 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.TipoManutencaoModel", b =>
                 {
-                    b.Property<int>("IdTipoManutencao")
+                    b.Property<long>("IdTipoManutencao")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipoManutencao"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdTipoManutencao"));
 
-                    b.Property<int?>("Categoria")
+                    b.Property<int>("Categoria")
                         .HasMaxLength(100)
                         .HasColumnType("int");
 
@@ -950,7 +1069,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("TipoAtivo")
+                    b.Property<string>("TipoLI")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -962,11 +1081,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.TipoPlanoModel", b =>
                 {
-                    b.Property<int>("IdTipoPlano")
+                    b.Property<long>("IdTipoPlano")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipoPlano"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdTipoPlano"));
 
                     b.Property<int>("Categoria")
                         .HasColumnType("int");
@@ -986,14 +1105,14 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<long?>("IdPlano")
                         .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoCep")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdTipoCep")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoEstrategia")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdTipoEstrategia")
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("IdTipoManutencao")
-                        .HasColumnType("int");
+                    b.Property<long?>("IdTipoManutencao")
+                        .HasColumnType("bigint");
 
                     b.Property<double?>("ToleranciaNegativa")
                         .HasColumnType("float");
@@ -1023,26 +1142,29 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.UsuarioModel", b =>
                 {
-                    b.Property<int>("IdUsuario")
+                    b.Property<long>("IdUsuario")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuario"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdUsuario"));
 
                     b.Property<string>("CPF")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("IdEscopo")
+                    b.Property<string>("Escopos")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NivelPermissao")
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("Permissoes")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                    b.Property<int?>("Permissoes")
+                        .HasColumnType("int");
 
                     b.HasKey("IdUsuario");
 
@@ -1051,11 +1173,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.VariavelNotaModel", b =>
                 {
-                    b.Property<int>("IdVariavel")
+                    b.Property<long>("IdVariavel")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdVariavel"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdVariavel"));
 
                     b.Property<string>("Comentarios")
                         .HasMaxLength(500)
@@ -1123,7 +1245,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     b.HasOne("app_pm_back.Models.Domain.OperacaoModel", null)
                         .WithMany()
-                        .HasForeignKey("IdOperacao")
+                        .HasForeignKey("IdTarefa")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1251,6 +1373,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.NotaModel", b =>
                 {
+                    b.HasOne("app_pm_back.Models.Domain.GpmModel", "GPM")
+                        .WithMany()
+                        .HasForeignKey("IdGpm");
+
                     b.HasOne("app_pm_back.Models.Domain.PlanoModel", "Plano")
                         .WithMany("Notas")
                         .HasForeignKey("IdPlano");
@@ -1258,6 +1384,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.HasOne("app_pm_back.Models.Domain.UsuarioModel", "Usuario")
                         .WithMany("Notas")
                         .HasForeignKey("IdUsuario");
+
+                    b.Navigation("GPM");
 
                     b.Navigation("Plano");
 
@@ -1287,6 +1415,14 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemModel", b =>
                 {
+                    b.HasOne("app_pm_back.Models.Domain.CtmModel", "CTM")
+                        .WithMany()
+                        .HasForeignKey("IdCtm");
+
+                    b.HasOne("app_pm_back.Models.Domain.GpmModel", "GPM")
+                        .WithMany()
+                        .HasForeignKey("IdGpm");
+
                     b.HasOne("app_pm_back.Models.Domain.NotaModel", "Nota")
                         .WithMany("Ordens")
                         .HasForeignKey("IdNota");
@@ -1294,6 +1430,14 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.HasOne("app_pm_back.Models.Domain.PlanoModel", "Plano")
                         .WithMany()
                         .HasForeignKey("IdPlano");
+
+                    b.HasOne("app_pm_back.Models.Domain.UsuarioModel", null)
+                        .WithMany("Ordens")
+                        .HasForeignKey("UsuarioModelIdUsuario");
+
+                    b.Navigation("CTM");
+
+                    b.Navigation("GPM");
 
                     b.Navigation("Nota");
 
@@ -1446,6 +1590,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Navigation("DadosRenovacao");
 
                     b.Navigation("Notas");
+
+                    b.Navigation("Ordens");
                 });
 #pragma warning restore 612, 618
         }

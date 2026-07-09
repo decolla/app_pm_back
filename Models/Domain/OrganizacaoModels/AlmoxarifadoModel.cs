@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace app_pm_back.Models.Domain;
 
@@ -11,7 +12,8 @@ public class AlmoxarifadoModel
     /// Identificador único do Almoxarifado.
     /// </summary>
     [Key]
-    public int IdAlmoxarifado { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long IdAlmoxarifado { get; set; }
 
     /// <summary>
     /// Nome do Almoxarifado.
@@ -26,7 +28,7 @@ public class AlmoxarifadoModel
     public required string Organizacao { get; set; }
 
     /// <summary>
-    /// Status atual do almoxarifado (ex: Ativo, Inativo).
+    /// StatusFichas atual do almoxarifado (ex: Ativo, Inativo).
     /// </summary>
     [MaxLength(50)]
     public string? Status { get; set; }
@@ -40,7 +42,7 @@ public class AlmoxarifadoModel
     /// <summary>
     /// Identificador do Escopo associado.
     /// </summary>
-    public int IdEscopo { get; set; } 
+    public long IdEscopo { get; set; } 
 
     public virtual ICollection<FerramentaModel> Ferramentas { get; set; } = new List<FerramentaModel>();
     public virtual ICollection<UsuarioModel> Usuarios { get; set; } = new List<UsuarioModel>();

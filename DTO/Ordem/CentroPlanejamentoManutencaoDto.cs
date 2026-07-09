@@ -9,7 +9,7 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class CentroPlanejamentoManutencaoDto
 {
-    [SheetColumn("Id CPM")] public int IdCPM { get; set; }
+    [SheetColumn("Id CPM")] public long IdCPM { get; set; }
 
     [SheetColumn("Nome")] public string? NomeCentro { get; set; }
 
@@ -18,7 +18,7 @@ public class CentroPlanejamentoManutencaoDto
     [SheetColumn("DescricaoBreve")] public string? Descricao { get; set; }
 
     // Escopo externo (apenas o ID)
-    [SheetColumn("Id Escopo")] public int? IdEscopo { get; set; }
+    [SheetColumn("Id Escopo")] public long? IdEscopo { get; set; }
 }
 
 #pragma warning restore CS1591

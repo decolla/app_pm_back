@@ -23,7 +23,7 @@ public class EstrategiaModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int IdEstrategia { get; set; }
+    public long IdEstrategia { get; set; }
 
     /// <summary>
     /// Nome descritivo da estratégia de manutenção.
@@ -66,7 +66,7 @@ public class EstrategiaModel
     /// <summary>
     /// Chave estrangeira para o Escopo de manutenção relacionado.
     /// </summary>
-    public int? IdEscopo { get; set; }
+    public long? IdEscopo { get; set; }
 
     /// <summary>
     /// Relacionamento com os tipos específicos de estratégia (ex: Mecânica, Elétrica).

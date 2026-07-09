@@ -24,7 +24,7 @@ public class BuscaController : ControllerBase
     {
         _searchService = searchService;
     }
-
+    
     /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
@@ -35,16 +35,18 @@ public class BuscaController : ControllerBase
         var tabelas = _searchService.ListarTabelasCampos();
         return Ok(tabelas);
     }
-
+    
     /// <summary>
-    /// Obtém um registro específico de uma tabela.
+    /// Lista os registros cadastrados com paginação.
     /// </summary>
-    /// <param name="tabela">Nome da tabela a ser buscada.</param>
-    /// <param name="campo">Campo no qual uma busca será realizada.</param>
-    /// <param name="valor">Valor de busca.</param>
-    /// <returns>Resultado da operação.</returns>
-    /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+    /// <param name="pagina">Número da página (1-based) para paginação.</param>
+    /// <param name="tamanho">Quantidade de itens por página.</param>
+    /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+    /// <response code="200">Sucesso ao listar registros.</response>
+    /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> BuscarPorCampo(
         [FromQuery] string tabela,
         [FromQuery] string campo,
@@ -83,41 +85,6 @@ public class BuscaController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao buscar na tabela {tabela}: {e.Message}." });
-        }
-    }
-
-    /// <summary>
-    /// Busca notas ou ordens de manutenção por diversos critérios, retorna uma lista de objetos com os dados relevantes
-    /// </summary>
-    /// <param name="busca">Modelo de busca com campos comparáveis</param>
-    /// <param name="pagina">Página a ser exibida</param>
-    /// <param name="tamanho">Número de elementos presente na página</param>
-    /// <returns>Lista de Nota e Ordens com base nos filtros</returns>
-    [HttpPost("fichas")]
-    public async Task<IActionResult> BuscarNotaOrdem(
-        [FromBody] BuscaOrdemNotaDto busca,
-        [FromQuery] int? pagina = null,
-        [FromQuery] int? tamanho = null,
-        [FromQuery] Fichas? Tfichas = Fichas.Ambas)
-    {
-        try
-        {
-            if (TemPaginacaoInvalida(pagina, tamanho))
-            {
-                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
-            }
-
-            var resultados = await _searchService.BuscarNotaOrdemAsync(
-                busca,
-                pagina,
-                tamanho,
-                Tfichas);
-
-            return Ok(resultados);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao buscar nota/ordem: {e.Message}." });
         }
     }
 
@@ -176,66 +143,6 @@ public class BuscaController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao buscar para os ativos informados: {e.Message}." });
-        }
-    }
-
-    /// <summary>
-    /// Busca as datas de renovação associadas ao LI, retorna um objeto com os dados relevantes
-    /// </summary>
-    /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
-    /// <param name="tipoDados">Tipo de dados da renovação</param>
-    /// <returns>Objeto com informações relevantes</returns>
-    [HttpGet("ativo/datas")]
-    public async Task<IActionResult> BuscaAtivoDatas([FromQuery] string idLi, [FromQuery] Classificacao tipoDados)
-    {
-        try
-        {
-
-            if (string.IsNullOrWhiteSpace(idLi))
-            {
-                return BadRequest(new { message = "Parametro idLi obrigatorio." });
-            }
-
-            if (!Enum.IsDefined(typeof(Classificacao), tipoDados))
-            {
-                return BadRequest(new { message = "Parametro tipoDados invalido." });
-            }
-
-            var obj = await _searchService.AtivoDatas(idLi, tipoDados);
-            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
-
-            return Ok(obj);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
-        }
-    }
-    
-    /// <summary>
-    /// Busca Todas as datas de notas e ordens daquele LI
-    /// </summary>
-    /// <param name="idLi">LI (Local de Instalação) a ser procurada</param>
-    /// <returns>idLi+ lista de datas</returns>
-    [HttpGet("reliability/LiData")]
-    public async Task<IActionResult> BuscaReliability([FromQuery] string idLi)
-    {
-        try
-        {
-
-            if (string.IsNullOrWhiteSpace(idLi))
-            {
-                return BadRequest(new { message = "Parametro idLi obrigatorio." });
-            }
-
-            var obj = await _searchService.DatasReliability(idLi);
-            if (obj == null) return NotFound(new { message = $"Nenhuma busca realizada para o LI informado." });
-
-            return Ok(obj);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao buscar datas para este ativo: {e.Message}." });
         }
     }
 

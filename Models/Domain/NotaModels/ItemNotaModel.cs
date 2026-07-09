@@ -23,7 +23,7 @@ public class ItemNotaModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int IdItemNota { get; set; }
+    public long IdItemNota { get; set; }
 
     /// <summary>
     /// Nome ou descrição do componente afetado.

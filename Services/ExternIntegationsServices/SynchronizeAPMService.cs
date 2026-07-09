@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 using app_pm_back.Data;
@@ -24,7 +25,8 @@ public class SynchronizeAPMService
     /// <param name="context"></param>
     /// <param name="externIntegrationService"></param>
     /// <param name="logger"></param>
-    public SynchronizeAPMService(AppDbContext context, ExternIntegrationService externIntegrationService, ILogger<SynchronizeAPMService> logger)
+    public SynchronizeAPMService(AppDbContext context, ExternIntegrationService externIntegrationService,
+        ILogger<SynchronizeAPMService> logger)
     {
         _context = context;
         _externIntegrationService = externIntegrationService;
@@ -35,7 +37,7 @@ public class SynchronizeAPMService
     /// Sincroniza os dados de APM (Asset Performance Management) com as notas e ordens de serviço do sistema.
     /// </summary>
     /// <returns> Bool se a operação ocorreu corretamente</returns>
-    public async Task<bool> SynchronizeAPMAsync()
+    public virtual async Task<bool> SynchronizeApmAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Iniciando a sincronização dos dados do APM com as Notas e Ordens.");
 
@@ -45,11 +47,12 @@ public class SynchronizeAPMService
         try
         {
             _logger.LogInformation("Chamando API APM: GET /api/V1/Asset/Components/All com timeout de 30s.");
-            
+
             var jsonResponse = await _externIntegrationService
                 .GetDataAsync("/api/V1/Asset/Components/All", cts.Token);
-            
-            _logger.LogInformation("Resposta da API APM recebida com sucesso. Tamanho: {Length} caracteres.", jsonResponse?.Length ?? 0);
+
+            _logger.LogInformation("Resposta da API APM recebida com sucesso. Tamanho: {Length} caracteres.",
+                jsonResponse?.Length ?? 0);
 
             if (string.IsNullOrWhiteSpace(jsonResponse))
             {
@@ -58,7 +61,7 @@ public class SynchronizeAPMService
             }
 
             var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var ativos = JsonSerializer.Deserialize<List<AssetComponentTypesDTO>>(jsonResponse, jsonOptions);
+            var ativos = JsonSerializer.Deserialize<List<AssetComponentTypesDto>>(jsonResponse, jsonOptions);
 
             if (ativos == null || !ativos.Any())
             {
@@ -69,33 +72,39 @@ public class SynchronizeAPMService
             _logger.LogInformation("Desserializados {Count} ativos do APM.", ativos.Count);
 
             // gera um dicionário com nome e dnsIot
-            Dictionary<string, (string?, List<ComponentType>?)> dicionarioDns = ativos
-                .Where(a => !string.IsNullOrEmpty(a.Name) && !string.IsNullOrEmpty(a.DnsIot) && a.ComponentTypes != null)
+            Dictionary<(string, string?), (string?, List<ComponentType>?)> dicionarioDns = ativos
+                .Where(a => !string.IsNullOrEmpty(a.Name) && !string.IsNullOrEmpty(a.DnsIot) &&
+                            a.ComponentTypes != null)
                 .DistinctBy(a => a.Name)
-                .ToDictionary(a => a.Name, a => (a.DnsIot, a.ComponentTypes));
-            
-            _logger.LogInformation("Dicionário DNS gerado com {Count} chaves únicas após filtragem e remoção de duplicados.", dicionarioDns.Count);
+                .ToDictionary(a => (a.Name, a.sapId), a => (a.DnsIot, a.ComponentTypes));
+
+            _logger.LogInformation(
+                "Dicionário DNS gerado com {Count} chaves únicas após filtragem e remoção de duplicados.",
+                dicionarioDns.Count);
 
             if (!dicionarioDns.Any())
             {
                 _logger.LogWarning("Nenhum ativo com Name e DnsIot válidos.");
                 return false;
             }
-            
-            var nomesLi = dicionarioDns.Keys.ToList();
+
+            // extrai chaves separadas
+            var nomesValidos = dicionarioDns.Keys.Select(k => k.Item1).Where(x => x != null).Distinct().ToList();
+            var sapsValidos = dicionarioDns.Keys.Select(k => k.Item2).Where(x => x != null).Distinct().ToList();
 
             // busca notas e ordens que os LI batem com os passados
             _logger.LogInformation("Buscando Notas e Ordens correspondentes no banco de dados.");
-            
+
             var notasEncontradas = await _context.PM_Notas
-                .Where(n => n.IdLi != null && nomesLi.Contains(n.IdLi))
+                .Where(n => n.IdLi != null && (nomesValidos.Contains(n.IdLi) || sapsValidos.Contains(n.IdLi)))
                 .ToListAsync(cts.Token);
 
             var ordensEncontradas = await _context.PM_Ordens
-                .Where(n => n.IdLi != null && nomesLi.Contains(n.IdLi))
+                .Where(o => o.IdLi != null && (nomesValidos.Contains(o.IdLi) || sapsValidos.Contains(o.IdLi)))
                 .ToListAsync(cts.Token);
 
-            _logger.LogInformation("Encontradas {NotasCount} notas e {OrdensCount} ordens no banco de dados para atualização.", 
+            _logger.LogInformation(
+                "Encontradas {NotasCount} notas e {OrdensCount} ordens no banco de dados para atualização.",
                 notasEncontradas.Count, ordensEncontradas.Count);
 
             int notasAtualizadas = 0;
@@ -104,14 +113,19 @@ public class SynchronizeAPMService
             // atualiza cada uma delas 
             foreach (var nota in notasEncontradas)
             {
-                if (dicionarioDns.TryGetValue(nota.IdLi!, out var duple))
+                var chaveEncontrada =
+                    dicionarioDns.Keys.FirstOrDefault(k => k.Item1 == nota.IdLi || k.Item2 == nota.IdLi);
+
+                if (chaveEncontrada.Item1 != null)
                 {
+                    var duple = dicionarioDns[chaveEncontrada];
+
                     if (duple.Item2 != null && !duple.Item2.Any(a => a == nota.IdAtivo))
                     {
                         nota.IdAtivo = null;
                         notasAtualizadas++;
-                        
                     }
+
                     if (nota.DnsIot != duple.Item1)
                     {
                         nota.DnsIot = duple.Item1;
@@ -119,16 +133,22 @@ public class SynchronizeAPMService
                     }
                 }
             }
-            
+
             foreach (var ordem in ordensEncontradas)
             {
-                if (dicionarioDns.TryGetValue(ordem.IdLi!, out var duple))
+                var chaveEncontrada =
+                    dicionarioDns.Keys.FirstOrDefault(k => k.Item1 == ordem.IdLi || k.Item2 == ordem.IdLi);
+
+                if (chaveEncontrada.Item1 != null)
                 {
+                    var duple = dicionarioDns[chaveEncontrada];
+
                     if (duple.Item2 != null && !duple.Item2.Any(a => a == ordem.IdAtivo))
                     {
                         ordem.IdAtivo = null;
                         ordensAtualizadas++;
                     }
+
                     if (ordem.DnsIot != duple.Item1)
                     {
                         ordem.DnsIot = duple.Item1;
@@ -137,14 +157,18 @@ public class SynchronizeAPMService
                 }
             }
 
-            _logger.LogInformation("Campos atualizados em memória: {NotasAtualizadas} notas e {OrdensAtualizadas} ordens.", 
+            _logger.LogInformation(
+                "Campos atualizados em memória: {NotasAtualizadas} notas e {OrdensAtualizadas} ordens.",
                 notasAtualizadas, ordensAtualizadas);
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (notasAtualizadas > 0 || ordensAtualizadas > 0)
             {
                 _logger.LogInformation("Salvando alterações no banco de dados.");
                 var alteracoes = await _context.SaveChangesAsync(cts.Token);
-                _logger.LogInformation("Sincronização concluída com sucesso. Linhas afetadas no banco: {Alteracoes}", alteracoes);
+                _logger.LogInformation("Sincronização concluída com sucesso. Linhas afetadas no banco: {Alteracoes}",
+                    alteracoes);
                 return alteracoes > 0;
             }
 

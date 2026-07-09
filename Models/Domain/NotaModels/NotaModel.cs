@@ -23,7 +23,7 @@ namespace app_pm_back.Models.Domain;
 ///     IdAtivo = 150
 /// };
 /// </example>
-public class NotaModel : IClassifiable
+public class NotaModel : IClassifiable, IAuditable
 {
     #region Identificação e Controle
 
@@ -32,7 +32,7 @@ public class NotaModel : IClassifiable
     /// Este valor é definido manualmente e não é auto-incrementado pelo banco de dados.
     /// </summary>
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdNota { get; set; }
     
     /// <summary>
@@ -54,6 +54,13 @@ public class NotaModel : IClassifiable
     /// </summary>
     /// <example>2024-01-15T14:30:00</example>
     public DateTime? DataNota { get; set; }
+    
+    /// <summary>
+    /// Data e hora de criação da nota no sistema.
+    /// Registra quando a ocorrência foi reportada ou documentada.
+    /// </summary>
+    /// <example>2024-01-15T14:30:00</example>
+    public DateTime? DataFim{ get; set; }
     
     /// <summary>
     /// Tipo da nota que define a natureza da manutenção ou ocorrência.
@@ -112,23 +119,16 @@ public class NotaModel : IClassifiable
     /// <example>2024-01-15</example>
     public DateTime? DataAvaria { get; set; }
 
-    /// <summary>
-    /// Hora específica em que a avaria ocorreu.
-    /// Complementa a DataAvaria com informação de horário preciso.
-    /// </summary>
-    /// <example>14:30:00</example>
-    public TimeSpan? HoraAvaria { get; set; }
-
     #endregion
 
-    #region Status e Disponibilidade
+    #region StatusFichas e Disponibilidade
 
     /// <summary>
-    /// Status atual da nota no fluxo de trabalho.
+    /// StatusFichas atual da nota no fluxo de trabalho.
     /// Permite rastreamento do ciclo de vida da ocorrência.
     /// </summary>
     /// <example>"Pendente", "Em Andamento", "Aguardando Peças", "Concluída", "Cancelada"</example>
-    public Status? StatusNota { get; set; }
+    public StatusFichas? StatusNota { get; set; }
 
     /// <summary>
     /// Indicador de disponibilidade atual do equipamento afetado.
@@ -203,6 +203,7 @@ public class NotaModel : IClassifiable
     /// Importante para auditoria e rastreamento de mudanças.
     /// </summary>
     /// <example>2024-01-15T15:00:00</example>
+    /// <example>2024-01-15T15:00:00</example>
     public DateTime? DataClassificacao { get; set; }
 
     #endregion
@@ -238,8 +239,7 @@ public class NotaModel : IClassifiable
     /// <summary>
     /// O escopo da nota/pordem
     /// </summary>
-    [MaxLength(100, ErrorMessage = "O escopo não pode exceder 100 caracteres.")]
-    public string? Escopo { get; set; } = "N/A";
+    public long? Escopo { get; set; }
 
     /// <summary>
     /// Chave estrangeira para o plano de manutenção associado.
@@ -247,14 +247,15 @@ public class NotaModel : IClassifiable
     /// </summary>
     /// <example>2024</example>
     public long? IdPlano { get; set; }
-
+    
     /// <summary>
     /// Chave estrangeira para o usuário criador da nota.
     /// Estabelece relacionamento com a entidade de usuário responsável.
     /// </summary>
     /// <example>42</example>
-    public int? IdUsuario { get; set; }
+    public long? IdUsuario { get; set; }
 
+    
     /// <summary>
     /// Chave estrangeira para o ativo associado à nota.
     /// Identifica qual equipamento ou item está relacionado à ocorrência.
@@ -270,10 +271,22 @@ public class NotaModel : IClassifiable
     public string? IdLi { get; set; }
     
     /// <summary>
+    /// Chave estrangeira para o GPM
+    /// </summary>
+    public long? IdGpm { get; set; }
+    
+    /// <summary>
     /// Nomeclatura alternativa para o ativo, também usada para verificar se existe no APM
     /// </summary>
     [MaxLength(100)]
     public string? DnsIot { get; set; }
+    
+    /// <summary>
+    /// Nome da estratégia relacionada ao Plano
+    /// </summary>
+    [NotMapped]
+    [MaxLength(200)]
+    public string? NomeEstrategia => Plano?.Estrategia?.Nome;
 
     #endregion
 
@@ -285,14 +298,20 @@ public class NotaModel : IClassifiable
     /// </summary>
     [ForeignKey(nameof(IdPlano))]
     public virtual PlanoModel? Plano { get; set; }
-
+    
     /// <summary>
     /// Propriedade de navegação para o usuário criador.
     /// Fornece acesso aos dados completos do usuário responsável pela criação.
     /// </summary>
     [ForeignKey(nameof(IdUsuario))]
     public virtual UsuarioModel? Usuario { get; set; }
-
+    
+    /// <summary>
+    /// GPM responsável pela Nota
+    /// </summary>
+    [ForeignKey(nameof(IdGpm))]
+    public virtual GpmModel? GPM { get; set; }
+    
     #endregion
 
     #region Coleções
@@ -329,7 +348,7 @@ public class NotaModel : IClassifiable
     /// Permite rastreamento da execução e desdobramentos da ocorrência.
     /// </summary>
     /// <example>
-    /// Ordens.Add(new OrdemModel { NumeroOrdem = "OS-2024-001", Status = "Aberta" });
+    /// Ordens.Add(new OrdemModel { NumeroOrdem = "OS-2024-001", StatusFichas = "Aberta" });
     /// </example>
     public virtual ICollection<OrdemModel> Ordens { get; set; } = new List<OrdemModel>();
 

@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 namespace app_pm_back.Data;
 
 /// <summary>
-/// Interceptador de exceções do banco de dados para retornar mensagens amigáveis globais.
+/// Interceptador de exceções do banco de dados para retornar mensagens globais.
 /// </summary>
 public class DatabaseExceptionInterceptor : SaveChangesInterceptor
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Exception caso ocorra algum erro no banco de dados durante mudança de dados
+    /// </summary>
     public override void SaveChangesFailed(DbContextErrorEventData eventData)
     {
         var friendlyException = GetFriendlyException(eventData.Exception);
@@ -23,7 +25,10 @@ public class DatabaseExceptionInterceptor : SaveChangesInterceptor
         base.SaveChangesFailed(eventData);
     }
 
-    /// <inheritdoc />
+    
+    /// <summary>
+    /// Exception caso ocorra erro no banco de dados durante a mudança de dados assíncrona
+    /// </summary>
     public override Task SaveChangesFailedAsync(DbContextErrorEventData eventData, CancellationToken cancellationToken = default)
     {
         var friendlyException = GetFriendlyException(eventData.Exception);
@@ -33,7 +38,12 @@ public class DatabaseExceptionInterceptor : SaveChangesInterceptor
         }
         return base.SaveChangesFailedAsync(eventData, cancellationToken);
     }
+    
 
+    /// <summary>
+    /// Gera uma exception amigável para o usuário com base na exceção original do banco de dados
+    /// </summary>
+    /// <param name="exception">Exception ocorrida</param>
     private Exception? GetFriendlyException(Exception exception)
     {
         if (exception is DbUpdateException dbEx && dbEx.InnerException is PostgresException pgEx)

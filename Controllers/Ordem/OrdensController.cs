@@ -35,8 +35,14 @@ public class OrdensController : ControllerBase
     /// <summary>
     /// Cadastra uma ordem a partir de DTO.
     /// </summary>
+    /// <param name="dto">DTO contendo os dados da requisição.</param>
+    /// <returns>O objeto criado com status 201 (Created).</returns>
+    /// <response code="201">Registro criado com sucesso.</response>
+    /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost]
-    public async Task<IActionResult> CriarOrdem([FromBody] OrdemManutencaoDto dto)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CriarOrdem([FromBody] OrdemDto dto)
     {
         try
         {
@@ -46,13 +52,24 @@ public class OrdensController : ControllerBase
             }
 
             var ordem = _mapper.Map<OrdemModel>(dto);
-            if (ordem.IdOrdem <= 0)
+
+
+            var ordemCriada = await _ordemService.CreateAsync(ordem);
+
+            // se não for informado, usa o IdOrdem como NumeroOrdem
+            if (ordemCriada.NumeroOrdem <= 0)
             {
-                return BadRequest(new { message = "Id da ordem invalido. Envie IdOrdem maior que zero." });
+                ordemCriada.NumeroOrdem = ordemCriada.IdOrdem;
+                await _ordemService.UpdateAsync(ordemCriada);
             }
 
-            var notaCriada = await _ordemService.CreateAsync(ordem);
-            return Created($"{app_pm_back.Config.RouteConfig.BaseRoute}/orders/{notaCriada.IdOrdem}", notaCriada);
+            if (ordemCriada.Classificacao != Classificacao.NAOCLASSIFICADA)
+            {
+                await _classificationService.HumanClassification(ordemCriada.IdOrdem, ordemCriada.Classificacao,
+                    ordemCriada.CriadaPorUsuario);
+            }
+
+            return CreatedAtAction(nameof(ObterPorId), new { id = ordemCriada.IdOrdem }, ordemCriada);
         }
         catch (Exception e)
         {
@@ -61,9 +78,16 @@ public class OrdensController : ControllerBase
     }
 
     /// <summary>
-    /// Retorna todas as ordens , com paginacao opcional.
+    /// Retorna todas as ordens, com paginacao opcional.
     /// </summary>
+    /// <param name="pagina">Número da página (1-based) para paginação.</param>
+    /// <param name="tamanho">Quantidade de itens por página.</param>
+    /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+    /// <response code="200">Sucesso ao listar registros.</response>
+    /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListarOrdens([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         try
@@ -91,6 +115,64 @@ public class OrdensController : ControllerBase
     }
 
     /// <summary>
+    /// Obtém um registro pelo id da ordem.
+    /// </summary>
+    /// <param name="id">Identificador do registro.</param>
+    /// <returns>Resultado da operação.</returns>
+    [HttpGet("{id:long}")]
+    public async Task<IActionResult> ObterPorId([FromRoute] long id)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id invalido. Envie id maior que zero." });
+            }
+
+            var item = await _ordemService.GetByIdAsync(id);
+            if (item == null)
+            {
+                return NotFound(new { message = "Ordem nao encontrada." });
+            }
+
+            return Ok(item);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar ordem: {e.Message}." });
+        }
+    }
+
+    /// <summary>
+    /// Obtém os grupos responsáveis pela ordem.
+    /// </summary>
+    /// <returns>Resultado da operação.</returns>
+    [HttpGet("grupos/{id:long}")]
+    public async Task<IActionResult> ObterGruposResonponsaveis([FromRoute] long id)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id invalido. Envie id maior que zero." });
+            }
+
+            var grupos = await _ordemService.GetGruposResponsaveis(id);
+            if (grupos == null)
+            {
+                return NotFound(new { message = "Ordem nao encontrada." });
+            }
+
+            return Ok(grupos);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar ordem: {e.Message}." });
+        }
+    }
+
+
+    /// <summary>
     /// Conta o número total de notas salvas no banco
     /// </summary>
     [HttpGet("count")]
@@ -98,7 +180,7 @@ public class OrdensController : ControllerBase
     {
         try
         {
-            var notas = await _ordemService.CountNotasAsync();
+            var notas = await _ordemService.CountAsync();
             return Ok(new { count = notas });
         }
         catch (Exception)
@@ -132,8 +214,15 @@ public class OrdensController : ControllerBase
     /// <summary>
     /// Atualiza uma ordem pelo DTO.
     /// </summary>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="dto">DTO contendo os novos dados para atualização.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:long}")]
-    public async Task<IActionResult> AtualizarOrdem([FromRoute] long id, [FromBody] OrdemManutencaoDto dto)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AtualizarOrdem([FromRoute] long id, [FromBody] OrdemDto dto)
     {
         try
         {
@@ -147,24 +236,17 @@ public class OrdensController : ControllerBase
                 return BadRequest(new { message = "Id da ordem invalido na rota. Envie id maior que zero." });
             }
 
-            if (dto.IdOrdem <= 0)
+            var OrdemExistente = await _ordemService.GetByIdAsync(id);
+            if (OrdemExistente == null)
             {
-                dto.IdOrdem = id;
+                return NotFound(new { message = $"Nota com Id {id} não encontrada." });
             }
 
-            if (dto.IdOrdem != id)
-            {
-                return BadRequest(new { message = "Id da rota e IdOrdem do corpo da requisição devem ser iguais." });
-            }
+            _mapper.Map(dto, OrdemExistente);
+            OrdemExistente.DataModificacao = DateTime.UtcNow;
 
-            var ordem = _mapper.Map<OrdemModel>(dto);
-            if (ordem.IdOrdem <= 0)
-            {
-                return BadRequest(new { message = "Id da ordem invalido. Envie IdOrdem maior que zero." });
-            }
-
-            var result = await _ordemService.UpdateNotaAsync(ordem);
-            return Ok(new { message = "Ordem atualizada com sucesso: " + result.IdOrdem });
+            var result = await _ordemService.UpdateNotaAsync(OrdemExistente);
+            return Ok(result);
         }
         catch (Exception)
         {
@@ -173,9 +255,61 @@ public class OrdensController : ControllerBase
     }
 
     /// <summary>
+    /// Atualiza uma ordem pelo DTO completo da ordem, atualizando juntamente as operações.
+    /// </summary>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="dto">DTO contendo os novos dados para atualização.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+    [HttpPut("complete/{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AtualizarNotaCompleta([FromRoute] long id, [FromBody] NotaDto dto)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id da ordem invalido na rota. Envie id maior que zero." });
+            }
+
+            var ordemExistente = await _ordemService.GetByIdAsync(id);
+            if (ordemExistente == null)
+            {
+                return NotFound(new { message = $"Ordem com Id {id} não encontrada." });
+            }
+
+            var dtoParaMapear = dto;
+
+            _mapper.Map(dtoParaMapear, ordemExistente);
+
+            ordemExistente.DataModificacao = DateTime.UtcNow;
+
+            var result = await _ordemService.AtualizarOrdemCompletaAsync(ordemExistente);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao atualizar nota: {e.Message}." });
+        }
+    }
+
+    /// <summary>
     /// Delete uma nota de mesmo Id
     /// </summary>
+    /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+    /// <returns>Mensagem de confirmação da exclusão.</returns>
+    /// <response code="200">Sucesso ao deletar o registro.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeletarOrdem(long id)
     {
         try
@@ -194,7 +328,17 @@ public class OrdensController : ControllerBase
     /// <summary>
     /// Classifica uma ordem with manual label
     /// </summary>
-    [HttpPut("classificacao/{id:long}")]
+    /// <param name="id">Identificador exclusivo do registro a ser classificado.</param>
+    /// <param name="classificacao">Valor da classificação humana.</param>
+    /// <param name="idUsuario">Identificador do usuário que realizou a classificação.</param>
+    /// <returns>O objeto classificado atualizado.</returns>
+    /// <response code="200">Sucesso ao classificar.</response>
+    /// <response code="400">Erros na validação do usuário ou ID informado inválido.</response>
+    /// <response code="404">Registro não encontrado.</response>
+    [HttpPatch("classificacao/{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ClassificacaoHumanaOrdem(
         [FromRoute] long id,
         [FromQuery] Classificacao classificacao,
@@ -202,7 +346,7 @@ public class OrdensController : ControllerBase
     {
         try
         {
-            if (classificacao == null || string.IsNullOrWhiteSpace(idUsuario))
+            if (string.IsNullOrWhiteSpace(idUsuario))
             {
                 return BadRequest(new { message = "Parametros classificacao e idUsuario sao obrigatorios." });
             }
@@ -218,66 +362,6 @@ public class OrdensController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao classificar esta ordem: {e.Message}" });
-        }
-    }
-
-    /// <summary>
-    /// Cria uma regra de classificação por palavras
-    /// </summary>
-    /// <param name="regra">Regra a ser aplicada</param>
-    /// <returns>Regra criada</returns>
-    [HttpPost("classificacao/regra")]
-    public async Task<IActionResult> CriarRegraCongas([FromBody] RuleClassificationDto regra)
-    {
-        try
-        {
-            var result = await _classificationService.CreateRule(regra);
-            return Ok(new { message = $"Regra criada com sucesso com Id: {result.IdRegra}" });
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao criar regra {e.Message}" });
-        }
-    }
-
-    /// <summary>
-    /// Classifica uma ordem com base uma lista de palavras armazenadas no banco
-    /// </summary>
-    /// <returns>Lista de ordem atualizadas</returns>
-    [HttpPost("classificacao/filtro")]
-    public async Task<IActionResult> ClassificacaoPalavrasNotaCongas()
-    {
-        try
-        {
-            // passar uma lista vazia por enquanto 
-            var result = await _classificationService.WordsClassification([]);
-            if (result.Count > 0)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest("Não foram achadas ordem para classificar");
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao classificar ordem: {e.Message}" });
-        }
-    }
-
-    /// <summary>
-    /// Classifica as ordens usando a IA catboost
-    /// </summary>
-    [HttpPost("classificacao/catboost")]
-    public async Task<IActionResult> ClassificacaoCatboostOrdem()
-    {
-        try
-        {
-            var result = await _classificationService.CatboostClassification();
-            return Ok("Ordens classificadas com sucesso");
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao classificar ordens: {e.Message}" });
         }
     }
 

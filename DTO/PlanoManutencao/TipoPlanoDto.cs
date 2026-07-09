@@ -9,7 +9,7 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class TipoPlanoDto
 {
-    [SheetColumn("Id Tipo Plano")] public int IdTipoPlano { get; set; }
+    [SheetColumn("Id Tipo Plano")] public long IdTipoPlano { get; set; }
 
     [SheetColumn("Visivel")] public bool? Visivel { get; set; }
 
@@ -23,13 +23,13 @@ public class TipoPlanoDto
 
     [SheetColumn("Categoria")] public string? Categoria { get; set; }
 
-    [SheetColumn("Id Tipo Estratégia")] public int? IdTipoEstrategia { get; set; }
+    [SheetColumn("Id Tipo Estratégia")] public long? IdTipoEstrategia { get; set; }
 
     [SheetColumn("Plano manut.")] public long? IdPlano { get; set; }
 
-    [SheetColumn("Id Tipo Manutenção")] public int? IdTipoManutencao { get; set; }
+    [SheetColumn("Id Tipo Manutenção")] public long? IdTipoManutencao { get; set; }
 
-    [SheetColumn("Id Tipo CEP")] public int? IdTipoCep { get; set; }
+    [SheetColumn("Id Tipo CEP")] public long? IdTipoCep { get; set; }
 }
 
 #pragma warning restore CS1591

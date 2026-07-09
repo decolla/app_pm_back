@@ -2,18 +2,22 @@ using System.Reflection;
 using System.Text.Json;
 using api.Communications.Service.Impl.Data;
 using app_pm_back.Data;
+using app_pm_back.DTO;
+using app_pm_back.Interfaces;
 using app_pm_back.Middlewares;
 using app_pm_back.Models.Domain;
-using app_pm_back.Routes;
 using app_pm_back.Services;
 using app_pm_back.Services.ExternIntegationsServices;
 using app_pm_back.Services.Manutencao;
+using app_pm_back.Services.FichasServices;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Npgsql;
 using teste_catboost_cs;
+
 
 // apagar depois essa gambiarra aqui
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -53,13 +57,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 //  Memory Cache para LinhaTemporal
 builder.Services.AddMemoryCache();
 
-var databaseSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
+var databaseSchema = app_pm_back.Config.RouteConfig.GetDatabaseSchema();
 
 if (databaseSchema == "cg")
 {
-    var connectionString = builder.Configuration.GetConnectionString("DBConnection") 
+    var connectionString = builder.Configuration.GetConnectionString("DBConnection")
                            ?? builder.Configuration.GetConnectionString("DefaultConnection");
-                          
+
     // ef core para sql server
     builder.Services.AddDbContext<AppDbContext, SqlServerDbContext>(options =>
         options.UseSqlServer(connectionString));
@@ -73,7 +77,8 @@ if (databaseSchema == "cg")
 }
 else
 {
-    var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION") 
+    var targetSchema = string.IsNullOrWhiteSpace(databaseSchema) ? "public" : databaseSchema;
+    var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION")
                            ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
     // criar o construtor da fonte de dados do PostgreSQL
@@ -82,20 +87,33 @@ else
     // dar permissão para JSON dinâmico
     dataSourceBuilder.EnableDynamicJson();
 
+    //Força o search path a usar o targetschema em todas as conexxões
+    dataSourceBuilder.ConnectionStringBuilder["options"] = $"-c search_path=\"{targetSchema}\",public";
+
     // criar a fonte de dados
     var dataSource = dataSourceBuilder.Build();
 
     // adicionar o contexto do PostgreSQL
-    builder.Services.AddDbContext<AppDbContext, PostgresDbContext>(options =>
-        options.UseNpgsql(dataSource));
-    
+    builder.Services.AddDbContext<AppDbContext, PostgresDbContext>((sp, options) =>
+    {
+        options.UseNpgsql(dataSource,
+                npgsqlOptions => { npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", targetSchema); })
+            .AddInterceptors(
+                new DatabaseExceptionInterceptor(),
+                new AuditInterceptor(sp.GetRequiredService<IUserContext>()));
+    });
+
     // config hangfire 
     builder.Services.AddHangfire(config => config
         .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
         .UseSimpleAssemblyNameTypeSerializer()
         .UseRecommendedSerializerSettings()
-        .UsePostgreSqlStorage(c => 
-            c.UseNpgsqlConnection(connectionString)));
+        .UsePostgreSqlStorage(c =>
+                c.UseNpgsqlConnection(connectionString),
+            new PostgreSqlStorageOptions
+            {
+                SchemaName = targetSchema
+            }));
 }
 
 builder.Services.AddHangfireServer();
@@ -104,10 +122,12 @@ builder.Services.AddTransient<app_pm_back.Jobs.ManutencaoGeneratorJob>();
 
 builder.Services.AddScoped<ConvertService>();
 builder.Services.AddScoped<SpreadsheetService>();
+builder.Services.AddScoped<ImportSheetService>();
 builder.Services.AddScoped<GenericSearchService>();
-builder.Services.AddScoped<NotaManutencaoService>();
+builder.Services.AddScoped<NotaService>();
 builder.Services.AddScoped<OrdemService>();
 builder.Services.AddScoped<ItemNotaService>();
+builder.Services.AddScoped<VariavelNotaService>();
 builder.Services.AddScoped<PlanoManutencaoService>();
 builder.Services.AddScoped<EstrategiaService>();
 builder.Services.AddScoped<TipoEstrategiaService>();
@@ -115,9 +135,10 @@ builder.Services.AddScoped<TipoManutencaoService>();
 builder.Services.AddScoped<TipoPlanoService>();
 builder.Services.AddScoped<TipoManutencaoCepService>();
 builder.Services.AddScoped<DadosRenovacaoService>();
-builder.Services.AddScoped<TarefaService>();
+builder.Services.AddScoped<OperacaoService>();
 builder.Services.AddScoped<FerramentaService>();
 builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<UserContextService>();
 builder.Services.AddScoped<CpmService>();
 builder.Services.AddScoped<CtmService>();
 builder.Services.AddScoped<ReportService>();
@@ -128,20 +149,27 @@ builder.Services.AddScoped<AlmoxarifadoService>();
 builder.Services.AddScoped<ClassificationService<NotaModel>>();
 builder.Services.AddScoped<ClassificationService<OrdemModel>>();
 builder.Services.AddScoped<AnnexService>();
+builder.Services.AddScoped<ConfiguracaoGlobalService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<DadosRenovacaoService>();
 builder.Services.AddScoped<LinhaTemporalService>();
+builder.Services.AddScoped<ReliabilityService>();
 
 // configuração de clientes http
 builder.Services.AddHttpClient<ExternIntegrationService>(client =>
     {
-        // busca a URL do APM
-        var urlBase = builder.Configuration.GetValue<string>("APIs:APM");
+        // busca a URL do APM 
+        var urlBase = app_pm_back.Config.RouteConfig.GetTwinsBaseUrl(builder.Configuration);
 
         if (string.IsNullOrEmpty(urlBase))
         {
             throw new InvalidOperationException(
                 "A URL do APM não está configurada. Verifique as configurações de 'APIs:APM'.");
+        }
+
+        if (!urlBase.EndsWith("/"))
+        {
+            urlBase += "/";
         }
 
         client.BaseAddress = new Uri(urlBase);
@@ -151,8 +179,27 @@ builder.Services.AddHttpClient<ExternIntegrationService>(client =>
     }
 );
 
-var modelPath = Path.Combine(AppContext.BaseDirectory, "Data", "catboost_model.cbm");
-var metaPath = Path.Combine(AppContext.BaseDirectory, "Data", "model_meta.json");
+builder.Services.AddHttpClient<ReliabilityService>(client =>
+{
+    // busca a URL do reliability
+    var urlBase = app_pm_back.Config.RouteConfig.GetReliabilityBaseUrl(builder.Configuration);
+
+    if (string.IsNullOrEmpty(urlBase))
+        throw new InvalidOperationException(
+            "A URL do Reliability não está configurada. Verifique as configurações de 'APIs:Reliability'.");
+
+    if (!urlBase.EndsWith("/"))
+    {
+        urlBase += "/";
+    }
+
+    client.BaseAddress = new Uri(urlBase);
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+var modelPath = Path.Combine(AppContext.BaseDirectory, "CatBoost", "catboost_model.cbm");
+var metaPath = Path.Combine(AppContext.BaseDirectory, "CatBoost", "model_meta.json");
 
 // verifica se os ficheiros existem antes de tentar ler (evita crash no 'dotnet ef')
 if (File.Exists(metaPath) && File.Exists(modelPath))
@@ -173,9 +220,14 @@ else
 }
 
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddHttpContextAccessor();
+
+// sempre que uma requisição chegar na API, trará um Bearer token
+builder.Services.AddScoped<IUserContext, UserContextService>();
 
 var app = builder.Build();
 var schema = Environment.GetEnvironmentVariable("SCHEMA") ?? "(not set)";
+
 app.Logger.LogInformation("SCHEMA={Schema}", schema);
 
 using (var scope = app.Services.CreateScope())
@@ -184,8 +236,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = services.GetRequiredService<AppDbContext>();
-        var dbSchema = Environment.GetEnvironmentVariable("DATABASE_SCHEMA");
-        
+        var dbSchema = app_pm_back.Config.RouteConfig.GetDatabaseSchema();
+
         if (dbSchema == "cg")
         {
             Console.WriteLine("Ambiente 'cg' detectado. A tentar criar o banco de dados e as tabelas...");
@@ -196,8 +248,15 @@ using (var scope = app.Services.CreateScope())
         {
             Console.WriteLine("PostgreSQL detectado. A tentar aplicar as migrations no banco de dados...");
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
-            // dbContext.Database.ExecuteSqlRaw("DROP SCHEMA public CASCADE; CREATE SCHEMA public;");
+            //dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA {schema} CASCADE; CREATE SCHEMA {schema};");
+
+            // Garante que a conexão é aberta com o search_path configurado antes do Migrate()
+            var conn = dbContext.Database.GetDbConnection();
+            await conn.OpenAsync();
+
             dbContext.Database.Migrate();
+
+            await conn.CloseAsync();
             Console.WriteLine("Migrations aplicadas com sucesso!");
         }
     }
@@ -218,12 +277,28 @@ app.UseHangfireDashboard();
 RecurringJob.AddOrUpdate<app_pm_back.Jobs.ManutencaoGeneratorJob>(
     "gerador-fichas",
     service => service.RunDailyRoutine(),
-    Cron.Daily(2,0));
+    Cron.Daily(2, 0));
 
 // captura erros
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
-app.UseSwagger();
+app.UseSwagger(c =>
+{
+    c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+    {
+        // Intercepta o cabeçalho enviado pelo seu Ingress do Kubernetes
+        var basePath = httpReq.Headers["X-Forwarded-Prefix"].FirstOrDefault();
+
+        if (!string.IsNullOrEmpty(basePath))
+        {
+            // Ajusta a URL base do servidor dinamicamente
+            swaggerDoc.Servers = new List<OpenApiServer>
+            {
+                new OpenApiServer { Url = basePath }
+            };
+        }
+    });
+});
 app.UseSwaggerUI();
 
 // permite que o angular realize 
@@ -232,7 +307,6 @@ app.UseCors("AllowAll");
 // app.UseHttpsRedirection();
 
 app.MapControllers();
-app.MapSpreadsheetEndpoints();
 
 
 app.Run();

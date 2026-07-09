@@ -12,7 +12,8 @@ public class FerramentaModel
     /// Identificador único da ferramenta.
     /// </summary>
     [Key]
-    public int IdFerramenta { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long IdFerramenta { get; set; }
 
     /// <summary>
     /// Categoria da ferramenta (ex: Elétrica, Manual).
@@ -117,12 +118,12 @@ public class FerramentaModel
     /// <summary>
     /// Identificador do Escopo associado.
     /// </summary>
-    public int IdEscopo { get; set; }
+    public long IdEscopo { get; set; }
 
     /// <summary>
     /// Identificador do Almoxarifado onde a ferramenta está alocada.
     /// </summary>
-    public int IdAlmoxarifado { get; set; }
+    public long IdAlmoxarifado { get; set; }
 
     /// <summary>
     /// Propriedade de navegação para o Almoxarifado.
