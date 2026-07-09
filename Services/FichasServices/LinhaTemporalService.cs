@@ -35,7 +35,7 @@ public class LinhaTemporalService
         _context = context;
         _logger = logger;
         _httpClient = httpClient;
-        _apmBaseUrl = Config.RouteConfig.GetApmBaseUrl(configuration);
+        _apmBaseUrl = Config.RouteConfig.GetTwinsBaseUrl(configuration);
     }
 
     /// <summary>

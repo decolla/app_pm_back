@@ -42,7 +42,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         _httpClient = httpClient;
         _planoModels = context.PM_Planos;
         _configuracaoGlobalService = configuracaoGlobalService;
-        _apmBaseUrl = Config.RouteConfig.GetApmBaseUrl(configuration);
+        _apmBaseUrl = Config.RouteConfig.GetTwinsBaseUrl(configuration);
     }
 
     /// <summary>

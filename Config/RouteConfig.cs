@@ -21,6 +21,7 @@ public static class RouteConfig
         {
             raw = Environment.GetEnvironmentVariable("SCHEMA");
         }
+
         return raw?.Trim('/');
     }
 
@@ -67,6 +68,7 @@ public static class RouteConfig
             {
                 throw new SecurityException("Nome de serviço inválido ou inseguro.");
             }
+
             return service;
         }
 
@@ -74,21 +76,48 @@ public static class RouteConfig
     }
 
     /// <summary>
-    /// Retorna a URL do serviço com base na variável de ambiente.
+    /// Retorna a URL do serviço APM com base na variável de ambiente.
     /// </summary>
     public static string GetApmBaseUrl(IConfiguration configuration)
     {
-        var serviceName = GetServiceName();
+        var isHml = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Homologation";
 
-        // o serviço especificado na env var for reliability_back, usa a URL de reliability
-        if (serviceName != null && serviceName.Contains("reliability"))
+        if (isHml)
         {
-            return configuration["APIs:Reliability"] ?? "http://10.3.192.200:60170";
+            var schema = GetDatabaseSchema() ?? "public";
+            return $"http://10.3.192.201/{schema}/apm_back";
         }
-        
+        else
+        {
+            var serviceName = GetServiceName();
 
-        // caso contrário, ou por padrão se for apm_back, usamos a do APM
-        return configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
+            // o serviço especificado na env var for reliability_back, usa a URL de reliability
+            if (serviceName != null && serviceName.Contains("reliability"))
+            {
+                return configuration["APIs:Reliability"] ?? "http://10.3.192.200:60170";
+            }
+
+            // caso contrário, ou por padrão se for apm_back, usamos a do APM
+            return configuration["APIs:APM"] ?? "http://10.3.192.200:60142";
+        }
+    }
+
+    /// <summary>
+    /// Retorna a URL do serviço com base na variável de ambiente.
+    /// </summary>
+    public static string GetTwinsBaseUrl(IConfiguration configuration)
+    {
+        var isHml = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Homologation";
+        if (isHml)
+        {
+            var schema = GetDatabaseSchema() ?? "public";
+            return $"http://10.3.192.201/{schema}/twins_back";
+        }
+        else
+        {
+            var url = configuration["APIs:Twins"] ?? "http://10.3.192.200:60131";
+            return url + "/api/v1";
+        }
     }
 
     /// <summary>
@@ -96,15 +125,24 @@ public static class RouteConfig
     /// </summary>
     public static string GetReliabilityBaseUrl(IConfiguration configuration)
     {
-        var serviceName = GetServiceName();
-
-        // o serviço especificado na env var for apm_back, usamos a URL do APM
-        if (serviceName != null && serviceName.Contains("apm"))
+        var isHml = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Homologation";
+        if (isHml)
         {
-            return configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
+            var schema = GetDatabaseSchema() ?? "public";
+            return $"http://10.3.192.201/{schema}/reliability_back";
         }
+        else
+        {
+            var serviceName = GetServiceName();
 
-        // caso contrário, ou por padrão se for reliability_back
-        return configuration["APIs:Reliability"] ?? "http://10.3.192.200:60170";
+            // o serviço especificado na env var for apm_back, usamos a URL do Twins
+            if (serviceName != null && serviceName.Contains("twins_back"))
+            {
+                return configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
+            }
+
+            // caso contrário, ou por padrão se for reliability_back
+            return configuration["APIs:Reliability"] ?? "http://10.3.192.200:60170";
+        }
     }
 }
