@@ -127,9 +127,10 @@ public class ReliabilityService
         try
         {
             _logger.LogInformation("Chamando API APM: GET /api/V1/Asset/Components/All com timeout de 30s.");
+            var url = $"{_reliabilityBaseUrl}/api/V1/Asset/Components/All";
 
             var jsonResponse = await _externIntegrationService
-                .GetDataAsync("/api/V1/Asset/Components/All", cts.Token);
+                .GetDataAsync(url, cts.Token);
 
             _logger.LogInformation("Resposta da API APM recebida com sucesso. Tamanho: {Length} caracteres.",
                 jsonResponse?.Length ?? 0);
