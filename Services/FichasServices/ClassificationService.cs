@@ -40,7 +40,7 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// <summary>
     /// Classificação manual de notas/ordens.
     /// </summary>
-    public async Task<T?> HumanClassification(long id, Classificacao classificacao, string usuario)
+    public async Task<T?> HumanClassification(long id, Classificacao classificacao, string? usuario)
     {
         var nota = await _dbSet.FindAsync(id);
         if (nota == null) return null;

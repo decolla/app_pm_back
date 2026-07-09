@@ -52,11 +52,24 @@ public class OrdensController : ControllerBase
             }
 
             var ordem = _mapper.Map<OrdemModel>(dto);
-            
-            if(ordem.NumeroOrdem <= 0 || ordem.NumeroOrdem == null) ordem.NumeroOrdem = ordem.IdOrdem; // se não for informado, usa o IdOrdem como NumeroOrdem
 
-            var notaCriada = await _ordemService.CreateAsync(ordem);
-            return CreatedAtAction(nameof(ObterPorId), new { id = notaCriada.IdOrdem }, notaCriada);
+
+            var ordemCriada = await _ordemService.CreateAsync(ordem);
+
+            // se não for informado, usa o IdOrdem como NumeroOrdem
+            if (ordemCriada.NumeroOrdem <= 0)
+            {
+                ordemCriada.NumeroOrdem = ordemCriada.IdOrdem;
+                await _ordemService.UpdateAsync(ordemCriada);
+            }
+
+            if (ordemCriada.Classificacao != Classificacao.NAOCLASSIFICADA)
+            {
+                await _classificationService.HumanClassification(ordemCriada.IdOrdem, ordemCriada.Classificacao,
+                    ordemCriada.CriadaPorUsuario);
+            }
+
+            return CreatedAtAction(nameof(ObterPorId), new { id = ordemCriada.IdOrdem }, ordemCriada);
         }
         catch (Exception e)
         {
@@ -129,7 +142,7 @@ public class OrdensController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar ordem: {e.Message}." });
         }
     }
-        
+
     /// <summary>
     /// Obtém os grupos responsáveis pela ordem.
     /// </summary>
@@ -143,7 +156,7 @@ public class OrdensController : ControllerBase
             {
                 return BadRequest(new { message = "Id invalido. Envie id maior que zero." });
             }
-            
+
             var grupos = await _ordemService.GetGruposResponsaveis(id);
             if (grupos == null)
             {
@@ -158,7 +171,7 @@ public class OrdensController : ControllerBase
         }
     }
 
-    
+
     /// <summary>
     /// Conta o número total de notas salvas no banco
     /// </summary>
@@ -222,11 +235,13 @@ public class OrdensController : ControllerBase
             {
                 return BadRequest(new { message = "Id da ordem invalido na rota. Envie id maior que zero." });
             }
-            var OrdemExistente  = await _ordemService.GetByIdAsync(id);
+
+            var OrdemExistente = await _ordemService.GetByIdAsync(id);
             if (OrdemExistente == null)
             {
                 return NotFound(new { message = $"Nota com Id {id} não encontrada." });
             }
+
             _mapper.Map(dto, OrdemExistente);
             OrdemExistente.DataModificacao = DateTime.UtcNow;
 
@@ -238,7 +253,7 @@ public class OrdensController : ControllerBase
             return BadRequest(new { message = "Erro ao atualizar ordem ." });
         }
     }
-    
+
     /// <summary>
     /// Atualiza uma ordem pelo DTO completo da ordem, atualizando juntamente as operações.
     /// </summary>
@@ -270,10 +285,10 @@ public class OrdensController : ControllerBase
                 return NotFound(new { message = $"Ordem com Id {id} não encontrada." });
             }
 
-            var dtoParaMapear = dto; 
-    
+            var dtoParaMapear = dto;
+
             _mapper.Map(dtoParaMapear, ordemExistente);
-            
+
             ordemExistente.DataModificacao = DateTime.UtcNow;
 
             var result = await _ordemService.AtualizarOrdemCompletaAsync(ordemExistente);

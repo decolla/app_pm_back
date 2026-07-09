@@ -63,13 +63,19 @@ public class NotasController : ControllerBase
             if (novaNota.IdGpm <= 0) novaNota.IdGpm = null;
 
             var notaCriada = await _notaService.CreateAsync(novaNota);
-            
-            if (notaCriada.NumeroNota <= 0) 
+
+            if (notaCriada.NumeroNota <= 0)
             {
                 notaCriada.NumeroNota = notaCriada.IdNota;
                 await _notaService.UpdateAsync(notaCriada);
             }
-            
+
+            if (notaCriada.Classificacao != Classificacao.NAOCLASSIFICADA)
+            {
+                await _classificationService.HumanClassification(notaCriada.IdNota, notaCriada.Classificacao,
+                    notaCriada.CriadaPorUsuario);
+            }
+
             return CreatedAtAction(nameof(ObterPorId), new { id = notaCriada.IdNota }, notaCriada);
         }
         catch (Exception e)
@@ -162,7 +168,7 @@ public class NotasController : ControllerBase
             var notas = await _notaService.CountAsync();
             return Ok(new { count = notas });
         }
-        catch (Exception e )
+        catch (Exception e)
         {
             return NotFound(new { message = $"Erro ao procurar notas {e.Message}." });
         }
@@ -226,14 +232,14 @@ public class NotasController : ControllerBase
             // adicionar dps quem modificou a nota aqui
 
             var result = await _notaService.UpdateNotaAsync(notaExistente);
-            return Ok( result);
+            return Ok(result);
         }
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao atualizar nota: {e.Message}." });
         }
     }
-    
+
     /// <summary>
     /// Atualiza uma nota pelo DTO completo da nota, atualizando juntamente as variáveis e itens.
     /// </summary>
@@ -265,10 +271,10 @@ public class NotasController : ControllerBase
                 return NotFound(new { message = $"Nota com Id {id} não encontrada." });
             }
 
-            var dtoParaMapear = dto; 
-    
+            var dtoParaMapear = dto;
+
             _mapper.Map(dtoParaMapear, notaExistente);
-            
+
             notaExistente.DataModificacao = DateTime.UtcNow;
 
             var result = await _notaService.AtualizarNotaCompletaAsync(notaExistente);
