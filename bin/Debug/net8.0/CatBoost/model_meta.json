@@ -1,0 +1,77 @@
+{
+  "features": [
+    "Tipo de nota",
+    "Tipo prioridade",
+    "Equipamento",
+    "Codificação",
+    "Grupo de codes",
+    "Txt.code codif.",
+    "Txt.grp.codific",
+    "Conseqüência",
+    "Descrição",
+    "TxtGrpCodPartOb",
+    "Txt.cod.part.ob",
+    "Txt.grp.cod.pr.",
+    "Txt.code prob.",
+    "Texto grp.causa",
+    "Txt.code causa"
+  ],
+  "class_names_declared": [
+    "Não Corretiva",
+    "Corretiva"
+  ],
+  "classes_trained": [
+    "Não Corretiva",
+    "Corretiva"
+  ],
+  "cat_features": [
+    "Tipo de nota",
+    "Tipo prioridade",
+    "Equipamento",
+    "Codificação",
+    "Grupo de codes",
+    "Txt.code codif.",
+    "Txt.grp.codific",
+    "Conseqüência",
+    "TxtGrpCodPartOb",
+    "Txt.cod.part.ob",
+    "Txt.grp.cod.pr.",
+    "Txt.code prob.",
+    "Texto grp.causa",
+    "Txt.code causa"
+  ],
+  "text_features": [
+    "Descrição"
+  ],
+  "cat_features_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "text_features_indices": [
+    8
+  ],
+  "scale_pos_weight": 0.6525612472160356,
+  "random_state_split": 42,
+  "random_seed_model": 42,
+  "eval_metric": "AUC",
+  "od_type": "Iter",
+  "od_wait": 50,
+  "model_params": {
+    "iterations": 500,
+    "depth": 6,
+    "learning_rate": 0.08,
+    "loss_function": "Logloss"
+  }
+}

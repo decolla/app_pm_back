@@ -1,0 +1,7 @@
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/CoverletSourceRootsMapping_app_pm_back.Tests
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.csproj.AssemblyReference.cache
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.GeneratedMSBuildEditorConfig.editorconfig
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.AssemblyInfoInputs.cache
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.AssemblyInfo.cs
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.csproj.CoreCompileInputs.cache
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.sourcelink.json
