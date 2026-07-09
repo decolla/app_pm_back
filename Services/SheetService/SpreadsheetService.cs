@@ -547,7 +547,7 @@ public class SpreadsheetService
             DataClassificacao = dto.DataClassificacao,
             StatusOrdem = dto.StatusOrdem ?? StatusFichas.EmAndamento,
             Criticidade = dto.Prioridade?.ToString() ?? dto.Criticidade,
-            DataCriacao = dto.DataCriacao ?? DateTime.UtcNow,
+            DataCriacao = dto.DataCriacao,
             CriadaPorUsuario = dto.CriadaPorUsuario,
             ModificadaPorUsuario = dto.ModificadaPorUsuario,
             DataModificacao = dto.DataModificacao,

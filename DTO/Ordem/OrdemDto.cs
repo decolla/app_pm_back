@@ -31,7 +31,7 @@ public class OrdemDto
 
     [SheetColumn("Prioridade")] public Prioridade? Prioridade { get; set; }
 
-    [SheetColumn("Data de entrada")] public DateTime? DataCriacao { get; set; }
+    [SheetColumn("Data de entrada")] public DateTime DataCriacao { get; set; } = DateTime.Now;
 
     [SheetColumn("status_usuario")] public string? CriadaPorUsuario { get; set; }
 
