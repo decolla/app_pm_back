@@ -15,13 +15,13 @@ namespace app_pm_back.Controllers.PlanoManutencao;
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/tarefas-tipo-manutencao")]
 public class TarefaController : ControllerBase
 {
-    private readonly TarefaService _service;
+    private readonly OperacaoService _service;
     private readonly IMapper _mapper;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="TarefaController"/>.
     /// </summary>
-    public TarefaController(TarefaService service, IMapper mapper)
+    public TarefaController(OperacaoService service, IMapper mapper)
     {
         _service = service;
         _mapper = mapper;
@@ -98,8 +98,8 @@ public class TarefaController : ControllerBase
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         if (id <= 0) return BadRequest(new { message = "Id invalido na rota." });
 
-        if (dto.IdOperacao <= 0) dto.IdOperacao = id;
-        if (dto.IdOperacao != id) return BadRequest(new { message = "Id da rota deve ser igual ao Id do corpo." });
+        if (dto.IdTarefa <= 0) dto.IdTarefa = id;
+        if (dto.IdTarefa != id) return BadRequest(new { message = "Id da rota deve ser igual ao Id do corpo." });
 
         var model = _mapper.Map<OperacaoModel>(dto);
         var atualizado = await _service.UpdateNotaAsync(model);

@@ -41,6 +41,16 @@ public class OperacaoModel
     public int? NdeProfissionais { get; set; }
 
     /// <summary>
+    /// Data e hora prevista para o início.
+    /// </summary>
+    public DateTime? InicioEsperado { get; set; }
+
+    /// <summary>
+    /// Data e hora prevista para a conclusão.
+    /// </summary>
+    public DateTime? FimEsperado { get; set; }
+
+    /// <summary>
     /// Chave estrangeira para o Centro de Trabalho Móvel (CTM).
     /// </summary>
     public long? IdCTM { get; set; }

@@ -9,7 +9,7 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class TarefaDto
 {
-    [SheetColumn("Id Tarefa")] public long IdOperacao { get; set; }
+    [SheetColumn("Id Tarefa")] public long IdTarefa { get; set; }
 
     [SheetColumn("Nome Tarefa")] public string? Nome { get; set; }
 

@@ -135,7 +135,7 @@ builder.Services.AddScoped<TipoManutencaoService>();
 builder.Services.AddScoped<TipoPlanoService>();
 builder.Services.AddScoped<TipoManutencaoCepService>();
 builder.Services.AddScoped<DadosRenovacaoService>();
-builder.Services.AddScoped<TarefaService>();
+builder.Services.AddScoped<OperacaoService>();
 builder.Services.AddScoped<FerramentaService>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<UserContextService>();

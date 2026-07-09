@@ -66,10 +66,10 @@ public class AppDbContext : DbContext
                 "FerramentasOperacoes",
                 j => j.HasOne<FerramentaModel>().WithMany().HasForeignKey("IdFerramenta")
                     .OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<OperacaoModel>().WithMany().HasForeignKey("IdOperacao").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<OperacaoModel>().WithMany().HasForeignKey("IdTarefa").OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("IdFerramenta", "IdOperacao");
+                    j.HasKey("IdFerramenta", "IdTarefa");
                     j.ToTable("PM_FerramentasOperacoes");
                 });
 
@@ -162,6 +162,7 @@ public class AppDbContext : DbContext
     public DbSet<TipoEstrategiaModel> PM_TiposEstrategia { get; set; }
     public DbSet<TipoCepModel> PM_TiposCep { get; set; }
     public DbSet<OperacaoModel> PM_Operacoes { get; set; }
+    public DbSet<ConfiguracaoGlobalModel> PM_ConfiguracoesGlobais { get; set; }
     public DbSet<TipoPlanoModel> PM_TiposPlano { get; set; }
     public DbSet<EstrategiaModel> PM_Estrategias { get; set; }
     public DbSet<PlanoModel> PM_Planos { get; set; }

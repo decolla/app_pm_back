@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 namespace app_pm_back.Services.Manutencao;
 
 /// <summary>
-/// Classe TarefaService.
+/// Classe OperacaoService.
 /// </summary>
-public class TarefaService : BaseCrudService<OperacaoModel>
+public class OperacaoService : BaseCrudService<OperacaoModel>
 {
     /// <summary>
-    /// Inicializa uma nova instância da classe <see cref="TarefaService"/>.
+    /// Inicializa uma nova instância da classe <see cref="OperacaoService"/>.
     /// </summary>
-    public TarefaService(AppDbContext context) : base(context)
+    public OperacaoService(AppDbContext context) : base(context)
     {
     }
 

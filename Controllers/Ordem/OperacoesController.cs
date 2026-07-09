@@ -13,13 +13,13 @@ namespace app_pm_back.Controllers;
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/operacoes")]
 public class OperacoesController : ControllerBase
 {
-    private readonly TarefaService _service;
+    private readonly OperacaoService _service;
     private readonly IMapper _mapper;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="OperacoesController"/>.
     /// </summary>
-    public OperacoesController(TarefaService service, IMapper mapper)
+    public OperacoesController(OperacaoService service, IMapper mapper)
     {
         _service = service;
         _mapper = mapper;
@@ -176,7 +176,7 @@ public class OperacoesController : ControllerBase
 
             if (dto.IdOperacao != id)
             {
-                return BadRequest(new { message = "Id da rota e IdOperacao do corpo da requisição devem ser iguais." });
+                return BadRequest(new { message = "Id da rota e IdTarefa do corpo da requisição devem ser iguais." });
             }
 
             var model = _mapper.Map<OperacaoModel>(dto);
