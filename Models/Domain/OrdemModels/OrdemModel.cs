@@ -38,7 +38,6 @@ public class OrdemModel : IClassifiable, IAuditable
     /// Utilizado para rastreamento temporal e relatórios de abertura.
     /// </summary>
     /// <example>2024-01-15T08:30:00</example>
-    [Required(ErrorMessage = "A data de criação é obrigatória.")]
     public DateTime? DataCriacao { get; set; }
 
     #endregion
