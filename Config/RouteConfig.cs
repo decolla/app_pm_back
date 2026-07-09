@@ -85,7 +85,7 @@ public static class RouteConfig
         if (isHml)
         {
             var schema = GetDatabaseSchema() ?? "public";
-            return $"http://10.3.192.201/{schema}/apm_back";
+            return $"http://10.3.192.202/{schema}/apm_back";
         }
         else
         {
@@ -111,7 +111,7 @@ public static class RouteConfig
         if (isHml)
         {
             var schema = GetDatabaseSchema() ?? "public";
-            return $"http://10.3.192.201/{schema}/twins_back";
+            return $"http://10.3.192.202/{schema}/twins_back";
         }
         else
         {
@@ -129,7 +129,7 @@ public static class RouteConfig
         if (isHml)
         {
             var schema = GetDatabaseSchema() ?? "public";
-            return $"http://10.3.192.201/{schema}/reliability_back";
+            return $"http://10.3.192.202/{schema}/reliability_back";
         }
         else
         {
