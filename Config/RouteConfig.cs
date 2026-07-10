@@ -135,8 +135,8 @@ public static class RouteConfig
         {
             var serviceName = GetServiceName();
 
-            // o serviço especificado na env var for apm_back, usamos a URL do Twins
-            if (serviceName != null && serviceName.Contains("twins_back"))
+            // o serviço especificado na env var for apm_back, usamos a URL do APM
+            if (serviceName != null && serviceName.Contains("apm"))
             {
                 return configuration["APIs:APM"] ?? "http://10.3.192.200:60141";
             }

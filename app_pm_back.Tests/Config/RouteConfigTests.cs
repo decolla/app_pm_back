@@ -6,6 +6,8 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+
 namespace app_pm_back.Tests.Config;
 
 public class RouteConfigTests : IDisposable
