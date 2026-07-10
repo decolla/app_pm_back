@@ -20,6 +20,7 @@ public class ReliabilityService
     private readonly ExternIntegrationService _externIntegrationService;
     private readonly HttpClient _httpClient;
     private readonly string _reliabilityBaseUrl;
+    private readonly string _twinsBaseUrl;
 
     public ReliabilityService(AppDbContext context, ExternIntegrationService externIntegrationService,
         ILogger<ReliabilityService> logger, ConfiguracaoGlobalService configuracaoGlobalService,
@@ -32,6 +33,7 @@ public class ReliabilityService
         _externIntegrationService = externIntegrationService;
         _logger = logger;
         _reliabilityBaseUrl = Config.RouteConfig.GetReliabilityBaseUrl(configuration);
+        _twinsBaseUrl = Config.RouteConfig.GetTwinsBaseUrl(configuration);
         _httpClient = httpClient;
     }
 
@@ -127,9 +129,10 @@ public class ReliabilityService
         try
         {
             _logger.LogInformation("Chamando API APM: GET /api/V1/Asset/Components/All com timeout de 30s.");
+            var url = $"{_twinsBaseUrl}/api/V1/Asset/Components/All";
 
             var jsonResponse = await _externIntegrationService
-                .GetDataAsync("/api/V1/Asset/Components/All", cts.Token);
+                .GetDataAsync(url, cts.Token);
 
             _logger.LogInformation("Resposta da API APM recebida com sucesso. Tamanho: {Length} caracteres.",
                 jsonResponse?.Length ?? 0);

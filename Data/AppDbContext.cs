@@ -66,10 +66,14 @@ public class AppDbContext : DbContext
                 "FerramentasOperacoes",
                 j => j.HasOne<FerramentaModel>().WithMany().HasForeignKey("IdFerramenta")
                     .OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<OperacaoModel>().WithMany().HasForeignKey("IdTarefa").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<OperacaoModel>().WithMany().HasForeignKey("IdOperacao")
+                    .OnDelete(DeleteBehavior.Cascade),
                 j =>
                 {
-                    j.HasKey("IdFerramenta", "IdTarefa");
+                    j.Property<long>("IdFerramenta");
+                    j.Property<long>("IdOperacao");
+            
+                    j.HasKey("IdFerramenta", "IdOperacao");
                     j.ToTable("PM_FerramentasOperacoes");
                 });
 

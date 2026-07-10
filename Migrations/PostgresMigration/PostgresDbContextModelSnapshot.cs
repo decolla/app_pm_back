@@ -10,7 +10,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     [DbContext(typeof(PostgresDbContext))]
     partial class PostgresDbContextModelSnapshot : ModelSnapshot
@@ -59,12 +59,12 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<long>("IdFerramenta")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("IdTarefa")
+                    b.Property<long>("IdOperacao")
                         .HasColumnType("bigint");
 
-                    b.HasKey("IdFerramenta", "IdTarefa");
+                    b.HasKey("IdFerramenta", "IdOperacao");
 
-                    b.HasIndex("IdTarefa");
+                    b.HasIndex("IdOperacao");
 
                     b.ToTable("PM_FerramentasOperacoes", (string)null);
                 });
@@ -268,7 +268,7 @@ namespace app_pm_back.Migrations.PostgresMigration
 
                     b.HasKey("Id");
 
-                    b.ToTable("ConfiguracaoGlobalModel");
+                    b.ToTable("PM_ConfiguracoesGlobais");
 
                     b.HasData(
                         new
@@ -277,7 +277,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 9, 18, 18, 48, 844, DateTimeKind.Utc).AddTicks(8643),
+                            DataModificacao = new DateTime(2026, 7, 9, 20, 27, 44, 157, DateTimeKind.Utc).AddTicks(4749),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -759,11 +759,11 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.OperacaoModel", b =>
                 {
-                    b.Property<long>("IdTarefa")
+                    b.Property<long>("IdOperacao")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdTarefa"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdOperacao"));
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(500)
@@ -771,6 +771,9 @@ namespace app_pm_back.Migrations.PostgresMigration
 
                     b.Property<double?>("Duracao")
                         .HasColumnType("double precision");
+
+                    b.Property<DateTime?>("FimEsperado")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<long?>("IdCTM")
                         .HasColumnType("bigint");
@@ -781,6 +784,9 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<long?>("IdTipoManutencao")
                         .HasColumnType("bigint");
 
+                    b.Property<DateTime?>("InicioEsperado")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<int?>("NdeProfissionais")
                         .HasColumnType("integer");
 
@@ -788,7 +794,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.HasKey("IdTarefa");
+                    b.HasKey("IdOperacao");
 
                     b.HasIndex("IdCTM");
 
@@ -1246,7 +1252,7 @@ namespace app_pm_back.Migrations.PostgresMigration
 
                     b.HasOne("app_pm_back.Models.Domain.OperacaoModel", null)
                         .WithMany()
-                        .HasForeignKey("IdTarefa")
+                        .HasForeignKey("IdOperacao")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
