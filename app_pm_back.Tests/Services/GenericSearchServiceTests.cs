@@ -34,7 +34,8 @@ public class GenericSearchServiceTests
         context.PM_Notas.AddRange(nota1, nota2);
         await context.SaveChangesAsync();
 
-        var service = new GenericSearchService(context);
+        var configService = new ConfiguracaoGlobalService(context);
+        var service = new GenericSearchService(context, configService);
 
         // Act
         var result = await service.BuscarPorCampoAsync("PM_Notas", "IdNota", "12", parcial: true, pagina: 1, tamanho: 1);
@@ -79,7 +80,8 @@ public class GenericSearchServiceTests
         context.PM_Notas.AddRange(nota1, nota2);
         await context.SaveChangesAsync();
 
-        var service = new GenericSearchService(context);
+        var configService = new ConfiguracaoGlobalService(context);
+        var service = new GenericSearchService(context, configService);
 
         // Act - Exact match (parcial: false) which avoids Npgsql ILike in memory
         var result = await service.BuscarPorCampoAsync("PM_Notas", "DescricaoBreve", "TestNota1", parcial: false, pagina: 1, tamanho: 10);
@@ -113,7 +115,8 @@ public class GenericSearchServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var service = new GenericSearchService(context);
+        var configService = new ConfiguracaoGlobalService(context);
+        var service = new GenericSearchService(context, configService);
 
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => 
@@ -127,7 +130,8 @@ public class GenericSearchServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var service = new GenericSearchService(context);
+        var configService = new ConfiguracaoGlobalService(context);
+        var service = new GenericSearchService(context, configService);
 
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => 

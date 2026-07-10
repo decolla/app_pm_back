@@ -48,7 +48,7 @@ public class SpreadSheetServiceTests
         using var context = CreateDbContext(dbName);
         
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        var mockNotaService = new Mock<NotaManutencaoService>(context);
+        var mockNotaService = new Mock<NotaService>(context);
         var mockOrdemService = new Mock<OrdemService>(context);
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         
@@ -95,7 +95,7 @@ public class SpreadSheetServiceTests
                 Notas = new List<NotaModel>()
             });
 
-        var mockNotaService = new Mock<NotaManutencaoService>(context);
+        var mockNotaService = new Mock<NotaService>(context);
         var mockOrdemService = new Mock<OrdemService>(context);
         var mockItemNotaService = new Mock<ItemNotaService>(context);
 
@@ -148,7 +148,7 @@ public class SpreadSheetServiceTests
                 Notas = notas
             });
 
-        var mockNotaService = new Mock<NotaManutencaoService>(context);
+        var mockNotaService = new Mock<NotaService>(context);
         mockNotaService.Setup(s => s.ImportarNotasEmLoteSeguroAsync(It.IsAny<List<NotaModel>>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
@@ -202,7 +202,7 @@ public class SpreadSheetServiceTests
                 Ordens = new List<OrdemModel>()
             });
 
-        var mockNotaService = new Mock<NotaManutencaoService>(context);
+        var mockNotaService = new Mock<NotaService>(context);
         var mockOrdemService = new Mock<OrdemService>(context);
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         
@@ -255,7 +255,7 @@ public class SpreadSheetServiceTests
                 Ordens = ordens
             });
 
-        var mockNotaService = new Mock<NotaManutencaoService>(context);
+        var mockNotaService = new Mock<NotaService>(context);
         var mockOrdemService = new Mock<OrdemService>(context);
         mockOrdemService.Setup(s => s.ImportarOrdensEmLoteSeguroAsync(It.IsAny<List<OrdemModel>>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
@@ -268,7 +268,7 @@ public class SpreadSheetServiceTests
             .ReturnsAsync(2);
 
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
-        mockSyncApmService.Setup(s => s.SynchronizeAPMAsync(It.IsAny<CancellationToken>()))
+        mockSyncApmService.Setup(s => s.SynchronizeApmAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
         var service = new ImportSheetService(
@@ -294,7 +294,7 @@ public class SpreadSheetServiceTests
             false,
             It.IsAny<CancellationToken>()
         ), Times.Once);
-        mockSyncApmService.Verify(s => s.SynchronizeAPMAsync(It.IsAny<CancellationToken>()), Times.Once);
+        mockSyncApmService.Verify(s => s.SynchronizeApmAsync(It.IsAny<CancellationToken>()), Times.Once);
         mockDadosRenovacaoService.Verify(s => s.ImportarDadosOrdemAsync(It.Is<List<long>>(l => l.Count == 2), It.IsAny<CancellationToken>()), Times.Once);
 
         Environment.SetEnvironmentVariable("DATABASE_SCHEMA", null);
@@ -316,7 +316,7 @@ public class SpreadSheetServiceTests
                 Itens = new List<ItemNotaModel>()
             });
 
-        var mockNotaService = new Mock<NotaManutencaoService>(context);
+        var mockNotaService = new Mock<NotaService>(context);
         var mockOrdemService = new Mock<OrdemService>(context);
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         
@@ -372,7 +372,7 @@ public class SpreadSheetServiceTests
                 Itens = itens
             });
 
-        var mockNotaService = new Mock<NotaManutencaoService>(context);
+        var mockNotaService = new Mock<NotaService>(context);
         var mockOrdemService = new Mock<OrdemService>(context);
         
         var mockItemNotaService = new Mock<ItemNotaService>(context);
@@ -426,7 +426,7 @@ public class SpreadSheetServiceTests
                 TipoIdentificado = "DESCONHECIDO"
             });
 
-        var mockNotaService = new Mock<NotaManutencaoService>(context);
+        var mockNotaService = new Mock<NotaService>(context);
         var mockOrdemService = new Mock<OrdemService>(context);
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         

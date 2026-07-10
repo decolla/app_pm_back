@@ -996,7 +996,7 @@
             Classe OperacoesController para gerenciar OperacaoModel.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OperacoesController.#ctor(app_pm_back.Services.Manutencao.TarefaService,AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.OperacoesController.#ctor(app_pm_back.Services.Manutencao.OperacaoService,AutoMapper.IMapper)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.OperacoesController"/>.
             </summary>
@@ -1430,7 +1430,7 @@
             Endpoints de tarefas por tipo de manutencao.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.#ctor(app_pm_back.Services.Manutencao.TarefaService,AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.#ctor(app_pm_back.Services.Manutencao.OperacaoService,AutoMapper.IMapper)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.PlanoManutencao.TarefaController"/>.
             </summary>
@@ -3192,6 +3192,16 @@
             Quantidade de profissionais necessários para a tarefa.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.InicioEsperado">
+            <summary>
+            Data e hora prevista para o início.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.FimEsperado">
+            <summary>
+            Data e hora prevista para a conclusão.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.OperacaoModel.IdCTM">
             <summary>
             Chave estrangeira para o Centro de Trabalho Móvel (CTM).
@@ -3941,16 +3951,28 @@
             Interface para controle do contexto do usuário, incluindo escopos e identificação do usuário atual.
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
+        <member name="T:app_pm_back.Migrations.InitialPostgres">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Services.AnnexService">
@@ -4595,6 +4617,23 @@
             <param name="tipoManutencaoId">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
+        <member name="T:app_pm_back.Services.Manutencao.OperacaoService">
+            <summary>
+            Classe OperacaoService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OperacaoService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.OperacaoService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OperacaoService.BuscarPorTipoManutencaoAsync(System.Int64)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="tipoManutencaoId">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
         <member name="T:app_pm_back.Services.Manutencao.AlmoxarifadoService">
             <summary>
             Classe AlmoxarifadoService.
@@ -4604,23 +4643,6 @@
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.AlmoxarifadoService"/>.
             </summary>
-        </member>
-        <member name="T:app_pm_back.Services.Manutencao.TarefaService">
-            <summary>
-            Classe TarefaService.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.TarefaService.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.TarefaService"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.TarefaService.BuscarPorTipoManutencaoAsync(System.Int64)">
-            <summary>
-            Obtém um registro específico.
-            </summary>
-            <param name="tipoManutencaoId">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.UsuarioService">
             <summary>

@@ -42,7 +42,8 @@ public class ClassificationServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var service = new ClassificationService<NotaModel>(context);
+        var configService = new ConfiguracaoGlobalService(context);
+        var service = new ClassificationService<NotaModel>(context, configService);
 
         var nota = new NotaModel
         {
@@ -80,7 +81,8 @@ public class ClassificationServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var service = new ClassificationService<NotaModel>(context);
+        var configService = new ConfiguracaoGlobalService(context);
+        var service = new ClassificationService<NotaModel>(context, configService);
 
         // Act
         var result = await service.HumanClassification(999, Classificacao.CORRETIVA, "AdminUser");
@@ -95,7 +97,11 @@ public class ClassificationServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var service = new ClassificationService<NotaModel>(context);
+        var configService = new ConfiguracaoGlobalService(context);
+        var service = new ClassificationService<NotaModel>(context, configService);
+
+        var config = await configService.ObterConfiguracaoAsync();
+        config.ClassificacaoAutomatica = ModoClassificacaoAutomatica.ClassificarPalavrasChave;
 
         // Save some notes without classification to DB
         context.PM_Notas.AddRange(

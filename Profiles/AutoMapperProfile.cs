@@ -48,7 +48,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao))
             .ForMember(dest => dest.Duracao, opt => opt.MapFrom(src => src.Duracao));
 
-        
+
         CreateMap<TipoManutencaoCepDto, TipoCepModel>()
             .ForMember(dest => dest.AcoesFalha, opt => opt.MapFrom(src => src.AcoesFalha));
 
