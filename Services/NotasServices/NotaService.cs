@@ -71,6 +71,9 @@ public class NotaService : BaseCrudService<NotaModel>
             {
                 if (sobrescrever)
                 {
+                    //Iguala o ID da planilha ao ID do banco.
+                    nota.IdNota = existente.IdNota; 
+                
                     _context.Entry(existente).CurrentValues.SetValues(nota);
                 }
             }
