@@ -99,6 +99,33 @@ namespace app_pm_back.Migrations
                     b.ToTable("PM_GpmUsuario", (string)null);
                 });
 
+            modelBuilder.Entity("app_pm_back.DTO.RuleClassificationDto", b =>
+                {
+                    b.Property<long>("IdRegra")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdRegra"));
+
+                    b.Property<string>("CampoAlvo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ClassificacaoAplicada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrdemPrioridade")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PalavraChave")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("IdRegra");
+
+                    b.ToTable("PM_RuleClassification");
+                });
+
             modelBuilder.Entity("app_pm_back.Models.Domain.AlmoxarifadoModel", b =>
                 {
                     b.Property<long>("IdAlmoxarifado")
@@ -277,7 +304,7 @@ namespace app_pm_back.Migrations
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 9, 20, 27, 44, 157, DateTimeKind.Utc).AddTicks(4749),
+                            DataModificacao = new DateTime(2026, 7, 13, 20, 41, 58, 237, DateTimeKind.Utc).AddTicks(9688),
                             FichasConfiabilidade = 2
                         });
                 });

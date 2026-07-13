@@ -3963,6 +3963,18 @@
         <member name="M:app_pm_back.Migrations.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:app_pm_back.Migrations.PostgresMigration.AddRuleClassification">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.AddRuleClassification.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.AddRuleClassification.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.AddRuleClassification.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
             <inheritdoc />
         </member>
