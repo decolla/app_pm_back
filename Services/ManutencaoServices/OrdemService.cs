@@ -128,19 +128,30 @@ public class OrdemService : BaseCrudService<OrdemModel>
     /// <returns>GPM, CTM, e usuários dos respetivos grupos</returns>
     public async Task<Object> GetGruposResponsaveis(long idOrdem)
     {
-        OrdemModel? ordem = await _context.PM_Ordens.FindAsync(idOrdem);
+        OrdemModel? ordem = await _context.PM_Ordens
+            .Include(o => o.GPM)
+            .Include(o => o.CTM)
+            .FirstOrDefaultAsync(o => o.IdOrdem == idOrdem);
         
         if (ordem == null) return new object();
         
-        var usuariosGpm = await _context.PM_Usuarios
-            .Where(u => u.Gpms == ordem.GPM)
-            .Select(u => new { u.IdUsuario, u.Nome})
-            .ToListAsync();
+        System.Collections.IEnumerable usuariosGpm = new List<object>();
+        if (ordem.IdGpm.HasValue)
+        {
+            usuariosGpm = await _context.PM_Usuarios
+                .Where(u => u.Gpms.Any(g => g.IdGPM == ordem.IdGpm.Value))
+                .Select(u => new { u.IdUsuario, u.Nome})
+                .ToListAsync();
+        }
         
-        var usuariosCtm = await _context.PM_Usuarios
-            .Where(u => u.Ctms == ordem.CTM)
-            .Select(u => new { u.IdUsuario, u.Nome})
-            .ToListAsync();
+        System.Collections.IEnumerable usuariosCtm = new List<object>();
+        if (ordem.IdCtm.HasValue)
+        {
+            usuariosCtm = await _context.PM_Usuarios
+                .Where(u => u.Ctms.Any(c => c.IdCTM == ordem.IdCtm.Value))
+                .Select(u => new { u.IdUsuario, u.Nome})
+                .ToListAsync();
+        }
         
         return new
         {

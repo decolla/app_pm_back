@@ -42,7 +42,8 @@ public class SynchronizeAPMService
         _logger.LogInformation("Iniciando a sincronização dos dados do APM com as Notas e Ordens.");
 
         // Define um timeout de 30 segundos para a requisição da API e do banco
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        cts.CancelAfter(TimeSpan.FromSeconds(30));
 
         try
         {
@@ -71,26 +72,32 @@ public class SynchronizeAPMService
 
             _logger.LogInformation("Desserializados {Count} ativos do APM.", ativos.Count);
 
-            // gera um dicionário com nome e dnsIot
-            Dictionary<(string, string?), (string?, List<ComponentType>?)> dicionarioDns = ativos
+            // gera a lista de ativos válidos
+            var ativosValidos = ativos
                 .Where(a => !string.IsNullOrEmpty(a.Name) && !string.IsNullOrEmpty(a.DnsIot) &&
                             a.ComponentTypes != null)
                 .DistinctBy(a => a.Name)
-                .ToDictionary(a => (a.Name, a.sapId), a => (a.DnsIot, a.ComponentTypes));
+                .ToList();
 
             _logger.LogInformation(
-                "Dicionário DNS gerado com {Count} chaves únicas após filtragem e remoção de duplicados.",
-                dicionarioDns.Count);
+                "Ativos válidos gerados com {Count} registros únicos após filtragem e remoção de duplicados.",
+                ativosValidos.Count);
 
-            if (!dicionarioDns.Any())
+            if (!ativosValidos.Any())
             {
                 _logger.LogWarning("Nenhum ativo com Name e DnsIot válidos.");
                 return false;
             }
 
-            // extrai chaves separadas
-            var nomesValidos = dicionarioDns.Keys.Select(k => k.Item1).Where(x => x != null).Distinct().ToList();
-            var sapsValidos = dicionarioDns.Keys.Select(k => k.Item2).Where(x => x != null).Distinct().ToList();
+            // Mapeamentos rápidos O(1) para busca por Name e por sapId
+            var dnsByName = ativosValidos.ToDictionary(a => a.Name!, a => (DnsIot: a.DnsIot, ComponentTypes: a.ComponentTypes), StringComparer.OrdinalIgnoreCase);
+            var dnsBySap = ativosValidos.Where(a => !string.IsNullOrEmpty(a.sapId))
+                .DistinctBy(a => a.sapId)
+                .ToDictionary(a => a.sapId!, a => (DnsIot: a.DnsIot, ComponentTypes: a.ComponentTypes), StringComparer.OrdinalIgnoreCase);
+
+            // extrai chaves separadas para queries eficientes
+            var nomesValidos = dnsByName.Keys.ToList();
+            var sapsValidos = dnsBySap.Keys.ToList();
 
             // busca notas e ordens que os LI batem com os passados
             _logger.LogInformation("Buscando Notas e Ordens correspondentes no banco de dados.");
@@ -110,25 +117,20 @@ public class SynchronizeAPMService
             int notasAtualizadas = 0;
             int ordensAtualizadas = 0;
 
-            // atualiza cada uma delas 
+            // atualiza cada uma delas com busca direta O(1)
             foreach (var nota in notasEncontradas)
             {
-                var chaveEncontrada =
-                    dicionarioDns.Keys.FirstOrDefault(k => k.Item1 == nota.IdLi || k.Item2 == nota.IdLi);
-
-                if (chaveEncontrada.Item1 != null)
+                if (nota.IdLi != null && (dnsByName.TryGetValue(nota.IdLi, out var duple) || dnsBySap.TryGetValue(nota.IdLi, out duple)))
                 {
-                    var duple = dicionarioDns[chaveEncontrada];
-
-                    if (duple.Item2 != null && !duple.Item2.Any(a => a == nota.IdAtivo))
+                    if (duple.ComponentTypes != null && !duple.ComponentTypes.Any(a => a == nota.IdAtivo))
                     {
                         nota.IdAtivo = null;
                         notasAtualizadas++;
                     }
 
-                    if (nota.DnsIot != duple.Item1)
+                    if (nota.DnsIot != duple.DnsIot)
                     {
-                        nota.DnsIot = duple.Item1;
+                        nota.DnsIot = duple.DnsIot;
                         notasAtualizadas++;
                     }
                 }
@@ -136,22 +138,17 @@ public class SynchronizeAPMService
 
             foreach (var ordem in ordensEncontradas)
             {
-                var chaveEncontrada =
-                    dicionarioDns.Keys.FirstOrDefault(k => k.Item1 == ordem.IdLi || k.Item2 == ordem.IdLi);
-
-                if (chaveEncontrada.Item1 != null)
+                if (ordem.IdLi != null && (dnsByName.TryGetValue(ordem.IdLi, out var duple) || dnsBySap.TryGetValue(ordem.IdLi, out duple)))
                 {
-                    var duple = dicionarioDns[chaveEncontrada];
-
-                    if (duple.Item2 != null && !duple.Item2.Any(a => a == ordem.IdAtivo))
+                    if (duple.ComponentTypes != null && !duple.ComponentTypes.Any(a => a == ordem.IdAtivo))
                     {
                         ordem.IdAtivo = null;
                         ordensAtualizadas++;
                     }
 
-                    if (ordem.DnsIot != duple.Item1)
+                    if (ordem.DnsIot != duple.DnsIot)
                     {
-                        ordem.DnsIot = duple.Item1;
+                        ordem.DnsIot = duple.DnsIot;
                         ordensAtualizadas++;
                     }
                 }

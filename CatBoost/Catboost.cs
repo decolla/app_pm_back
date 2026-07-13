@@ -204,7 +204,7 @@ internal static partial class FFI
         var subArrays = new IntPtr[array.Length];
         for (var i = 0; i < array.Length; i++)
         {
-            subArrays[i] = Marshal.AllocHGlobal(array[0].Length * sizeof(float));
+            subArrays[i] = Marshal.AllocHGlobal(array[i].Length * sizeof(float));
             Marshal.Copy(array[i], 0, subArrays[i], array[i].Length);
         }
 

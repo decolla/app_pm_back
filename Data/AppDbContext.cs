@@ -211,6 +211,11 @@ public class SqlServerDbContext : AppDbContext
             v => JsonSerializer.Deserialize<List<AcoesFalha>>(v, (JsonSerializerOptions?)null) ?? new List<AcoesFalha>()
         );
 
+        var longListConverter = new ValueConverter<List<long>?, string>(
+            v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+            v => JsonSerializer.Deserialize<List<long>>(v, (JsonSerializerOptions?)null) ?? new List<long>()
+        );
+
         modelBuilder.Entity<TipoCepModel>()
             .Property(e => e.AcoesFalha)
             .HasConversion(converter)
@@ -218,14 +223,17 @@ public class SqlServerDbContext : AppDbContext
 
         modelBuilder.Entity<ReliabilityModel>()
             .Property(e => e.IdsNotas)
+            .HasConversion(longListConverter)
             .HasColumnType("nvarchar(max)");
 
         modelBuilder.Entity<ReliabilityModel>()
             .Property(e => e.IdsOrdens)
+            .HasConversion(longListConverter)
             .HasColumnType("nvarchar(max)");
 
         modelBuilder.Entity<UsuarioModel>()
             .Property(e => e.Escopos)
+            .HasConversion(longListConverter)
             .HasColumnType("nvarchar(max)");
     }
 }

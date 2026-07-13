@@ -151,7 +151,6 @@ builder.Services.AddScoped<ClassificationService<OrdemModel>>();
 builder.Services.AddScoped<AnnexService>();
 builder.Services.AddScoped<ConfiguracaoGlobalService>();
 builder.Services.AddScoped<IReportService, ReportService>();
-builder.Services.AddScoped<DadosRenovacaoService>();
 builder.Services.AddScoped<LinhaTemporalService>();
 builder.Services.AddScoped<ReliabilityService>();
 
@@ -159,7 +158,7 @@ builder.Services.AddScoped<ReliabilityService>();
 builder.Services.AddHttpClient<ExternIntegrationService>(client =>
     {
         // busca a URL do APM 
-        var urlBase = app_pm_back.Config.RouteConfig.GetTwinsBaseUrl(builder.Configuration);
+        var urlBase = app_pm_back.Config.RouteConfig.GetApmBaseUrl(builder.Configuration);
 
         if (string.IsNullOrEmpty(urlBase))
         {
