@@ -19,6 +19,7 @@ public class ImportSheetService
 
 
     public ImportSheetService(
+        ILogger<ImportSheetService> logger,
         AppDbContext dbContext,
         SpreadsheetService spreadsheetService,
         NotaService notaService,
@@ -34,6 +35,7 @@ public class ImportSheetService
         _itemNotaService = itemNotaService;
         _dadosRenovacaoService = dadosRenovacaoService;
         _synchronizeApmService = synchronizeApmService;
+        _logger = logger;
     }
 
     /// <summary>
