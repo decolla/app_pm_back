@@ -3987,6 +3987,18 @@
         <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:app_pm_back.Migrations.SqlServerMigrations.AddRuleClassification">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.AddRuleClassification.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.AddRuleClassification.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.SqlServerMigrations.AddRuleClassification.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:app_pm_back.Services.AnnexService">
             <summary>
             Classe AnnexService.
@@ -4225,6 +4237,16 @@
         <member name="M:app_pm_back.Services.FichasServices.LinhaTemporalService.ObterItensDaLiAsync(System.String)">
             <summary>
             Obtém notas e ordens para uma LI específica
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.ImportSheetService.ProcessarPlanilhaAsync(Microsoft.AspNetCore.Http.IFormFile,System.Boolean,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Processa dados da planilha do excel para verificar se precisa cadastrar nota, ordem ou item
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.ImportSheetService.ImportarComProgressoAsync``1(System.Collections.Generic.List{``0},System.String,System.Func{System.Collections.Generic.List{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+            <summary>
+            A cada 1000 linhas lidas no excel manda um log, cadastra em batches
             </summary>
         </member>
         <member name="T:app_pm_back.Services.BaseCrudService`1">
@@ -4901,7 +4923,7 @@
             Obtém ou define o valor de Itens.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.SpreadsheetService.ReadNotasSpreadSheetAsync(Microsoft.AspNetCore.Http.IFormFile,System.Threading.CancellationToken)">
+        <member name="M:app_pm_back.Services.SpreadsheetService.ReadNotasSpreadSheetAsync(System.IO.Stream,System.String,System.Threading.CancellationToken)">
             <summary>
             Executa a ação correspondente.
             </summary>

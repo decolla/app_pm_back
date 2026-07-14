@@ -57,6 +57,7 @@ public class SpreadSheetServiceTests
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
+            new Mock<ILogger<ImportSheetService>>().Object,
             context,
             mockSpreadsheetService.Object,
             mockNotaService.Object,
@@ -88,7 +89,7 @@ public class SpreadSheetServiceTests
         using var context = CreateDbContext(dbName);
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "NOTA",
@@ -104,6 +105,7 @@ public class SpreadSheetServiceTests
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
+            new Mock<ILogger<ImportSheetService>>().Object,
             context,
             mockSpreadsheetService.Object,
             mockNotaService.Object,
@@ -141,7 +143,7 @@ public class SpreadSheetServiceTests
         };
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "NOTA",
@@ -160,6 +162,7 @@ public class SpreadSheetServiceTests
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
+            new Mock<ILogger<ImportSheetService>>().Object,
             context,
             mockSpreadsheetService.Object,
             mockNotaService.Object,
@@ -195,7 +198,7 @@ public class SpreadSheetServiceTests
         using var context = CreateDbContext(dbName);
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ORDEM",
@@ -211,6 +214,7 @@ public class SpreadSheetServiceTests
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
+            new Mock<ILogger<ImportSheetService>>().Object,
             context,
             mockSpreadsheetService.Object,
             mockNotaService.Object,
@@ -248,7 +252,7 @@ public class SpreadSheetServiceTests
         };
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ORDEM",
@@ -272,6 +276,7 @@ public class SpreadSheetServiceTests
             .ReturnsAsync(true);
 
         var service = new ImportSheetService(
+            new Mock<ILogger<ImportSheetService>>().Object,
             context,
             mockSpreadsheetService.Object,
             mockNotaService.Object,
@@ -309,7 +314,7 @@ public class SpreadSheetServiceTests
         using var context = CreateDbContext(dbName);
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ITEM",
@@ -325,6 +330,7 @@ public class SpreadSheetServiceTests
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
+            new Mock<ILogger<ImportSheetService>>().Object,
             context,
             mockSpreadsheetService.Object,
             mockNotaService.Object,
@@ -365,7 +371,7 @@ public class SpreadSheetServiceTests
         };
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ITEM",
@@ -384,6 +390,7 @@ public class SpreadSheetServiceTests
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
+            new Mock<ILogger<ImportSheetService>>().Object,
             context,
             mockSpreadsheetService.Object,
             mockNotaService.Object,
@@ -420,7 +427,7 @@ public class SpreadSheetServiceTests
         using var context = CreateDbContext(dbName);
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<IFormFile>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "DESCONHECIDO"
@@ -435,6 +442,7 @@ public class SpreadSheetServiceTests
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
+            new Mock<ILogger<ImportSheetService>>().Object,
             context,
             mockSpreadsheetService.Object,
             mockNotaService.Object,
