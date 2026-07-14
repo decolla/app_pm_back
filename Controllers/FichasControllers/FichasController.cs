@@ -206,6 +206,8 @@ public class FichasController : ControllerBase
     /// Faz o upload e processamento de planilhas de Notas, Ordens ou Itens
     /// </summary>
     [HttpPost("upload")]
+    [DisableRequestSizeLimit] 
+    [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
     public async Task<IActionResult> UploadPlanilha(
         IFormFile file,
         [FromQuery] bool sobrescrever,
