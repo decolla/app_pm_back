@@ -91,9 +91,16 @@ public class ImportSheetService
             
             if (idNotas.Count > 0) 
             {
-                _logger.LogInformation("Iniciando sincronização APM...");
-                bool sinc = await _synchronizeApmService.SynchronizeApmAsync(cancellationToken); 
-                _logger.LogInformation($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                try 
+                {
+                    _logger.LogInformation("Iniciando sincronização APM...");
+                    bool sinc = await _synchronizeApmService.SynchronizeApmAsync(cancellationToken); 
+                    _logger.LogInformation($"Sincronização APM: {(sinc ? "OK" : "Falhou")}.");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("A API do APM retornou erro. A importação foi concluída, mas a sincronização APM falhou: {Message}", ex.Message);
+                }
                 
                 await _dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens, cancellationToken);
             }
@@ -117,15 +124,27 @@ public class ImportSheetService
                 cancellationToken);
             
             var idOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
-            
+
             if (idOrdens.Count > 0)
             {
-                _logger.LogInformation("Iniciando sincronização APM para ordens...");
-                bool sinc = await _synchronizeApmService.SynchronizeApmAsync(cancellationToken); 
-                _logger.LogInformation($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                try
+                {
+                    _logger.LogInformation("Iniciando sincronização APM para ordens...");
+                    bool sinc = await _synchronizeApmService.SynchronizeApmAsync(cancellationToken);
+                    _logger.LogInformation(
+                        $"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                }
+                catch (Exception ex)
+                {
+                    // SE O APM FALHAR, CAPTURA O ERRO AQUI E GERA O AVISO!
+                    _logger.LogWarning(
+                        "A API do APM retornou erro. A importação foi concluída, mas a sincronização APM falhou: {Message}",
+                        ex.Message);
+                }
+
                 await _dadosRenovacaoService.ImportarDadosOrdemAsync(idOrdens, cancellationToken);
             }
-            
+
             _logger.LogInformation("Processamento de ORDENS finalizado com sucesso!");
             return ordensDeduplicadas.Count;
         }
@@ -202,7 +221,7 @@ public class ImportSheetService
         Func<List<T>, CancellationToken, Task> acaoImportacao, 
         CancellationToken ct)
     {
-        int batchSize = 1000; 
+        int batchSize = 10000; 
         int totalProcessadas = 0;
         int totalItens = itens.Count;
 

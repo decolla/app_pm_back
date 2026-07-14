@@ -89,6 +89,7 @@ public class NotaService : BaseCrudService<NotaModel>
         }
 
         await _context.SaveChangesAsync();
+        _context.ChangeTracker.Clear();
     }
 
     /// <summary>
