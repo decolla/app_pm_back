@@ -41,7 +41,11 @@ builder.Services.AddCors(option => option.AddPolicy("AllowAll", policy =>
 }));
 
 // aumenta o limite de ficheiros multipart para 200 MB
-builder.Services.Configure<FormOptions>(options => { options.MultipartBodyLengthLimit = 209715200; });
+builder.Services.Configure<FormOptions>(options => 
+{ 
+    options.MultipartBodyLengthLimit = 209715200; // 200 MB de limite de tamanho
+    options.MemoryBufferThreshold = 209715200;    // Mantém arquivos de até 200MB 100% na Memória RAM
+});
 
 // aumenta o limite do servidor para 200 MB
 builder.WebHost.ConfigureKestrel(serverOptions => { serverOptions.Limits.MaxRequestBodySize = 209715200; });
