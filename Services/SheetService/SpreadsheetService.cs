@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -16,6 +17,10 @@ namespace app_pm_back.Services;
 /// </summary>
 public class SpreadsheetService
 {
+    // OTIMIZAÇÃO: Cache para não ler Reflection a cada linha da planilha
+    private static readonly ConcurrentDictionary<Type, List<(PropertyInfo Property, string ColName)>> _propertyCache =
+        new();
+
     private static readonly (ComponentType Type, string[] Terms)[] ComponentTypeMatchers =
     [
         (ComponentType.Shutoff,
@@ -100,20 +105,21 @@ public class SpreadsheetService
     /// <param name="spreadSheet">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
     public virtual async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(
-        IFormFile spreadSheet,
+        Stream fileStream,
+        string fileName,
         CancellationToken cancellationToken = default)
     {
         var resultado = new ResultadoPlanilha();
 
-        var extension = Path.GetExtension(spreadSheet.FileName).ToLower();
+        var extension = Path.GetExtension(fileName).ToLower();
         Stream csvStream;
 
-        // se for Excel, converte para csv usando o serviço de conversão, se for csv, lê direto do arquivo enviado
+        // Usa o Stream direto da memória. Não podemos colocar "using" aqui pois o Stream pertence ao chamador (Orquestrador).
         if (extension == ".xlsx")
         {
-            await using var xlsxStream = spreadSheet.OpenReadStream();
+            // Usa o Stream direto da memória. Não podemos colocar "using" aqui pois o Stream pertence ao chamador.
             csvStream = await _convertService.ConvertXlsxStreamToCsvMemoryAsync(
-                xlsxStream,
+                fileStream,
                 sheetIndex: 0,
                 separator: ';',
                 utf8WithBom: true
@@ -121,7 +127,7 @@ public class SpreadsheetService
         }
         else
         {
-            csvStream = spreadSheet.OpenReadStream();
+            csvStream = fileStream;
         }
 
         csvStream.Position = 0;
@@ -132,30 +138,31 @@ public class SpreadsheetService
         using (var reader = new StreamReader(csvStream, Encoding.UTF8, true, 1024, leaveOpen: true))
         {
             var primeiraLinha = reader.ReadLine() ?? "";
-            
+
             // se houver mais vírgulas do que ponto-e-vírgulas no cabeçalho, sabemos que é um CSV 
             if (primeiraLinha.Count(c => c == ',') > primeiraLinha.Count(c => c == ';'))
             {
                 delimitador = ",";
             }
         }
-        
+
         // reseta a posição do stream para conseguir ler desde o início
-        csvStream.Position = 0; 
+        csvStream.Position = 0;
 
         CultureInfo culture = CultureInfo.GetCultureInfo("pt-BR");
 
+        //'leaveOpen: true' garante que o parser não destrua o MemoryStream principal prematuramente
         using TextFieldParser parser =
-            new TextFieldParser(csvStream, Encoding.UTF8, detectEncoding: true, leaveOpen: false)
+            new TextFieldParser(csvStream, Encoding.UTF8, detectEncoding: true, leaveOpen: true)
             {
                 TextFieldType = FieldType.Delimited
             };
 
         // delimitadro detectado
         parser.SetDelimiters(delimitador);
-        
+
         // impede quebras 
-        parser.HasFieldsEnclosedInQuotes = true; 
+        parser.HasFieldsEnclosedInQuotes = true;
         parser.TrimWhiteSpace = true;
         string[]? headers = null;
         Dictionary<string, int> columns = new(StringComparer.OrdinalIgnoreCase);
@@ -164,7 +171,7 @@ public class SpreadsheetService
         {
             // interrompe o loop se o token for laçado
             cancellationToken.ThrowIfCancellationRequested();
-            
+
             headers = parser.ReadFields();
             if (headers == null) continue;
 
@@ -220,7 +227,7 @@ public class SpreadsheetService
         {
             // interrompe o loop se o token for laçado
             cancellationToken.ThrowIfCancellationRequested();
-            
+
             string[]? row = parser.ReadFields();
             if (row == null || row.All(string.IsNullOrWhiteSpace)) continue;
 
@@ -247,135 +254,142 @@ public class SpreadsheetService
     public T ReadLineForModel<T>(string[] row, Dictionary<string, int> columns) where T : class, new()
     {
         var model = new T();
+        var type = typeof(T);
 
-        foreach (PropertyInfo property in model.GetType().GetProperties())
+        //OTIMIZAÇÃO DE REFLECTION
+        // Se as propriedades dessa classe ainda não foram lidas, lê e guarda no cache.
+        if (!_propertyCache.TryGetValue(type, out var props))
         {
-            var atributo = property.GetCustomAttribute<SheetColumnAttribute>();
-
-            if (atributo != null)
+            // Caso não estejam no cache (primeira vez que o sistema vê esta classe), usamos Reflection para ler.
+            props = new List<(PropertyInfo, string)>();
+            foreach (PropertyInfo property in type.GetProperties())
             {
-                string nomeColunaExcel = atributo.NomeDaColuna;
-
-                if (columns.TryGetValue(nomeColunaExcel.ToUpperInvariant(), out var idx) && idx < row.Length)
+                var atributo = property.GetCustomAttribute<SheetColumnAttribute>();
+                if (atributo != null)
                 {
-                    string valor = row[idx].Trim();
+                    props.Add((property, atributo.NomeDaColuna));
+                }
+            }
+            
+            // Guarda o resultado no dicionário estático para uso imediato nas próximas milhares de iterações.
+            _propertyCache[type] = props;
+        }
+        
+        // Iteramos sobre a lista processada armazenada no cache (velocidade máxima), eliminando o uso de GetProperties() aqui.
+        foreach(var(property, nomeColunaExcel) in props)
+        {
+            if (columns.TryGetValue(nomeColunaExcel.ToUpperInvariant(), out var idx) && idx < row.Length)
+            {
+                string valor = row[idx].Trim();
 
-                    if (!string.IsNullOrWhiteSpace(valor))
+                if (!string.IsNullOrWhiteSpace(valor))
+                {
+                    try
                     {
-                        try
-                        {
-                            Type tipo = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
-                            object? valorConvertido = null;
+                        Type tipo = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                        object? valorConvertido = null;
 
-                            if (tipo == typeof(ComponentType) &&
-                                string.Equals(property.Name, "IdAtivo", StringComparison.OrdinalIgnoreCase))
+                        if (tipo == typeof(ComponentType) && string.Equals(property.Name, "IdAtivo",
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            valorConvertido = TryTranslateComponentType(valor);
+                        }
+                        else if (tipo == typeof(long) &&
+                                 string.Equals(property.Name, "IdNota", StringComparison.OrdinalIgnoreCase) &&
+                                 string.Equals(nomeColunaExcel, "cdnotamanutencao", StringComparison.OrdinalIgnoreCase))
+                        {
+                            valorConvertido = TryTranslateSapCode(valor);
+                        }
+                        else if (tipo == typeof(DateTime) && string.Equals(nomeColunaExcel, "data_expectativa_nota",
+                                     StringComparison.OrdinalIgnoreCase))
+                        {
+                            long.TryParse(valor, out long l);
+                            DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
+                            valorConvertido = dataOffset.UtcDateTime;
+                        }
+                        else if (tipo == typeof(DateTime))
+                        {
+                            if (DateTime.TryParse(valor, CultureInfo.GetCultureInfo("pt-BR"), DateTimeStyles.None,
+                                    out var dt))
                             {
-                                valorConvertido = TryTranslateComponentType(valor);
+                                valorConvertido = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
                             }
-                            else if (tipo == typeof(long) &&
-                                     string.Equals(property.Name, "IdNota", StringComparison.OrdinalIgnoreCase) &&
-                                     string.Equals(nomeColunaExcel, "cdnotamanutencao",
-                                         StringComparison.OrdinalIgnoreCase))
-                            {
-                                valorConvertido = TryTranslateSapCode(valor);
-                            }
-                            else if (tipo == typeof(DateTime) &&
-                                     string.Equals(nomeColunaExcel, "data_expectativa_nota",
-                                         StringComparison.OrdinalIgnoreCase))
+                            else
                             {
                                 long.TryParse(valor, out long l);
                                 DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
                                 valorConvertido = dataOffset.UtcDateTime;
                             }
-                            else if (tipo == typeof(DateTime))
+                        }
+                        else if (string.Equals(nomeColunaExcel, "CondInstApósMed",
+                                     StringComparison.OrdinalIgnoreCase) && tipo == typeof(ConfiabilidadeRestaurada) &&
+                                 valor.Contains("3"))
+                        {
+                            valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
+                        }
+                        else if (string.Equals(nomeColunaExcel, "confiabilidade", StringComparison.OrdinalIgnoreCase) &&
+                                 tipo == typeof(ConfiabilidadeRestaurada) && valor == "1")
+                        {
+                            valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
+                        }
+                        else if (tipo == typeof(StatusFichas) && string.Equals(property.Name, "StatusNota",
+                                     StringComparison.OrdinalIgnoreCase))
+                        {
+                            valorConvertido = TryTranslateStatusNota(valor);
+                        }
+                        else if (tipo == typeof(StatusFichas) && string.Equals(property.Name, "StatusOrdem",
+                                     StringComparison.OrdinalIgnoreCase))
+                        {
+                            valorConvertido = TryTranslateStatusOrdem(valor);
+                        }
+                        else if (tipo.IsEnum)
+                        {
+                            if (Enum.TryParse(tipo, valor, true, out var parsedEnum))
                             {
-                                if (DateTime.TryParse(valor, CultureInfo.GetCultureInfo("pt-BR"), DateTimeStyles.None,
-                                        out var dt))
-                                {
-                                    valorConvertido = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
-                                }
-                                else
-                                {
-                                    // caso de unix timestamp, converte para datetime
-                                    long.TryParse(valor, out long l);
-                                    DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(l);
-                                    valorConvertido = dataOffset.UtcDateTime;
-                                }
-                            }
-                            else if (string.Equals(nomeColunaExcel, "CondInstApósMed",
-                                         StringComparison.OrdinalIgnoreCase) &&
-                                     tipo == typeof(ConfiabilidadeRestaurada) &&
-                                     valor.Contains("3"))
-                            {
-                                valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
-                            }
-                            else if (string.Equals(nomeColunaExcel, "confiabilidade",
-                                         StringComparison.OrdinalIgnoreCase) &&
-                                     tipo == typeof(ConfiabilidadeRestaurada) &&
-                                     valor == "1")
-                            {
-                                valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
-                            }
-                            else if (tipo == typeof(StatusFichas) &&
-                                     string.Equals(property.Name, "StatusNota", StringComparison.OrdinalIgnoreCase)
-                                    )
-                            {
-                                valorConvertido = TryTranslateStatusNota(valor);
-                            }
-                            else if (tipo == typeof(StatusFichas) &&
-                                     string.Equals(property.Name, "StatusOrdem", StringComparison.OrdinalIgnoreCase))
-                            {
-                                valorConvertido = TryTranslateStatusOrdem(valor);
-                            }
-                            else if (tipo.IsEnum)
-                            {
-                                if (Enum.TryParse(tipo, valor, true, out var parsedEnum))
-                                {
-                                    valorConvertido = parsedEnum;
-                                }
-                                else
-                                {
-                                    string cleaned = NormalizeText(valor);
-                                    if (Enum.TryParse(tipo, cleaned, true, out var parsedEnumCleaned))
-                                    {
-                                        valorConvertido = parsedEnumCleaned;
-                                    }
-                                }
-                            }
-                            else if (tipo == typeof(long) || tipo == typeof(int))
-                            {
-                                string numerosApenas = new string(valor.Where(char.IsDigit).ToArray());
-                                if (!string.IsNullOrEmpty(numerosApenas))
-                                {
-                                    valorConvertido = Convert.ChangeType(numerosApenas, tipo);
-                                }
-                            }
-                            else if (tipo == typeof(TimeSpan))
-                            {
-                                if (valor == "24:00:00") valor = "23:59:59";
-                                if (TimeSpan.TryParse(valor, out var ts))
-                                {
-                                    valorConvertido = ts;
-                                }
-                            }
-                            else if (tipo == typeof(Classificacao))
-                            {
-                                valorConvertido = TryTranslateClassificacao(valor);
+                                valorConvertido = parsedEnum;
                             }
                             else
                             {
-                                valorConvertido = Convert.ChangeType(valor, tipo);
-                            }
-
-                            if (valorConvertido != null)
-                            {
-                                property.SetValue(model, valorConvertido);
+                                string cleaned = NormalizeText(valor);
+                                if (Enum.TryParse(tipo, cleaned, true, out var parsedEnumCleaned))
+                                {
+                                    valorConvertido = parsedEnumCleaned;
+                                }
                             }
                         }
-                        catch (Exception ex)
+                        else if (tipo == typeof(long) || tipo == typeof(int))
                         {
-                            Console.WriteLine($"Erro ao converter o valor da coluna '{nomeColunaExcel}': {ex.Message}");
+                            string numerosApenas = new string(valor.Where(char.IsDigit).ToArray());
+                            if (!string.IsNullOrEmpty(numerosApenas))
+                            {
+                                valorConvertido = Convert.ChangeType(numerosApenas, tipo);
+                            }
                         }
+                        else if (tipo == typeof(TimeSpan))
+                        {
+                            if (valor == "24:00:00") valor = "23:59:59";
+                            if (TimeSpan.TryParse(valor, out var ts))
+                            {
+                                valorConvertido = ts;
+                            }
+                        }
+                        else if (tipo == typeof(Classificacao))
+                        {
+                            valorConvertido = TryTranslateClassificacao(valor);
+                        }
+                        else
+                        {
+                            valorConvertido = Convert.ChangeType(valor, tipo);
+                        }
+
+                        if (valorConvertido != null)
+                        {
+                            property.SetValue(model, valorConvertido);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Erro ao converter o valor da coluna '{nomeColunaExcel}': {ex.Message}");
                     }
                 }
             }
@@ -383,6 +397,7 @@ public class SpreadsheetService
 
         return model;
     }
+    
 
     private static ComponentType? TryTranslateComponentType(string rawValue)
     {

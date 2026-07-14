@@ -15,6 +15,7 @@ public class ImportSheetService
     private readonly ItemNotaService _itemNotaService;
     private readonly DadosRenovacaoService _dadosRenovacaoService;
     private readonly SynchronizeAPMService _synchronizeApmService;
+    private readonly ILogger<ImportSheetService> _logger;
 
 
     public ImportSheetService(
@@ -35,6 +36,9 @@ public class ImportSheetService
         _synchronizeApmService = synchronizeApmService;
     }
 
+    /// <summary>
+    /// Processa dados da planilha do excel para verificar se precisa cadastrar nota, ordem ou item
+    /// </summary>
     public async Task<int> ProcessarPlanilhaAsync(
         IFormFile file, 
         bool sobrescrever, 
@@ -45,7 +49,24 @@ public class ImportSheetService
         if (dbSchema == "cg")
             throw new ArgumentException("PEDRO ADVERTE: Importação de planilhas desabilitada para o schema CG.");
 
-        var resultadoPlanilha = await _spreadsheetService.ReadNotasSpreadSheetAsync(file, cancellationToken);
+        _logger.LogInformation("Baixando arquivo da rede para a memória (RAM) para processamento ultrarrápido...");
+        
+        //LER PARA MEMÓRIA
+        // Isso evita que o leitor de Excel (EPPlus/ClosedXML) trave tentando fazer "seek" na rede.
+        using var memoryStream = new MemoryStream();
+        await file.CopyToAsync(memoryStream, cancellationToken);
+        memoryStream.Position = 0; // Rebobina para o início
+
+        _logger.LogInformation("Arquivo de {Bytes} bytes baixado. Iniciando leitura da planilha...", memoryStream.Length);
+        
+        // ReadNotasSpreadSheetAsync aceita um 'Stream' ao invés de 'IFormFile' para otimização
+        // Adicionando o 'file.FileName' como o segundo parâmetro na chamada
+        var resultadoPlanilha = await _spreadsheetService.ReadNotasSpreadSheetAsync(
+            memoryStream, 
+            file.FileName, 
+            cancellationToken
+        );
+        
         List<long> idNotas = new List<long>();
         List<long> idItens = new List<long>();
 
@@ -55,17 +76,27 @@ public class ImportSheetService
                 throw new ArgumentException("Planilha reconhecida, mas sem dados válidos.");
 
             List<NotaModel> notasDeduplicadas = resultadoPlanilha.Notas.DistinctBy(o => o.NumeroNota).ToList();
+            _logger.LogInformation("Planilha lida com sucesso: {Count} notas únicas encontradas. Iniciando gravação otimizada.", notasDeduplicadas.Count);
 
-            await _notaService.ImportarNotasEmLoteSeguroAsync(notasDeduplicadas, sobrescrever, adicionarNovas, cancellationToken);
+            // PROCESSAMENTO EM LOTES MAIORES USANDO MÉTODO GENÉRICO
+            await ImportarComProgressoAsync(
+                notasDeduplicadas, 
+                "notas", 
+                (lote, ct) => _notaService.ImportarNotasEmLoteSeguroAsync(lote, sobrescrever, adicionarNovas, ct), 
+                cancellationToken);
             
             idNotas = notasDeduplicadas.Select(n => n.IdNota).ToList();
-            if (idItens.Count > 1) 
+            
+            if (idNotas.Count > 0) 
             {
+                _logger.LogInformation("Iniciando sincronização APM...");
                 bool sinc = await _synchronizeApmService.SynchronizeApmAsync(cancellationToken); 
-                Console.WriteLine($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                _logger.LogInformation($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                
                 await _dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens, cancellationToken);
             }
 
+            _logger.LogInformation("Processamento de NOTAS finalizado com sucesso!");
             return notasDeduplicadas.Count;
         }
         else if (resultadoPlanilha.TipoIdentificado == "ORDEM")
@@ -74,15 +105,26 @@ public class ImportSheetService
                 throw new ArgumentException("Planilha de ordens reconhecida, mas sem dados válidos.");
 
             List<OrdemModel> ordensDeduplicadas = resultadoPlanilha.Ordens.DistinctBy(o => o.NumeroOrdem).ToList();
+            _logger.LogInformation("Planilha lida com sucesso: {Count} ordens únicas encontradas. Iniciando gravação otimizada.", ordensDeduplicadas.Count);
 
-            await _ordemService.ImportarOrdensEmLoteSeguroAsync(ordensDeduplicadas, sobrescrever, adicionarNovas, cancellationToken);
+            // PROCESSAMENTO EM LOTES MAIORES USANDO MÉTODO GENÉRICO
+            await ImportarComProgressoAsync(
+                ordensDeduplicadas, 
+                "ordens", 
+                (lote, ct) => _ordemService.ImportarOrdensEmLoteSeguroAsync(lote, sobrescrever, adicionarNovas, ct), 
+                cancellationToken);
             
             var idOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
             
-            bool sinc = await _synchronizeApmService.SynchronizeApmAsync(cancellationToken); 
-            Console.WriteLine($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
-            await _dadosRenovacaoService.ImportarDadosOrdemAsync(idOrdens, cancellationToken);
+            if (idOrdens.Count > 0)
+            {
+                _logger.LogInformation("Iniciando sincronização APM para ordens...");
+                bool sinc = await _synchronizeApmService.SynchronizeApmAsync(cancellationToken); 
+                _logger.LogInformation($"Sincronização com APM {(sinc ? "bem-sucedida" : "falhou")} antes de importar dados de renovação.");
+                await _dadosRenovacaoService.ImportarDadosOrdemAsync(idOrdens, cancellationToken);
+            }
             
+            _logger.LogInformation("Processamento de ORDENS finalizado com sucesso!");
             return ordensDeduplicadas.Count;
         }
         else if (resultadoPlanilha.TipoIdentificado == "ITEM")
@@ -119,14 +161,25 @@ public class ImportSheetService
 
             if (itensValidos.Any())
             {
-                await _itemNotaService.ImportarItensEmLoteSeguroAsync(itensValidos, cancellationToken);
+                _logger.LogInformation("Planilha lida com sucesso: {Count} itens válidos vinculados. Iniciando gravação otimizada.", itensValidos.Count);
+                
+                // PROCESSAMENTO EM LOTES MAIORES USANDO MÉTODO GENÉRICO
+                await ImportarComProgressoAsync(
+                    itensValidos, 
+                    "itens", 
+                    (lote, ct) => _itemNotaService.ImportarItensEmLoteSeguroAsync(lote, ct), 
+                    cancellationToken);
 
                 idItens = itensValidos.Select(i => i.IdItemNota).ToList();
-                if (idNotas.Count > 1)
+                idNotas = notasNoBanco.Values.Distinct().ToList(); // Resgatando IDs internos para usar na renovação
+
+                if (idItens.Count > 0 && idNotas.Count > 0)
                 {
+                    _logger.LogInformation("Iniciando importação de dados de renovação de itens e notas...");
                     await _dadosRenovacaoService.ImportarDadosNotaAsync(idNotas, idItens, cancellationToken);
                 }
 
+                _logger.LogInformation("Processamento de ITENS finalizado com sucesso!");
                 return itensValidos.Count;
             }
 
@@ -135,6 +188,43 @@ public class ImportSheetService
         else
         {
             throw new ArgumentException("Formato de planilha não reconhecido. Verifique os cabeçalhos.");
+        }
+    }
+
+    /// <summary>
+    /// A cada 1000 linhas lidas no excel manda um log, cadastra em batches
+    /// </summary>
+    private async Task ImportarComProgressoAsync<T>(
+        List<T> itens, 
+        string nomeEntidade, 
+        Func<List<T>, CancellationToken, Task> acaoImportacao, 
+        CancellationToken ct)
+    {
+        int batchSize = 1000; 
+        int totalProcessadas = 0;
+        int totalItens = itens.Count;
+
+        // Divide a lista genérica em blocos de 'batchSize'
+        var lotes = itens.Select((x, i) => new { Index = i, Value = x })
+                         .GroupBy(x => x.Index / batchSize)
+                         .Select(x => x.Select(v => v.Value).ToList())
+                         .ToList();
+
+        foreach (var lote in lotes)
+        {
+            if (ct.IsCancellationRequested)
+            {
+                _logger.LogWarning("Operação cancelada na linha {Linha}.", totalProcessadas);
+                ct.ThrowIfCancellationRequested();
+            }
+
+            // Executa a função específica de salvar no banco passada via parâmetro
+            await acaoImportacao(lote, ct);
+
+            totalProcessadas += lote.Count;
+            
+            // LOG DE PROGRESSO
+            _logger.LogInformation("PROGRESSO RÁPIDO: {Processadas} / {Total} {Entidade} processadas...", totalProcessadas, totalItens, nomeEntidade);
         }
     }
 }
