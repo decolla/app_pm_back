@@ -3951,28 +3951,16 @@
             Interface para controle do contexto do usuário, incluindo escopos e identificação do usuário atual.
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.InitialPostgres">
+        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.PostgresMigration.AddRuleClassification">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.AddRuleClassification.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.AddRuleClassification.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.AddRuleClassification.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
@@ -3985,18 +3973,6 @@
             <inheritdoc />
         </member>
         <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Migrations.SqlServerMigrations.AddRuleClassification">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.SqlServerMigrations.AddRuleClassification.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.SqlServerMigrations.AddRuleClassification.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.SqlServerMigrations.AddRuleClassification.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Services.AnnexService">

@@ -13,7 +13,7 @@ public class NotaDto
 {
     [SheetColumn("Nota")] public long NumeroNota { get; set; }
 
-    [SheetColumn("Tipo de nota")] public string? TipoNota { get; set; }
+    [SheetColumn("N/A")] public string? TipoNota { get; set; }
 
     [SheetColumn("cdnotamanutencao")] public string? SapCode { get; set; }
 
@@ -51,9 +51,9 @@ public class NotaDto
 
     [SheetColumn("Data modificacao")] public DateTime? DataModificacao { get; set; }
 
-    [SheetColumn("Denominação")] public string? ReferenciaLocalizacaoAtivo { get; set; }
+    [SheetColumn("Denominacao")] public string? ReferenciaLocalizacaoAtivo { get; set; }
 
-    [SheetColumn("Finalidade")] public string? Finalidade { get; set; }
+    [SheetColumn("Tipo de nota")] public string? Finalidade { get; set; }
 
     [SheetColumn("InícioAvar")] public DateTime? DataAvaria { get; set; }
 

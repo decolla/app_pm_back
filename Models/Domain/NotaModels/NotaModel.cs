@@ -79,7 +79,6 @@ public class NotaModel : IClassifiable, IAuditable
     /// Facilita a identificação do local exato onde a intervenção deve ocorrer.
     /// </summary>
     /// <example>"Setor A - Linha de Produção 2 - Próximo ao compressor principal"</example>
-    [MaxLength(200, ErrorMessage = "A referência de localização não pode exceder 200 caracteres.")]
     public string? ReferenciaLocalizacaoAtivo { get; set; }
 
     /// <summary>
@@ -153,7 +152,6 @@ public class NotaModel : IClassifiable, IAuditable
     /// Descrição breve ou título resumido da nota.
     /// Fornece uma visão rápida do conteúdo da nota para listagens e resumos.
     /// </summary>
-    [MaxLength(100)]
     public string? DescricaoBreve { get; set; }
 
     /// <summary>
