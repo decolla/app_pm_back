@@ -28,7 +28,7 @@ public class NotaDto
 
     [SheetColumn("Gpm")] public long? IdGpm { get; set; }
 
-    [SheetColumn("Data Fim")] public DateTime? DataFim { get; set; }
+    [SheetColumn("Data encermto.")] public DateTime? DataFim { get; set; }
     [SheetColumn("Plano manut.")] public long? IdPlano { get; set; }
 
     [SheetColumn("Data classificação")] public DateTime? DataClassificacao { get; set; }
@@ -39,7 +39,7 @@ public class NotaDto
 
     [SheetColumn("Prioridade")] public Prioridade? Prioridade { get; set; }
 
-    [SheetColumn("data_expectativa_nota")] public DateTime? FimDesejado { get; set; }
+    [SheetColumn("Data encermto.")] public DateTime? FimDesejado { get; set; }
 
     [SheetColumn("Txt.code codif.")] public ComponentType? IdAtivo { get; set; }
 
@@ -51,13 +51,13 @@ public class NotaDto
 
     [SheetColumn("Data modificacao")] public DateTime? DataModificacao { get; set; }
 
-    [SheetColumn("Referência externa")] public string? ReferenciaLocalizacaoAtivo { get; set; }
+    [SheetColumn("Denominação")] public string? ReferenciaLocalizacaoAtivo { get; set; }
 
     [SheetColumn("Finalidade")] public string? Finalidade { get; set; }
 
     [SheetColumn("InícioAvar")] public DateTime? DataAvaria { get; set; }
 
-    [SheetColumn("Equipamento")] public string? EquipamentoDisponivel { get; set; }
+    [SheetColumn("Prioridade")] public string? EquipamentoDisponivel { get; set; }
 
     [SheetColumn("CondInstApósMed")] public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
 
@@ -65,7 +65,7 @@ public class NotaDto
 
     [SheetColumn("Txt.code codif.")] public string? ObservacoesComplementares { get; set; }
 
-    [SheetColumn("Campo seleção")] public string? DescricaoBreve { get; set; }
+    [SheetColumn("Txt.grp.codific")] public string? DescricaoBreve { get; set; }
 
     [SheetColumn("Id Usuario")] public int? IdUsuario { get; set; }
 
