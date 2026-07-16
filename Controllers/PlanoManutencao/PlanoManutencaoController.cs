@@ -239,6 +239,28 @@ public class PlanoManutencaoController : ControllerBase
             return BadRequest(new { message = $"Erro ao criar {_operador}: {e.Message}." });
         }
     }
+    
+    /// <summary>
+    /// Cria plano para todos os ativos a partir de uma estratégia
+    /// </summary>
+    [HttpPost("plano-automatico")]
+    public async Task<IActionResult> CriarSimplifcado([FromQuery] string nomeEstrategia)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var novoObj = await _planoManutencaoService.CadastroAuto(nomeEstrategia);
+            return Ok(novoObj);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao criar {_operador}: {e.Message}." });
+        }
+    }
 
 
     /// <summary>

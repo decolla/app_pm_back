@@ -126,4 +126,29 @@ public class PlanoManutencaoService : BaseCrudService<PlanoModel>
             throw new Exception(e.Message);
         }
     }
+    
+    /// <summary>
+    /// Cria um novo plano para cada Li da tabela PM_Reliability
+    /// </summary>
+    public async Task<string> CadastroAuto(string nomeEstrategia)
+    {
+        try{
+            
+            var nomesLis = await _context.PM_Reliability
+                .Select(e => e.IdLi)
+                .Distinct()
+                .ToListAsync();
+            foreach (var nomeLi in nomesLis)
+            {
+                await CadastroSimples(nomeLi, nomeEstrategia);
+            }
+
+            return "sucesso";
+
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
 }
