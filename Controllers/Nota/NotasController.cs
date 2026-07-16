@@ -1,6 +1,7 @@
 using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using app_pm_back.Services.FichasServices;
 using app_pm_back.Services.Manutencao;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ namespace app_pm_back.Controllers;
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/notas")]
 public class NotasController : ControllerBase
 {
+    private readonly DadosRenovacaoService _dadosRenovacaoService;
     private readonly NotaService _notaService;
     private readonly ItemNotaService _itemNotaService;
     private readonly ClassificationService<NotaModel> _classificationService;
@@ -27,12 +29,14 @@ public class NotasController : ControllerBase
     public NotasController(
         NotaService notaService,
         ItemNotaService itemNotaService,
+        DadosRenovacaoService dadosRenovacaoService,
         ClassificationService<NotaModel> classificationService,
         IMapper mapper)
     {
         _notaService = notaService;
         _itemNotaService = itemNotaService;
         _classificationService = classificationService;
+        _dadosRenovacaoService = dadosRenovacaoService;
         _mapper = mapper;
     }
 
@@ -207,7 +211,7 @@ public class NotasController : ControllerBase
     [HttpPut("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AtualizarNota([FromRoute] long id, [FromBody] NotaDto dto)
+    public async Task<IActionResult> AtualizarNota([FromRoute] long id, [FromBody] NotaDto dto,CancellationToken cancellationToken)
     {
         try
         {
@@ -232,6 +236,11 @@ public class NotasController : ControllerBase
             // adicionar dps quem modificou a nota aqui
 
             var result = await _notaService.UpdateNotaAsync(notaExistente);
+            if (notaExistente.ConfiabilidadeRestaurada != ConfiabilidadeRestaurada.NaoRestaura)
+            {
+                var listaNotaId = new List<long> { notaExistente.IdNota };
+                var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosNotaAsync(listaNotaId, null, cancellationToken);
+            }
             return Ok(result);
         }
         catch (Exception e)
