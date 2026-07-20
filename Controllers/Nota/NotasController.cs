@@ -227,7 +227,7 @@ public class NotasController : ControllerBase
 
             var notaModel = _mapper.Map<NotaModel>(dto);
 
-            var result = await _notaService.AtualizarNotaCompletaAsync(notaModel);
+            var result = await _notaService.AtualizarNotaCompletaAsync(notaModel, id);
 
             if (result.ConfiabilidadeRestaurada != ConfiabilidadeRestaurada.NaoRestaura)
             {
@@ -235,52 +235,6 @@ public class NotasController : ControllerBase
                 await _dadosRenovacaoService.ImportarDadosNotaAsync(listaNotaId, null, cancellationToken);
             }
 
-            return Ok(result);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao atualizar nota: {e.Message}." });
-        }
-    }
-
-    /// <summary>
-    /// Atualiza uma nota pelo DTO completo da nota, atualizando juntamente as variáveis e itens.
-    /// </summary>
-    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
-    /// <param name="dto">DTO contendo os novos dados para atualização.</param>
-    /// <returns>Mensagem de confirmação da atualização.</returns>
-    /// <response code="200">Sucesso ao atualizar o registro.</response>
-    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-    [HttpPut("complete/{id:long}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AtualizarNotaCompleta([FromRoute] long id, [FromBody] NotaDto dto)
-    {
-        try
-        {
-            if (!ModelState.IsValid)
-            {
-                return ValidationProblem(ModelState);
-            }
-
-            if (id <= 0)
-            {
-                return BadRequest(new { message = "Id da nota invalido na rota. Envie id maior que zero." });
-            }
-
-            var notaExistente = await _notaService.GetByIdAsync(id);
-            if (notaExistente == null)
-            {
-                return NotFound(new { message = $"Nota com Id {id} não encontrada." });
-            }
-
-            var dtoParaMapear = dto;
-
-            _mapper.Map(dtoParaMapear, notaExistente);
-
-            notaExistente.DataModificacao = DateTime.UtcNow;
-
-            var result = await _notaService.AtualizarNotaCompletaAsync(notaExistente);
             return Ok(result);
         }
         catch (Exception e)

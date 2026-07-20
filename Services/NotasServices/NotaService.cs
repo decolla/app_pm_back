@@ -128,7 +128,7 @@ public class NotaService : BaseCrudService<NotaModel>
 /// </summary>
 /// <param name="notaTela">Nota completa</param>
 /// <returns>Nota atualizada</returns>
-public async Task<NotaModel> AtualizarNotaCompletaAsync(NotaModel notaTela)
+public async Task<NotaModel> AtualizarNotaCompletaAsync(NotaModel notaTela, long idnota)
 {
     // evita NullReferenceException caso o frontend não mande as listas
     notaTela.Itens ??= new List<ItemNotaModel>();
@@ -142,7 +142,7 @@ public async Task<NotaModel> AtualizarNotaCompletaAsync(NotaModel notaTela)
         .Include(n => n.Itens)
         .Include(n => n.Variaveis)
         .AsNoTracking()
-        .FirstOrDefaultAsync(n => n.IdNota == notaTela.IdNota);
+        .FirstOrDefaultAsync(n => n.IdNota == idnota);
 
     if (notaDoBanco == null)
         throw new Exception("Nota não encontrada.");
