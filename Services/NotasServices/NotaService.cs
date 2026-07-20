@@ -149,6 +149,10 @@ public async Task<NotaModel> AtualizarNotaCompletaAsync(NotaModel notaTela, long
 
     // atualiza o cabeçalho da nota
     _context.Entry(notaDoBanco).CurrentValues.SetValues(notaTela);
+
+    // garante que a PK não foi sobrescrita com um valor errado vindo do frontend
+    notaDoBanco.IdNota = idnota;
+
     _context.Entry(notaDoBanco).State = EntityState.Modified;
 
     // sincroniza itens
@@ -202,10 +206,10 @@ public async Task<NotaModel> AtualizarNotaCompletaAsync(NotaModel notaTela, long
         }
     }
 
-    // salva bb
+    // salva db
     await _context.SaveChangesAsync();
 
     // retorna o que foi enviado/persistido, não o snapshot antigo do banco
     return notaTela;
-}
+    }
 }
