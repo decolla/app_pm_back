@@ -31,7 +31,7 @@ spec:
             - name: DATABASE_SCHEMA
               value: "comgas"
             - name: DATABASE_CONNECTION
-              value: "Server=10.3.192.199;Port=5432;Database=portal2;User Id=postgres;Password=42rI1FxGCOuv"
+              value: "Server=10.3.192.199;Port=5432;Database=postgres;User Id=postgres;Password=42rI1FxGCOuv"
             - name: TWINS_KEY
               value: "Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$x8y"
           envFrom:
