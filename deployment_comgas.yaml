@@ -49,12 +49,11 @@ metadata:
   name: pm-back-comgas-service
   namespace: physisiot
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: pm-back-comgas-pod
   ports:
     - name: socket
       port: 60135
       targetPort: 60135
-      nodePort: 60135
 
