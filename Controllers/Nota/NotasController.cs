@@ -225,22 +225,16 @@ public class NotasController : ControllerBase
                 return BadRequest(new { message = "Id da nota invalido na rota. Envie id maior que zero." });
             }
 
-            var notaExistente = await _notaService.GetByIdAsync(id);
-            if (notaExistente == null)
+            var notaModel = _mapper.Map<NotaModel>(dto);
+
+            var result = await _notaService.AtualizarNotaCompletaAsync(notaModel);
+
+            if (result.ConfiabilidadeRestaurada != ConfiabilidadeRestaurada.NaoRestaura)
             {
-                return NotFound(new { message = $"Nota com Id {id} não encontrada." });
+                var listaNotaId = new List<long> { result.IdNota };
+                await _dadosRenovacaoService.ImportarDadosNotaAsync(listaNotaId, null, cancellationToken);
             }
 
-            _mapper.Map(dto, notaExistente);
-            notaExistente.DataModificacao = DateTime.UtcNow;
-            // adicionar dps quem modificou a nota aqui
-
-            var result = await _notaService.UpdateNotaAsync(notaExistente);
-            if (notaExistente.ConfiabilidadeRestaurada != ConfiabilidadeRestaurada.NaoRestaura)
-            {
-                var listaNotaId = new List<long> { notaExistente.IdNota };
-                var dadosRenovacao = await _dadosRenovacaoService.ImportarDadosNotaAsync(listaNotaId, null, cancellationToken);
-            }
             return Ok(result);
         }
         catch (Exception e)
