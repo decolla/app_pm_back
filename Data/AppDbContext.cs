@@ -45,6 +45,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<NotaModel>().HasKey(e => e.IdNota);
         modelBuilder.Entity<VariavelNotaModel>().HasKey(e => e.IdVariavel);
         modelBuilder.Entity<ItemNotaModel>().HasKey(e => e.IdItemNota);
+        modelBuilder.Entity<AuditoriaModel>().HasKey(e => e.IdAuditoria);
         modelBuilder.Entity<AnexoNotaModel>().HasKey(e => e.IdAnexoNota);
         modelBuilder.Entity<OrdemModel>().HasKey(e => e.IdOrdem);
         modelBuilder.Entity<AnexoOrdemModel>().HasKey(e => e.IdAnexoOrdem);
