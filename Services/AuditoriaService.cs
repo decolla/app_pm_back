@@ -66,11 +66,12 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
     /// <param name="page">Pagina a ser exibida</param>
     /// <param name="size">Tamanho da pagina</param>
     /// <returns></returns>
-    public async Task<List<object>> GetAuditoriaMessage(int page, int size)
+    public async Task<List<object>> GetAuditoriaMessage(string tabela, string id, int page, int size)
     {
         int count = await _dbSet.CountAsync();
 
         var result = await _dbSet
+            .Where(a => a.ChavePrimaria == id && a.NomeTabela ==  tabela)
             .OrderBy(e => e.DataAlteracao)
             .Skip((page - 1) * size)
             .Take(size)
@@ -98,7 +99,7 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
                 .Include(usuarioModel => usuarioModel.Gpms)
                 .FirstOrDefaultAsync();
 
-            string mensagem = user.Nome + " " + ação + " em " + audit.NomeTabela + ": " + audit.ChavePrimaria;
+            string mensagem = user.Nome + " " + ação + ": " + audit.ValoresNovos;
             
             object obj = new
             {
@@ -114,4 +115,10 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
         
         return audits;
     }
+    
+    public async Task<int> GetAuditoriaCount()
+    {
+        return await _dbSet.CountAsync();
+    }
+    
 }

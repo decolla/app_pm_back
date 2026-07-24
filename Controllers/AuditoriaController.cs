@@ -62,6 +62,8 @@ public class AuditoriaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAuditoriaMessages(
+        [FromQuery] string tabela,
+        [FromQuery] string id,
         [FromQuery] int pagina,
         [FromQuery] int tamanho)
     {
@@ -73,6 +75,8 @@ public class AuditoriaController : ControllerBase
             }
 
             var resultados = await _auditoriaService.GetAuditoriaMessage(
+                tabela,
+                id,
                 pagina,
                 tamanho);
 
