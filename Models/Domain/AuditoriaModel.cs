@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Models.Domain;
 
@@ -28,7 +29,7 @@ public class AuditoriaModel
     /// Ação realizada na tabela.
     /// </summary>
     [MaxLength(30)]
-    public string Acao { get; set; } = string.Empty;
+    public EntityState Acao { get; set; }
     
     /// <summary>
     /// O valor da chave primária do registro alterado.

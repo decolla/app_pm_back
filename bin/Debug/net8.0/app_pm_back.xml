@@ -119,6 +119,16 @@
             <param name="error">Erro de retorno em caso de erro</param>
             <returns>Booleano de se a referência é válida ou não.</returns>
         </member>
+        <member name="M:app_pm_back.Controllers.AuditoriaController.BuscarPorCampo(System.Nullable{System.Int64},System.Nullable{Microsoft.EntityFrameworkCore.EntityState},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Int32,System.Int32)">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
         <member name="T:app_pm_back.Controllers.BuscaController">
             <summary>
             Classe BuscaController.
@@ -836,7 +846,7 @@
             Endpoints de notas .
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.NotasController.#ctor(app_pm_back.Services.Manutencao.NotaService,app_pm_back.Services.Manutencao.ItemNotaService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.NotaModel},AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.NotasController.#ctor(app_pm_back.Services.Manutencao.NotaService,app_pm_back.Services.Manutencao.ItemNotaService,app_pm_back.Services.FichasServices.DadosRenovacaoService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.NotaModel},AutoMapper.IMapper)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.NotasController"/>.
             </summary>
@@ -880,19 +890,9 @@
             Retorna as notas para um tipo de ativo
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.NotasController.AtualizarNota(System.Int64,app_pm_back.DTO.NotaDto)">
+        <member name="M:app_pm_back.Controllers.NotasController.AtualizarNota(System.Int64,app_pm_back.DTO.NotaDto,System.Threading.CancellationToken)">
             <summary>
             Atualiza uma nota pelo DTO.
-            </summary>
-            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
-            <param name="dto">DTO contendo os novos dados para atualização.</param>
-            <returns>Mensagem de confirmação da atualização.</returns>
-            <response code="200">Sucesso ao atualizar o registro.</response>
-            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.NotasController.AtualizarNotaCompleta(System.Int64,app_pm_back.DTO.NotaDto)">
-            <summary>
-            Atualiza uma nota pelo DTO completo da nota, atualizando juntamente as variáveis e itens.
             </summary>
             <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
             <param name="dto">DTO contendo os novos dados para atualização.</param>
@@ -1418,6 +1418,11 @@
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.CriarSimplifcado(System.String,System.String)">
             <summary>
             Cria um novo plano de forma simplificada a partir de nomeLi e nomeEstrategia
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.CriarSimplifcado(System.String)">
+            <summary>
+            Cria plano para todos os ativos a partir de uma estratégia
             </summary>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
@@ -3951,18 +3956,6 @@
             Interface para controle do contexto do usuário, incluindo escopos e identificação do usuário atual.
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
             <inheritdoc />
         </member>
@@ -4003,6 +3996,36 @@
             <summary>
             Atualiza um anexo pelo seu identificador.
             </summary>
+        </member>
+        <member name="M:app_pm_back.Services.AuditoriaService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.EntityFrameworkCore.DbSet{app_pm_back.Models.Domain.AuditoriaModel})">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.AuditoriaService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.AuditoriaService.SearchAuditoria(System.Nullable{System.Int64},System.Nullable{Microsoft.EntityFrameworkCore.EntityState},System.Nullable{System.DateTime},System.Nullable{System.DateTime},System.Int32,System.Int32)">
+            <summary>
+            Procura pelas auditorias com base nos filtros estabelecidos 
+            </summary>
+            <param name="usuario">Usuário que realizou a ação</param>
+            <param name="acao">Ação realizada</param>
+            <param name="dataInicio">Data de início</param>
+            <param name="dataFim">Data de fim</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.AuditoriaService.GetAuditoriaByUsuario(System.Int64)">
+            <summary>
+            Procura as auditorias de ações realizadas por um usuário
+            </summary>
+            <param name="usuario">ID do usuário</param>
+            <returns>Lista de auditorias</returns>
+        </member>
+        <member name="M:app_pm_back.Services.AuditoriaService.GetAuditoriaMessage(System.Int32,System.Int32)">
+            <summary>
+            Obtém as mensagens da auditoria paginada 
+            </summary>
+            <param name="page">Pagina a ser exibida</param>
+            <param name="size">Tamanho da pagina</param>
+            <returns></returns>
         </member>
         <member name="M:app_pm_back.Services.Extensions.QueryExtensions.AplicarOrdenacao``1(System.Linq.IQueryable{``0},Microsoft.EntityFrameworkCore.DbContext)">
             <summary>
@@ -4452,6 +4475,11 @@
             Cria um novo plano de forma simplificada a partir de nomeLi e nomeEstrategia
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.Manutencao.PlanoManutencaoService.CadastroAuto(System.String)">
+            <summary>
+            Cria um novo plano para cada Li da tabela PM_Reliability
+            </summary>
+        </member>
         <member name="T:app_pm_back.Services.Manutencao.TipoEstrategiaService">
             <summary>
             Classe TipoEstrategiaService.
@@ -4593,7 +4621,12 @@
             <param name="ativo">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaService.AtualizarNotaCompletaAsync(app_pm_back.Models.Domain.NotaModel)">
+        <member name="M:app_pm_back.Services.Manutencao.NotaService.AtualizarNotaCompletaAsync(app_pm_back.Models.Domain.NotaModel,System.Int64)">
+            <summary>
+            Atualiza uma nota por completo com base no DTO da tela do frontend.
+            </summary>
+            <param name="notaTela">Nota completa</param>
+            <returns>Nota atualizada</returns>
             <summary>
             Atualiza uma nota por completo com base no DTO da tela do frontend.
             </summary>

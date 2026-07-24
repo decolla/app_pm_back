@@ -85,7 +85,7 @@ public class AuditInterceptor : SaveChangesInterceptor
             {
                 IdUsuario = usuarioId,
                 NomeTabela = entry.Metadata.GetTableName() ?? entry.Metadata.Name,
-                Acao = entry.State.ToString(),
+                Acao = entry.State,
                 ChavePrimaria = chave,
                 ValoresAntigos = valoresAntigos.Count > 0 ? System.Text.Json.JsonSerializer.Serialize(valoresAntigos) : null,
                 ValoresNovos = valoresNovos.Count > 0 ? System.Text.Json.JsonSerializer.Serialize(valoresNovos) : null,
