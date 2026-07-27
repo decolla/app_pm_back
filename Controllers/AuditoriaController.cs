@@ -63,22 +63,13 @@ public class AuditoriaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAuditoriaMessages(
         [FromQuery] string tabela,
-        [FromQuery] string id,
-        [FromQuery] int pagina,
-        [FromQuery] int tamanho)
+        [FromQuery] string id)
     {
         try
         {
-            if (TemPaginacaoInvalida(pagina, tamanho))
-            {
-                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
-            }
-
             var resultados = await _auditoriaService.GetAuditoriaMessage(
                 tabela,
-                id,
-                pagina,
-                tamanho);
+                id);
 
             return Ok(resultados);
         }
