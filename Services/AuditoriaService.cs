@@ -81,12 +81,23 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
         {
             // obtém a ação realizada em string 
             string ação = "";
+            string mensagem = "";
             if (audit.Acao == EntityState.Added)
+            {
                 ação = "Adicionou";
+                mensagem = "Criou o registro";
+            }
             else if (audit.Acao == EntityState.Deleted)
+            {
                 ação = "Excluiu";
+                mensagem = "Excluiu o registro";
+            }
+
             else if (audit.Acao == EntityState.Modified)
+            {
                 ação = "Modificou";
+                mensagem = "Alterou para:"+ audit.ValoresNovos;
+            }
             else if (audit.Acao == EntityState.Unchanged)
                 ação = "Não alterou";
             else if (audit.Acao == EntityState.Detached)
@@ -102,7 +113,6 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
             }
 
             string nomeUsuario = user?.Nome ?? "Usuário não encontrado";
-            string mensagem = nomeUsuario + " " + ação + ": " + audit.ValoresNovos;
             
             object obj = new
             {

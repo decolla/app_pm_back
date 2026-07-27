@@ -61,9 +61,13 @@ public class AuditInterceptor : SaveChangesInterceptor
                     case EntityState.Added:
                         valoresNovos[nome] = property.CurrentValue;
                         break;
-                    case EntityState.Modified when property.IsModified:
-                        valoresAntigos[nome] = property.OriginalValue;
-                        valoresNovos[nome] = property.CurrentValue;
+                    case EntityState.Modified:
+                        // Adicionada a verificação !Equals para garantir que o valor REALMENTE mudou
+                        if (property.IsModified && !Equals(property.OriginalValue, property.CurrentValue))
+                        {
+                            valoresAntigos[nome] = property.OriginalValue;
+                            valoresNovos[nome] = property.CurrentValue;
+                        }
                         break;
                     case EntityState.Deleted:
                         valoresAntigos[nome] = property.OriginalValue;
