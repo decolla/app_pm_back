@@ -50,11 +50,26 @@ public class AuditInterceptor : SaveChangesInterceptor
             
             var valoresAntigos = new Dictionary<string, object?>();
             var valoresNovos = new Dictionary<string, object?>();
-
+            PropertyValues? valoresNoBanco = null;
+            
+            //Busca do banco de dados na hora de interceptar em caso de modified
+            if (entry.State == EntityState.Modified)
+            {
+                valoresNoBanco = await entry.GetDatabaseValuesAsync(cancellationToken);
+            }
+            
+            var camposIgnorados = new HashSet<string>(StringComparer.OrdinalIgnoreCase) 
+            { 
+                "DataModificacao", 
+                "DataCriacao", 
+                "UsuarioModificacao"
+            };
+            
             foreach (var property in entry.Properties)
             {
                 if (property.IsTemporary) continue; // ex: PK de identity ainda não gerada pelo banco
                 string nome = property.Metadata.Name;
+                if (camposIgnorados.Contains(nome)) continue;
 
                 switch (entry.State)
                 {
@@ -62,8 +77,6 @@ public class AuditInterceptor : SaveChangesInterceptor
                         valoresNovos[nome] = property.CurrentValue;
                         break;
                     case EntityState.Modified:
-                        //Busca do banco de dados na hora de interceptar
-                        var valoresNoBanco = await entry.GetDatabaseValuesAsync(cancellationToken);
         
                         if (valoresNoBanco != null)
                         {
@@ -83,6 +96,11 @@ public class AuditInterceptor : SaveChangesInterceptor
                         valoresAntigos[nome] = property.OriginalValue;
                         break;
                 }
+            }
+            
+            if (entry.State == EntityState.Modified && valoresNovos.Count == 0)
+            {
+                continue;
             }
 
             // em Modified/Deleted a PK já é conhecida agora; em Added ela só existe

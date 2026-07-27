@@ -118,12 +118,6 @@ public class NotaService : BaseCrudService<NotaModel>
         };
     }
     
-    /// <summary>
-    /// Atualiza uma nota por completo com base no DTO da tela do frontend.
-    /// </summary>
-    /// <param name="notaTela">Nota completa</param>
-    /// <returns>Nota atualizada</returns>
-    /// <summary>
 /// Atualiza uma nota por completo com base no DTO da tela do frontend.
 /// </summary>
 /// <param name="notaTela">Nota completa</param>
