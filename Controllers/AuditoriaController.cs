@@ -27,12 +27,12 @@ public class AuditoriaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> BuscarPorCampo(
-        [FromQuery]long? usuario,
-        [FromQuery]EntityState? acao, 
-        [FromQuery]DateTime? dataInicio,
-        [FromQuery]DateTime? dataFim,
-        [FromQuery] int pagina,
-        [FromQuery] int tamanho)
+        [FromQuery] long? usuario,
+        [FromQuery] EntityState? acao, 
+        [FromQuery] DateTime? dataInicio,
+        [FromQuery] DateTime? dataFim,
+        [FromQuery] int pagina = 1,
+        [FromQuery] int tamanho = 20)
     {
         try
         {
@@ -57,7 +57,12 @@ public class AuditoriaController : ControllerBase
         }
     }
     
-    
+    /// <summary>
+    /// Gera um objeto com as mensagens de auditoria para um registro específico 
+    /// </summary>
+    /// <param name="tabela"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
     [HttpGet("mensagem")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -67,15 +72,54 @@ public class AuditoriaController : ControllerBase
     {
         try
         {
-            var resultados = await _auditoriaService.GetAuditoriaMessage(
-                tabela,
-                id);
-
+            var resultados = await _auditoriaService.GetAuditoriaMessageAsync(tabela, id);
             return Ok(resultados);
         }
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao buscar o histórico: {e.Message}." });
+        }
+    }
+    
+    /// <summary>
+    /// Gera um objeto com as mensagens de auditoria para uma nota específica, tanto para ela quanto seus dependentes 
+    /// </summary>
+    /// <param name="id">Id da nota a ser buscada</param>
+    /// <returns>Lista de mensagens</returns>
+    [HttpGet("mensagem/nota/{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAuditoriaMessagesNota([FromRoute] long id)
+    {
+        try
+        {
+            var resultados = await _auditoriaService.GetAuditoriaMessageNotaAsync(id);
+            return Ok(resultados);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar o histórico da nota: {e.Message}." });
+        }
+    }
+    
+    /// <summary>
+    /// Gera um objeto com as mensagens de auditoria para uma ordem específica, tanto para ela quanto seus dependentes 
+    /// </summary>
+    /// <param name="id">Id da ordem a ser buscada</param>
+    /// <returns>Lista de mensagens</returns>
+    [HttpGet("mensagem/ordem/{id:long}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAuditoriaMessagesOrdem([FromRoute] long id)
+    {
+        try
+        {
+            var resultados = await _auditoriaService.GetAuditoriaMessageOrdemAsync(id);
+            return Ok(resultados);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar o histórico da ordem: {e.Message}." });
         }
     }
     
