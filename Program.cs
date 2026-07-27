@@ -252,8 +252,8 @@ using (var scope = app.Services.CreateScope())
         {
             Console.WriteLine("PostgreSQL detectado. A tentar aplicar as migrations no banco de dados...");
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
-            //schema = "public"; // força o schema para public, para não apagar o schema correto
-            dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA {schema} CASCADE; CREATE SCHEMA {schema};");
+            // schema = "public"; // força o schema para public, para não apagar o schema correto
+            // dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA {schema} CASCADE; CREATE SCHEMA {schema};");
 
             // Garante que a conexão é aberta com o search_path configurado antes do Migrate()
             var conn = dbContext.Database.GetDbConnection();
