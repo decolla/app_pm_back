@@ -9,6 +9,7 @@ namespace app_pm_back.Services;
 /// </summary>
 public class MensagemAuditoria
 {
+    public string TabelaOrigem { get; set; } = string.Empty;
     public string NomeUsuario { get; set; } = string.Empty;
     public string Acao { get; set; } = string.Empty; 
     public string? Unidade { get; set; }
@@ -149,6 +150,7 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
 
             audits.Add(new MensagemAuditoria()
             {
+                TabelaOrigem = audit.NomeTabela.Substring(3),
                 NomeUsuario = nomeUsuario,
                 Acao = ação,
                 Unidade = unidade,
