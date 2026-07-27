@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using app_pm_back.Interfaces;
 
 namespace app_pm_back.Models.Domain;
 
@@ -7,7 +8,7 @@ namespace app_pm_back.Models.Domain;
 /// Representa uma variável associada a uma nota técnica.
 /// Exemplo: ValorNumerico = 15.5, UnidadeMedida = "kg".
 /// </summary>
-public class VariavelNotaModel
+public class VariavelNotaModel : IAuditable
 {
     /// <summary>
     /// Identificador único da variável.

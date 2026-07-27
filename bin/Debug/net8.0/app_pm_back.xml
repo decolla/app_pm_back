@@ -129,6 +129,28 @@
             <response code="200">Sucesso ao listar registros.</response>
             <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
+        <member name="M:app_pm_back.Controllers.AuditoriaController.GetAuditoriaMessages(System.String,System.String)">
+            <summary>
+            Gera um objeto com as mensagens de auditoria para um registro específico 
+            </summary>
+            <param name="tabela"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.AuditoriaController.GetAuditoriaMessagesNota(System.Int64)">
+            <summary>
+            Gera um objeto com as mensagens de auditoria para uma nota específica, tanto para ela quanto seus dependentes 
+            </summary>
+            <param name="id">Id da nota a ser buscada</param>
+            <returns>Lista de mensagens</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.AuditoriaController.GetAuditoriaMessagesOrdem(System.Int64)">
+            <summary>
+            Gera um objeto com as mensagens de auditoria para uma ordem específica, tanto para ela quanto seus dependentes 
+            </summary>
+            <param name="id">Id da ordem a ser buscada</param>
+            <returns>Lista de mensagens</returns>
+        </member>
         <member name="T:app_pm_back.Controllers.BuscaController">
             <summary>
             Classe BuscaController.
@@ -4009,6 +4031,11 @@
             Atualiza um anexo pelo seu identificador.
             </summary>
         </member>
+        <member name="T:app_pm_back.Services.MensagemAuditoria">
+            <summary>
+            Classe para retorno de mensagens de auditoria
+            </summary>
+        </member>
         <member name="M:app_pm_back.Services.AuditoriaService.#ctor(app_pm_back.Data.AppDbContext)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.AuditoriaService"/>.
@@ -4031,13 +4058,35 @@
             <param name="usuario">ID do usuário</param>
             <returns>Lista de auditorias</returns>
         </member>
-        <member name="M:app_pm_back.Services.AuditoriaService.GetAuditoriaMessage(System.String,System.String)">
+        <member name="M:app_pm_back.Services.AuditoriaService.GenerateAuditoriaMessageAsync(System.String,System.Collections.Generic.List{System.String})">
             <summary>
             Obtém as mensagens da auditoria paginada 
             </summary>
-            <param name="page">Pagina a ser exibida</param>
-            <param name="size">Tamanho da pagina</param>
+            <param name="page">Página a ser exibida</param>
+            <param name="size">Tamanho da página</param>
             <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.AuditoriaService.GetAuditoriaMessageAsync(System.String,System.String)">
+            <summary>
+            Obtém uma mensagem de auditoria para um registro específico
+            </summary>
+            <param name="tabela">Tabela a ser buscada</param>
+            <param name="id">Id a ser buscado</param>
+            <returns>Lista de mensagens</returns>
+        </member>
+        <member name="M:app_pm_back.Services.AuditoriaService.GetAuditoriaMessageNotaAsync(System.Int64)">
+            <summary>
+            Obtém a mensagem de auditoria para uma nota e seus dependentes 
+            </summary>
+            <param name="id">Id da nota a ser buscada</param>
+            <returns>Lista de mensagens</returns>
+        </member>
+        <member name="M:app_pm_back.Services.AuditoriaService.GetAuditoriaMessageOrdemAsync(System.Int64)">
+            <summary>
+            Obtém a mensagem de auditoria para uma ordem e seus dependentes 
+            </summary>
+            <param name="id">Id da ordem a ser buscada</param>
+            <returns>Lista de mensagens</returns>
         </member>
         <member name="M:app_pm_back.Services.Extensions.QueryExtensions.AplicarOrdenacao``1(System.Linq.IQueryable{``0},Microsoft.EntityFrameworkCore.DbContext)">
             <summary>
@@ -4633,18 +4682,7 @@
             <param name="ativo">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaService.AtualizarNotaCompletaAsync(app_pm_back.Models.Domain.NotaModel,System.Int64)">
-            <summary>
-            Atualiza uma nota por completo com base no DTO da tela do frontend.
-            </summary>
-            <param name="notaTela">Nota completa</param>
-            <returns>Nota atualizada</returns>
-            <summary>
-            Atualiza uma nota por completo com base no DTO da tela do frontend.
-            </summary>
-            <param name="notaTela">Nota completa</param>
-            <returns>Nota atualizada</returns>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:app_pm_back.Services.Manutencao.NotaService.AtualizarNotaCompletaAsync(app_pm_back.Models.Domain.NotaModel,System.Int64)" -->
         <member name="T:app_pm_back.Services.Manutencao.VariavelNotaService">
             <summary>
             Classe VariavelNotaService.

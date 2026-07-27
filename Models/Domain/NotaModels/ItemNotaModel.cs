@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using app_pm_back.Interfaces;
 
 namespace app_pm_back.Models.Domain;
 
@@ -16,7 +17,7 @@ namespace app_pm_back.Models.Domain;
 /// };
 /// </code>
 /// </example>
-public class ItemNotaModel
+public class ItemNotaModel : IAuditable
 {
     /// <summary>
     /// Identificador único do item da nota (Chave Primária).

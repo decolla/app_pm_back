@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using app_pm_back.Interfaces;
 
 namespace app_pm_back.Models.Domain;
 
@@ -7,7 +8,7 @@ namespace app_pm_back.Models.Domain;
 /// Representa uma operação técnica dentro de uma ordem de manutenção.
 /// Exemplo: "Troca de óleo", "Inspeção visual".
 /// </summary>
-public class OperacaoModel
+public class OperacaoModel : IAuditable
 {
     /// <summary>
     /// Identificador único da operação.

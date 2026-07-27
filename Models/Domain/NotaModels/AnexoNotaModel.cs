@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using app_pm_back.Interfaces;
 
 namespace app_pm_back.Models.Domain;
 
 /// <summary>
 /// Representa um anexo associado a uma nota no sistema.
 /// </summary>
-public class AnexoNotaModel
+public class AnexoNotaModel : IAuditable
 {
     /// <summary>
     /// Identificador único do anexo.
