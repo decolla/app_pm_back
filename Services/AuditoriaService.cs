@@ -29,7 +29,8 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
 
         if (usuario > 0)
         {
-            query = query.Where(a => a.IdUsuario == usuario);
+            var usuarioStr = usuario.Value.ToString();
+            query = query.Where(a => a.IdUsuario == usuarioStr);
         }
 
         if (acao.HasValue)
@@ -55,7 +56,8 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
     /// <returns>Lista de auditorias</returns>
     public async Task<List<AuditoriaModel>> GetAuditoriaByUsuario(long usuario)
     {
-        return await _dbSet.Where(a => a.IdUsuario == usuario).ToListAsync();
+        var usuarioStr = usuario.ToString();
+        return await _dbSet.Where(a => a.IdUsuario == usuarioStr).ToListAsync();
     }
 
     /// <summary>
@@ -93,9 +95,13 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
                 ação = "Desanexou";
 
             // busca o usuário responsável (TALVEZ REMOVER POR PESO DE CONSULTA POR CADA AUDITORIA)
-            UsuarioModel? user = await _context.PM_Usuarios.Where(u => u.IdUsuario == audit.IdUsuario)
-                .Include(usuarioModel => usuarioModel.Gpms)
-                .FirstOrDefaultAsync();
+            UsuarioModel? user = null;
+            if (long.TryParse(audit.IdUsuario, out long userId))
+            {
+                user = await _context.PM_Usuarios.Where(u => u.IdUsuario == userId)
+                    .Include(usuarioModel => usuarioModel.Gpms)
+                    .FirstOrDefaultAsync();
+            }
 
             string nomeUsuario = user?.Nome ?? "Usuário não encontrado";
             string mensagem = nomeUsuario + " " + ação + ": " + audit.ValoresNovos;

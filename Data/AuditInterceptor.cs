@@ -83,7 +83,7 @@ public class AuditInterceptor : SaveChangesInterceptor
 
             var auditoria = new AuditoriaModel
             {
-                IdUsuario = usuarioId,
+                IdUsuario = usuarioId?.ToString(),
                 NomeTabela = entry.Metadata.GetTableName() ?? entry.Metadata.Name,
                 Acao = entry.State,
                 ChavePrimaria = chave,

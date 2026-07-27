@@ -245,9 +245,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<DateTime>("DataAlteracao")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("IdUsuario")
+                    b.Property<string>("IdUsuario")
                         .HasMaxLength(200)
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("NomeTabela")
                         .IsRequired()
@@ -302,7 +302,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 24, 19, 1, 45, 327, DateTimeKind.Utc).AddTicks(2105),
+                            DataModificacao = new DateTime(2026, 7, 27, 12, 53, 53, 51, DateTimeKind.Utc).AddTicks(2345),
                             FichasConfiabilidade = 2
                         });
                 });

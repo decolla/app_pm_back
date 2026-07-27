@@ -59,7 +59,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 {
                     IdAuditoria = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IdUsuario = table.Column<int>(type: "int", maxLength: 200, nullable: true),
+                    IdUsuario = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     NomeTabela = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Acao = table.Column<int>(type: "int", maxLength: 30, nullable: false),
                     ChavePrimaria = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -886,7 +886,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 24, 19, 1, 45, 327, DateTimeKind.Utc).AddTicks(2105), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 27, 12, 53, 53, 51, DateTimeKind.Utc).AddTicks(2345), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

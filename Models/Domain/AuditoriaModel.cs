@@ -17,7 +17,7 @@ public class AuditoriaModel
     /// O Id de quem fez a alteração.
     /// </summary>
     [MaxLength(200)]
-    public int? IdUsuario { get; set; } 
+    public string? IdUsuario { get; set; } 
     
     /// <summary>
     /// Nome da tabela que foi alterada.

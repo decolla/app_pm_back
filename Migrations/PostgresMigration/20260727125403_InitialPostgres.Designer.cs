@@ -14,7 +14,7 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations.PostgresMigration
 {
     [DbContext(typeof(PostgresDbContext))]
-    [Migration("20260724190201_InitialPostgres")]
+    [Migration("20260727125403_InitialPostgres")]
     partial class InitialPostgres
     {
         /// <inheritdoc />
@@ -249,9 +249,9 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<DateTime>("DataAlteracao")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int?>("IdUsuario")
+                    b.Property<string>("IdUsuario")
                         .HasMaxLength(200)
-                        .HasColumnType("integer");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("NomeTabela")
                         .IsRequired()
@@ -306,7 +306,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 24, 19, 2, 0, 643, DateTimeKind.Utc).AddTicks(5285),
+                            DataModificacao = new DateTime(2026, 7, 27, 12, 54, 2, 921, DateTimeKind.Utc).AddTicks(649),
                             FichasConfiabilidade = 2
                         });
                 });

@@ -56,7 +56,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                 {
                     IdAuditoria = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    IdUsuario = table.Column<int>(type: "integer", maxLength: 200, nullable: true),
+                    IdUsuario = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     NomeTabela = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     Acao = table.Column<int>(type: "integer", maxLength: 30, nullable: false),
                     ChavePrimaria = table.Column<string>(type: "text", nullable: false),
@@ -813,7 +813,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 24, 19, 2, 0, 643, DateTimeKind.Utc).AddTicks(5285), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 27, 12, 54, 2, 921, DateTimeKind.Utc).AddTicks(649), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
