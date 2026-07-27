@@ -97,13 +97,14 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
                 .Include(usuarioModel => usuarioModel.Gpms)
                 .FirstOrDefaultAsync();
 
-            string mensagem = user.Nome + " " + ação + ": " + audit.ValoresNovos;
+            string nomeUsuario = user?.Nome ?? "Usuário não encontrado";
+            string mensagem = nomeUsuario + " " + ação + ": " + audit.ValoresNovos;
             
             object obj = new
             {
-                NomeUsuario = user.Nome ?? "Usuário não encontrado",
+                NomeUsuario = nomeUsuario,
                 Ação = ação,
-                Unidade = user.Gpms,
+                Unidade = user?.Gpms,
                 Mensagem = mensagem,
                 DataAlteracao = audit.DataAlteracao,
             };
