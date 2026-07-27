@@ -6,14 +6,12 @@ namespace app_pm_back.Services;
 
 public class AuditoriaService : BaseCrudService<AuditoriaModel>
 {
-    private readonly DbSet<AuditoriaModel> _dbSet;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="AuditoriaService"/>.
     /// </summary>
-    public AuditoriaService(AppDbContext context, DbSet<AuditoriaModel> dbset) : base(context)
+    public AuditoriaService(AppDbContext context) : base(context)
     {
-        _dbSet = dbset;
     }
 
     /// <summary>

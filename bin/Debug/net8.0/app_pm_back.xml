@@ -1213,87 +1213,6 @@
             <response code="200">Sucesso ao deletar o registro.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="T:app_pm_back.Controllers.UsuariosController">
-            <summary>
-            Classe UsuariosController.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.#ctor(app_pm_back.Services.Manutencao.UsuarioService,AutoMapper.IMapper)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.UsuariosController"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Criar(app_pm_back.DTO.UsuarioDto)">
-            <summary>
-            Cria um novo registro.
-            </summary>
-            <param name="dto">DTO contendo os dados da requisição.</param>
-            <returns>O objeto criado com status 201 (Created).</returns>
-            <response code="201">Registro criado com sucesso.</response>
-            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
-            <summary>
-            Lista os registros cadastrados com paginação.
-            </summary>
-            <param name="pagina">Número da página (1-based) para paginação.</param>
-            <param name="tamanho">Quantidade de itens por página.</param>
-            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
-            <response code="200">Sucesso ao listar registros.</response>
-            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.ObterPorId(System.Int64)">
-            <summary>
-            Obtém um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
-            <returns>O objeto correspondente cadastrado.</returns>
-            <response code="200">Sucesso ao obter o registro.</response>
-            <response code="400">ID fornecido inválido.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Contar">
-            <summary>
-            Obtém o total de registros cadastrados.
-            </summary>
-            <returns>Resultado da operação.</returns>
-            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Atualizar(System.Int64,app_pm_back.DTO.UsuarioDto)">
-            <summary>
-            Atualiza um registro existente.
-            </summary>
-            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
-            <param name="dto">DTO contendo os novos dados para atualização.</param>
-            <returns>Mensagem de confirmação da atualização.</returns>
-            <response code="200">Sucesso ao atualizar o registro.</response>
-            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Deletar(System.Int64)">
-            <summary>
-            Exclui um registro pelo seu identificador.
-            </summary>
-            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
-            <returns>Mensagem de confirmação da exclusão.</returns>
-            <response code="200">Sucesso ao deletar o registro.</response>
-            <response code="404">Registro não encontrado no banco de dados.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.AtribuirOrdem(System.String,System.Int64)">
-            <summary>
-            Atribui a responsabilidade de uma ordem para um usuário
-            </summary>
-            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
-        </member>
-        <member name="M:app_pm_back.Controllers.UsuariosController.Pesquisar(System.String,System.String,System.String,System.Nullable{System.Int32})">
-            <summary>
-            Busca uma lista de funcionários com base nos filtros passados 
-            </summary>
-            <param name="cpf">CPF do usuário</param>
-            <param name="nome">Nome do usuário</param>
-            <param name="funcao">Função do usuário</param>
-            <param name="schema">Esquema do usuário</param>
-            <returns></returns>
-        </member>
         <member name="T:app_pm_back.Controllers.PlanoManutencao.FerramentaController">
             <summary>
             Endpoints de ferramentas de tipo de manutencao.
@@ -1683,6 +1602,87 @@
             <returns>Mensagem de confirmação da exclusão.</returns>
             <response code="200">Sucesso ao deletar o registro.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="T:app_pm_back.Controllers.UsuariosController">
+            <summary>
+            Classe UsuariosController.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.#ctor(app_pm_back.Services.Manutencao.UsuarioService,AutoMapper.IMapper)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.UsuariosController"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.Criar(app_pm_back.DTO.UsuarioDto)">
+            <summary>
+            Cria um novo registro.
+            </summary>
+            <param name="dto">DTO contendo os dados da requisição.</param>
+            <returns>O objeto criado com status 201 (Created).</returns>
+            <response code="201">Registro criado com sucesso.</response>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.Atualizar(System.Int64,app_pm_back.DTO.UsuarioDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.Deletar(System.Int64)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.AtribuirOrdem(System.String,System.Int64)">
+            <summary>
+            Atribui a responsabilidade de uma ordem para um usuário
+            </summary>
+            <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.Pesquisar(System.String,System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            Busca uma lista de funcionários com base nos filtros passados 
+            </summary>
+            <param name="cpf">CPF do usuário</param>
+            <param name="nome">Nome do usuário</param>
+            <param name="funcao">Função do usuário</param>
+            <param name="schema">Esquema do usuário</param>
+            <returns></returns>
         </member>
         <member name="T:app_pm_back.Data.AppDbContext">
             <summary>
@@ -3956,6 +3956,18 @@
             Interface para controle do contexto do usuário, incluindo escopos e identificação do usuário atual.
             </summary>
         </member>
+        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
             <inheritdoc />
         </member>
@@ -3997,7 +4009,7 @@
             Atualiza um anexo pelo seu identificador.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.AuditoriaService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.EntityFrameworkCore.DbSet{app_pm_back.Models.Domain.AuditoriaModel})">
+        <member name="M:app_pm_back.Services.AuditoriaService.#ctor(app_pm_back.Data.AppDbContext)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.AuditoriaService"/>.
             </summary>
@@ -4019,7 +4031,7 @@
             <param name="usuario">ID do usuário</param>
             <returns>Lista de auditorias</returns>
         </member>
-        <member name="M:app_pm_back.Services.AuditoriaService.GetAuditoriaMessage(System.Int32,System.Int32)">
+        <member name="M:app_pm_back.Services.AuditoriaService.GetAuditoriaMessage(System.String,System.String,System.Int32,System.Int32)">
             <summary>
             Obtém as mensagens da auditoria paginada 
             </summary>
