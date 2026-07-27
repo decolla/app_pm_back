@@ -26,7 +26,7 @@ public class AuditInterceptor : SaveChangesInterceptor
     // SavingChangesAsync captura o diff (PKs de Modified/Deleted e OriginalValue só existem antes do save);
     // SavedChangesAsync resolve a PK dos Added e persiste o log, pois exige um 2º SaveChanges separado.
     // Caso a aplicação caia entre os dois saves, o dado principal fica gravado sem o log correspondente.
-    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(
+    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
         DbContextEventData eventData,
         InterceptionResult<int> result,
         CancellationToken cancellationToken = default)
@@ -35,7 +35,7 @@ public class AuditInterceptor : SaveChangesInterceptor
         
         var context = eventData.Context;
         if (context == null || _gravandoAuditoria)
-            return base.SavingChangesAsync(eventData, result, cancellationToken);
+            return await base.SavingChangesAsync(eventData, result, cancellationToken);
 
         _pendentes = new List<(EntityEntry, AuditoriaModel)>();
         int? usuarioId = _userContext.GetUsuarioIdAtual();
@@ -62,11 +62,21 @@ public class AuditInterceptor : SaveChangesInterceptor
                         valoresNovos[nome] = property.CurrentValue;
                         break;
                     case EntityState.Modified:
-                        // Adicionada a verificação !Equals para garantir que o valor REALMENTE mudou
-                        if (property.IsModified && !Equals(property.OriginalValue, property.CurrentValue))
+                        //Busca do banco de dados na hora de interceptar
+                        var valoresNoBanco = await entry.GetDatabaseValuesAsync(cancellationToken);
+        
+                        if (valoresNoBanco != null)
                         {
-                            valoresAntigos[nome] = property.OriginalValue;
-                            valoresNovos[nome] = property.CurrentValue;
+                            // Pega o valor original que estava no banco e o valor novo que veio da API
+                            var valorAntigoReal = valoresNoBanco[nome];
+                            var valorNovo = property.CurrentValue;
+
+                            //Compara se realmente mudou
+                            if (!Equals(valorAntigoReal, valorNovo))
+                            {
+                                valoresAntigos[nome] = valorAntigoReal;
+                                valoresNovos[nome] = valorNovo;
+                            }
                         }
                         break;
                     case EntityState.Deleted:
@@ -99,7 +109,7 @@ public class AuditInterceptor : SaveChangesInterceptor
             _pendentes.Add((entry, auditoria));
         }
 
-        return base.SavingChangesAsync(eventData, result, cancellationToken);
+        return await base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
     public override async ValueTask<int> SavedChangesAsync(
