@@ -18,6 +18,7 @@ public class GenericSearchService
     private readonly DbSet<NotaModel> _notaModels;
     private readonly DbSet<OrdemModel> _ordemModels;
     private readonly DbSet<PlanoModel> _planoModels;
+    private readonly DbSet<DadosRenovacaoModel> _dadosRenovacaoModels;
     private static readonly Dictionary<string, Type> Tabelas = BuildTabelas();
 
     /// <summary>
@@ -45,6 +46,7 @@ public class GenericSearchService
         _notaModels = context.PM_Notas;
         _ordemModels = context.PM_Ordens;
         _planoModels = context.PM_Planos;
+        _dadosRenovacaoModels = context.PM_DadosRenovacao;
     }
 
     public IReadOnlyDictionary<string, IReadOnlyList<string>> ListarTabelasCampos()
@@ -529,5 +531,73 @@ public class GenericSearchService
         )).ToList();
 
         return timeline;
+    }
+
+    /// <summary>
+    /// Realiza uma busca por fichas de dados renovação
+    /// </summary>
+    /// <param name="busca">Parâmetros de filtragem</param>
+    /// <param name="pagina">Pagina a ser exibida</param>
+    /// <param name="tamanho">Tamanho da página</param>
+    /// <param name="Tfichas"></param>
+    /// <returns>Dados Renovação filtrados</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public async Task<object> BuscarFichasDataRenovacaoAsync(
+        dynamic busca,
+        int? pagina,
+        int? tamanho)
+    {
+        if (busca == null)
+        {
+            throw new ArgumentNullException(nameof(busca));
+        }
+
+        // busca em dados renovação
+        var dadosQuery = _dadosRenovacaoModels
+            .AsNoTracking()
+            .AsQueryable();
+
+        // safe check
+        var buscaType = (Type)busca.GetType();
+
+        // obter o valor da propriedade IdLi
+        string? idLi = buscaType.GetProperty("IdLi")?.GetValue(busca);
+        if (!string.IsNullOrEmpty(idLi))
+        {
+            dadosQuery = dadosQuery.Where(n => n.IdLi == idLi);
+        }
+
+        string? idAtivo = buscaType.GetProperty("IdAtivo")?.GetValue(busca);
+        if (Enum.TryParse<ComponentType>(idAtivo, out ComponentType ativo))
+        {
+            dadosQuery = dadosQuery.Where(n => n.IdAtivo == ativo);
+        }
+
+        string? referenciaOrigem = buscaType.GetProperty("ReferenciaOrigem")?.GetValue(busca);
+        if (Enum.TryParse<OrigemUR>(referenciaOrigem, out OrigemUR origem))
+        {
+            dadosQuery = dadosQuery.Where(n => n.OrigemUR == origem);
+        }
+
+        dadosQuery = dadosQuery.AplicarOrdenacao(_context);
+        var listaUnica = await dadosQuery.ToListAsync().ConfigureAwait(false);
+
+        // paginação
+        int totalGeral = listaUnica.Count;
+        int p = pagina ?? 1;
+        int t = tamanho ?? 20;
+        int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
+
+        // pega os n primeiros itens
+        var itensPaginados = listaUnica.Skip((p - 1) * t).Take(t).ToList();
+
+        return new
+        {
+            Total = totalGeral,
+            TotalPaginas = totalPaginas,
+            pagina = p,
+            Tamanho = t,
+            Result = itensPaginados
+        };
     }
 }

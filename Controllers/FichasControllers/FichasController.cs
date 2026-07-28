@@ -1,4 +1,5 @@
 using app_pm_back.DTO;
+using app_pm_back.DTO.Buscas;
 using app_pm_back.Models;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
@@ -25,7 +26,7 @@ public class FichasController : ControllerBase
     private readonly ImportSheetService _spreadsheetOrchestrator;
 
     public FichasController(SynchronizeAPMService synchronizeApmService, ILogger<FichasController> logger,
-        GenericSearchService searchService, 
+        GenericSearchService searchService,
         ConfiguracaoGlobalService configuracaoGlobalService,
         ClassificationService<NotaModel> notaService,
         ClassificationService<OrdemModel> ordemService, ImportSheetService spreadsheetOrchestrator)
@@ -128,7 +129,7 @@ public class FichasController : ControllerBase
         {
             return BadRequest(new { message = "Classificação por palavras desativada nas configurações globais." });
         }
-        
+
         try
         {
             // passar uma lista vazia por enquanto 
@@ -171,7 +172,7 @@ public class FichasController : ControllerBase
         {
             return BadRequest(new { message = "Classificação por catboost desativada nas configurações globais." });
         }
-        
+
         try
         {
             var message = "";
@@ -206,7 +207,7 @@ public class FichasController : ControllerBase
     /// Faz o upload e processamento de planilhas de Notas, Ordens ou Itens
     /// </summary>
     [HttpPost("upload")]
-    [DisableRequestSizeLimit] 
+    [DisableRequestSizeLimit]
     [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
     public async Task<IActionResult> UploadPlanilha(
         IFormFile file,
@@ -232,7 +233,7 @@ public class FichasController : ControllerBase
                 await _notaService.AutoClassify();
                 await _ordemService.AutoClassify();
             }
-            
+
             return Ok(new { message = inseridas });
         }
         catch (OperationCanceledException)
@@ -284,6 +285,41 @@ public class FichasController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao buscar nota/ordem: {e.Message}." });
+        }
+    }
+
+    /// <summary>
+    /// Busca fichas por dados de renovação
+    /// </summary>
+    /// <param name="busca">Modelo de busca com campos comparáveis</param>
+    /// <param name="pagina">Página a ser exibida</param>
+    /// <param name="tamanho">Número de elementos presente na página</param>
+    /// <returns>Lista de fichas com base nos filtros</returns>
+    /// <response code="200">Retorna a lista de fichas</response>
+    /// <response code="400">Retorna um erro se os parâmetros forem inválidos</response>
+    [HttpPost("busca/data-renovacao")]
+    public async Task<IActionResult> BuscarFichasDataRenovacao(
+        [FromBody] BuscaFichasDadoRenovacaoDto busca,
+        [FromQuery] int? pagina = null,
+        [FromQuery] int? tamanho = null)
+    {
+        try
+        {
+            if ((pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
+            var resultados = await _searchService.BuscarFichasDataRenovacaoAsync(
+                busca,
+                pagina,
+                tamanho);
+
+            return Ok(resultados);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar fichas por dados de renovação: {e.Message}." });
         }
     }
 }
