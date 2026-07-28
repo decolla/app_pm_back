@@ -6,6 +6,7 @@ using app_pm_back.Services.Manutencao;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 using Npgsql;
 
 namespace app_pm_back.Controllers;
@@ -340,19 +341,36 @@ public class NotasController : ControllerBase
             return ex.Message;
         }
 
-        if (ex is DbUpdateException dbEx && dbEx.InnerException is PostgresException pgEx)
+        if (ex is DbUpdateException dbEx)
         {
-            if (pgEx.SqlState == "23503")
+            if (dbEx.InnerException is PostgresException pgEx)
             {
-                return "A chave estrangeira passada não existe";
-            }
+                if (pgEx.SqlState == "23503")
+                {
+                    return "A chave estrangeira passada não existe";
+                }
 
-            if (pgEx.SqlState == "23505")
+                if (pgEx.SqlState == "23505")
+                {
+                    return "Este registro já existe no sistema";
+                }
+
+                return $"Erro de integridade no banco de dados (Detalhe: {pgEx.MessageText})";
+            }
+            else if (dbEx.InnerException is SqlException sqlEx)
             {
-                return "Este registro já existe no sistema";
-            }
+                if (sqlEx.Number == 547)
+                {
+                    return "A chave estrangeira passada não existe";
+                }
 
-            return $"Erro de integridade no banco de dados (Detalhe: {pgEx.MessageText})";
+                if (sqlEx.Number == 2627 || sqlEx.Number == 2601)
+                {
+                    return "Este registro já existe no sistema";
+                }
+
+                return $"Erro de integridade no banco de dados (Detalhe: {sqlEx.Message})";
+            }
         }
 
         return ex.InnerException?.Message ?? ex.Message;

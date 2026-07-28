@@ -417,7 +417,7 @@
             <param name="dto">Dto com os dados atualizados</param>
             <returns>IActionResult</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.DeletarDadosRenovacao(System.Int32)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController.DeletarDadosRenovacao(System.Int64)">
             <summary>
             Deleta um dado de renovação existente a partir do id na rota.
             </summary>
@@ -1347,7 +1347,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.Deletar(System.Int32)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.Deletar(System.Int64)">
             <summary>
             Deleta um objeto do modelo
             </summary>

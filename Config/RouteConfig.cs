@@ -116,7 +116,7 @@ public static class RouteConfig
         else
         {
             var url = configuration["APIs:Twins"] ?? "http://10.3.192.200:60131";
-            return url + "/api/v1";
+            return url;
         }
     }
 

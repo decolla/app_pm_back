@@ -182,8 +182,8 @@ public class DadosRenovacaoController : ControllerBase
     /// </summary>
     /// <param name="id">Id do dado a ser deletado</param>
     /// <returns>IActionResult</returns>
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeletarDadosRenovacao(int id)
+    [HttpDelete("{id:long}")]
+    public async Task<IActionResult> DeletarDadosRenovacao([FromRoute] long id)
     {
         try
         {

@@ -11,7 +11,7 @@ public class MensagemAuditoria
 {
     public string TabelaOrigem { get; set; } = string.Empty;
     public string NomeUsuario { get; set; } = string.Empty;
-    public string Acao { get; set; } = string.Empty; 
+    public string Acao { get; set; } = string.Empty;
     public string? Unidade { get; set; }
     public string Mensagem { get; set; } = string.Empty;
     public DateTime DataAlteracao { get; set; }
@@ -197,11 +197,12 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
 
         List<MensagemAuditoria> notasMessage = await GetAuditoriaMessageAsync("PM_Notas", id.ToString());
         List<MensagemAuditoria> itensMessage = await GenerateAuditoriaMessageAsync("PM_ItensNota", idsItens);
-        List<MensagemAuditoria> variaveisMessage = await GenerateAuditoriaMessageAsync("PM_VariaveisNota", idsVariaveis);
+        List<MensagemAuditoria> variaveisMessage =
+            await GenerateAuditoriaMessageAsync("PM_VariaveisNota", idsVariaveis);
         List<MensagemAuditoria> anexosMessage = await GenerateAuditoriaMessageAsync("PM_AnexosNota", idsAnexos);
-        
+
         var result = notasMessage.Concat(itensMessage).Concat(variaveisMessage).Concat(anexosMessage);
-        
+
         return [.. result.OrderByDescending(e => e.DataAlteracao)];
     }
 
@@ -218,16 +219,16 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
             .FirstOrDefaultAsync(o => o.IdOrdem == id);
 
         if (ordem == null) throw new Exception("Ordem não encontrada");
-        
+
         List<string> idsOperacoes = ordem.Operacoes.Select(v => v.IdOperacao.ToString()).ToList();
         List<string> idsAnexos = ordem.Anexos.Select(a => a.IdAnexoOrdem.ToString()).ToList();
-        
+
         List<MensagemAuditoria> ordensMessage = await GetAuditoriaMessageAsync("PM_Ordens", id.ToString());
         List<MensagemAuditoria> operacoesMessage = await GenerateAuditoriaMessageAsync("PM_Operacoes", idsOperacoes);
         List<MensagemAuditoria> anexosMessage = await GenerateAuditoriaMessageAsync("PM_AnexosOrdem", idsAnexos);
-        
+
         var result = ordensMessage.Concat(operacoesMessage).Concat(anexosMessage);
-        
+
         return result.OrderByDescending(e => e.DataAlteracao).ToList();
     }
 

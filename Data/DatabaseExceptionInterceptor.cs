@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
@@ -46,15 +47,29 @@ public class DatabaseExceptionInterceptor : SaveChangesInterceptor
     /// <param name="exception">Exception ocorrida</param>
     private Exception? GetFriendlyException(Exception exception)
     {
-        if (exception is DbUpdateException dbEx && dbEx.InnerException is PostgresException pgEx)
+        if (exception is DbUpdateException dbEx)
         {
-            if (pgEx.SqlState == "23503")
+            if (dbEx.InnerException is PostgresException pgEx)
             {
-                return new InvalidOperationException("A chave estrangeira passada não existe", exception);
+                if (pgEx.SqlState == "23503")
+                {
+                    return new InvalidOperationException("A chave estrangeira passada não existe", exception);
+                }
+                if (pgEx.SqlState == "23505")
+                {
+                    return new InvalidOperationException("Este registro já existe no sistema", exception);
+                }
             }
-            if (pgEx.SqlState == "23505")
+            else if (dbEx.InnerException is SqlException sqlEx)
             {
-                return new InvalidOperationException("Este registro já existe no sistema", exception);
+                if (sqlEx.Number == 547)
+                {
+                    return new InvalidOperationException("A chave estrangeira passada não existe", exception);
+                }
+                if (sqlEx.Number == 2627 || sqlEx.Number == 2601)
+                {
+                    return new InvalidOperationException("Este registro já existe no sistema", exception);
+                }
             }
         }
         return null;

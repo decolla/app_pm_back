@@ -55,7 +55,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     // mostra os nomes dos enums (ao invés dos números) no Swagger e na serialização JSON
-    // options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
 });
 
 //  Memory Cache para LinhaTemporal
@@ -245,7 +245,7 @@ using (var scope = app.Services.CreateScope())
         if (dbSchema == "cg")
         {
             Console.WriteLine("Ambiente 'cg' detectado. A tentar criar o banco de dados e as tabelas...");
-            dbContext.Database.Migrate();
+            await dbContext.Database.MigrateAsync();
             Console.WriteLine("Banco de dados e tabelas criados/verificados com sucesso!");
         }
         else
@@ -260,7 +260,7 @@ using (var scope = app.Services.CreateScope())
             var conn = dbContext.Database.GetDbConnection();
             await conn.OpenAsync();
 
-            dbContext.Database.Migrate();
+            await dbContext.Database.MigrateAsync();
 
             await conn.CloseAsync();
             Console.WriteLine("Migrations aplicadas com sucesso!");
