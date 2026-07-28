@@ -566,17 +566,17 @@ public class GenericSearchService
         {
             dadosQuery = dadosQuery.Where(n => n.IdLi == idLi);
         }
-
-        string? idAtivo = buscaType.GetProperty("IdAtivo")?.GetValue(busca);
-        if (Enum.TryParse<ComponentType>(idAtivo, out ComponentType ativo))
+        
+        ComponentType? idAtivo = buscaType.GetProperty("IdAtivo")?.GetValue(busca);
+        if (idAtivo.HasValue)
         {
-            dadosQuery = dadosQuery.Where(n => n.IdAtivo == ativo);
+            dadosQuery = dadosQuery.Where(n => n.IdAtivo == idAtivo);
         }
 
-        string? referenciaOrigem = buscaType.GetProperty("ReferenciaOrigem")?.GetValue(busca);
-        if (Enum.TryParse<OrigemUR>(referenciaOrigem, out OrigemUR origem))
+        OrigemUR? referenciaOrigem = buscaType.GetProperty("ReferenciaOrigem")?.GetValue(busca);
+        if (referenciaOrigem.HasValue)
         {
-            dadosQuery = dadosQuery.Where(n => n.OrigemUR == origem);
+            dadosQuery = dadosQuery.Where(n => n.OrigemUR == referenciaOrigem);
         }
 
         dadosQuery = dadosQuery.AplicarOrdenacao(_context);
