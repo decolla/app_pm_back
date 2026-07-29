@@ -117,7 +117,11 @@ public class ClassificationService<T> where T : class, IClassifiable
         // busco todas as notas/ordems sem classificação
         // remover comentário caso deve reavaliar regras já avaladas
         var notasSemClassificacao =
-            await _dbSet.Where(n => n.Classificacao == Classificacao.NAOCLASSIFICADA).ToListAsync();
+            await _dbSet.Where(n => 
+                n.Classificacao == Classificacao.NAOCLASSIFICADA 
+                || n.MetodoClassificacao == MetodoClassificacao.CATBOOST 
+                || n.MetodoClassificacao == MetodoClassificacao.ALGORITMO)
+                .ToListAsync();
         DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(10000);
 
         // le o campo alvo da regra e busca a palavra chave 
@@ -141,12 +145,25 @@ public class ClassificationService<T> where T : class, IClassifiable
                 "TipoOrdem", "DescricaoBreve", "Criticidade"
             ];
         else throw new Exception("Tipo de modelo não para classificação de palavras");
+        
+        foreach (var campo in camposAlvos)
+        {
+            var prop = typeof(T).GetProperty(campo);
+            if (prop != null)
+            {
+                cache[campo] = prop;
+            }
+        }
 
         // caso a palavra exista atualiza a ficha com o método "FILTRO_PALAVRAS"
         foreach (var nota in notasSemClassificacao)
         {
+            bool classificada = false;
+            
             foreach (var regra in regras)
             {
+                if (classificada) break;
+                
                 // procura para campo alvo
                 foreach (var campoAlvo in camposAlvos)
                 {
@@ -163,8 +180,9 @@ public class ClassificationService<T> where T : class, IClassifiable
                     {
                         nota.Classificacao = regra.ClassificacaoAplicada;
                         nota.ClassificadoPor = null;
-                        nota.DataClassificacao = DateTime.Now;
+                        nota.DataClassificacao = DateTime.UtcNow;
                         nota.MetodoClassificacao = MetodoClassificacao.ALGORITMO;
+                        classificada = true;
                         break;
                     }
                 }
@@ -222,14 +240,11 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         while (true)
         {
-            var query = _dbSet.Where(n =>
+            var query = _dbSet.Where(n => (
                 n.Classificacao == Classificacao.NAOCLASSIFICADA &&
-                n.MetodoClassificacao != MetodoClassificacao.CATBOOST).AsQueryable();
-
-            if (isNota)
-            {
-                query = query.Include("Itens");
-            }
+                n.MetodoClassificacao != MetodoClassificacao.CATBOOST) || 
+                                          n.MetodoClassificacao == MetodoClassificacao.CATBOOST)
+                .AsQueryable();
 
             var lote = await query.Take(tamanhoLote).ToListAsync();
             if (lote.Count == 0)
