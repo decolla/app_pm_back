@@ -52,6 +52,14 @@ public class OrdemDto
     [SheetColumn("Loc.instalação")] public string? IdLi { get; set; }
 
     [SheetColumn("Nota")] public long? IdNota { get; set; }
+    
+    [SheetColumn("IdGpm")] public long? IdGpm { get; set; }
+    
+    [SheetColumn("DnsIot")] public string? DnsIot { get; set; }
+    
+    [SheetColumn("IdCtm")] public long? IdCtm { get; set; }
+    
+    [SheetColumn("IdPlano")] public long? IdPlano { get; set; }
 
     [SheetColumn("confiabilidade")]public ConfiabilidadeRestaurada? ConfiabilidadeRestaurada { get; set; }
 
