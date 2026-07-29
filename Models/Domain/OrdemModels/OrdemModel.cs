@@ -56,8 +56,7 @@ public class OrdemModel : IClassifiable, IAuditable
     /// Define a urgência e impacto da ordem no contexto operacional.
     /// </summary>
     /// <example>Baixa, Média, Alta, Crítica, Emergencial</example>
-    [MaxLength(100, ErrorMessage = "A criticidade não pode exceder 100 caracteres.")]
-    public string? Criticidade { get; set; }
+    public Prioridade? Criticidade { get; set; }
 
     /// <summary>
     /// Classificação da ordem conforme a interface IClassifiable.

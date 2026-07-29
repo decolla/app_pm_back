@@ -156,8 +156,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     IdRegra = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PalavraChave = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CampoAlvo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ClassificacaoAplicada = table.Column<int>(type: "int", nullable: false),
+                    Permitida = table.Column<bool>(type: "bit", nullable: false),
                     OrdemPrioridade = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -605,7 +605,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     NumeroOrdem = table.Column<long>(type: "bigint", nullable: true),
                     DataCriacao = table.Column<DateTime>(type: "datetime2", nullable: true),
                     StatusOrdem = table.Column<int>(type: "int", nullable: true),
-                    Criticidade = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Criticidade = table.Column<int>(type: "int", nullable: true),
                     Classificacao = table.Column<int>(type: "int", nullable: false),
                     MetodoClassificacao = table.Column<int>(type: "int", maxLength: 100, nullable: false),
                     ClassificadoPor = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
@@ -886,7 +886,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 27, 12, 53, 53, 51, DateTimeKind.Utc).AddTicks(2345), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 29, 17, 54, 12, 659, DateTimeKind.Utc).AddTicks(40), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

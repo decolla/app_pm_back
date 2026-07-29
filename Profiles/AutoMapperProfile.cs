@@ -13,8 +13,6 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Ordens, opt => opt.Ignore());
 
         CreateMap<OrdemDto, OrdemModel>()
-            .ForMember(dest => dest.Criticidade,
-                opt => opt.MapFrom(src => src.Prioridade.HasValue ? src.Prioridade.Value.ToString() : src.Criticidade))
             .ForMember(dest => dest.Nota, opt => opt.Ignore());
 
         CreateMap<EstrategiaManutencaoDto, EstrategiaModel>();

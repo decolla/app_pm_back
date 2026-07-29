@@ -14,7 +14,7 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations.PostgresMigration
 {
     [DbContext(typeof(PostgresDbContext))]
-    [Migration("20260727125403_InitialPostgres")]
+    [Migration("20260729175425_InitialPostgres")]
     partial class InitialPostgres
     {
         /// <inheritdoc />
@@ -110,10 +110,6 @@ namespace app_pm_back.Migrations.PostgresMigration
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdRegra"));
 
-                    b.Property<string>("CampoAlvo")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("ClassificacaoAplicada")
                         .HasColumnType("integer");
 
@@ -123,6 +119,9 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<string>("PalavraChave")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("Permitida")
+                        .HasColumnType("boolean");
 
                     b.HasKey("IdRegra");
 
@@ -306,7 +305,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 27, 12, 54, 2, 921, DateTimeKind.Utc).AddTicks(649),
+                            DataModificacao = new DateTime(2026, 7, 29, 17, 54, 25, 445, DateTimeKind.Utc).AddTicks(4093),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -854,9 +853,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<string>("Criticidade")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                    b.Property<int?>("Criticidade")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("DataClassificacao")
                         .HasColumnType("timestamp without time zone");

@@ -106,10 +106,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdRegra"));
 
-                    b.Property<string>("CampoAlvo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("ClassificacaoAplicada")
                         .HasColumnType("int");
 
@@ -119,6 +115,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<string>("PalavraChave")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Permitida")
+                        .HasColumnType("bit");
 
                     b.HasKey("IdRegra");
 
@@ -302,7 +301,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 27, 12, 53, 53, 51, DateTimeKind.Utc).AddTicks(2345),
+                            DataModificacao = new DateTime(2026, 7, 29, 17, 54, 12, 659, DateTimeKind.Utc).AddTicks(40),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -850,9 +849,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("Criticidade")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<int?>("Criticidade")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DataClassificacao")
                         .HasColumnType("datetime2");

@@ -148,8 +148,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                     IdRegra = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PalavraChave = table.Column<string>(type: "text", nullable: false),
-                    CampoAlvo = table.Column<string>(type: "text", nullable: false),
                     ClassificacaoAplicada = table.Column<int>(type: "integer", nullable: false),
+                    Permitida = table.Column<bool>(type: "boolean", nullable: false),
                     OrdemPrioridade = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -560,7 +560,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     NumeroOrdem = table.Column<long>(type: "bigint", nullable: true),
                     DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     StatusOrdem = table.Column<int>(type: "integer", nullable: true),
-                    Criticidade = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Criticidade = table.Column<int>(type: "integer", nullable: true),
                     Classificacao = table.Column<int>(type: "integer", nullable: false),
                     MetodoClassificacao = table.Column<int>(type: "integer", maxLength: 100, nullable: false),
                     ClassificadoPor = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
@@ -813,7 +813,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 27, 12, 54, 2, 921, DateTimeKind.Utc).AddTicks(649), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 29, 17, 54, 25, 445, DateTimeKind.Utc).AddTicks(4093), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
