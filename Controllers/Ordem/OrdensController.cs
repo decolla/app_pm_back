@@ -1,6 +1,7 @@
 using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using app_pm_back.Services.FichasServices;
 using app_pm_back.Services.Manutencao;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;

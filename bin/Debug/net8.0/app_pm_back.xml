@@ -4,6 +4,18 @@
         <name>app_pm_back</name>
     </assembly>
     <members>
+        <member name="T:app_pm_back.Attributes.NumericToStringConverter">
+            <summary>
+            Converte valores numéricos, booleanos ou strings JSON em string C#.
+            Útil para tolerar payloads onde campos string são enviados como números pelo cliente.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Attributes.NumericToStringConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Attributes.NumericToStringConverter.Write(System.Text.Json.Utf8JsonWriter,System.String,System.Text.Json.JsonSerializerOptions)">
+            <inheritdoc />
+        </member>
         <member name="T:app_pm_back.Attributes.SheetColumnAttribute">
             <summary>
             Anexa ediquetas a colunas de planilhas
@@ -485,6 +497,17 @@
             <param name="tamanho">Número de elementos presente na página</param>
             <returns>Lista de Nota e Ordens com base nos filtros</returns>
         </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.BuscarFichasDataRenovacao(app_pm_back.DTO.Buscas.BuscaFichasDadoRenovacaoDto,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Busca fichas por dados de renovação
+            </summary>
+            <param name="busca">Modelo de busca com campos comparáveis</param>
+            <param name="pagina">Página a ser exibida</param>
+            <param name="tamanho">Número de elementos presente na página</param>
+            <returns>Lista de fichas com base nos filtros</returns>
+            <response code="200">Retorna a lista de fichas</response>
+            <response code="400">Retorna um erro se os parâmetros forem inválidos</response>
+        </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.LinhaTemporalController.ObterLinhaTemporal(System.Int32,System.Int32)">
             <summary>
             Obtém a linha temporal paginada das LIs consultando diretamente a API do APM com paginação.
@@ -868,7 +891,7 @@
             Endpoints de notas .
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.NotasController.#ctor(app_pm_back.Services.Manutencao.NotaService,app_pm_back.Services.Manutencao.ItemNotaService,app_pm_back.Services.FichasServices.DadosRenovacaoService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.NotaModel},AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.NotasController.#ctor(app_pm_back.Services.Manutencao.NotaService,app_pm_back.Services.Manutencao.ItemNotaService,app_pm_back.Services.FichasServices.DadosRenovacaoService,app_pm_back.Services.FichasServices.ClassificationService{app_pm_back.Models.Domain.NotaModel},AutoMapper.IMapper)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.NotasController"/>.
             </summary>
@@ -1082,7 +1105,7 @@
             Endpoints de ordens .
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.OrdensController.#ctor(app_pm_back.Services.Manutencao.OrdemService,app_pm_back.Services.ClassificationService{app_pm_back.Models.Domain.OrdemModel},AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.OrdensController.#ctor(app_pm_back.Services.Manutencao.OrdemService,app_pm_back.Services.FichasServices.ClassificationService{app_pm_back.Models.Domain.OrdemModel},AutoMapper.IMapper)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.OrdensController"/>.
             </summary>
@@ -1793,6 +1816,11 @@
             DTO de imobilizado .
             </summary>
         </member>
+        <member name="T:app_pm_back.DTO.Buscas.BuscaFichasDadoRenovacaoDto">
+            <summary>
+            DTO para busca de fichas por dados de renovação
+            </summary>
+        </member>
         <member name="P:app_pm_back.DTO.DadosRenovacaoDto.IdDados">
             <summary>
             Identificador único do registro de renovação.
@@ -1956,17 +1984,16 @@
             </summary>
             <example>"Vazamento", "Inspecionar", "Limpeza"</example>
         </member>
-        <member name="P:app_pm_back.DTO.RuleClassificationDto.CampoAlvo">
-            <summary>
-            Campo alvo onde as palavras da regra serão aplicadas
-            </summary>
-            <example>"Descricao", "TextoBreve"</example>
-        </member>
         <member name="P:app_pm_back.DTO.RuleClassificationDto.ClassificacaoAplicada">
             <summary>
             Qual o tipo de classificação aplicada pela regra 
             </summary>
             <example>0,1,2</example>
+        </member>
+        <member name="P:app_pm_back.DTO.RuleClassificationDto.Permitida">
+            <summary>
+            Se a regra é para uma palavra permitida ou proibida 
+            </summary>
         </member>
         <member name="P:app_pm_back.DTO.RuleClassificationDto.OrdemPrioridade">
             <summary>
@@ -2139,6 +2166,16 @@
         <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.ModificadoPorUsuario">
             <summary>
             Usuário que realizou a última modificação na configuração global
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ArvoreFichasModels.DiretorioModel.IdDiretorio">
+            <summary>
+            Identificador do diretório
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ArvoreFichasModels.DiretorioModel.Nome">
+            <summary>
+            Nome diretório
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.Prioridade">
@@ -4135,50 +4172,50 @@
             </summary>
             <returns> Bool se a operação ocorreu corretamente</returns>
         </member>
-        <member name="T:app_pm_back.Services.ClassificationService`1">
+        <member name="T:app_pm_back.Services.FichasServices.ClassificationService`1">
             <summary>
             Classe para classificar notas/ordens usando regras de palavras e catboost.
             </summary>
             <typeparam name="T">Tipo genérico para qualquer parâmetro classificável (nota ou ordem)</typeparam>
         </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ConfiguracaoGlobalService,teste_catboost_cs.Cbm,teste_catboost_cs.ModelMeta)">
+        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ConfiguracaoGlobalService,teste_catboost_cs.Cbm,teste_catboost_cs.ModelMeta)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ClassificationService`1"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.FichasServices.ClassificationService`1"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.HumanClassification(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
+        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.HumanClassification(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String)">
             <summary>
             Classificação manual de notas/ordens.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.GetAllRules">
+        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.GetAllRules">
             <summary>
             Recebe todas as regras de classificação de palavras do banco de dados, ordenadas por prioridade.
             </summary>
             <returns>Lista de regras cadastradas </returns>
         </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.CreateRule(app_pm_back.DTO.RuleClassificationDto)">
+        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.CreateRule(app_pm_back.DTO.RuleClassificationDto)">
             <summary>
             Cria uma regra de palavras
             </summary>
             <param name="rule">Regra no formato de RuleClassificationModel</param>
             <returns>Regra passada como parâmetro</returns>
         </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.WordsClassification(System.Collections.Generic.List{`0})">
+        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.WordsClassification(System.Collections.Generic.List{`0})">
             <summary>
             Função para classificar notas/ordens com base nas regras de palavras.
             A busca será feita no controller e passará todas que estiverem sem classificar,
             e quais deverão ser reclassificadas.
             </summary>
-            <param name="notasComClassificacao"> Lista de tipo genérico de notas/ordens já classificadas para serem analisadas pelo algoritmo</param>
+            <param name="fichasComClassificacao"> Lista de tipo genérico de notas/ordens já classificadas para serem analisadas pelo algoritmo</param>
             <returns>Todas as notas que não tinham sido classificadas juntamente as reclassificadas</returns>
         </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.CatboostClassification">
+        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.CatboostClassification">
             <summary>
             Classificação de notas/ordens com base no modelo Catboost.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.ClassificationService`1.NormalizeAsciiLower(System.String,System.String)">
+        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.NormalizeAsciiLower(System.String,System.String)">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -4812,6 +4849,17 @@
             <summary>
             Obtém uma timeline de fichas de um ativo para um range de data específico
             </summary>
+        </member>
+        <member name="M:app_pm_back.Services.GenericSearchService.BuscarFichasDataRenovacaoAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Realiza uma busca por fichas de dados renovação
+            </summary>
+            <param name="busca">Parâmetros de filtragem</param>
+            <param name="pagina">Pagina a ser exibida</param>
+            <param name="tamanho">Tamanho da página</param>
+            <param name="Tfichas"></param>
+            <returns>Dados Renovação filtrados</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="M:app_pm_back.Services.IReportService.CriticalException(app_pm_back.Models.Status)">
             <summary>

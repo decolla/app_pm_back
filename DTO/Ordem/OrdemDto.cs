@@ -27,6 +27,8 @@ public class OrdemDto
 
     [SheetColumn("status_ordem")] public StatusFichas? StatusOrdem { get; set; }
 
+    [SheetColumn("Criticidade")]
+    [System.Text.Json.Serialization.JsonConverter(typeof(app_pm_back.Attributes.NumericToStringConverter))]
     public string? Criticidade { get; set; }
 
     [SheetColumn("Prioridade")] public Prioridade? Prioridade { get; set; }

@@ -8,7 +8,7 @@ using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using teste_catboost_cs;
 
-namespace app_pm_back.Services;
+namespace app_pm_back.Services.FichasServices;
 
 /// <summary>
 /// Classe para classificar notas/ordens usando regras de palavras e catboost.
@@ -58,25 +58,25 @@ public class ClassificationService<T> where T : class, IClassifiable
     public async Task<List<T>> AutoClassify()
     {
         var config = await _configuracaoService.ObterConfiguracaoAsync();
-        if(config.ClassificacaoAutomatica == ModoClassificacaoAutomatica.ClassificarCatBoost)
+        if (config.ClassificacaoAutomatica == ModoClassificacaoAutomatica.ClassificarCatBoost)
         {
             return await CatboostClassification();
         }
-        
+
         if (config.ClassificacaoAutomatica == ModoClassificacaoAutomatica.ClassificarPalavrasChave)
         {
             return await WordsClassification(null);
         }
-        
+
         if (config.ClassificacaoAutomatica == ModoClassificacaoAutomatica.NaoClassificar)
         {
             return new List<T>();
         }
-        
-        throw new InvalidOperationException("Modo de classificação automática não habilitada nas classificações globais.");
 
+        throw new InvalidOperationException(
+            "Modo de classificação automática não habilitada nas classificações globais.");
     }
-    
+
     /// <summary>
     /// Recebe todas as regras de classificação de palavras do banco de dados, ordenadas por prioridade.
     /// </summary>
@@ -103,64 +103,70 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// A busca será feita no controller e passará todas que estiverem sem classificar,
     /// e quais deverão ser reclassificadas.
     /// </summary>
-    /// <param name="notasComClassificacao"> Lista de tipo genérico de notas/ordens já classificadas para serem analisadas pelo algoritmo</param>
+    /// <param name="fichasComClassificacao"> Lista de tipo genérico de notas/ordens já classificadas para serem analisadas pelo algoritmo</param>
     /// <returns>Todas as notas que não tinham sido classificadas juntamente as reclassificadas</returns>
-    public async Task<List<T>> WordsClassification(List<T>? notasComClassificacao)
+    public async Task<List<T>> WordsClassification(List<T>? fichasComClassificacao)
     {
-        var config = await _configuracaoService.ObterConfiguracaoAsync();
-        if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarPalavrasChave)
-        {
-            throw new InvalidOperationException("Modo de classificação automática não habilitada nas classificações globais.");
-        }
-        
+        // var config = await _configuracaoService.ObterConfiguracaoAsync();
+        // if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarPalavrasChave)
+        // {
+        //     throw new InvalidOperationException(
+        //         "Modo de classificação automática não habilitada nas classificações globais.");
+        // }
+
         // busco todas as notas/ordems sem classificação
         // remover comentário caso deve reavaliar regras já avaladas
         var notasSemClassificacao =
             await _dbSet.Where(n => n.Classificacao == Classificacao.NAOCLASSIFICADA).ToListAsync();
         DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(10000);
 
-        // leio o campo alvo da regra e busco a palavra chave 
+        // le o campo alvo da regra e busca a palavra chave 
         List<RuleClassificationDto> regras = await _classificationModel.OrderBy(r => r.OrdemPrioridade).ToListAsync();
 
         // dicionário para armazenar um cache das propriedades
         Dictionary<string, PropertyInfo> cache = new Dictionary<string, PropertyInfo>();
 
-        foreach (var regra in regras)
-        {
-            // verifica se a regra está ou não na lista de regras
-            if (!cache.ContainsKey(regra.CampoAlvo))
-            {
-                // pega a propriedade da nota por Reflection
-                var prop = typeof(T).GetProperty(regra.CampoAlvo);
-                if (prop != null)
-                {
-                    // adiciona a propriedade ao cache
-                    cache[regra.CampoAlvo] = prop;
-                }
-            }
-        }
+        List<string> camposAlvos = [];
+
+        // realiza os campos alvos dependendo do tipo de modelo
+        if (typeof(T) == typeof(NotaModel))
+            camposAlvos =
+            [
+                "TipoNota", "Finalidade", "EquipamentoDisponivel", "AnomaliaObservada", "ObservacoesComplementares",
+                "DescricaoBreve"
+            ];
+        else if (typeof(T) == typeof(OrdemModel))
+            camposAlvos =
+            [
+                "TipoOrdem", "DescricaoBreve", "Criticidade"
+            ];
+        else throw new Exception("Tipo de modelo não para classificação de palavras");
 
         // caso a palavra exista atualiza a ficha com o método "FILTRO_PALAVRAS"
         foreach (var nota in notasSemClassificacao)
         {
             foreach (var regra in regras)
             {
-                // captura a propriedade alvo da nota e a palavra chave
-                if (!cache.TryGetValue(regra.CampoAlvo, out var propriedadeAlvo))
-                    continue;
-
-                string palavraChave = regra.PalavraChave;
-
-                string? valorAlvo = propriedadeAlvo.GetValue(nota)?.ToString();
-
-                // verifica se a palavra chave existe no valor alvo
-                if (valorAlvo != null && valorAlvo.Contains(palavraChave, StringComparison.OrdinalIgnoreCase))
+                // procura para campo alvo
+                foreach (var campoAlvo in camposAlvos)
                 {
-                    nota.Classificacao = regra.ClassificacaoAplicada;
-                    nota.ClassificadoPor = null;
-                    nota.DataClassificacao = DateTime.Now;
-                    nota.MetodoClassificacao = MetodoClassificacao.ALGORITMO;
-                    break;
+                    // captura a propriedade alvo da nota e a palavra chave
+                    if (!cache.TryGetValue(campoAlvo, out var propriedadeAlvo))
+                        continue;
+
+                    string palavraChave = regra.PalavraChave;
+
+                    string? valorAlvo = propriedadeAlvo.GetValue(nota)?.ToString();
+
+                    // verifica se a palavra chave existe no valor alvo
+                    if (valorAlvo != null && valorAlvo.Contains(palavraChave, StringComparison.OrdinalIgnoreCase))
+                    {
+                        nota.Classificacao = regra.ClassificacaoAplicada;
+                        nota.ClassificadoPor = null;
+                        nota.DataClassificacao = DateTime.Now;
+                        nota.MetodoClassificacao = MetodoClassificacao.ALGORITMO;
+                        break;
+                    }
                 }
             }
         }
@@ -168,7 +174,7 @@ public class ClassificationService<T> where T : class, IClassifiable
         await _context.SaveChangesAsync();
 
         // retorna as notas/ordens atualizadas
-        return notasSemClassificacao.Concat(notasComClassificacao ?? []).ToList();
+        return notasSemClassificacao.Concat(fichasComClassificacao ?? []).ToList();
     }
 
     /// <summary>
@@ -176,10 +182,11 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// </summary>
     public async Task<List<T>> CatboostClassification()
     {
-        var config = await _configuracaoService.ObterConfiguracaoAsync();
-        if(config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarCatBoost)
-            throw new InvalidOperationException("Modo de classificação por catboost não habilitada nas classificações globais.");
-        
+        // var config = await _configuracaoService.ObterConfiguracaoAsync();
+        // if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarCatBoost)
+        //     throw new InvalidOperationException(
+        //         "Modo de classificação por catboost não habilitada nas classificações globais.");
+
         if (_cbm == null || _meta == null)
             throw new InvalidOperationException("Modelo CatBoost não carregado.");
 

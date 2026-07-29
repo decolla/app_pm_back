@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using app_pm_back.Services.FichasServices;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace app_pm_back.Tests.Services;
 
