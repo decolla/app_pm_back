@@ -77,6 +77,25 @@ public class OrdensController : ControllerBase
             return BadRequest(new { message = $"Erro ao criar a ordem : {e.Message}." });
         }
     }
+    
+    /// <summary>
+    /// Importa o payload de uma nota para cadastrar uma ordem
+    /// </summary>
+    /// <param name="idNota">Id da nota de referência</param>
+    /// <returns>Payload de ordem</returns>
+    [HttpGet("payload")]
+    public async Task<IActionResult> ImportarPayload([FromQuery] long idNota)
+    {
+        try
+        {
+            var ordem = await _ordemService.ImportarOrdemAsync(idNota);
+            return Ok(ordem);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao importar payload: {e.Message}." });
+        }
+    }
 
     /// <summary>
     /// Retorna todas as ordens, com paginacao opcional.

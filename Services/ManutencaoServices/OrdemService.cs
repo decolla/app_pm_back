@@ -61,7 +61,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
         foreach (var ordem in ordens)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            
+
             OrdemModel? existente = null;
 
             if (ordem.NumeroOrdem.HasValue)
@@ -132,27 +132,27 @@ public class OrdemService : BaseCrudService<OrdemModel>
             .Include(o => o.GPM)
             .Include(o => o.CTM)
             .FirstOrDefaultAsync(o => o.IdOrdem == idOrdem);
-        
+
         if (ordem == null) return new object();
-        
+
         System.Collections.IEnumerable usuariosGpm = new List<object>();
         if (ordem.IdGpm.HasValue)
         {
             usuariosGpm = await _context.PM_Usuarios
                 .Where(u => u.Gpms.Any(g => g.IdGPM == ordem.IdGpm.Value))
-                .Select(u => new { u.IdUsuario, u.Nome})
+                .Select(u => new { u.IdUsuario, u.Nome })
                 .ToListAsync();
         }
-        
+
         System.Collections.IEnumerable usuariosCtm = new List<object>();
         if (ordem.IdCtm.HasValue)
         {
             usuariosCtm = await _context.PM_Usuarios
                 .Where(u => u.Ctms.Any(c => c.IdCTM == ordem.IdCtm.Value))
-                .Select(u => new { u.IdUsuario, u.Nome})
+                .Select(u => new { u.IdUsuario, u.Nome })
                 .ToListAsync();
         }
-        
+
         return new
         {
             GPM = ordem.GPM,
@@ -161,7 +161,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
             UsuariosCTM = usuariosCtm
         };
     }
-    
+
     /// <summary>
     /// Atualiza uma nota por completo com base no DTO da tela do frontend.
     /// </summary>
@@ -187,7 +187,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
 
         // sincroniza operações
         var idOperacoes = ordemTela.Operacoes.Select(v => v.IdOperacao).ToList();
-    
+
         // deleta
         foreach (var opBanco in ordemDoBanco.Operacoes.Where(v => !idOperacoes.Contains(v.IdOperacao)))
         {
@@ -213,5 +213,37 @@ public class OrdemService : BaseCrudService<OrdemModel>
         await _context.SaveChangesAsync();
 
         return ordemDoBanco;
+    }
+
+    /// <summary>
+    /// Gera um payload de ordem a partir de uma nota.
+    /// </summary>
+    /// <param name="idNota">Id da nota de referência</param>
+    /// <returns>Ordem payload</returns>
+    /// <exception cref="ArgumentNullException">Nota não existe</exception>
+    public async Task<OrdemModel> ImportarOrdemAsync(long idNota)
+    {
+        // limpa o change tracker
+        _context.ChangeTracker.Clear();
+
+        NotaModel? nota = _context.PM_Notas.FindAsync(idNota).Result;
+
+        if (nota == null) throw new ArgumentNullException($"Nota com id {idNota} não encontrada.");
+
+        // gera um payload de ordem a partir da nota
+        OrdemModel ordem = new OrdemModel
+        {
+            IdNota = nota.IdNota,
+            IdLi = nota.IdLi,
+            DnsIot = nota.DnsIot,
+            Classificacao = nota.Classificacao,
+            MetodoClassificacao = nota.MetodoClassificacao,
+            ConfiabilidadeRestaurada = nota.ConfiabilidadeRestaurada,
+            IdAtivo = nota.IdAtivo,
+            IdGpm = nota.IdGpm,
+            FimPlanejado = nota.FimDesejado,
+        };
+
+        return ordem;
     }
 }
