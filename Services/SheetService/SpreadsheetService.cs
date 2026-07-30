@@ -578,7 +578,12 @@ public class SpreadsheetService
             IdAtivo = dto.IdAtivo,
             IdLi = dto.IdLi,
             IdNota = dto.IdNota,
-            ConfiabilidadeRestaurada = dto.ConfiabilidadeRestaurada ?? ConfiabilidadeRestaurada.NaoRestaura
+            ConfiabilidadeRestaurada = dto.ConfiabilidadeRestaurada ?? ConfiabilidadeRestaurada.NaoRestaura,
+            IdGpm = dto.IdGpm,
+            DnsIot = dto.DnsIot,
+            IdCtm = dto.IdCtm,
+            IdPlano = dto.IdPlano,
+            Escopo = dto.Escopo
         };
     }
 
