@@ -99,7 +99,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.ToTable("PM_GpmUsuario", (string)null);
                 });
 
-            modelBuilder.Entity("app_pm_back.DTO.RuleClassificationDto", b =>
+            modelBuilder.Entity("app_pm_back.DTO.RegraClassificacaoDto", b =>
                 {
                     b.Property<long>("IdRegra")
                         .ValueGeneratedOnAdd()
@@ -122,7 +122,7 @@ namespace app_pm_back.Migrations.PostgresMigration
 
                     b.HasKey("IdRegra");
 
-                    b.ToTable("PM_RuleClassification");
+                    b.ToTable("RegraClassificacaoDto");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AlmoxarifadoModel", b =>
@@ -302,7 +302,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 29, 17, 54, 25, 445, DateTimeKind.Utc).AddTicks(4093),
+                            DataModificacao = new DateTime(2026, 7, 30, 19, 52, 31, 612, DateTimeKind.Utc).AddTicks(806),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -983,6 +983,32 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.HasIndex("IdEstrategia");
 
                     b.ToTable("PM_Planos");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.RegraClassificacaoModel", b =>
+                {
+                    b.Property<long>("IdRegra")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdRegra"));
+
+                    b.Property<int>("ClassificacaoAplicada")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrdemPrioridade")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PalavraChave")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Permitida")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("IdRegra");
+
+                    b.ToTable("PM_RuleClassification");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.ReliabilityModel", b =>

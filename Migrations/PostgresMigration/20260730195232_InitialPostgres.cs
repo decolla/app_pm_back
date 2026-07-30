@@ -209,6 +209,22 @@ namespace app_pm_back.Migrations.PostgresMigration
                 });
 
             migrationBuilder.CreateTable(
+                name: "RegraClassificacaoDto",
+                columns: table => new
+                {
+                    IdRegra = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PalavraChave = table.Column<string>(type: "text", nullable: false),
+                    ClassificacaoAplicada = table.Column<int>(type: "integer", nullable: false),
+                    Permitida = table.Column<bool>(type: "boolean", nullable: false),
+                    OrdemPrioridade = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RegraClassificacaoDto", x => x.IdRegra);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PM_Planos",
                 columns: table => new
                 {
@@ -813,7 +829,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 29, 17, 54, 25, 445, DateTimeKind.Utc).AddTicks(4093), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 30, 19, 52, 31, 612, DateTimeKind.Utc).AddTicks(806), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
@@ -1046,6 +1062,9 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.DropTable(
                 name: "PM_VariaveisNota");
+
+            migrationBuilder.DropTable(
+                name: "RegraClassificacaoDto");
 
             migrationBuilder.DropTable(
                 name: "PM_Ferramentas");

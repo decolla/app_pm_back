@@ -220,6 +220,23 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RegraClassificacaoDto",
+                schema: "dbo",
+                columns: table => new
+                {
+                    IdRegra = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PalavraChave = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClassificacaoAplicada = table.Column<int>(type: "int", nullable: false),
+                    Permitida = table.Column<bool>(type: "bit", nullable: false),
+                    OrdemPrioridade = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RegraClassificacaoDto", x => x.IdRegra);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PM_Planos",
                 schema: "dbo",
                 columns: table => new
@@ -886,7 +903,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 29, 17, 54, 12, 659, DateTimeKind.Utc).AddTicks(40), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 30, 19, 52, 20, 336, DateTimeKind.Utc).AddTicks(438), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
@@ -1170,6 +1187,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             migrationBuilder.DropTable(
                 name: "PM_VariaveisNota",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "RegraClassificacaoDto",
                 schema: "dbo");
 
             migrationBuilder.DropTable(

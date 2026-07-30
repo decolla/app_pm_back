@@ -19,7 +19,7 @@ public class ClassificationService<T> where T : class, IClassifiable
     protected readonly AppDbContext _context;
     protected readonly ConfiguracaoGlobalService _configuracaoService;
     protected readonly DbSet<T> _dbSet;
-    protected readonly DbSet<RuleClassificationDto> _classificationModel;
+    protected readonly DbSet<RegraClassificacaoModel> _classificationModel;
     protected readonly Cbm? _cbm;
     protected readonly ModelMeta? _meta;
 
@@ -32,7 +32,7 @@ public class ClassificationService<T> where T : class, IClassifiable
         _context = context;
         _configuracaoService = configuracaoService;
         _dbSet = context.Set<T>();
-        _classificationModel = context.Set<RuleClassificationDto>();
+        _classificationModel = context.Set<RegraClassificacaoModel>();
         _cbm = modeloCatboost;
         _meta = meta;
     }
@@ -78,27 +78,6 @@ public class ClassificationService<T> where T : class, IClassifiable
     }
 
     /// <summary>
-    /// Recebe todas as regras de classificação de palavras do banco de dados, ordenadas por prioridade.
-    /// </summary>
-    /// <returns>Lista de regras cadastradas </returns>
-    public async Task<List<RuleClassificationDto>> GetAllRules()
-    {
-        return await _classificationModel.OrderBy(r => r.OrdemPrioridade).ToListAsync();
-    }
-
-    /// <summary>
-    /// Cria uma regra de palavras
-    /// </summary>
-    /// <param name="rule">Regra no formato de RuleClassificationModel</param>
-    /// <returns>Regra passada como parâmetro</returns>
-    public async Task<RuleClassificationDto> CreateRule(RuleClassificationDto rule)
-    {
-        await _classificationModel.AddAsync(rule);
-        await _context.SaveChangesAsync();
-        return rule;
-    }
-
-    /// <summary>
     /// Função para classificar notas/ordens com base nas regras de palavras.
     /// A busca será feita no controller e passará todas que estiverem sem classificar,
     /// e quais deverão ser reclassificadas.
@@ -125,7 +104,7 @@ public class ClassificationService<T> where T : class, IClassifiable
         DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(10000);
 
         // le o campo alvo da regra e busca a palavra chave 
-        List<RuleClassificationDto> regras = await _classificationModel.OrderBy(r => r.OrdemPrioridade).ToListAsync();
+        List<RegraClassificacaoModel> regras = await _classificationModel.OrderBy(r => r.OrdemPrioridade).ToListAsync();
 
         // dicionário para armazenar um cache das propriedades
         Dictionary<string, PropertyInfo> cache = new Dictionary<string, PropertyInfo>();

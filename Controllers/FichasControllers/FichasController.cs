@@ -19,7 +19,6 @@ public class FichasController : ControllerBase
 {
     private readonly SynchronizeAPMService _synchronizeApmService;
     private readonly ILogger<FichasController> _logger;
-    private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
     private readonly GenericSearchService _searchService;
     private readonly ClassificationService<NotaModel> _notaService;
     private readonly ClassificationService<OrdemModel> _ordemService;
@@ -27,12 +26,10 @@ public class FichasController : ControllerBase
 
     public FichasController(SynchronizeAPMService synchronizeApmService, ILogger<FichasController> logger,
         GenericSearchService searchService,
-        ConfiguracaoGlobalService configuracaoGlobalService,
         ClassificationService<NotaModel> notaService,
         ClassificationService<OrdemModel> ordemService, ImportSheetService spreadsheetOrchestrator)
 
     {
-        _configuracaoGlobalService = configuracaoGlobalService;
         _searchService = searchService;
         _synchronizeApmService = synchronizeApmService;
         _logger = logger;
@@ -72,134 +69,6 @@ public class FichasController : ControllerBase
         {
             _logger.LogError(e, "Erro ao processar sincronização.");
             return BadRequest(new { message = $"Erro ao iniciar sincronização: {e.Message}." });
-        }
-    }
-
-    /// <summary>
-    /// Cria uma regra de classificação por palavras para Ambas, Fichas ou Ordens
-    /// </summary>
-    /// <param name="regra">Regra a ser aplicada</param>
-    /// <returns>Regra criada</returns>
-    [HttpPost("classificacao/regras")]
-    public async Task<IActionResult> CriarRegraCongas([FromBody] RuleClassificationDto regra,
-        [FromQuery] Fichas buscaTabela)
-    {
-        try
-        {
-            var regrasCriadas = new List<RuleClassificationDto>();
-            var message = "";
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Notas)
-            {
-                var resultNota = await _notaService.CreateRule(regra);
-                regrasCriadas.Add(resultNota);
-                message = "Notas classificadas com sucesso";
-            }
-
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
-            {
-                var resultOrdem = await _ordemService.CreateRule(regra);
-                regrasCriadas.Add(resultOrdem);
-                message += "| Ordens classificadas com sucesso";
-            }
-
-            if (!regrasCriadas.Any())
-            {
-                return BadRequest(new { message = $"Resultado da busca nulo" });
-            }
-
-            var idsGerados = string.Join(", ", regrasCriadas.Select(r => r.IdRegra));
-
-            return Ok(new { message = $"{message} ! IDs: {idsGerados}" });
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao criar regra {e.Message}" });
-        }
-    }
-
-    /// <summary>
-    /// Classifica para Ambas, Fichas ou Ordens com base uma lista de palavras armazenadas no banco
-    /// </summary>
-    /// <returns>Lista de notas atualizadas</returns>
-    [HttpGet("classificacao/filtro")]
-    public async Task<IActionResult> ClassificacaoPalavrasNotaCongas(Fichas buscaTabela)
-    {
-        var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
-        if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarPalavrasChave)
-        {
-            return BadRequest(new { message = "Classificação por palavras desativada nas configurações globais." });
-        }
-
-        try
-        {
-            // passar uma lista vazia por enquanto 
-            var message = "";
-            List<NotaModel>? notasClassificadas = null;
-            List<OrdemModel>? ordensClassificadas = null;
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Notas)
-            {
-                notasClassificadas = await _notaService.WordsClassification([]);
-                message = "Notas classificadas com sucesso";
-            }
-
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
-            {
-                ordensClassificadas = await _ordemService.WordsClassification([]);
-                message += "| Ordens classificadas com sucesso";
-            }
-
-            if (!message.Any())
-            {
-                return BadRequest(new { message = "Ficha inválida" });
-            }
-
-            return Ok(new { message = $"{message} !" });
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
-        }
-    }
-
-    /// <summary>
-    /// Classifica as Ambas, Fichas ou Ordens usando a IA catboost
-    /// </summary>
-    [HttpGet("classificacao/catboost")]
-    public async Task<IActionResult> ClassificacaoCatboostNota(Fichas buscaTabela)
-    {
-        var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
-        if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarCatBoost)
-        {
-            return BadRequest(new { message = "Classificação por catboost desativada nas configurações globais." });
-        }
-
-        try
-        {
-            var message = "";
-            List<NotaModel>? notasClassificadas = null;
-            List<OrdemModel>? ordensClassificadas = null;
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Notas)
-            {
-                notasClassificadas = await _notaService.CatboostClassification();
-                message = "Notas classificadas com sucesso";
-            }
-
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
-            {
-                ordensClassificadas = await _ordemService.CatboostClassification();
-                message += "| Ordens classificadas com sucesso";
-            }
-
-            if (!message.Any())
-            {
-                return BadRequest(new { message = "Ficha inválida" });
-            }
-
-            return Ok(new { message = $"{message} !" });
-        }
-        catch (Exception e)
-        {
-            return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
         }
     }
 

@@ -12,7 +12,7 @@ using app_pm_back.Data;
 namespace app_pm_back.Migrations.SqlServerMigrations
 {
     [DbContext(typeof(SqlServerDbContext))]
-    [Migration("20260729175413_InitialSqlServer")]
+    [Migration("20260730195220_InitialSqlServer")]
     partial class InitialSqlServer
     {
         /// <inheritdoc />
@@ -101,7 +101,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.ToTable("PM_GpmUsuario", "dbo");
                 });
 
-            modelBuilder.Entity("app_pm_back.DTO.RuleClassificationDto", b =>
+            modelBuilder.Entity("app_pm_back.DTO.RegraClassificacaoDto", b =>
                 {
                     b.Property<long>("IdRegra")
                         .ValueGeneratedOnAdd()
@@ -124,7 +124,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     b.HasKey("IdRegra");
 
-                    b.ToTable("PM_RuleClassification", "dbo");
+                    b.ToTable("RegraClassificacaoDto", "dbo");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.AlmoxarifadoModel", b =>
@@ -304,7 +304,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 29, 17, 54, 12, 659, DateTimeKind.Utc).AddTicks(40),
+                            DataModificacao = new DateTime(2026, 7, 30, 19, 52, 20, 336, DateTimeKind.Utc).AddTicks(438),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -985,6 +985,32 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.HasIndex("IdEstrategia");
 
                     b.ToTable("PM_Planos", "dbo");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.RegraClassificacaoModel", b =>
+                {
+                    b.Property<long>("IdRegra")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdRegra"));
+
+                    b.Property<int>("ClassificacaoAplicada")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrdemPrioridade")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PalavraChave")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Permitida")
+                        .HasColumnType("bit");
+
+                    b.HasKey("IdRegra");
+
+                    b.ToTable("PM_RuleClassification", "dbo");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.ReliabilityModel", b =>

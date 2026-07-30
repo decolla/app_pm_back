@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using app_pm_back.Models.Domain;
 
-namespace app_pm_back.DTO;
+namespace app_pm_back.Models.Domain;
 
-public class RuleClassificationDto
+public class RegraClassificacaoModel
 {
     /// <summary>
     /// Id da Regra
@@ -35,4 +34,7 @@ public class RuleClassificationDto
     /// </summary>
     /// <example>1</example>
     public int OrdemPrioridade { get; set; }
+    
+    
+    
 }

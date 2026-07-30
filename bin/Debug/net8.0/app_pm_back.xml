@@ -380,6 +380,70 @@
             <response code="200">Sucesso ao deletar o registro.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.CriarRegraClassificacao(app_pm_back.DTO.RegraClassificacaoDto,app_pm_back.Models.Domain.Fichas)">
+            <summary>
+            Cria uma regra de classificação por palavras para Ambas, Fichas ou Ordens
+            </summary>
+            <param name="regra">Regra a ser aplicada</param>
+            <returns>Regra criada</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ObterPorId(System.Int64)">
+            <summary>
+            Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Contar">
+            <summary>
+            Obtém o total de registros cadastrados.
+            </summary>
+            <returns>Resultado da operação.</returns>
+            <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Atualizar(System.Int64,app_pm_back.DTO.CentroTrabalhoDto)">
+            <summary>
+            Atualiza um registro existente.
+            </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="dto">DTO contendo os novos dados para atualização.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Deletar(System.Int64)">
+            <summary>
+            Exclui um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro a ser excluído.</param>
+            <returns>Mensagem de confirmação da exclusão.</returns>
+            <response code="200">Sucesso ao deletar o registro.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ClassificacaoPalavrasNotaCongas(app_pm_back.Models.Domain.Fichas)">
+            <summary>
+            Classifica para Ambas, Fichas ou Ordens com base uma lista de palavras armazenadas no banco
+            </summary>
+            <returns>Lista de notas atualizadas</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ClassificacaoCatboostNota(app_pm_back.Models.Domain.Fichas)">
+            <summary>
+            Classifica as Ambas, Fichas ou Ordens usando a IA catboost
+            </summary>
+        </member>
         <member name="T:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController">
             <summary>
             Endpoints de dado renovação
@@ -463,24 +527,6 @@
         <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.SynchronizeApm(System.Threading.CancellationToken)">
             <summary>
             Sincroniza as fichas do PM com os ativos do APM
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.CriarRegraCongas(app_pm_back.DTO.RuleClassificationDto,app_pm_back.Models.Domain.Fichas)">
-            <summary>
-            Cria uma regra de classificação por palavras para Ambas, Fichas ou Ordens
-            </summary>
-            <param name="regra">Regra a ser aplicada</param>
-            <returns>Regra criada</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.ClassificacaoPalavrasNotaCongas(app_pm_back.Models.Domain.Fichas)">
-            <summary>
-            Classifica para Ambas, Fichas ou Ordens com base uma lista de palavras armazenadas no banco
-            </summary>
-            <returns>Lista de notas atualizadas</returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.ClassificacaoCatboostNota(app_pm_back.Models.Domain.Fichas)">
-            <summary>
-            Classifica as Ambas, Fichas ou Ordens usando a IA catboost
             </summary>
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.UploadPlanilha(Microsoft.AspNetCore.Http.IFormFile,System.Boolean,System.Boolean,System.Threading.CancellationToken)">
@@ -1973,29 +2019,29 @@
             DTO de tipo de plano .
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.RuleClassificationDto.IdRegra">
+        <member name="P:app_pm_back.DTO.RegraClassificacaoDto.IdRegra">
             <summary>
             Id da Regra
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.RuleClassificationDto.PalavraChave">
+        <member name="P:app_pm_back.DTO.RegraClassificacaoDto.PalavraChave">
             <summary>
             Palavra chave usada para a filtragem 
             </summary>
             <example>"Vazamento", "Inspecionar", "Limpeza"</example>
         </member>
-        <member name="P:app_pm_back.DTO.RuleClassificationDto.ClassificacaoAplicada">
+        <member name="P:app_pm_back.DTO.RegraClassificacaoDto.ClassificacaoAplicada">
             <summary>
             Qual o tipo de classificação aplicada pela regra 
             </summary>
             <example>0,1,2</example>
         </member>
-        <member name="P:app_pm_back.DTO.RuleClassificationDto.Permitida">
+        <member name="P:app_pm_back.DTO.RegraClassificacaoDto.Permitida">
             <summary>
             Se a regra é para uma palavra permitida ou proibida 
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.RuleClassificationDto.OrdemPrioridade">
+        <member name="P:app_pm_back.DTO.RegraClassificacaoDto.OrdemPrioridade">
             <summary>
             Em caso de conflito, qual a prioridade da regra acima das outras
             </summary>
@@ -3854,6 +3900,34 @@
             Coleção de usuários vinculados a este GPM.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.RegraClassificacaoModel.IdRegra">
+            <summary>
+            Id da Regra
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.RegraClassificacaoModel.PalavraChave">
+            <summary>
+            Palavra chave usada para a filtragem 
+            </summary>
+            <example>"Vazamento", "Inspecionar", "Limpeza"</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.RegraClassificacaoModel.ClassificacaoAplicada">
+            <summary>
+            Qual o tipo de classificação aplicada pela regra 
+            </summary>
+            <example>0,1,2</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.RegraClassificacaoModel.Permitida">
+            <summary>
+            Se a regra é para uma palavra permitida ou proibida 
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.RegraClassificacaoModel.OrdemPrioridade">
+            <summary>
+            Em caso de conflito, qual a prioridade da regra acima das outras
+            </summary>
+            <example>1</example>
+        </member>
         <member name="T:app_pm_back.Models.Domain.UsuarioModel">
             <summary>
             Representa a entidade de Usuário no sistema.
@@ -4187,19 +4261,6 @@
             <summary>
             Classificação manual de notas/ordens.
             </summary>
-        </member>
-        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.GetAllRules">
-            <summary>
-            Recebe todas as regras de classificação de palavras do banco de dados, ordenadas por prioridade.
-            </summary>
-            <returns>Lista de regras cadastradas </returns>
-        </member>
-        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.CreateRule(app_pm_back.DTO.RuleClassificationDto)">
-            <summary>
-            Cria uma regra de palavras
-            </summary>
-            <param name="rule">Regra no formato de RuleClassificationModel</param>
-            <returns>Regra passada como parâmetro</returns>
         </member>
         <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.WordsClassification(System.Collections.Generic.List{`0})">
             <summary>

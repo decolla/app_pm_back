@@ -51,7 +51,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<AnexoOrdemModel>().HasKey(e => e.IdAnexoOrdem);
         modelBuilder.Entity<DadosRenovacaoModel>().HasKey(e => e.IdDados);
         modelBuilder.Entity<ConfiguracaoGlobalModel>().HasKey(c => c.Id);
-        modelBuilder.Entity<RuleClassificationDto>().HasKey(e => e.IdRegra);
+        modelBuilder.Entity<RegraClassificacaoDto>().HasKey(e => e.IdRegra);
 
         // 1-to-1: CTM e GPM 
         modelBuilder.Entity<CtmModel>()
@@ -188,7 +188,7 @@ public class AppDbContext : DbContext
     public DbSet<DadosRenovacaoModel> PM_DadosRenovacao { get; set; }
     public DbSet<ReliabilityModel> PM_Reliability { get; set; }
     public DbSet<AuditoriaModel> PM_Auditorias { get; set; }
-    public DbSet<RuleClassificationDto> PM_RuleClassification { get; set; }
+    public DbSet<RegraClassificacaoModel> PM_RuleClassification { get; set; }
 }
 
 public class SqlServerDbContext : AppDbContext
