@@ -159,6 +159,7 @@ builder.Services.AddScoped<LinhaTemporalService>();
 builder.Services.AddScoped<ReliabilityService>();
 builder.Services.AddScoped<AuditoriaService>();
 builder.Services.AddScoped<RegraClassificacaoService>();
+builder.Services.AddScoped<DiretorioService>();
 
 // configuração de clientes http
 builder.Services.AddHttpClient<ExternIntegrationService>(client =>
