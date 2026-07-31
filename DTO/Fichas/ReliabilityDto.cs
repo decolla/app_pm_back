@@ -2,7 +2,7 @@
 
 namespace app_pm_back.DTO;
 
-public class ReliabilityDTO
+public class ReliabilityDto
 {
     /// <summary>
     /// Chave estrangeira para a localização de instalação do ativo.

@@ -2,6 +2,7 @@ using System.Text.Json;
 using app_pm_back.Models.Domain;
 using app_pm_back.DTO;
 using app_pm_back.Interfaces;
+using app_pm_back.Models.Domain.Diretorios;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -74,7 +75,7 @@ public class AppDbContext : DbContext
                 {
                     j.Property<long>("IdFerramenta");
                     j.Property<long>("IdOperacao");
-            
+
                     j.HasKey("IdFerramenta", "IdOperacao");
                     j.ToTable("PM_FerramentasOperacoes");
                 });
@@ -135,7 +136,7 @@ public class AppDbContext : DbContext
                     j.HasKey("IdCTM", "IdUsuario");
                     j.ToTable("PM_CtmUsuario");
                 });
-        
+
         // adiciona um valor padrão inicial caso a tabela esteja vazia nas migrations
         modelBuilder.Entity<ConfiguracaoGlobalModel>().HasData(new ConfiguracaoGlobalModel
         {
@@ -160,10 +161,36 @@ public class AppDbContext : DbContext
         //     e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
         // modelBuilder.Entity<FerramentaModel>().HasQueryFilter(e =>
         //     e.IdEscopo != null && _userContext.GetEscoposDoUsuario().Contains(e.IdEscopo));
+
+        // relacionamento dos diretorios 
+        modelBuilder.Entity<DiretorioModel>()
+            .HasOne(d => d.DiretorioPai)
+            .WithMany(d => d.Subdiretorios)
+            .HasForeignKey(d => d.IdDiretorioPai)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // chave compostas ára ligação diretorio e nota
+        modelBuilder.Entity<DiretorioNotaModel>()
+            .HasKey(dn => new { dn.IdDiretorio, dn.IdNota });
+
+        modelBuilder.Entity<DiretorioOrdemModel>()
+            .HasKey(do_ => new { do_.IdDiretorio, do_.IdOrdem });
+
+        
+        // relacionamento entre diretorio e nota
+        modelBuilder.Entity<DiretorioNotaModel>()
+            .HasOne(dn => dn.Diretorio)
+            .WithMany(d => d.NotasVinculadas)
+            .HasForeignKey(dn => dn.IdDiretorio);
+
+        modelBuilder.Entity<DiretorioNotaModel>()
+            .HasOne(dn => dn.Nota)
+            .WithMany() // A Nota não precisa saber em quais diretórios está
+            .HasForeignKey(dn => dn.IdNota);
     }
 
     // ================================ CRIAÇÃO DAS TABELAS ====================================
-    
+
     public DbSet<TipoManutencaoModel> PM_TiposManutencao { get; set; }
     public DbSet<TipoEstrategiaModel> PM_TiposEstrategia { get; set; }
     public DbSet<TipoCepModel> PM_TiposCep { get; set; }
@@ -189,6 +216,7 @@ public class AppDbContext : DbContext
     public DbSet<ReliabilityModel> PM_Reliability { get; set; }
     public DbSet<AuditoriaModel> PM_Auditorias { get; set; }
     public DbSet<RegraClassificacaoModel> PM_RuleClassification { get; set; }
+    public DbSet<DiretorioModel> PM_Diretorios { get; set; }
 }
 
 public class SqlServerDbContext : AppDbContext
