@@ -31,9 +31,7 @@ public class TipoManutencaoModel
     /// <summary>
     /// Define a qual tipo de ativo esta manutenção se aplica. Campo obrigatório.
     /// </summary>
-    [MaxLength(100)]
-    [Required(ErrorMessage = "O campo TipoAtivo é obrigatório.")]
-    public required string TipoLI { get; set; }
+    public TiposLI TipoLI { get; set; }
 
     /// <summary>
     /// Índice de confiabilidade esperado.

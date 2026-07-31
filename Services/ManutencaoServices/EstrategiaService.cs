@@ -52,7 +52,7 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
         if (!string.IsNullOrWhiteSpace(tipoAtivo))
         {
             var tipoAtivoNormalizado = tipoAtivo.Trim().ToLower();
-            query = query.Where(e => e.TipoAtivoAplicavel != null && e.TipoAtivoAplicavel.ToLower().Contains(tipoAtivoNormalizado));
+            query = query.Where(e => e.TipoLi != null && e.TipoLi.ToString()!.ToLower().Contains(tipoAtivoNormalizado));
         }
 
         query = query.OrderBy(e => e.IdEstrategia);
@@ -79,7 +79,7 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
                 var novoTManutencao = new TipoManutencaoModel
                 {
                     Nome = $"mock{tipo}",
-                    TipoLI = $"{tipo}",
+                    TipoLI = tipo,
                     Categoria = CategoriaTipoManutencao.Renovacao,
                     Confiabilidade = 1.0,
                     Habilitada = true
@@ -89,7 +89,7 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
                 var novaEstrategia = new EstrategiaModel
                 {
                     Nome = $"mock{tipo}",
-                    TipoAtivoAplicavel = $"{tipo}",
+                    TipoLi = tipo,
                     Habilitada = true,
                     Ciclos = 7300,
                     CicloContinuo = true,

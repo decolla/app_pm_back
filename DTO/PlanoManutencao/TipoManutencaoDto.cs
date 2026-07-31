@@ -16,7 +16,7 @@ public class TipoManutencaoDto
 
     [SheetColumn("Nome")] public string? Nome { get; set; }
 
-    [SheetColumn("Tipo Ativo")] public string? TipoLI { get; set; }
+    [SheetColumn("Tipo LI")] public TiposLI? TipoLI { get; set; }
 
     [SheetColumn("Confiabilidade")] public double? Confiabilidade { get; set; }
 

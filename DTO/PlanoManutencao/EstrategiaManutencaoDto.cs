@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO;
 
@@ -19,8 +20,7 @@ public class EstrategiaManutencaoDto
 
     [SheetColumn("Ciclo contínuo")] public bool? CicloContinuo { get; set; }
 
-    [SheetColumn("Tipo ativo aplicável")] public string? TipoAtivoAplicavel { get; set; }
+    [SheetColumn("Tipo ativo aplicável")] public TiposLI? TipoLi { get; set; }
 
-    // Escopo externo (apenas o ID).
     [SheetColumn("Id Escopo")] public long? IdEscopo { get; set; }
 }

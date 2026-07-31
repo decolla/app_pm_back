@@ -47,9 +47,7 @@ public class EstrategiaModel
     /// Categoria ou classe de ativos aos quais esta estratégia é pertinente.
     /// </summary>
     /// <example>Compressores de Parafuso</example>
-    [Required(ErrorMessage = "O tipo de ativo aplicável deve ser informado.")]
-    [StringLength(100, ErrorMessage = "O tipo de ativo deve ter no máximo 100 caracteres.")]
-    public string? TipoAtivoAplicavel { get; set; }
+    public TiposLI? TipoLi { get; set; }
 
     /// <summary>
     /// Quantidade total de etapas ou ciclos que compõem esta estratégia antes de uma possível reinicialização.

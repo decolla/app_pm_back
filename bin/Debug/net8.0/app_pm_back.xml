@@ -523,6 +523,74 @@
             Busca a última data de renovação do LI
             </summary>
         </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.ObterArvore">
+            <summary>
+            Obtém a árvore completa de diretórios
+            </summary>
+            <returns>Lista em formato de árvore</returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.CriarDiretorio(System.String,System.Nullable{System.Int64})">
+            <summary>
+            Cria um novo diretório
+            </summary>
+            <param name="nome">Nome do diretório</param>
+            <param name="idDiretorioPai">ID do diretório pai</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.MoverDiretorio(System.Int64,System.Int64)">
+            <summary>
+            Move um diretório para outro
+            </summary>
+            <param name="idDiretorio">ID do diretório a ser movido</param>
+            <param name="idDiretorioPai">ID do diretório de destino</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.AtualizarDiretorio(System.Int64,System.String)">
+            <summary>
+            Atualiza o nome de um diretório 
+            </summary>
+            <param name="idDiretorio">ID do diretório a ser atualizado</param>
+            <param name="nome">Novo nome do diretório</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.VincularFicha(System.Int64,System.Int64,app_pm_back.Models.Domain.Fichas)">
+            <summary>
+            Vincula uma ordem ou nota a um diretório
+            </summary>
+            <param name="idDiretorio">ID do diretório a ser vinculado</param>
+            <param name="idFicha">ID da ficha a ser vinculada</param>
+            <param name="tipo">Tipo da ficha (Notas ou Ordens)</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.RemoverDiretorio(System.Int64)">
+            <summary>
+            Remove um diretório da árvore
+            </summary>
+            <param name="idDiretorio">ID do diretório a ser removido</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.DesvincularFicha(System.Int64,System.Int64,app_pm_back.Models.Domain.Fichas)">
+            <summary>
+            Remove a conexão entre uma nota/ordem a um diretório
+            </summary>
+            <param name="idDiretorio">ID do diretório</param>
+            <param name="idFicha">ID da ficha</param>
+            <param name="tipo">Tipo da ficha (Notas ou Ordens)</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.ObterFolhasDoDiretorio(System.Int64)">
+            <summary>
+            Obtém todas as folhas (notas e ordens) vinculadas a um diretório específico
+            </summary>
+            <param name="idDiretorio">ID do diretório de busca</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.ObterTodosDiretorios">
+            <summary>
+            Obtém todos os diretórios cadastrados em banco
+            </summary>
+            <returns></returns>
+        </member>
         <!-- Badly formed XML comment ignored for member "T:app_pm_back.Controllers.FichasControllers.FichasController" -->
         <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.SynchronizeApm(System.Threading.CancellationToken)">
             <summary>
@@ -1164,6 +1232,13 @@
             <returns>O objeto criado com status 201 (Created).</returns>
             <response code="201">Registro criado com sucesso.</response>
             <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.OrdensController.ImportarPayload(System.Int64)">
+            <summary>
+            Importa o payload de uma nota para cadastrar uma ordem
+            </summary>
+            <param name="idNota">Id da nota de referência</param>
+            <returns>Payload de ordem</returns>
         </member>
         <member name="M:app_pm_back.Controllers.OrdensController.ListarOrdens(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
@@ -1918,18 +1993,18 @@
             Identificador do Usuário que processou a renovação.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.ReliabilityDTO.IdLi">
+        <member name="P:app_pm_back.DTO.ReliabilityDto.IdLi">
             <summary>
             Chave estrangeira para a localização de instalação do ativo.
             Permite vincular a nota a um local específico de instalação.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.ReliabilityDTO.IdsNotas">
+        <member name="P:app_pm_back.DTO.ReliabilityDto.IdsNotas">
             <summary>
             Identificador da Nota relacionada.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.ReliabilityDTO.IdsOrdens">
+        <member name="P:app_pm_back.DTO.ReliabilityDto.IdsOrdens">
             <summary>
             Identificador da Ordem de Serviço relacionada.
             </summary>
@@ -2214,12 +2289,12 @@
             Usuário que realizou a última modificação na configuração global
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.ArvoreFichasModels.DiretorioModel.IdDiretorio">
+        <member name="P:app_pm_back.Models.Domain.Diretorios.DiretorioModel.IdDiretorio">
             <summary>
             Identificador do diretório
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.ArvoreFichasModels.DiretorioModel.Nome">
+        <member name="P:app_pm_back.Models.Domain.Diretorios.DiretorioModel.Nome">
             <summary>
             Nome diretório
             </summary>
@@ -2446,7 +2521,7 @@
             Define se a estratégia está disponível para novos planos de manutenção.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.TipoAtivoAplicavel">
+        <member name="P:app_pm_back.Models.Domain.EstrategiaModel.TipoLi">
             <summary>
             Categoria ou classe de ativos aos quais esta estratégia é pertinente.
             </summary>
@@ -4407,6 +4482,70 @@
             A cada 1000 linhas lidas no excel manda um log, cadastra em batches
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.DiretorioService.ObterArvoreAsync">
+            <summary>
+            Retorna a árvore completa 
+            </summary>
+            <returns>Lista de nós da árvore</returns>
+        </member>
+        <member name="M:app_pm_back.Services.DiretorioService.VincularNotaAoDiretorioAsync(System.Int64,System.Int64)">
+            <summary>
+            Adiciona uma nota ao diretório
+            </summary>
+            <param name="idDiretorio">Id do diretório</param>
+            <param name="idNota">Id da nota</param>
+        </member>
+        <member name="M:app_pm_back.Services.DiretorioService.VincularOrdemAoDiretorioAsync(System.Int64,System.Int64)">
+            <summary>
+            Adiciona uma ordem ao diretório 
+            </summary>
+            <param name="idDiretorio">Id do diretório</param>
+            <param name="idOrdem">Id da ordem</param>
+        </member>
+        <member name="M:app_pm_back.Services.DiretorioService.VerificarSePaiEDescendente(System.Int64,System.Int64)">
+            <summary>
+            Método auxiliar para evitar loops infinitos ao mover diretórios. Verifica se o novo pai é descendente do diretório original.
+            </summary>
+            <param name="idDiretorioOriginal">ID do diretório original</param>
+            <param name="idNovoPai">ID do novo pai</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.DiretorioService.RemoverDiretorioAsync(System.Int64)">
+            <summary>
+            Realiza a remoção de um diretório do banco
+            </summary>
+            <param name="idDiretorio">ID do diretório a ser removido</param>
+        </member>
+        <member name="M:app_pm_back.Services.DiretorioService.PrepararRemocaoRecursivaAsync(System.Int64)">
+            <summary>
+            Função auxiliar de remoção recursiva
+            </summary>
+            <param name="idDiretorio">ID do diretório a ser removido</param>
+        </member>
+        <member name="M:app_pm_back.Services.DiretorioService.AtualizarDiretorioAsync(System.Int64,System.String)">
+            <summary>
+            Atualiza o nome do diretório
+            </summary>
+            <param name="idDiretorio"></param>
+            <param name="nome"></param>
+            <returns></returns>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException"></exception>
+        </member>
+        <member name="M:app_pm_back.Services.DiretorioService.ObterTodosDiretoriosAsync">
+            <summary>
+            Obtém todos os diretórios cadastrados em bancos
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.DiretorioService.MoverDiretorioAsync(System.Int64,System.Nullable{System.Int64})">
+            <summary>
+            Move o diretório
+            </summary>
+            <param name="idDiretorio">ID do diretório a ser movido</param>
+            <param name="idDiretorioPai">Diretório de destino</param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
         <member name="T:app_pm_back.Services.BaseCrudService`1">
             <summary>
             Classe BaseCrudService.
@@ -4605,6 +4744,14 @@
             </summary>
             <param name="ordemTela">Nota completa</param>
             <returns>Nota atualizada</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ImportarOrdemAsync(System.Int64)">
+            <summary>
+            Gera um payload de ordem a partir de uma nota.
+            </summary>
+            <param name="idNota">Id da nota de referência</param>
+            <returns>Ordem payload</returns>
+            <exception cref="T:System.ArgumentNullException">Nota não existe</exception>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.PlanoManutencaoService">
             <summary>

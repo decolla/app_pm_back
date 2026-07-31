@@ -65,7 +65,7 @@ public static class ImportGhostHelper
             {
                 IdEstrategia = 1,
                 Nome = "DEFAULT",
-                TipoAtivoAplicavel = "DEFAULT"
+                TipoLi = null
             };
             await context.PM_Estrategias.AddAsync(defaultEstrategia);
             await context.SaveChangesAsync();
