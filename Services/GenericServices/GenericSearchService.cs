@@ -118,12 +118,14 @@ public class GenericSearchService
 
         // Includes para buscar o Plano e, em seguida, a Estratégia
         var notasQuery = _notaModels
+            .Include(n => n.Ordens)
             .Include(n => n.Plano)
             .ThenInclude(p => p.Estrategia)
             .AsNoTracking()
             .AsQueryable();
 
         var ordensQuery = _ordemModels
+            .Include(n => n.Nota)
             .Include(o => o.Plano)
             .ThenInclude(p => p.Estrategia)
             .AsNoTracking()
