@@ -25,8 +25,17 @@ public class DiretorioModel
 
     public virtual ICollection<DiretorioModel> Subdiretorios { get; set; } = new List<DiretorioModel>();
 
-    public virtual ICollection<NotaModel> NotasVinculadas { get; set; } = new List<NotaModel>();
+    public virtual ICollection<DiretorioNotaModel> NotasVinculadas { get; set; } = new List<DiretorioNotaModel>();
     public virtual ICollection<DiretorioOrdemModel> OrdensVinculadas { get; set; } = new List<DiretorioOrdemModel>();
+}
+
+public class DiretorioNotaModel
+{
+    public long IdDiretorio { get; set; }
+    public virtual DiretorioModel Diretorio { get; set; }
+
+    public long IdNota { get; set; }
+    public virtual NotaModel Nota { get; set; }
 }
 
 public class DiretorioOrdemModel

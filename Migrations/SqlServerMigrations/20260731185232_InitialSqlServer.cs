@@ -534,19 +534,11 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     IdAtivo = table.Column<int>(type: "int", nullable: true),
                     IdLi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IdGpm = table.Column<long>(type: "bigint", nullable: true),
-                    DnsIot = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    IdDiretorio = table.Column<long>(type: "bigint", nullable: true)
+                    DnsIot = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PM_Notas", x => x.IdNota);
-                    table.ForeignKey(
-                        name: "FK_PM_Notas_PM_Diretorios_IdDiretorio",
-                        column: x => x.IdDiretorio,
-                        principalSchema: "dbo",
-                        principalTable: "PM_Diretorios",
-                        principalColumn: "IdDiretorio",
-                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_PM_Notas_PM_Gpms_IdGpm",
                         column: x => x.IdGpm,
@@ -591,6 +583,33 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         principalSchema: "dbo",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DiretorioNotaModel",
+                schema: "dbo",
+                columns: table => new
+                {
+                    IdDiretorio = table.Column<long>(type: "bigint", nullable: false),
+                    IdNota = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DiretorioNotaModel", x => new { x.IdDiretorio, x.IdNota });
+                    table.ForeignKey(
+                        name: "FK_DiretorioNotaModel_PM_Diretorios_IdDiretorio",
+                        column: x => x.IdDiretorio,
+                        principalSchema: "dbo",
+                        principalTable: "PM_Diretorios",
+                        principalColumn: "IdDiretorio",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DiretorioNotaModel_PM_Notas_IdNota",
+                        column: x => x.IdNota,
+                        principalSchema: "dbo",
+                        principalTable: "PM_Notas",
+                        principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -962,7 +981,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 8, 3, 15, 59, 41, 833, DateTimeKind.Utc).AddTicks(7299), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 31, 18, 52, 32, 265, DateTimeKind.Utc).AddTicks(8267), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
@@ -981,6 +1000,12 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "DadosRenovacao",
                 column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DiretorioNotaModel_IdNota",
+                schema: "dbo",
+                table: "DiretorioNotaModel",
+                column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DiretorioOrdemModel_DiretorioIdDiretorio",
@@ -1065,12 +1090,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ItensNota",
                 column: "IdNota");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PM_Notas_IdDiretorio",
-                schema: "dbo",
-                table: "PM_Notas",
-                column: "IdDiretorio");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Notas_IdGpm",
@@ -1213,6 +1232,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "DiretorioNotaModel",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "DiretorioOrdemModel",
                 schema: "dbo");
 
@@ -1281,6 +1304,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "PM_Diretorios",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "PM_Ferramentas",
                 schema: "dbo");
 
@@ -1314,10 +1341,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             migrationBuilder.DropTable(
                 name: "PM_Notas",
-                schema: "dbo");
-
-            migrationBuilder.DropTable(
-                name: "PM_Diretorios",
                 schema: "dbo");
 
             migrationBuilder.DropTable(

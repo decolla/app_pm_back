@@ -352,15 +352,9 @@ public class NotaModel : IClassifiable, IAuditable
     public virtual ICollection<OrdemModel> Ordens { get; set; } = new List<OrdemModel>();
     
     /// <summary>
-    /// Id do diretório vinculado.
+    /// Diretórios vinculados a esta nota.
     /// </summary>
-    public long? IdDiretorio { get; set; }
-
-    /// <summary>
-    /// Diretório vinculado a esta nota.
-    /// </summary>
-    [ForeignKey(nameof(IdDiretorio))]
-    public virtual DiretorioModel? Diretorio { get; set; }
+    public virtual ICollection<DiretorioNotaModel> DiretoriosVinculados { get; set; } = new List<DiretorioNotaModel>();
 
     #endregion
 }

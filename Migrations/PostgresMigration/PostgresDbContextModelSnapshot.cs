@@ -302,7 +302,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 3, 15, 59, 53, 203, DateTimeKind.Utc).AddTicks(2641),
+                            DataModificacao = new DateTime(2026, 7, 31, 18, 53, 7, 480, DateTimeKind.Utc).AddTicks(4626),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -436,6 +436,21 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.HasIndex("IdDiretorioPai");
 
                     b.ToTable("PM_Diretorios");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.Diretorios.DiretorioNotaModel", b =>
+                {
+                    b.Property<long>("IdDiretorio")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("IdNota")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("IdDiretorio", "IdNota");
+
+                    b.HasIndex("IdNota");
+
+                    b.ToTable("DiretorioNotaModel");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.Diretorios.DiretorioOrdemModel", b =>
@@ -769,9 +784,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<int?>("IdAtivo")
                         .HasColumnType("integer");
 
-                    b.Property<long?>("IdDiretorio")
-                        .HasColumnType("bigint");
-
                     b.Property<long?>("IdGpm")
                         .HasColumnType("bigint");
 
@@ -817,8 +829,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasColumnType("character varying(100)");
 
                     b.HasKey("IdNota");
-
-                    b.HasIndex("IdDiretorio");
 
                     b.HasIndex("IdGpm");
 
@@ -1452,6 +1462,25 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Navigation("DiretorioPai");
                 });
 
+            modelBuilder.Entity("app_pm_back.Models.Domain.Diretorios.DiretorioNotaModel", b =>
+                {
+                    b.HasOne("app_pm_back.Models.Domain.Diretorios.DiretorioModel", "Diretorio")
+                        .WithMany("NotasVinculadas")
+                        .HasForeignKey("IdDiretorio")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("app_pm_back.Models.Domain.NotaModel", "Nota")
+                        .WithMany()
+                        .HasForeignKey("IdNota")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Diretorio");
+
+                    b.Navigation("Nota");
+                });
+
             modelBuilder.Entity("app_pm_back.Models.Domain.Diretorios.DiretorioOrdemModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.Diretorios.DiretorioModel", "Diretorio")
@@ -1461,7 +1490,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .IsRequired();
 
                     b.HasOne("app_pm_back.Models.Domain.OrdemModel", "Ordem")
-                        .WithMany("DiretoriosVinculados")
+                        .WithMany()
                         .HasForeignKey("OrdemIdOrdem")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1504,11 +1533,6 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             modelBuilder.Entity("app_pm_back.Models.Domain.NotaModel", b =>
                 {
-                    b.HasOne("app_pm_back.Models.Domain.Diretorios.DiretorioModel", "Diretorio")
-                        .WithMany("NotasVinculadas")
-                        .HasForeignKey("IdDiretorio")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("app_pm_back.Models.Domain.GpmModel", "GPM")
                         .WithMany()
                         .HasForeignKey("IdGpm");
@@ -1520,8 +1544,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.HasOne("app_pm_back.Models.Domain.UsuarioModel", "Usuario")
                         .WithMany("Notas")
                         .HasForeignKey("IdUsuario");
-
-                    b.Navigation("Diretorio");
 
                     b.Navigation("GPM");
 
@@ -1702,8 +1724,6 @@ namespace app_pm_back.Migrations.PostgresMigration
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemModel", b =>
                 {
                     b.Navigation("Anexos");
-
-                    b.Navigation("DiretoriosVinculados");
 
                     b.Navigation("Operacoes");
                 });

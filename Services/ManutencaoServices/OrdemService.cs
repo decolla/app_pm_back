@@ -1,5 +1,7 @@
 using app_pm_back.Data;
+using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
+using app_pm_back.Models.Domain.Diretorios;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.Manutencao;
@@ -9,11 +11,14 @@ namespace app_pm_back.Services.Manutencao;
 /// </summary>
 public class OrdemService : BaseCrudService<OrdemModel>
 {
+    DiretorioService _diretorioService;
+    
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="OrdemService"/>.
     /// </summary>
-    public OrdemService(AppDbContext context) : base(context)
+    public OrdemService(AppDbContext context, DiretorioService diretorioService) : base(context)
     {
+        _diretorioService = diretorioService;
     }
 
     /// <summary>
@@ -245,5 +250,49 @@ public class OrdemService : BaseCrudService<OrdemModel>
         };
 
         return ordem;
+    }
+    
+    /// <summary>
+    /// Retorna todas as pastas onde uma Ordem específica está guardada
+    /// </summary>
+    public async Task<List<DiretorioDto>> ObterDiretoriosDaOrdemAsync(long idOrdem)
+    {
+        // puxa dados do diretorio
+        var diretorios = await _context.Set<DiretorioOrdemModel>()
+            .Where(dn => dn.IdOrdem == idOrdem)
+            .Select(dn => dn.Diretorio) // puxa a pasta associada
+            .ToListAsync();
+
+        // mapeia o dto
+        return diretorios.Select(d => new DiretorioDto
+        {
+            Id = d.IdDiretorio,
+            Nome = d.Nome,
+            IdPai = d.IdDiretorioPai
+        }).ToList();
+    }
+
+    public async Task<object?> GetOrdemCompletaAsync(long idOrdem)
+    {
+        var ordem = await _dbSet
+            .Include(n => n.Operacoes)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(n => n.IdOrdem == idOrdem);
+
+        if (ordem == null) return null;
+        
+        // obter o diretório da ordem
+        var diretorio = await ObterDiretoriosDaOrdemAsync(idOrdem);
+        long? idDiretorio = diretorio.FirstOrDefault()?.Id;
+        
+        // obtém o caminho em string do diretório
+        var caminhoDiretorio = await _diretorioService.GetCaminhoAsync(idDiretorio ?? 0);
+
+        return new
+        {
+            Ordem = ordem,
+            Diretorio = diretorio,
+            CaminhoDiretorio = caminhoDiretorio
+        };
     }
 }

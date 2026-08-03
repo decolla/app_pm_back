@@ -213,27 +213,27 @@ public class NotaService : BaseCrudService<NotaModel>
         return notaTela;
     }
 
+    /// <summary>
+    /// Retorna todas as pastas onde uma Nota específica está guardada
+    /// </summary>
     public async Task<List<DiretorioDto>> ObterDiretoriosDaNotaAsync(long idNota)
     {
-        var nota = await _context.PM_Notas
-            .Include(n => n.Diretorio)
-            .FirstOrDefaultAsync(n => n.IdNota == idNota);
+        // puxa dados do diretorio
+        var diretorios = await _context.Set<DiretorioNotaModel>()
+            .Where(dn => dn.IdNota == idNota)
+            .Select(dn => dn.Diretorio) // puxa a pasta associada
+            .ToListAsync();
 
-        var list = new List<DiretorioDto>();
-        if (nota?.Diretorio != null)
+        // mapeia o dto
+        return diretorios.Select(d => new DiretorioDto
         {
-            list.Add(new DiretorioDto
-            {
-                Id = nota.Diretorio.IdDiretorio,
-                Nome = nota.Diretorio.Nome,
-                IdPai = nota.Diretorio.IdDiretorioPai
-            });
-        }
-
-        return list;
+            Id = d.IdDiretorio,
+            Nome = d.Nome,
+            IdPai = d.IdDiretorioPai
+        }).ToList();
     }
 
-    public async Task<NotaModel?> GetNotaCompletaAsync(long idnota)
+    public async Task<object?> GetNotaCompletaAsync(long idnota)
     {
         var nota = await _dbSet
             .Include(n => n.Itens)
@@ -245,10 +245,16 @@ public class NotaService : BaseCrudService<NotaModel>
         
         // obter o diretório da nota
         var diretorio = await ObterDiretoriosDaNotaAsync(idnota);
+        long? idDiretorio = diretorio.FirstOrDefault()?.Id;
         
         // obtém o caminho em string do diretório
-        var caminhoDiretorio = await _diretorioService.GetCaminhoAsync(diretorio.FirstOrDefault()?.Id ?? 0);
+        var caminhoDiretorio = await _diretorioService.GetCaminhoAsync(idDiretorio ?? 0);
 
-        return nota;
+        return new
+        {
+            Nota = nota,
+            Diretorio = diretorio,
+            CaminhoDiretorio = caminhoDiretorio
+        };
     }
 }

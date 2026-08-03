@@ -169,15 +169,24 @@ public class AppDbContext : DbContext
             .HasForeignKey(d => d.IdDiretorioPai)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // chave compostas ára ligação diretorio e nota
+        modelBuilder.Entity<DiretorioNotaModel>()
+            .HasKey(dn => new { dn.IdDiretorio, dn.IdNota });
+
         modelBuilder.Entity<DiretorioOrdemModel>()
             .HasKey(do_ => new { do_.IdDiretorio, do_.IdOrdem });
 
-        // relacionamento entre diretorio e nota (um para muitos)
-        modelBuilder.Entity<NotaModel>()
-            .HasOne(n => n.Diretorio)
+        
+        // relacionamento entre diretorio e nota
+        modelBuilder.Entity<DiretorioNotaModel>()
+            .HasOne(dn => dn.Diretorio)
             .WithMany(d => d.NotasVinculadas)
-            .HasForeignKey(n => n.IdDiretorio)
-            .OnDelete(DeleteBehavior.SetNull);
+            .HasForeignKey(dn => dn.IdDiretorio);
+
+        modelBuilder.Entity<DiretorioNotaModel>()
+            .HasOne(dn => dn.Nota)
+            .WithMany(n => n.DiretoriosVinculados)
+            .HasForeignKey(dn => dn.IdNota);
     }
 
     // ================================ CRIAÇÃO DAS TABELAS ====================================

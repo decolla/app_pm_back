@@ -67,6 +67,7 @@
       <Content Remove="app_pm_back.Tests\**" />
       <EmbeddedResource Remove="app_pm_back.Tests\**" />
       <None Remove="app_pm_back.Tests\**" />
+      <Compile Remove="Migrations\SqlServerMigrations\20260803155942_InitialSqlServer.Designer.cs" />
     </ItemGroup>
 
 </Project>

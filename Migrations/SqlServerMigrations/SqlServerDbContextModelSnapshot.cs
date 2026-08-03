@@ -301,7 +301,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 3, 15, 59, 41, 833, DateTimeKind.Utc).AddTicks(7299),
+                            DataModificacao = new DateTime(2026, 7, 31, 18, 52, 32, 265, DateTimeKind.Utc).AddTicks(8267),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -435,6 +435,21 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.HasIndex("IdDiretorioPai");
 
                     b.ToTable("PM_Diretorios", "dbo");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.Diretorios.DiretorioNotaModel", b =>
+                {
+                    b.Property<long>("IdDiretorio")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("IdNota")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("IdDiretorio", "IdNota");
+
+                    b.HasIndex("IdNota");
+
+                    b.ToTable("DiretorioNotaModel", "dbo");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.Diretorios.DiretorioOrdemModel", b =>
@@ -768,9 +783,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<int?>("IdAtivo")
                         .HasColumnType("int");
 
-                    b.Property<long?>("IdDiretorio")
-                        .HasColumnType("bigint");
-
                     b.Property<long?>("IdGpm")
                         .HasColumnType("bigint");
 
@@ -816,8 +828,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("IdNota");
-
-                    b.HasIndex("IdDiretorio");
 
                     b.HasIndex("IdGpm");
 
@@ -1451,6 +1461,25 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Navigation("DiretorioPai");
                 });
 
+            modelBuilder.Entity("app_pm_back.Models.Domain.Diretorios.DiretorioNotaModel", b =>
+                {
+                    b.HasOne("app_pm_back.Models.Domain.Diretorios.DiretorioModel", "Diretorio")
+                        .WithMany("NotasVinculadas")
+                        .HasForeignKey("IdDiretorio")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("app_pm_back.Models.Domain.NotaModel", "Nota")
+                        .WithMany()
+                        .HasForeignKey("IdNota")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Diretorio");
+
+                    b.Navigation("Nota");
+                });
+
             modelBuilder.Entity("app_pm_back.Models.Domain.Diretorios.DiretorioOrdemModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.Diretorios.DiretorioModel", "Diretorio")
@@ -1460,7 +1489,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .IsRequired();
 
                     b.HasOne("app_pm_back.Models.Domain.OrdemModel", "Ordem")
-                        .WithMany("DiretoriosVinculados")
+                        .WithMany()
                         .HasForeignKey("OrdemIdOrdem")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1503,11 +1532,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             modelBuilder.Entity("app_pm_back.Models.Domain.NotaModel", b =>
                 {
-                    b.HasOne("app_pm_back.Models.Domain.Diretorios.DiretorioModel", "Diretorio")
-                        .WithMany("NotasVinculadas")
-                        .HasForeignKey("IdDiretorio")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("app_pm_back.Models.Domain.GpmModel", "GPM")
                         .WithMany()
                         .HasForeignKey("IdGpm");
@@ -1519,8 +1543,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.HasOne("app_pm_back.Models.Domain.UsuarioModel", "Usuario")
                         .WithMany("Notas")
                         .HasForeignKey("IdUsuario");
-
-                    b.Navigation("Diretorio");
 
                     b.Navigation("GPM");
 
@@ -1701,8 +1723,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemModel", b =>
                 {
                     b.Navigation("Anexos");
-
-                    b.Navigation("DiretoriosVinculados");
 
                     b.Navigation("Operacoes");
                 });
