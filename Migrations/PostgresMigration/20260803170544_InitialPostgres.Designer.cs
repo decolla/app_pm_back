@@ -14,7 +14,7 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations.PostgresMigration
 {
     [DbContext(typeof(PostgresDbContext))]
-    [Migration("20260731185307_InitialPostgres")]
+    [Migration("20260803170544_InitialPostgres")]
     partial class InitialPostgres
     {
         /// <inheritdoc />
@@ -305,7 +305,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 31, 18, 53, 7, 480, DateTimeKind.Utc).AddTicks(4626),
+                            DataModificacao = new DateTime(2026, 8, 3, 17, 5, 43, 810, DateTimeKind.Utc).AddTicks(3280),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -1474,7 +1474,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .IsRequired();
 
                     b.HasOne("app_pm_back.Models.Domain.NotaModel", "Nota")
-                        .WithMany()
+                        .WithMany("DiretoriosVinculados")
                         .HasForeignKey("IdNota")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1493,7 +1493,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .IsRequired();
 
                     b.HasOne("app_pm_back.Models.Domain.OrdemModel", "Ordem")
-                        .WithMany()
+                        .WithMany("DiretoriosVinculados")
                         .HasForeignKey("OrdemIdOrdem")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1717,6 +1717,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                 {
                     b.Navigation("Anexos");
 
+                    b.Navigation("DiretoriosVinculados");
+
                     b.Navigation("Itens");
 
                     b.Navigation("Ordens");
@@ -1727,6 +1729,8 @@ namespace app_pm_back.Migrations.PostgresMigration
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemModel", b =>
                 {
                     b.Navigation("Anexos");
+
+                    b.Navigation("DiretoriosVinculados");
 
                     b.Navigation("Operacoes");
                 });

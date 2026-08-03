@@ -301,7 +301,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 7, 31, 18, 52, 32, 265, DateTimeKind.Utc).AddTicks(8267),
+                            DataModificacao = new DateTime(2026, 8, 3, 17, 5, 29, 627, DateTimeKind.Utc).AddTicks(4253),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -1470,7 +1470,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .IsRequired();
 
                     b.HasOne("app_pm_back.Models.Domain.NotaModel", "Nota")
-                        .WithMany()
+                        .WithMany("DiretoriosVinculados")
                         .HasForeignKey("IdNota")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1489,7 +1489,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .IsRequired();
 
                     b.HasOne("app_pm_back.Models.Domain.OrdemModel", "Ordem")
-                        .WithMany()
+                        .WithMany("DiretoriosVinculados")
                         .HasForeignKey("OrdemIdOrdem")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1713,6 +1713,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 {
                     b.Navigation("Anexos");
 
+                    b.Navigation("DiretoriosVinculados");
+
                     b.Navigation("Itens");
 
                     b.Navigation("Ordens");
@@ -1723,6 +1725,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
             modelBuilder.Entity("app_pm_back.Models.Domain.OrdemModel", b =>
                 {
                     b.Navigation("Anexos");
+
+                    b.Navigation("DiretoriosVinculados");
 
                     b.Navigation("Operacoes");
                 });

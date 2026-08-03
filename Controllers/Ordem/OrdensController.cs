@@ -149,7 +149,7 @@ public class OrdensController : ControllerBase
                 return BadRequest(new { message = "Id invalido. Envie id maior que zero." });
             }
 
-            var item = await _ordemService.GetByIdAsync(id);
+            var item = await _ordemService.GetOrdemCompletaAsync(id);
             if (item == null)
             {
                 return NotFound(new { message = "Ordem nao encontrada." });

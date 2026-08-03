@@ -148,7 +148,7 @@ public class NotasController : ControllerBase
                 return BadRequest(new { message = "Id invalido. Envie id maior que zero." });
             }
 
-            var item = await _notaService.GetByIdAsync(id);
+            var item = await _notaService.GetNotaCompletaAsync(id);
             if (item == null)
             {
                 return NotFound(new { message = "Nota nao encontrada." });

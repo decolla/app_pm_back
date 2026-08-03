@@ -4174,18 +4174,6 @@
             Interface para controle do contexto do usuário, incluindo escopos e identificação do usuário atual.
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
             <inheritdoc />
         </member>
@@ -4556,6 +4544,13 @@
             <returns></returns>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
+        <member name="M:app_pm_back.Services.DiretorioService.GetCaminhoAsync(System.Int64)">
+            <summary>
+            Retorna o caminho de um diretório 
+            </summary>
+            <param name="idDiretorio">Id do diretório que será gerado o caminho</param>
+            <returns></returns>
+        </member>
         <member name="T:app_pm_back.Services.BaseCrudService`1">
             <summary>
             Classe BaseCrudService.
@@ -4723,7 +4718,7 @@
             Classe OrdemService.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.#ctor(app_pm_back.Data.AppDbContext)">
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.DiretorioService)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.OrdemService"/>.
             </summary>
@@ -4762,6 +4757,11 @@
             <param name="idNota">Id da nota de referência</param>
             <returns>Ordem payload</returns>
             <exception cref="T:System.ArgumentNullException">Nota não existe</exception>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ObterDiretoriosDaOrdemAsync(System.Int64)">
+            <summary>
+            Retorna todas as pastas onde uma Ordem específica está guardada
+            </summary>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.PlanoManutencaoService">
             <summary>
@@ -4914,7 +4914,7 @@
             Classe NotaService.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaService.#ctor(app_pm_back.Data.AppDbContext)">
+        <member name="M:app_pm_back.Services.Manutencao.NotaService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.DiretorioService)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.NotaService"/>.
             </summary>
@@ -4938,6 +4938,11 @@
             <returns>Resultado da operação.</returns>
         </member>
         <!-- Badly formed XML comment ignored for member "M:app_pm_back.Services.Manutencao.NotaService.AtualizarNotaCompletaAsync(app_pm_back.Models.Domain.NotaModel,System.Int64)" -->
+        <member name="M:app_pm_back.Services.Manutencao.NotaService.ObterDiretoriosDaNotaAsync(System.Int64)">
+            <summary>
+            Retorna todas as pastas onde uma Nota específica está guardada
+            </summary>
+        </member>
         <member name="T:app_pm_back.Services.Manutencao.VariavelNotaService">
             <summary>
             Classe VariavelNotaService.
