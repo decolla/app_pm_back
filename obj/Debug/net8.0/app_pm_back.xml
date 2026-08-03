@@ -3256,9 +3256,14 @@
             Ordens.Add(new OrdemModel { NumeroOrdem = "OS-2024-001", StatusFichas = "Aberta" });
             </example>
         </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.DiretoriosVinculados">
+        <member name="P:app_pm_back.Models.Domain.NotaModel.IdDiretorio">
             <summary>
-            Diretórios vinculados a esta nota.
+            Id do diretório vinculado.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Diretorio">
+            <summary>
+            Diretório vinculado a esta nota.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.VariavelNotaModel">
@@ -4174,18 +4179,6 @@
             Interface para controle do contexto do usuário, incluindo escopos e identificação do usuário atual.
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
             <inheritdoc />
         </member>
@@ -4556,6 +4549,13 @@
             <returns></returns>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
+        <member name="M:app_pm_back.Services.DiretorioService.GetCaminhoAsync(System.Int64)">
+            <summary>
+            Retorna o caminho de um diretório 
+            </summary>
+            <param name="idDiretorio">Id do diretório que será gerado o caminho</param>
+            <returns></returns>
+        </member>
         <member name="T:app_pm_back.Services.BaseCrudService`1">
             <summary>
             Classe BaseCrudService.
@@ -4914,7 +4914,7 @@
             Classe NotaService.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaService.#ctor(app_pm_back.Data.AppDbContext)">
+        <member name="M:app_pm_back.Services.Manutencao.NotaService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.DiretorioService)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.NotaService"/>.
             </summary>

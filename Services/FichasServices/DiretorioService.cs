@@ -23,7 +23,7 @@ public class DiretorioService
     {
         // todos os diretórios da árvore
         var todosDiretorios = await _context.PM_Diretorios
-            .Include(d => d.NotasVinculadas).ThenInclude(dn => dn.Nota)
+            .Include(d => d.NotasVinculadas)
             .Include(d => d.OrdensVinculadas).ThenInclude(do_ => do_.Ordem)
             .ToListAsync();
 
@@ -36,8 +36,8 @@ public class DiretorioService
                 Nome = d.Nome,
                 IdPai = d.IdDiretorioPai,
                 // mapeia folhas para o DTO
-                Notas = d.NotasVinculadas.Select(dn => new FolhaDto
-                    { Id = dn.IdNota, Nome = dn.Nota?.DescricaoBreve, Tipo = "Nota" }).ToList(),
+                Notas = d.NotasVinculadas.Select(n => new FolhaDto
+                    { Id = n.IdNota, Nome = n.DescricaoBreve, Tipo = "Nota" }).ToList(),
                 Ordens = d.OrdensVinculadas.Select(do_ => new FolhaDto
                     { Id = do_.IdOrdem, Nome = do_.Ordem?.DescricaoBreve, Tipo = "Ordem" }).ToList()
             });
@@ -69,35 +69,30 @@ public class DiretorioService
     /// <param name="idNota">Id da nota</param>
     public async Task<DiretorioModel> VincularNotaAoDiretorioAsync(long idDiretorio, long idNota)
     {
-        // verica se já existe este diretório 
-        var existe = await _context.Set<DiretorioNotaModel>()
-            .AnyAsync(dn => dn.IdDiretorio == idDiretorio && dn.IdNota == idNota);
-
-        if (!existe)
+        try
         {
-            try
+            // verifica se a nota e o diretorio existem
+            var nota = await _context.PM_Notas.FindAsync(idNota);
+            if (nota == null) throw new KeyNotFoundException($"Nota com ID {idNota} não encontrada no sistema.");
+            
+            if (nota.IdDiretorio == idDiretorio)
             {
-                // verifica se a nota e o diretorio existem
-                var nota = await _context.PM_Notas.FindAsync(idNota);
-                if (nota == null) throw new KeyNotFoundException($"Nota com ID {idNota} não encontrada no sistema.");
-                
-                var diretorio = await _context.PM_Diretorios.FindAsync(idDiretorio);
-                if (diretorio == null) throw new KeyNotFoundException($"Diretório com ID {idDiretorio} não encontrado.");
-                
-                // vincula uma nota 
-                _context.Set<DiretorioNotaModel>().Add(new DiretorioNotaModel
-                    { IdDiretorio = idDiretorio, IdNota = idNota });
-                await _context.SaveChangesAsync();
-                
-                return diretorio;
+                throw new InvalidOperationException($"A nota com ID {idNota} já está vinculada ao diretório com ID {idDiretorio}.");
             }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Erro ao vincular nota ao diretório: {ex.Message}", ex);
-            }
+            
+            var diretorio = await _context.PM_Diretorios.FindAsync(idDiretorio);
+            if (diretorio == null) throw new KeyNotFoundException($"Diretório com ID {idDiretorio} não encontrado.");
+            
+            // vincula a nota
+            nota.IdDiretorio = idDiretorio;
+            await _context.SaveChangesAsync();
+            
+            return diretorio;
         }
-
-        throw new Exception($"A nota com ID {idNota} já está vinculada ao diretório com ID {idDiretorio}.");
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Erro ao vincular nota ao diretório: {ex.Message}", ex);
+        }
     }
 
     /// <summary>
@@ -195,7 +190,7 @@ public class DiretorioService
     public async Task<List<FolhaDto>> ObterFolhasDoDiretorioAsync(long idDiretorio)
     {
         var diretorio = await _context.PM_Diretorios
-            .Include(d => d.NotasVinculadas).ThenInclude(dn => dn.Nota)
+            .Include(d => d.NotasVinculadas)
             .Include(d => d.OrdensVinculadas).ThenInclude(do_ => do_.Ordem)
             .FirstOrDefaultAsync(d => d.IdDiretorio == idDiretorio);
 
@@ -206,8 +201,8 @@ public class DiretorioService
 
         var folhas = new List<FolhaDto>();
 
-        folhas.AddRange(diretorio.NotasVinculadas.Select(dn => new FolhaDto
-            { Id = dn.IdNota, Nome = dn.Nota?.DescricaoBreve, Tipo = "Nota" }));
+        folhas.AddRange(diretorio.NotasVinculadas.Select(n => new FolhaDto
+            { Id = n.IdNota, Nome = n.DescricaoBreve, Tipo = "Nota" }));
 
         folhas.AddRange(diretorio.OrdensVinculadas.Select(do_ => new FolhaDto
             { Id = do_.IdOrdem, Nome = do_.Ordem?.DescricaoBreve, Tipo = "Ordem" }));
@@ -217,12 +212,12 @@ public class DiretorioService
 
     public async Task RemoverNotaDoDiretorioAsync(long idDiretorio, long idNota)
     {
-        var vinculo = await _context.Set<DiretorioNotaModel>()
-            .FirstOrDefaultAsync(dn => dn.IdDiretorio == idDiretorio && dn.IdNota == idNota);
+        var nota = await _context.PM_Notas
+            .FirstOrDefaultAsync(n => n.IdNota == idNota && n.IdDiretorio == idDiretorio);
 
-        if (vinculo != null)
+        if (nota != null)
         {
-            _context.Set<DiretorioNotaModel>().Remove(vinculo);
+            nota.IdDiretorio = null;
             await _context.SaveChangesAsync();
         }
     }
@@ -264,7 +259,10 @@ public class DiretorioService
         if (diretorio != null)
         {
             // remove os vínculos de notas e ordens
-            _context.Set<DiretorioNotaModel>().RemoveRange(diretorio.NotasVinculadas);
+            foreach (var nota in diretorio.NotasVinculadas.ToList())
+            {
+                nota.IdDiretorio = null;
+            }
             _context.Set<DiretorioOrdemModel>().RemoveRange(diretorio.OrdensVinculadas);
 
             // desce nas subpastas recursivamente

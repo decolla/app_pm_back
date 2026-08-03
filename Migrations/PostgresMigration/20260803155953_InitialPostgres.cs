@@ -497,11 +497,18 @@ namespace app_pm_back.Migrations.PostgresMigration
                     IdAtivo = table.Column<int>(type: "integer", nullable: true),
                     IdLi = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     IdGpm = table.Column<long>(type: "bigint", nullable: true),
-                    DnsIot = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                    DnsIot = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    IdDiretorio = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PM_Notas", x => x.IdNota);
+                    table.ForeignKey(
+                        name: "FK_PM_Notas_PM_Diretorios_IdDiretorio",
+                        column: x => x.IdDiretorio,
+                        principalTable: "PM_Diretorios",
+                        principalColumn: "IdDiretorio",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_PM_Notas_PM_Gpms_IdGpm",
                         column: x => x.IdGpm,
@@ -540,30 +547,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                         column: x => x.IdUsuario,
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DiretorioNotaModel",
-                columns: table => new
-                {
-                    IdDiretorio = table.Column<long>(type: "bigint", nullable: false),
-                    IdNota = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DiretorioNotaModel", x => new { x.IdDiretorio, x.IdNota });
-                    table.ForeignKey(
-                        name: "FK_DiretorioNotaModel_PM_Diretorios_IdDiretorio",
-                        column: x => x.IdDiretorio,
-                        principalTable: "PM_Diretorios",
-                        principalColumn: "IdDiretorio",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DiretorioNotaModel_PM_Notas_IdNota",
-                        column: x => x.IdNota,
-                        principalTable: "PM_Notas",
-                        principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -899,7 +882,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 7, 31, 18, 53, 7, 480, DateTimeKind.Utc).AddTicks(4626), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 8, 3, 15, 59, 53, 203, DateTimeKind.Utc).AddTicks(2641), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
@@ -915,11 +898,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                 name: "IX_DadosRenovacao_IdUsuario",
                 table: "DadosRenovacao",
                 column: "IdUsuario");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DiretorioNotaModel_IdNota",
-                table: "DiretorioNotaModel",
-                column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DiretorioOrdemModel_DiretorioIdDiretorio",
@@ -990,6 +968,11 @@ namespace app_pm_back.Migrations.PostgresMigration
                 name: "IX_PM_ItensNota_IdNota",
                 table: "PM_ItensNota",
                 column: "IdNota");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_Notas_IdDiretorio",
+                table: "PM_Notas",
+                column: "IdDiretorio");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Notas_IdGpm",
@@ -1109,9 +1092,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                 name: "DadosRenovacao");
 
             migrationBuilder.DropTable(
-                name: "DiretorioNotaModel");
-
-            migrationBuilder.DropTable(
                 name: "DiretorioOrdemModel");
 
             migrationBuilder.DropTable(
@@ -1163,9 +1143,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                 name: "RegraClassificacaoDto");
 
             migrationBuilder.DropTable(
-                name: "PM_Diretorios");
-
-            migrationBuilder.DropTable(
                 name: "PM_Ferramentas");
 
             migrationBuilder.DropTable(
@@ -1191,6 +1168,9 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.DropTable(
                 name: "PM_Notas");
+
+            migrationBuilder.DropTable(
+                name: "PM_Diretorios");
 
             migrationBuilder.DropTable(
                 name: "PM_Gpms");

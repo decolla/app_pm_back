@@ -213,24 +213,24 @@ public class NotaService : BaseCrudService<NotaModel>
         return notaTela;
     }
 
-    /// <summary>
-    /// Retorna todas as pastas onde uma Nota específica está guardada
-    /// </summary>
     public async Task<List<DiretorioDto>> ObterDiretoriosDaNotaAsync(long idNota)
     {
-        // puxa dados do diretorio
-        var diretorios = await _context.Set<DiretorioNotaModel>()
-            .Where(dn => dn.IdNota == idNota)
-            .Select(dn => dn.Diretorio) // Puxa a pasta associada
-            .ToListAsync();
+        var nota = await _context.PM_Notas
+            .Include(n => n.Diretorio)
+            .FirstOrDefaultAsync(n => n.IdNota == idNota);
 
-        // mapeia o dto
-        return diretorios.Select(d => new DiretorioDto
+        var list = new List<DiretorioDto>();
+        if (nota?.Diretorio != null)
         {
-            Id = d.IdDiretorio,
-            Nome = d.Nome,
-            IdPai = d.IdDiretorioPai
-        }).ToList();
+            list.Add(new DiretorioDto
+            {
+                Id = nota.Diretorio.IdDiretorio,
+                Nome = nota.Diretorio.Nome,
+                IdPai = nota.Diretorio.IdDiretorioPai
+            });
+        }
+
+        return list;
     }
 
     public async Task<NotaModel?> GetNotaCompletaAsync(long idnota)
