@@ -176,18 +176,13 @@ public class DiretorioService
         return novoDiretorio;
     }
 
-    public async Task<DiretorioModel> ObterDiretorioAsync(long idDiretorio)
+    public async Task<DiretorioModel?> ObterDiretorioAsync(long idDiretorio)
     {
         var diretorio = await _context.PM_Diretorios
             .Include(d => d.Subdiretorios)
             .Include(d => d.NotasVinculadas)
             .Include(d => d.OrdensVinculadas)
             .FirstOrDefaultAsync(d => d.IdDiretorio == idDiretorio);
-
-        if (diretorio == null)
-        {
-            throw new KeyNotFoundException($"Diretório com ID {idDiretorio} não encontrado.");
-        }
 
         return diretorio;
     }
@@ -348,7 +343,8 @@ public class DiretorioService
     public async Task<string> GetCaminhoAsync(long idDiretorio)
     {
         var diretorio = await ObterDiretorioAsync(idDiretorio);
-        string caminho = diretorio.Nome;
+        string caminho = "";
+        if (diretorio == null) return caminho;
 
         while (true)
         {
