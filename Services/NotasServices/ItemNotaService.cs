@@ -20,7 +20,7 @@ public class ItemNotaService : BaseCrudService<ItemNotaModel>
     /// Executa a ação correspondente.
     /// </summary>
     /// <param name="itens">Parâmetro do método.</param>
-    public virtual async Task ImportarItensEmLoteSeguroAsync(List<ItemNotaModel> itens,
+    public virtual async Task ImportarItensEmLoteSeguroAsync(List<ItemNotaModel>? itens,
         CancellationToken cancellationToken)
     {
         if (itens == null || !itens.Any()) return;

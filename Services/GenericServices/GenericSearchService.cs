@@ -174,10 +174,10 @@ public class GenericSearchService
         }
 
         string? localInstalacaoFim = buscaType.GetProperty("LocalInstalacaoFim")?.GetValue(busca);
-        if (!string.IsNullOrEmpty(localInstalacaoInicio))
+        if (!string.IsNullOrEmpty(localInstalacaoFim))
         {
-            notasQuery = notasQuery.Where(n => string.Compare(n.IdLi, localInstalacaoInicio) >= 0);
-            ordensQuery = ordensQuery.Where(o => string.Compare(o.IdLi, localInstalacaoInicio) >= 0);
+            notasQuery = notasQuery.Where(n => string.Compare(n.IdLi, localInstalacaoFim) >= 0);
+            ordensQuery = ordensQuery.Where(o => string.Compare(o.IdLi, localInstalacaoFim) >= 0);
         }
 
         var listaAtivosRaw = buscaType.GetProperty("ListaAtivos")?.GetValue(busca);
@@ -221,6 +221,7 @@ public class GenericSearchService
         if (prioridadeInicio.HasValue)
         {
             notasQuery = notasQuery.Where(n => n.Prioridade >= prioridadeInicio.Value);
+            ordensQuery = ordensQuery.Where(o => o.Criticidade >= prioridadeInicio.Value);
         }
 
         var prioridadeFimVal = buscaType.GetProperty("PrioridadeFim")?.GetValue(busca);
@@ -228,6 +229,7 @@ public class GenericSearchService
         if (prioridadeFim.HasValue)
         {
             notasQuery = notasQuery.Where(n => n.Prioridade <= prioridadeFim.Value);
+            ordensQuery = ordensQuery.Where(o => o.Criticidade <= prioridadeFim.Value);
         }
 
         var classificacaoVal = buscaType.GetProperty("Classificacao")?.GetValue(busca);
