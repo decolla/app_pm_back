@@ -185,7 +185,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<DiretorioNotaModel>()
             .HasOne(dn => dn.Nota)
-            .WithMany() // A Nota não precisa saber em quais diretórios está
+            .WithMany(n => n.DiretoriosVinculados)
             .HasForeignKey(dn => dn.IdNota);
     }
 

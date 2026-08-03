@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using app_pm_back.Interfaces;
+using app_pm_back.Models.Domain.Diretorios;
 
 namespace app_pm_back.Models.Domain;
 
@@ -274,6 +275,11 @@ public class OrdemModel : IClassifiable, IAuditable
     /// </summary>
     /// <example>Desmontagem, Limpeza, Substituição de peças, Montagem, Teste funcional</example>
     public virtual ICollection<OperacaoModel> Operacoes { get; set; } = new List<OperacaoModel>();
+    
+    /// <summary>
+    /// Diretórios vincluados a essa ordem
+    /// </summary>
+    public virtual ICollection<DiretorioOrdemModel> DiretoriosVinculados { get; set; } = new List<DiretorioOrdemModel>();
 
     #endregion
 }

@@ -37,9 +37,9 @@ public class DiretorioService
                 IdPai = d.IdDiretorioPai,
                 // mapeia folhas para o DTO
                 Notas = d.NotasVinculadas.Select(dn => new FolhaDto
-                    { Id = dn.IdNota, Nome = dn.Nota.DescricaoBreve, Tipo = "Nota" }).ToList(),
+                    { Id = dn.IdNota, Nome = dn.Nota?.DescricaoBreve, Tipo = "Nota" }).ToList(),
                 Ordens = d.OrdensVinculadas.Select(do_ => new FolhaDto
-                    { Id = do_.IdOrdem, Nome = do_.Ordem.DescricaoBreve, Tipo = "Ordem" }).ToList()
+                    { Id = do_.IdOrdem, Nome = do_.Ordem?.DescricaoBreve, Tipo = "Ordem" }).ToList()
             });
 
         // monta a árvore completa
@@ -207,10 +207,10 @@ public class DiretorioService
         var folhas = new List<FolhaDto>();
 
         folhas.AddRange(diretorio.NotasVinculadas.Select(dn => new FolhaDto
-            { Id = dn.IdNota, Nome = dn.Nota.DescricaoBreve, Tipo = "Nota" }));
+            { Id = dn.IdNota, Nome = dn.Nota?.DescricaoBreve, Tipo = "Nota" }));
 
         folhas.AddRange(diretorio.OrdensVinculadas.Select(do_ => new FolhaDto
-            { Id = do_.IdOrdem, Nome = do_.Ordem.DescricaoBreve, Tipo = "Ordem" }));
+            { Id = do_.IdOrdem, Nome = do_.Ordem?.DescricaoBreve, Tipo = "Ordem" }));
 
         return folhas;
     }
@@ -338,5 +338,28 @@ public class DiretorioService
         await _context.SaveChangesAsync();
         
         return diretorio;
+    }
+
+    /// <summary>
+    /// Retorna o caminho de um diretório 
+    /// </summary>
+    /// <param name="idDiretorio">Id do diretório que será gerado o caminho</param>
+    /// <returns></returns>
+    public async Task<string> GetCaminhoAsync(long idDiretorio)
+    {
+        var diretorio = await ObterDiretorioAsync(idDiretorio);
+        string caminho = diretorio.Nome;
+
+        while (true)
+        {
+            if (diretorio == null) break;
+            // preenche o caminho
+            caminho = $"{diretorio.Nome}/{caminho}";
+            if (diretorio.IdDiretorioPai == null) break;
+            // procura o pai
+            diretorio = await ObterDiretorioAsync(diretorio.IdDiretorioPai.Value);
+        }
+
+        return caminho;
     }
 }

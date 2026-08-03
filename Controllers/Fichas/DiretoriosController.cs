@@ -65,7 +65,7 @@ public class DiretoriosController : ControllerBase
     /// <returns></returns>
     [HttpPost]
     [Route("mover")]
-    public async Task<IActionResult> MoverDiretorio([FromQuery] long idDiretorio, [FromQuery] long idDiretorioPai)
+    public async Task<IActionResult> MoverDiretorio([FromQuery] long idDiretorio, [FromQuery] long? idDiretorioPai)
     {
         try
         {

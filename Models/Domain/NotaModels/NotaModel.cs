@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using app_pm_back.Interfaces;
+using app_pm_back.Models.Domain.Diretorios;
 
 namespace app_pm_back.Models.Domain;
 
@@ -349,6 +350,11 @@ public class NotaModel : IClassifiable, IAuditable
     /// Ordens.Add(new OrdemModel { NumeroOrdem = "OS-2024-001", StatusFichas = "Aberta" });
     /// </example>
     public virtual ICollection<OrdemModel> Ordens { get; set; } = new List<OrdemModel>();
+    
+    /// <summary>
+    /// Diretórios vinculados a esta nota.
+    /// </summary>
+    public virtual ICollection<DiretorioNotaModel> DiretoriosVinculados { get; set; } = new List<DiretorioNotaModel>();
 
     #endregion
 }

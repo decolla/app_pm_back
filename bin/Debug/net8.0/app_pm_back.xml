@@ -537,20 +537,12 @@
             <param name="idDiretorioPai">ID do diretório pai</param>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.MoverDiretorio(System.Int64,System.Int64)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.MoverDiretorio(System.Int64,System.Nullable{System.Int64})">
             <summary>
             Move um diretório para outro
             </summary>
             <param name="idDiretorio">ID do diretório a ser movido</param>
             <param name="idDiretorioPai">ID do diretório de destino</param>
-            <returns></returns>
-        </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.AtualizarDiretorio(System.Int64,System.String)">
-            <summary>
-            Atualiza o nome de um diretório 
-            </summary>
-            <param name="idDiretorio">ID do diretório a ser atualizado</param>
-            <param name="nome">Novo nome do diretório</param>
             <returns></returns>
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.VincularFicha(System.Int64,System.Int64,app_pm_back.Models.Domain.Fichas)">
@@ -560,6 +552,14 @@
             <param name="idDiretorio">ID do diretório a ser vinculado</param>
             <param name="idFicha">ID da ficha a ser vinculada</param>
             <param name="tipo">Tipo da ficha (Notas ou Ordens)</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.AtualizarDiretorio(System.Int64,System.String)">
+            <summary>
+            Atualiza o nome de um diretório 
+            </summary>
+            <param name="idDiretorio">ID do diretório a ser atualizado</param>
+            <param name="nome">Novo nome do diretório</param>
             <returns></returns>
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.RemoverDiretorio(System.Int64)">
@@ -3256,6 +3256,11 @@
             Ordens.Add(new OrdemModel { NumeroOrdem = "OS-2024-001", StatusFichas = "Aberta" });
             </example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.DiretoriosVinculados">
+            <summary>
+            Diretórios vinculados a esta nota.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Models.Domain.VariavelNotaModel">
             <summary>
             Representa uma variável associada a uma nota técnica.
@@ -3648,6 +3653,11 @@
             Permite decomposição da ordem em tarefas menores para melhor controle.
             </summary>
             <example>Desmontagem, Limpeza, Substituição de peças, Montagem, Teste funcional</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.DiretoriosVinculados">
+            <summary>
+            Diretórios vincluados a essa ordem
+            </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.AlmoxarifadoModel">
             <summary>
