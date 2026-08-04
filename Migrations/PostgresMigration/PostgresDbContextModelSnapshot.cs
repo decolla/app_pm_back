@@ -302,7 +302,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 4, 14, 6, 21, 429, DateTimeKind.Utc).AddTicks(3565),
+                            DataModificacao = new DateTime(2026, 8, 4, 17, 37, 27, 626, DateTimeKind.Utc).AddTicks(6711),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -1130,6 +1130,9 @@ namespace app_pm_back.Migrations.PostgresMigration
 
                     b.Property<bool?>("Continua")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Cor")
+                        .HasColumnType("text");
 
                     b.Property<int?>("Dias")
                         .HasColumnType("integer");

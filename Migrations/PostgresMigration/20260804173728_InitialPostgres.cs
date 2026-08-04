@@ -334,6 +334,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                 {
                     IdTipoEstrategia = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cor = table.Column<string>(type: "text", nullable: true),
                     Dias = table.Column<int>(type: "integer", nullable: true),
                     ToleranciaPositiva = table.Column<double>(type: "double precision", nullable: true),
                     ToleranciaNegativa = table.Column<double>(type: "double precision", nullable: true),
@@ -900,7 +901,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 8, 4, 14, 6, 21, 429, DateTimeKind.Utc).AddTicks(3565), 2, null });
+                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 8, 4, 17, 37, 27, 626, DateTimeKind.Utc).AddTicks(6711), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

@@ -11,6 +11,8 @@ namespace app_pm_back.DTO;
 public class TipoEstrategiaDto
 {
     [SheetColumn("Id Tipo Estratégia")] public long IdTipoEstrategia { get; set; }
+    
+    [SheetColumn("Cor")] public string? Cor { get; set; }
 
     [SheetColumn("Dias")] public int? Dias { get; set; }
 
