@@ -36,9 +36,11 @@ public class PostgresDbContextFactory : IDesignTimeDbContextFactory<PostgresDbCo
 {
     public PostgresDbContext CreateDbContext(string[] args)
     {
+        var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION")
+            ?? "Host=localhost;Database=app_pm;Username=postgres;Password=postgres";
+
         var optionsBuilder = new DbContextOptionsBuilder<PostgresDbContext>();
-        optionsBuilder.UseNpgsql(
-            "Host=localhost;Database=pm_dummy;Username=postgres;Password=postgres");
+        optionsBuilder.UseNpgsql(connectionString);
 
         // passa o contexto falso para o terminal
         return new PostgresDbContext(optionsBuilder.Options, new DesignTimeUserContext());

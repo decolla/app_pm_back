@@ -301,7 +301,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 3, 17, 5, 29, 627, DateTimeKind.Utc).AddTicks(4253),
+                            DataModificacao = new DateTime(2026, 8, 4, 14, 6, 36, 77, DateTimeKind.Utc).AddTicks(4399),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -1584,7 +1584,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     b.HasOne("app_pm_back.Models.Domain.NotaModel", "Nota")
                         .WithMany("Ordens")
-                        .HasForeignKey("IdNota");
+                        .HasForeignKey("IdNota")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("app_pm_back.Models.Domain.PlanoModel", "Plano")
                         .WithMany()

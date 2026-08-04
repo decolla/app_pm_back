@@ -169,7 +169,7 @@ public class AppDbContext : DbContext
             .HasForeignKey(d => d.IdDiretorioPai)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // chave compostas ára ligação diretorio e nota
+        // chaves compostas ára ligação diretorio e nota
         modelBuilder.Entity<DiretorioNotaModel>()
             .HasKey(dn => new { dn.IdDiretorio, dn.IdNota });
 
