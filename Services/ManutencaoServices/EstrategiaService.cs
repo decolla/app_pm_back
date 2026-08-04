@@ -12,6 +12,7 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
     private readonly DbSet<TipoManutencaoModel> _tipoManutencaoModels;
     private readonly DbSet<EstrategiaModel> _estrategiaModels;
     private readonly DbSet<TipoEstrategiaModel> _tipoEstrategiaModels;
+
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="EstrategiaService"/>.
     /// </summary>
@@ -66,7 +67,7 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
 
         return await query.ToListAsync();
     }
-    
+
     /// <summary>
     /// Cria um tipo manutenção, tipo estratégia e uma estratégia para cada tipo de LI
     /// </summary>
@@ -84,8 +85,8 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
                     Confiabilidade = 1.0,
                     Habilitada = true
                 };
-                 _tipoManutencaoModels.Add(novoTManutencao);
-                
+                _tipoManutencaoModels.Add(novoTManutencao);
+
                 var novaEstrategia = new EstrategiaModel
                 {
                     Nome = $"mock{tipo}",
@@ -96,9 +97,9 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
                     NumeroCiclos = 1
                 };
                 _estrategiaModels.Add(novaEstrategia);
-                
+
                 await _context.SaveChangesAsync();
-                
+
                 var novoTEstrategia = new TipoEstrategiaModel
                 {
                     Categoria = CategoriaTipoManutencao.Renovacao,
@@ -110,9 +111,8 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
                     IdTipoManutencao = novoTManutencao.IdTipoManutencao
                 };
                 _tipoEstrategiaModels.Add(novoTEstrategia);
-                
             }
-            
+
             await _context.SaveChangesAsync();
 
             return true;
@@ -121,5 +121,68 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
         {
             return e.Message;
         }
+    }
+
+    public override async Task<EstrategiaModel?> GetByIdAsync(long id)
+    {
+        EstrategiaModel? estrategia = await _dbSet
+            .Include(e => e.TiposEstrategia)
+            .FirstOrDefaultAsync(e => e.IdEstrategia == id);
+
+        return estrategia;
+    }
+
+    public async Task<EstrategiaModel?> UpdateCompleteAsync(EstrategiaModel estrategia)
+    {
+        // limpa o change tracker
+        _context.ChangeTracker.Clear();
+
+        // busca a ordem no banco de dados
+        var estrategiaBanco = await _dbSet
+            .Include(n => n.TiposEstrategia)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(n => n.IdEstrategia == estrategia.IdEstrategia);
+
+        if (estrategiaBanco == null)
+            throw new Exception("Estratégia não encontrada.");
+
+        // atualiza o cabeçalho da ordem
+        _context.Entry(estrategiaBanco).CurrentValues.SetValues(estrategia);
+        _context.Entry(estrategiaBanco).State = EntityState.Modified;
+
+        // sincroniza operações
+        if (estrategia.TiposEstrategia != null)
+        {
+            var idOperacoes = estrategia.TiposEstrategia.Select(v => v.IdTipoManutencao).ToList();
+
+            // deleta
+            if (estrategiaBanco.TiposEstrategia != null)
+                foreach (var opBanco in estrategiaBanco.TiposEstrategia.Where(v =>
+                             !idOperacoes.Contains(v.IdTipoManutencao)))
+                {
+                    _context.Entry(opBanco).State = EntityState.Deleted;
+                }
+        }
+
+        if (estrategia.TiposEstrategia != null)
+            foreach (var opTela in estrategia.TiposEstrategia)
+            {
+                if (opTela.IdTipoManutencao == 0)
+                {
+                    // caso de nova variável
+                    opTela.IdEstrategia = estrategiaBanco.IdEstrategia;
+                    _context.Entry(opTela).State = EntityState.Added;
+                }
+                else
+                {
+                    // caso de update
+                    _context.Entry(opTela).State = EntityState.Modified;
+                }
+            }
+
+        // salva bb
+        await _context.SaveChangesAsync();
+
+        return estrategiaBanco;
     }
 }
