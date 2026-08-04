@@ -4347,6 +4347,13 @@
             Classificação manual de notas/ordens.
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.AutoClassify">
+            <summary>
+            Executa a classificação com base no que está aplicado nas configurações globais.
+            </summary>
+            <returns>Listas classificadas</returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
+        </member>
         <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.WordsClassification(System.Collections.Generic.List{`0})">
             <summary>
             Função para classificar notas/ordens com base nas regras de palavras.

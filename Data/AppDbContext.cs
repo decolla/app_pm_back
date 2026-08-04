@@ -187,6 +187,13 @@ public class AppDbContext : DbContext
             .HasOne(dn => dn.Nota)
             .WithMany(n => n.DiretoriosVinculados)
             .HasForeignKey(dn => dn.IdNota);
+
+        // relacionamento entre Ordem e Nota com deleção em cascata
+        modelBuilder.Entity<OrdemModel>()
+            .HasOne(o => o.Nota)
+            .WithMany(n => n.Ordens)
+            .HasForeignKey(o => o.IdNota)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
     // ================================ CRIAÇÃO DAS TABELAS ====================================

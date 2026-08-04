@@ -55,6 +55,11 @@ public class ClassificationService<T> where T : class, IClassifiable
         return nota;
     }
 
+    /// <summary>
+    /// Executa a classificação com base no que está aplicado nas configurações globais.
+    /// </summary>
+    /// <returns>Listas classificadas</returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task<List<T>> AutoClassify()
     {
         var config = await _configuracaoService.ObterConfiguracaoAsync();
@@ -157,6 +162,15 @@ public class ClassificationService<T> where T : class, IClassifiable
                     // verifica se a palavra chave existe no valor alvo
                     if (valorAlvo != null && valorAlvo.Contains(palavraChave, StringComparison.OrdinalIgnoreCase))
                     {
+                        // caso a regra for proibida 
+                        if(!regra.Permitida)
+                        {
+                            nota.Classificacao = Classificacao.NAOCLASSIFICADA;
+                            nota.MetodoClassificacao = MetodoClassificacao.ALGORITMO;
+                            nota.DataClassificacao = DateTime.UtcNow;
+                            classificada = true;
+                            break;
+                        }
                         nota.Classificacao = regra.ClassificacaoAplicada;
                         nota.ClassificadoPor = null;
                         nota.DataClassificacao = DateTime.UtcNow;
@@ -192,6 +206,7 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         bool isNota = typeof(T) == typeof(NotaModel);
 
+        // atribui a tradução de colunas para campos
         Dictionary<string, string> tradutor = isNota
             ? new Dictionary<string, string>()
             {
