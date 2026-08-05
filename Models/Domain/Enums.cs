@@ -255,3 +255,9 @@ public enum CriterioConfiabilidadeRenovacao
     ApenasRenovacoesConfirmadasUsuario = 1,
     ConsiderarTambemAlgoritmo = 2
 }
+
+public enum CriarFichasPreventivas
+{
+    NaoCriar = 0, 
+    Automaticamente = 1
+}
