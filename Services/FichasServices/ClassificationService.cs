@@ -65,12 +65,12 @@ public class ClassificationService<T> where T : class, IClassifiable
         var config = await _configuracaoService.ObterConfiguracaoAsync();
         if (config.ClassificacaoAutomatica == ModoClassificacaoAutomatica.ClassificarCatBoost)
         {
-            return await CatboostClassification();
+            return await AutoClassifyCatboost();
         }
 
         if (config.ClassificacaoAutomatica == ModoClassificacaoAutomatica.ClassificarPalavrasChave)
         {
-            return await WordsClassification(null);
+            return await AutoClassifyWords();
         }
 
         if (config.ClassificacaoAutomatica == ModoClassificacaoAutomatica.NaoClassificar)
@@ -82,14 +82,26 @@ public class ClassificationService<T> where T : class, IClassifiable
             "Modo de classificação automática não habilitada nas classificações globais.");
     }
 
+    public async Task<List<T>> AutoClassifyWords()
+    {
+        var notasSemClassificacao =
+            await _dbSet.Where(n =>
+                    n.Classificacao == Classificacao.NAOCLASSIFICADA
+                    || n.MetodoClassificacao == MetodoClassificacao.CATBOOST
+                    || n.MetodoClassificacao == MetodoClassificacao.ALGORITMO)
+                .ToListAsync();
+
+        return await WordsClassification(notasSemClassificacao);
+    }
+
     /// <summary>
     /// Função para classificar notas/ordens com base nas regras de palavras.
     /// A busca será feita no controller e passará todas que estiverem sem classificar,
     /// e quais deverão ser reclassificadas.
     /// </summary>
-    /// <param name="fichasComClassificacao"> Lista de tipo genérico de notas/ordens já classificadas para serem analisadas pelo algoritmo</param>
+    /// <param name="fichas"> Lista de tipo genérico de notas/ordens já classificadas para serem analisadas pelo algoritmo</param>
     /// <returns>Todas as notas que não tinham sido classificadas juntamente as reclassificadas</returns>
-    public async Task<List<T>> WordsClassification(List<T>? fichasComClassificacao)
+    public async Task<List<T>> WordsClassification(List<T> fichas)
     {
         // var config = await _configuracaoService.ObterConfiguracaoAsync();
         // if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarPalavrasChave)
@@ -100,12 +112,6 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         // busco todas as notas/ordems sem classificação
         // remover comentário caso deve reavaliar regras já avaladas
-        var notasSemClassificacao =
-            await _dbSet.Where(n => 
-                n.Classificacao == Classificacao.NAOCLASSIFICADA 
-                || n.MetodoClassificacao == MetodoClassificacao.CATBOOST 
-                || n.MetodoClassificacao == MetodoClassificacao.ALGORITMO)
-                .ToListAsync();
         DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(10000);
 
         // le o campo alvo da regra e busca a palavra chave 
@@ -129,7 +135,7 @@ public class ClassificationService<T> where T : class, IClassifiable
                 "TipoOrdem", "DescricaoBreve", "Criticidade"
             ];
         else throw new Exception("Tipo de modelo não para classificação de palavras");
-        
+
         foreach (var campo in camposAlvos)
         {
             var prop = typeof(T).GetProperty(campo);
@@ -140,14 +146,14 @@ public class ClassificationService<T> where T : class, IClassifiable
         }
 
         // caso a palavra exista atualiza a ficha com o método "FILTRO_PALAVRAS"
-        foreach (var nota in notasSemClassificacao)
+        foreach (var nota in fichas)
         {
             bool classificada = false;
-            
+
             foreach (var regra in regras)
             {
                 if (classificada) break;
-                
+
                 // procura para campo alvo
                 foreach (var campoAlvo in camposAlvos)
                 {
@@ -163,7 +169,7 @@ public class ClassificationService<T> where T : class, IClassifiable
                     if (valorAlvo != null && valorAlvo.Contains(palavraChave, StringComparison.OrdinalIgnoreCase))
                     {
                         // caso a regra for proibida 
-                        if(!regra.Permitida)
+                        if (!regra.Permitida)
                         {
                             nota.Classificacao = Classificacao.NAOCLASSIFICADA;
                             nota.MetodoClassificacao = MetodoClassificacao.ALGORITMO;
@@ -171,6 +177,7 @@ public class ClassificationService<T> where T : class, IClassifiable
                             classificada = true;
                             break;
                         }
+
                         nota.Classificacao = regra.ClassificacaoAplicada;
                         nota.ClassificadoPor = null;
                         nota.DataClassificacao = DateTime.UtcNow;
@@ -185,13 +192,23 @@ public class ClassificationService<T> where T : class, IClassifiable
         await _context.SaveChangesAsync();
 
         // retorna as notas/ordens atualizadas
-        return notasSemClassificacao.Concat(fichasComClassificacao ?? []).ToList();
+        return fichas;
+    }
+
+    public async Task<List<T>> AutoClassifyCatboost()
+    {
+        List<T> query = await _dbSet.Where(n => (
+                                                    n.Classificacao == Classificacao.NAOCLASSIFICADA &&
+                                                    n.MetodoClassificacao != MetodoClassificacao.CATBOOST) ||
+                                                n.MetodoClassificacao == MetodoClassificacao.CATBOOST)
+            .ToListAsync();
+        return await CatboostClassification(query);
     }
 
     /// <summary>
     /// Classificação de notas/ordens com base no modelo Catboost.
     /// </summary>
-    public async Task<List<T>> CatboostClassification()
+    public async Task<List<T>> CatboostClassification(List<T> query)
     {
         // var config = await _configuracaoService.ObterConfiguracaoAsync();
         // if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarCatBoost)
@@ -234,13 +251,7 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         while (true)
         {
-            var query = _dbSet.Where(n => (
-                n.Classificacao == Classificacao.NAOCLASSIFICADA &&
-                n.MetodoClassificacao != MetodoClassificacao.CATBOOST) || 
-                                          n.MetodoClassificacao == MetodoClassificacao.CATBOOST)
-                .AsQueryable();
-
-            var lote = await query.Take(tamanhoLote).ToListAsync();
+            List<T> lote = query.Take(tamanhoLote).ToList();
             if (lote.Count == 0)
                 break;
 

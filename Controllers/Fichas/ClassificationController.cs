@@ -1,4 +1,5 @@
 using app_pm_back.DTO;
+using app_pm_back.Models;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.FichasServices;
@@ -17,13 +18,15 @@ public class ClassificationController : ControllerBase
     private readonly ClassificationService<NotaModel> _notaService;
     private readonly ClassificationService<OrdemModel> _ordemService;
     private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
-    
+    private readonly GenericSearchService _searchService;
+
     public ClassificationController(
-        RegraClassificacaoService regraClassificacaoService, 
+        RegraClassificacaoService regraClassificacaoService,
         IMapper mapper,
-        ILogger<FichasController> logger, 
-        ClassificationService<NotaModel> notaService, 
-        ClassificationService<OrdemModel> ordemService, 
+        ILogger<FichasController> logger,
+        ClassificationService<NotaModel> notaService,
+        ClassificationService<OrdemModel> ordemService,
+        GenericSearchService searchService,
         ConfiguracaoGlobalService configuracaoGlobalService
     )
     {
@@ -33,21 +36,22 @@ public class ClassificationController : ControllerBase
         _notaService = notaService;
         _ordemService = ordemService;
         _configuracaoGlobalService = configuracaoGlobalService;
+        _searchService = searchService;
     }
-    
+
     /// <summary>
     /// Cria uma regra de classificação por palavras para Ambas, Fichas ou Ordens
     /// </summary>
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
-    [HttpPost("classificacao/regras")]
+    [HttpPost("regras")]
     public async Task<IActionResult> CriarRegraClassificacao([FromBody] RegraClassificacaoDto dto,
         [FromQuery] Fichas buscaTabela)
     {
         try
         {
             var regra = _mapper.Map<RegraClassificacaoModel>(dto);
-            
+
             var criado = await _regraClassificacaoService.CreateAsync(regra);
             return CreatedAtAction(regra.IdRegra.ToString(), new { id = criado.IdRegra }, criado);
         }
@@ -56,7 +60,7 @@ public class ClassificationController : ControllerBase
             return BadRequest(new { message = $"Erro ao criar regra de classificação: {e.Message}" });
         }
     }
-    
+
     /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
@@ -223,12 +227,12 @@ public class ClassificationController : ControllerBase
     {
         return (pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0);
     }
-    
-     /// <summary>
+
+    /// <summary>
     /// Classifica para Ambas, Fichas ou Ordens com base uma lista de palavras armazenadas no banco
     /// </summary>
     /// <returns>Lista de notas atualizadas</returns>
-    [HttpGet("classificacao/filtro")]
+    [HttpGet("palavras")]
     public async Task<IActionResult> ClassificacaoPalavrasNotaCongas(Fichas buscaTabela)
     {
         var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
@@ -269,7 +273,7 @@ public class ClassificationController : ControllerBase
     /// <summary>
     /// Classifica as Ambas, Fichas ou Ordens usando a IA catboost
     /// </summary>
-    [HttpGet("classificacao/catboost")]
+    [HttpGet("catboost")]
     public async Task<IActionResult> ClassificacaoCatboostNota(Fichas buscaTabela)
     {
         var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
@@ -283,13 +287,13 @@ public class ClassificationController : ControllerBase
             var message = "";
             if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Notas)
             {
-                await _notaService.CatboostClassification();
+                await _notaService.AutoClassifyCatboost();
                 message = "Notas classificadas com sucesso";
             }
 
             if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
             {
-                await _ordemService.CatboostClassification();
+                await _ordemService.AutoClassifyCatboost();
                 message += "| Ordens classificadas com sucesso";
             }
 
@@ -303,6 +307,80 @@ public class ClassificationController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
+    /// </summary>
+    /// <param name="busca">Modelo de busca com campos comparáveis</param>
+    /// <param name="pagina">Página a ser exibida</param>
+    /// <param name="tamanho">Número de elementos presente na página</param>
+    /// <returns>Lista de Nota e Ordens com base nos filtros</returns>
+    [HttpPost("filtro")]
+    public async Task<IActionResult> BuscarNotaOrdem(
+        [FromBody] BuscaOrdemNotaDto busca,
+        [FromQuery] int? pagina = null,
+        [FromQuery] int? tamanho = null,
+        [FromQuery] Fichas? tFichas = Fichas.Ambas)
+    {
+        try
+        {
+            if ((pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0))
+            {
+                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
+            }
+
+            if (!tFichas.HasValue)
+            {
+                tFichas = Fichas.Ambas;
+            }
+
+            var resultadoBusca = await _searchService.FiltraNotaOrdemAsync(busca);
+
+            List<object> resultados = new List<object>();
+
+            if (tFichas == Fichas.Ambas || tFichas == Fichas.Notas)
+            {
+                var notas = resultadoBusca.Item1;
+                if (pagina.HasValue && tamanho.HasValue)
+                {
+                    notas = notas.Skip((pagina.Value - 1) * tamanho.Value).Take(tamanho.Value).ToList();
+                }
+
+                resultados.Add(notas);
+            }
+
+            if (tFichas == Fichas.Ambas || tFichas == Fichas.Ordens)
+            {
+                var ordens = resultadoBusca.Item2;
+                if (pagina.HasValue && tamanho.HasValue)
+                {
+                    ordens = ordens.Skip((pagina.Value - 1) * tamanho.Value).Take(tamanho.Value).ToList();
+                }
+
+                resultados.Add(ordens);
+            }
+            
+            int totalGeral = resultados.Count;
+            int p = pagina ?? 1;
+            int t = tamanho ?? 20;
+            int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
+            
+            object resultado = new
+            {
+                Total = totalGeral,
+                TotalPaginas = totalPaginas,
+                pagina = p,
+                Tamanho = t,
+                Resultado = resultados
+            };
+            
+            return Ok(resultado);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar nota/ordem: {e.Message}." });
         }
     }
 }

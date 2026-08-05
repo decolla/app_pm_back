@@ -49,4 +49,20 @@ public class BuscaOrdemNotaDto
     public Classificacao? Classificacao { get; set; }
 
     public StatusFichas? StatusOrdem { get; set; }
+    
+    public string? SapName { get; set; } 
+    
+    public string? DnsIot { get; set; } 
+    
+    public long? NumeroRegistro { get; set; }
+    
+    public ComponentType? Componente { get; set; }
+    
+    public DateTime? DataInicio { get; set; }
+    
+    public DateTime? DataFim { get; set; }
+    
+    public Fichas? TipoFicha { get; set; }
+    
+    public StatusFichas? Status { get; set; }
 }

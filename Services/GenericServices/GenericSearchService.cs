@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using app_pm_back.Data;
+using app_pm_back.DTO.Buscas;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using app_pm_back.Services.Extensions;
@@ -100,16 +101,62 @@ public class GenericSearchService
         return await task.ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Obtém um registro específico.
-    /// </summary>
-    /// <param name="busca">Parâmetro do método.</param>
-    /// <returns>Resultado da operação.</returns>
     public async Task<object> BuscarNotaOrdemAsync(
         dynamic busca,
         int? pagina,
         int? tamanho,
         Fichas? Tfichas)
+    {
+        (List<NotaModel>, List<OrdemModel>) listaUnica = await FiltraNotaOrdemAsync(busca);
+        
+        // busca Notas
+        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Notas)
+        {
+            var notas = listaUnica.Item1;
+        }
+
+        // busca Ordens
+        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Ordens)
+        {
+            var ordens = listaUnica.Item2;
+        }
+        
+        List<object> lista = new List<object>();
+        
+        lista.AddRange(listaUnica.Item1);
+        lista.AddRange(listaUnica.Item2);
+
+        // cálculos da paginação
+        int totalGeral = lista.Count;
+        int p = pagina ?? 1;
+        int t = tamanho ?? 20;
+        int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
+
+        //Pega os 'n' primeiros itens dependendo da página
+        var itensPaginados = lista.Skip((p - 1) * t).Take(t).ToList();
+
+        //Separa de volta para preencher o NotaOrdemSearchResult
+        var notasResult = itensPaginados.OfType<NotaModel>().ToList();
+        var ordensResult = itensPaginados.OfType<OrdemModel>().ToList();
+
+        var result = new NotaOrdemSearchResult(notasResult, ordensResult);
+
+        return new
+        {
+            Total = totalGeral,
+            TotalPaginas = totalPaginas,
+            pagina = p,
+            Tamanho = t,
+            Result = result
+        };
+    }
+
+    /// <summary>
+    /// Obtém um registro específico.
+    /// </summary>
+    /// <param name="busca">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
+    public async Task<(List<NotaModel>, List<OrdemModel>)> FiltraNotaOrdemAsync(dynamic busca)
     {
         if (busca == null)
         {
@@ -248,46 +295,62 @@ public class GenericSearchService
             ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem.Value);
         }
 
-        var listaUnica = new List<object>();
-
-        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Notas)
+        string? sapCode = buscaType.GetProperty("SapCode")?.GetValue(busca) as string;
+        if (!string.IsNullOrEmpty(sapCode))
         {
-            notasQuery = notasQuery.AplicarOrdenacao(_context);
-            var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
-            listaUnica.AddRange(todasNotas);
+            notasQuery = notasQuery.Where(n => n.SapCode == sapCode);
+            ordensQuery = ordensQuery.Where(o => o.Nota != null && o.Nota.SapCode == sapCode);
         }
 
-        // Busca Ordens apenas se for Ambas (0) ou Ordens (2)
-        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Ordens)
+        string? dnsIot = buscaType.GetProperty("DnsIot")?.GetValue(busca) as string;
+        if (!string.IsNullOrEmpty(dnsIot))
         {
-            ordensQuery = ordensQuery.AplicarOrdenacao(_context);
-            var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
-            listaUnica.AddRange(todasOrdens);
+            notasQuery = notasQuery.Where(n => n.DnsIot == dnsIot);
+            ordensQuery = ordensQuery.Where(o => o.DnsIot == dnsIot);
         }
 
-        //Cálculos da paginação
-        int totalGeral = listaUnica.Count;
-        int p = pagina ?? 1;
-        int t = tamanho ?? 20;
-        int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
-
-        //Pega os 'n' primeiros itens dependendo da página
-        var itensPaginados = listaUnica.Skip((p - 1) * t).Take(t).ToList();
-
-        //Separa de volta para preencher o NotaOrdemSearchResult
-        var notasResult = itensPaginados.OfType<NotaModel>().ToList();
-        var ordensResult = itensPaginados.OfType<OrdemModel>().ToList();
-
-        var result = new NotaOrdemSearchResult(notasResult, ordensResult);
-
-        return new
+        // TODO: implementar o numero de registro corretamente 
+        if (true)
         {
-            Total = totalGeral,
-            TotalPaginas = totalPaginas,
-            pagina = p,
-            Tamanho = t,
-            Result = result
-        };
+            // notasQuery = notasQuery.Where(n => n.IdNota == busca.NumeroRegistro.Value);
+            // ordensQuery = ordensQuery.Where(o => o.NumeroRegistro == busca.NumeroRegistro.Value);
+        }
+
+        if (buscaType.GetProperty("Componente")?.GetValue(busca) is ComponentType componente)
+        {
+            notasQuery = notasQuery.Where(n => n.IdAtivo == componente);
+            ordensQuery = ordensQuery.Where(o => o.IdAtivo == componente);
+        }
+
+        if (buscaType.GetProperty("DataInicio")?.GetValue(busca) is DateTime dataInicio)
+        {
+            notasQuery = notasQuery.Where(n => n.DataNota >= dataInicio);
+            ordensQuery = ordensQuery.Where(o => o.DataCriacao >= dataInicio);
+        }
+
+        if (buscaType.GetProperty("DataFim")?.GetValue(busca) is DateTime dataFim)
+        {
+            notasQuery = notasQuery.Where(n => n.DataNota <= dataFim);
+            ordensQuery = ordensQuery.Where(o => o.DataCriacao <= dataFim);
+        }
+
+        if (buscaType.GetProperty("Status")?.GetValue(busca) is StatusFichas status)
+        {
+            notasQuery = notasQuery.Where(n => n.StatusNota == status);
+            ordensQuery = ordensQuery.Where(o => o.StatusOrdem == status);
+        }
+
+        (List<NotaModel>, List<OrdemModel>) listaUnica = new([],[]);
+
+        notasQuery = notasQuery.AplicarOrdenacao(_context);
+        var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
+        listaUnica.Item1?.AddRange(todasNotas);
+        
+        ordensQuery = ordensQuery.AplicarOrdenacao(_context);
+        var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
+        listaUnica.Item2?.AddRange(todasOrdens);
+        
+        return listaUnica;
     }
 
     private async Task<object> BuscarInternoAsync<T>(
@@ -570,7 +633,7 @@ public class GenericSearchService
         {
             dadosQuery = dadosQuery.Where(n => n.IdLi == idLi);
         }
-        
+
         ComponentType? idAtivo = buscaType.GetProperty("IdAtivo")?.GetValue(busca);
         if (idAtivo.HasValue)
         {
