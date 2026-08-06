@@ -96,7 +96,34 @@ public class ClassificationServiceTests
     }
 
     [Fact]
-    public async Task WordsClassification_ShouldReturnNotesWithoutClassificationConcatenatedWithInput()
+    public async Task WordsClassification_ShouldProcessAndReturnInputList()
+    {
+        // Arrange
+        var dbName = Guid.NewGuid().ToString();
+        using var context = CreateDbContext(dbName);
+        var configService = new ConfiguracaoGlobalService(context);
+        var service = new ClassificationService<NotaModel>(context, configService);
+
+        var config = await configService.ObterConfiguracaoAsync();
+        config.ClassificacaoAutomatica = ModoClassificacaoAutomatica.ClassificarPalavrasChave;
+
+        // Input list
+        var inputList = new List<NotaModel>
+        {
+            new NotaModel { IdNota = 3, NumeroNota = 3, Classificacao = Classificacao.CORRETIVA }
+        };
+
+        // Act
+        var result = await service.WordsClassification(inputList);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Count.Should().Be(1);
+        result.Should().Contain(n => n.IdNota == 3);
+    }
+
+    [Fact]
+    public async Task AutoClassifyWords_ShouldReturnNotesWithoutClassification()
     {
         // Arrange
         var dbName = Guid.NewGuid().ToString();
@@ -110,23 +137,16 @@ public class ClassificationServiceTests
         // Save some notes without classification to DB
         context.PM_Notas.AddRange(
             new NotaModel { IdNota = 1, NumeroNota = 1, Classificacao = Classificacao.NAOCLASSIFICADA },
-            new NotaModel { IdNota = 2, NumeroNota = 2, Classificacao = Classificacao.PREVENTIVA} // should be skipped
+            new NotaModel { IdNota = 2, NumeroNota = 2, Classificacao = Classificacao.PREVENTIVA } // should be skipped
         );
         await context.SaveChangesAsync();
 
-        // Input list
-        var inputList = new List<NotaModel>
-        {
-            new NotaModel { IdNota = 3, NumeroNota = 3, Classificacao = Classificacao.CORRETIVA }
-        };
-
         // Act
-        var result = await service.WordsClassification(inputList);
+        var result = await service.AutoClassifyWords();
 
         // Assert
         result.Should().NotBeNull();
-        result.Count.Should().Be(2);
+        result.Count.Should().Be(1);
         result.Should().Contain(n => n.IdNota == 1);
-        result.Should().Contain(n => n.IdNota == 3);
     }
 }

@@ -3,12 +3,11 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using app_pm_back.Data;
-using app_pm_back.DTO.Buscas;
 using app_pm_back.Models.Domain;
-using Microsoft.EntityFrameworkCore;
 using app_pm_back.Services.Extensions;
+using Microsoft.EntityFrameworkCore;
 
-namespace app_pm_back.Services;
+namespace app_pm_back.Services.GenericServices;
 
 /// <summary>
 /// Classe para busca genérica entre as tabelas do banco de dados 
@@ -32,6 +31,9 @@ public class GenericSearchService
         IReadOnlyList<object> Notas,
         IReadOnlyList<object> Ordens);
 
+    /// <summary>
+    /// Representa um item na linha do tempo.
+    /// </summary>
     public record TimelineItem(
         long Id,
         Classificacao Classificacao,
@@ -41,7 +43,7 @@ public class GenericSearchService
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="GenericSearchService"/>.
     /// </summary>
-    public GenericSearchService(AppDbContext context, ConfiguracaoGlobalService configuracaoGlobalService)
+    public GenericSearchService(AppDbContext context)
     {
         _context = context;
         _notaModels = context.PM_Notas;
@@ -111,13 +113,13 @@ public class GenericSearchService
     /// <param name="busca">Pacote de filtragens estabelecidas</param>
     /// <param name="pagina">Página de exibição</param>
     /// <param name="tamanho">Tamanho da página</param>
-    /// <param name="Tfichas">Se a busca será realizada em notas e/ou ordens</param>
+    /// <param name="tFichas">Se a busca será realizada em notas e/ou ordens</param>
     /// <returns>Objeto completo com resultado da busca</returns>
     public async Task<object> BuscarNotaOrdemAsync(
         dynamic busca,
         int pagina,
         int tamanho,
-        Fichas? Tfichas)
+        Fichas? tFichas)
     {
         // realiza a filtragem dos dados
         (List<NotaModel>, List<OrdemModel>) filtragem = await FiltraNotaOrdemAsync(busca, pagina, tamanho);
@@ -128,12 +130,12 @@ public class GenericSearchService
         List<object> lista = new List<object>();
         
         // adiciona na lista final com base na condicional informada
-        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Notas)
+        if (tFichas == Fichas.Ambas || tFichas == Fichas.Notas)
         {
             lista.AddRange(notasDb);
         }
 
-        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Ordens)
+        if (tFichas == Fichas.Ambas || tFichas == Fichas.Ordens)
         {
             lista.AddRange(ordensDb);
         }
@@ -539,7 +541,7 @@ public class GenericSearchService
             {
                 ultimaData = ultimaOrdem.DataCriacao;
                 codigoPlanoParaBuscar =
-                    ultimaOrdem.IdNota.HasValue ? (long?)ultimaOrdem.IdNota.Value : null; // search using NotaId
+                    ultimaOrdem.IdNota;
             }
             else
             {
@@ -550,7 +552,7 @@ public class GenericSearchService
         else if (ultimaOrdem != null)
         {
             ultimaData = ultimaOrdem.DataCriacao;
-            codigoPlanoParaBuscar = ultimaOrdem.IdNota.HasValue ? (long?)ultimaOrdem.IdNota.Value : null;
+            codigoPlanoParaBuscar = ultimaOrdem.IdNota;
         }
         else if (ultimaNota != null)
         {
@@ -573,11 +575,11 @@ public class GenericSearchService
         {
             Ativo = ativo,
             UltimaData = ultimaData,
-            Estrategia = ultimoPlano?.Estrategia,
+            ultimoPlano?.Estrategia,
             TempoCiclo = ultimoPlano?.Estrategia?.Ciclos,
             UnidadeCiclo = "Dias",
             DataInicio = ultimoPlano?.DataInicios,
-            DataConclusao = ultimoPlano?.DataConclusao,
+            ultimoPlano?.DataConclusao,
             Confiabilidade = 100
         };
     }
@@ -600,7 +602,7 @@ public class GenericSearchService
             .Select(n => new
             {
                 Id = n.IdNota,
-                Classificacao = n.Classificacao,
+                n.Classificacao,
                 Descricao = n.DescricaoBreve ?? n.AnomaliaObservada,
                 Data = n.DataNota
             });
@@ -613,7 +615,7 @@ public class GenericSearchService
             .Select(o => new
             {
                 Id = o.IdOrdem,
-                Classificacao = o.Classificacao,
+                o.Classificacao,
                 Descricao = o.DescricaoBreve,
                 Data = o.DataCriacao
             });

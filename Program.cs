@@ -10,6 +10,7 @@ using app_pm_back.Services;
 using app_pm_back.Services.ExternIntegationsServices;
 using app_pm_back.Services.Manutencao;
 using app_pm_back.Services.FichasServices;
+using app_pm_back.Services.GenericServices;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Http.Features;
@@ -256,7 +257,7 @@ using (var scope = app.Services.CreateScope())
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
             // schema = "public"; // força o schema para public, para não apagar o schema correto
             // dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA {schema} CASCADE; CREATE SCHEMA {schema};");
-             dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA comgas CASCADE; CREATE SCHEMA comgas;");
+            // dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA comgas CASCADE; CREATE SCHEMA comgas;");
 
             // Garante que a conexão é aberta com o search_path configurado antes do Migrate()
             var conn = dbContext.Database.GetDbConnection();

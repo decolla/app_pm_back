@@ -3,6 +3,7 @@ using app_pm_back.Models;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.FichasServices;
+using app_pm_back.Services.GenericServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 

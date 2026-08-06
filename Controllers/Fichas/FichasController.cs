@@ -5,6 +5,7 @@ using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.ExternIntegationsServices;
 using app_pm_back.Services.FichasServices;
+using app_pm_back.Services.GenericServices;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
