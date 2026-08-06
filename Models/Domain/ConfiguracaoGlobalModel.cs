@@ -29,6 +29,11 @@ public class ConfiguracaoGlobalModel
     public CriterioConfiabilidadeRenovacao CriterioConfiabilidadeRenovacao { get; set; }
     
     /// <summary>
+    /// Critérios para definir se a ficha deve ser criada automaticamente periodicamente
+    /// </summary>
+    public CriarFichasPreventivas CriarFichasPreventivas { get; set; }
+    
+    /// <summary>
     /// Data da última modificação da configuração global.
     /// </summary>
     public DateTime DataModificacao { get; set; } = DateTime.UtcNow;

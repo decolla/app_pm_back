@@ -16,4 +16,7 @@ public class ConfiguracaoGlobalDto
     
     [EnumDataType(typeof(CriterioConfiabilidadeRenovacao))]
     public CriterioConfiabilidadeRenovacao CriterioConfiabilidadeRenovacao { get; set; }
+    
+    [EnumDataType(typeof(CriarFichasPreventivas))]
+    public CriarFichasPreventivas CriarFichasPreventivas { get; set; }
 }

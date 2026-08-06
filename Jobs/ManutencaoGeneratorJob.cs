@@ -1,5 +1,6 @@
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
+using app_pm_back.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Jobs;
@@ -7,22 +8,33 @@ namespace app_pm_back.Jobs;
 public class ManutencaoGeneratorJob
 {
     private readonly AppDbContext _context;
+    private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
     private readonly ILogger<ManutencaoGeneratorJob> _logger;
 
-    public ManutencaoGeneratorJob(AppDbContext context, ILogger<ManutencaoGeneratorJob> logger)
+    public ManutencaoGeneratorJob(AppDbContext context, ILogger<ManutencaoGeneratorJob> logger,
+        ConfiguracaoGlobalService configuracaoGlobalService)
     {
         _context = context;
         _logger = logger;
+        _configuracaoGlobalService = configuracaoGlobalService;
     }
 
     public async Task RunDailyRoutine()
     {
+        var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
+        if (config.CriarFichasPreventivas == CriarFichasPreventivas.NaoCriar)
+        {
+            _logger.LogInformation(
+                "Criar fichas preventivas desativada nas configurações globais, interrompendo processo...");
+            return;
+        }
+
         _logger.LogInformation("Iniciando varredura de planos de manutenção vencidos...");
 
         try
         {
             var dataAtual = DateTime.UtcNow;
-            
+
             var planos = await _context.PM_Planos.AsNoTracking()
                 .Where(p => p.DataConclusao > dataAtual && p.DataInicios <= dataAtual)
                 .Include(p => p.TiposPlano)
@@ -56,16 +68,16 @@ public class ManutencaoGeneratorJob
 
             int novasOrdens = 0;
             int novasNotas = 0;
-            
+
             foreach (var plano in planos)
             {
                 var tiposVencidos = plano.TiposPlano
-                    .Where(tp => plano.DataInicios!.Value.AddDays((tp.Dias ?? 0) - (tp.ToleranciaNegativa ?? 0)) < dataAtual)
+                    .Where(tp =>
+                        plano.DataInicios!.Value.AddDays((tp.Dias ?? 0) - (tp.ToleranciaNegativa ?? 0)) < dataAtual)
                     .ToList();
 
                 foreach (var tipo in tiposVencidos)
                 {
-
                     if (tipo.IdOrdem.HasValue && !ordensExistentes.Contains(tipo.IdOrdem.Value))
                     {
                         var ordem = new OrdemModel()
@@ -77,7 +89,7 @@ public class ManutencaoGeneratorJob
                             CriadaPorUsuario = "System",
                         };
                         _context.PM_Ordens.Add(ordem);
-                        ordensExistentes.Add(tipo.IdOrdem.Value); 
+                        ordensExistentes.Add(tipo.IdOrdem.Value);
                         novasOrdens++;
                     }
 
@@ -92,7 +104,7 @@ public class ManutencaoGeneratorJob
                             CriadaPorUsuario = "System",
                         };
                         _context.PM_Notas.Add(nota);
-                        notasExistentes.Add(tipo.IdNota.Value); 
+                        notasExistentes.Add(tipo.IdNota.Value);
                         novasNotas++;
                     }
                 }
