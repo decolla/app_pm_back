@@ -444,7 +444,7 @@
             Classifica as Ambas, Fichas ou Ordens usando a IA catboost
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{app_pm_back.Models.Domain.Fichas})">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ClassificaNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{app_pm_back.Models.Domain.Fichas},app_pm_back.Controllers.FichasControllers.ClassificationController.FiltroClassificacao)">
             <summary>
             Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
             </summary>
@@ -4187,6 +4187,18 @@
             <summary>
             Interface para controle do contexto do usuário, incluindo escopos e identificação do usuário atual.
             </summary>
+        </member>
+        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
         </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
             <inheritdoc />

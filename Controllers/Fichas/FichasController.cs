@@ -169,7 +169,7 @@ public class FichasController : ControllerBase
     /// <response code="400">Retorna um erro se os parâmetros forem inválidos</response>
     [HttpPost("busca/data-renovacao")]
     public async Task<IActionResult> BuscarFichasDataRenovacao(
-        [FromBody] BuscaFichasDadoRenovacaoDto busca,
+        [FromQuery] BuscaFichasDadoRenovacaoDto busca,
         [FromQuery] int? pagina = null,
         [FromQuery] int? tamanho = null)
     {
