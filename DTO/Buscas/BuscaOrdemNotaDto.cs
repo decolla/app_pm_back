@@ -62,7 +62,5 @@ public class BuscaOrdemNotaDto
     
     public DateTime? DataFim { get; set; }
     
-    public Fichas? TipoFicha { get; set; }
-    
     public StatusFichas? Status { get; set; }
 }

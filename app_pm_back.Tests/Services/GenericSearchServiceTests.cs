@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using app_pm_back.Services.GenericServices;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -34,8 +35,7 @@ public class GenericSearchServiceTests
         context.PM_Notas.AddRange(nota1, nota2);
         await context.SaveChangesAsync();
 
-        var configService = new ConfiguracaoGlobalService(context);
-        var service = new GenericSearchService(context, configService);
+        var service = new GenericSearchService(context);
 
         // Act
         var result = await service.BuscarPorCampoAsync("PM_Notas", "IdNota", "12", parcial: true, pagina: 1, tamanho: 1);
@@ -80,8 +80,7 @@ public class GenericSearchServiceTests
         context.PM_Notas.AddRange(nota1, nota2);
         await context.SaveChangesAsync();
 
-        var configService = new ConfiguracaoGlobalService(context);
-        var service = new GenericSearchService(context, configService);
+        var service = new GenericSearchService(context);
 
         // Act - Exact match (parcial: false) which avoids Npgsql ILike in memory
         var result = await service.BuscarPorCampoAsync("PM_Notas", "DescricaoBreve", "TestNota1", parcial: false, pagina: 1, tamanho: 10);
@@ -115,8 +114,7 @@ public class GenericSearchServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var configService = new ConfiguracaoGlobalService(context);
-        var service = new GenericSearchService(context, configService);
+        var service = new GenericSearchService(context);
 
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => 
@@ -130,8 +128,7 @@ public class GenericSearchServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var configService = new ConfiguracaoGlobalService(context);
-        var service = new GenericSearchService(context, configService);
+        var service = new GenericSearchService(context);
 
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => 

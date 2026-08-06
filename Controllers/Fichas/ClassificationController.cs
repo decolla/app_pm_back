@@ -331,7 +331,7 @@ public class ClassificationController : ControllerBase
                 tFichas = Fichas.Ambas;
             }
 
-            var resultadoBusca = await _searchService.FiltraNotaOrdemAsync(busca, null, null);
+            var resultadoBusca = await _searchService.FiltraNotaOrdemAsync(busca);
 
             List<object> resultados = new List<object>();
 

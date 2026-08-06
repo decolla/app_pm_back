@@ -5113,7 +5113,7 @@
             <param name="tFichas">Se a busca será realizada em notas e/ou ordens</param>
             <returns>Objeto completo com resultado da busca</returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.FiltraNotaOrdemAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.FiltraNotaOrdemAsync(System.Object)">
             <summary>
             Obtém um registro específico.
             </summary>
