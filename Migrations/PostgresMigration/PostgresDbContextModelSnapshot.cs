@@ -276,6 +276,9 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<int>("ClassificacaoAutomatica")
                         .HasColumnType("integer");
 
+                    b.Property<int>("CriarFichasPreventivas")
+                        .HasColumnType("integer");
+
                     b.Property<int>("CriterioConfiabilidadeRenovacao")
                         .HasColumnType("integer");
 
@@ -300,9 +303,10 @@ namespace app_pm_back.Migrations.PostgresMigration
                         {
                             Id = 1,
                             ClassificacaoAutomatica = 0,
+                            CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 6, 13, 43, 31, 861, DateTimeKind.Utc).AddTicks(6560),
+                            DataModificacao = new DateTime(2026, 8, 6, 18, 34, 58, 257, DateTimeKind.Utc).AddTicks(2284),
                             FichasConfiabilidade = 2
                         });
                 });

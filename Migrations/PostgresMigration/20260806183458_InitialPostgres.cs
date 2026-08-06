@@ -79,6 +79,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     ClassificacaoAutomatica = table.Column<int>(type: "integer", nullable: false),
                     CriterioDataRenovacao = table.Column<int>(type: "integer", nullable: false),
                     CriterioConfiabilidadeRenovacao = table.Column<int>(type: "integer", nullable: false),
+                    CriarFichasPreventivas = table.Column<int>(type: "integer", nullable: false),
                     DataModificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ModificadoPorUsuario = table.Column<string>(type: "text", nullable: true)
                 },
@@ -899,8 +900,8 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
-                columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 8, 6, 13, 43, 31, 861, DateTimeKind.Utc).AddTicks(6560), 2, null });
+                columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 6, 18, 34, 58, 257, DateTimeKind.Utc).AddTicks(2284), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

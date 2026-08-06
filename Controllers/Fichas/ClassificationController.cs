@@ -319,14 +319,13 @@ public class ClassificationController : ControllerBase
     /// <param name="tamanho">Número de elementos presente na página</param>
     /// <returns>Lista de Nota e Ordens com base nos filtros</returns>
     [HttpPost("filtro")]
-    public async Task<IActionResult> BuscarNotaOrdem(
+    public async Task<IActionResult> ClassificaNotaOrdem(
         [FromBody] BuscaOrdemNotaDto busca,
-        [FromQuery] Fichas? tFichas = Fichas.Ambas)
+        [FromQuery] Fichas? tFichas,
+        [FromQuery] FiltroClassificacao filtroClassificacao)
     {
         try
         {
-
-
             if (!tFichas.HasValue)
             {
                 tFichas = Fichas.Ambas;
@@ -339,28 +338,57 @@ public class ClassificationController : ControllerBase
             if (tFichas == Fichas.Ambas || tFichas == Fichas.Notas)
             {
                 var notas = resultadoBusca.Item1;
-                resultados.Add(notas);
+                List<NotaModel> notasClassificadas = new List<NotaModel>();
+                if (filtroClassificacao is FiltroClassificacao.Algoritmo or FiltroClassificacao.Ambos)
+                {
+                    notasClassificadas = await _notaService.WordsClassification(notas);
+                }
+
+                if (filtroClassificacao is FiltroClassificacao.Catboost or FiltroClassificacao.Ambos)
+                {
+                    notasClassificadas = await _notaService.CatboostClassification(notas);
+                }
+
+                resultados.Add(notasClassificadas);
             }
 
             if (tFichas == Fichas.Ambas || tFichas == Fichas.Ordens)
             {
                 var ordens = resultadoBusca.Item2;
-                resultados.Add(ordens);
+                List<OrdemModel> ordensClassificadas = new List<OrdemModel>();
+                if (filtroClassificacao is FiltroClassificacao.Algoritmo or FiltroClassificacao.Ambos)
+                {
+                    ordensClassificadas = await _ordemService.WordsClassification(ordens);
+                }
+
+                if (filtroClassificacao is FiltroClassificacao.Catboost or FiltroClassificacao.Ambos)
+                {
+                    ordensClassificadas = await _ordemService.CatboostClassification(ordens);
+                }
+
+                resultados.Add(ordensClassificadas);
             }
-            
+
             int totalGeral = resultados.Count;
-            
+
             object resultado = new
             {
                 Total = totalGeral,
                 Resultado = resultados
             };
-            
+
             return Ok(resultado);
         }
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao buscar nota/ordem: {e.Message}." });
         }
+    }
+
+    public enum FiltroClassificacao
+    {
+        Ambos = 0,
+        Catboost = 1,
+        Algoritmo = 2,
     }
 }

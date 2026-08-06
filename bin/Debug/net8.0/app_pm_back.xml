@@ -168,7 +168,7 @@
             Classe BuscaController.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.BuscaController.#ctor(app_pm_back.Services.GenericSearchService)">
+        <member name="M:app_pm_back.Controllers.BuscaController.#ctor(app_pm_back.Services.GenericServices.GenericSearchService)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.BuscaController"/>.
             </summary>
@@ -2288,6 +2288,11 @@
             Critérios para definir a confiabilidade de uma renovação
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.CriarFichasPreventivas">
+            <summary>
+            Critérios para definir se a ficha deve ser criada automaticamente periodicamente
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.DataModificacao">
             <summary>
             Data da última modificação da configuração global.
@@ -4183,18 +4188,6 @@
             Interface para controle do contexto do usuário, incluindo escopos e identificação do usuário atual.
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
-            <inheritdoc />
-        </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
-            <inheritdoc />
-        </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
             <inheritdoc />
         </member>
@@ -5040,12 +5033,12 @@
             Atribui a reponsabilidade de uma ordem para um usuário
             </summary>
         </member>
-        <member name="T:app_pm_back.Services.GenericSearchService">
+        <member name="T:app_pm_back.Services.GenericServices.GenericSearchService">
             <summary>
             Classe para busca genérica entre as tabelas do banco de dados 
             </summary>
         </member>
-        <member name="T:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult">
+        <member name="T:app_pm_back.Services.GenericServices.GenericSearchService.NotaOrdemSearchResult">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -5053,7 +5046,7 @@
             <param name="Ordens">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.#ctor(System.Collections.Generic.IReadOnlyList{System.Object},System.Collections.Generic.IReadOnlyList{System.Object})">
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.NotaOrdemSearchResult.#ctor(System.Collections.Generic.IReadOnlyList{System.Object},System.Collections.Generic.IReadOnlyList{System.Object})">
             <summary>
             Executa a ação correspondente.
             </summary>
@@ -5061,24 +5054,34 @@
             <param name="Ordens">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="P:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.Notas">
+        <member name="P:app_pm_back.Services.GenericServices.GenericSearchService.NotaOrdemSearchResult.Notas">
             <summary>Parâmetro do método.</summary>
         </member>
-        <member name="P:app_pm_back.Services.GenericSearchService.NotaOrdemSearchResult.Ordens">
+        <member name="P:app_pm_back.Services.GenericServices.GenericSearchService.NotaOrdemSearchResult.Ordens">
             <summary>Parâmetro do método.</summary>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ConfiguracaoGlobalService)">
+        <member name="T:app_pm_back.Services.GenericServices.GenericSearchService.TimelineItem">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.GenericSearchService"/>.
+            Representa um item na linha do tempo.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.ListarTabelasCampos">
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.TimelineItem.#ctor(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String,System.Nullable{System.DateTime})">
+            <summary>
+            Representa um item na linha do tempo.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.GenericServices.GenericSearchService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.ListarTabelasCampos">
             <summary>
             Lista as tabelas e seus campos armazenados do banco de dados.
             </summary>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.BuscarPorCampoAsync(System.String,System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.BuscarPorCampoAsync(System.String,System.String,System.String,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Obtém um registro específico em uma tabela.
             </summary>
@@ -5088,17 +5091,17 @@
             <param name="parcial"></param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.BuscarNotaOrdemAsync(System.Object,System.Int32,System.Int32,System.Nullable{app_pm_back.Models.Domain.Fichas})">
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.BuscarNotaOrdemAsync(System.Object,System.Int32,System.Int32,System.Nullable{app_pm_back.Models.Domain.Fichas})">
             <summary>
             Busca por notas e ordens com base em uma filtragem aplicada.
             </summary>
             <param name="busca">Pacote de filtragens estabelecidas</param>
             <param name="pagina">Página de exibição</param>
             <param name="tamanho">Tamanho da página</param>
-            <param name="Tfichas">Se a busca será realizada em notas e/ou ordens</param>
+            <param name="tFichas">Se a busca será realizada em notas e/ou ordens</param>
             <returns>Objeto completo com resultado da busca</returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.FiltraNotaOrdemAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.FiltraNotaOrdemAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -5107,7 +5110,7 @@
             <param name="t">Tamanho da página.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.BuscarPropriedade(System.Type,System.String)">
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.BuscarPropriedade(System.Type,System.String)">
             <summary>
             Busca interna de uma tabela por um campo e valor.
             </summary>
@@ -5116,19 +5119,19 @@
             <returns>Informação da propriedade</returns>
             <exception cref="T:System.ArgumentException">Lançada quando o campo não existe na tabela</exception>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.AtivoGerald(app_pm_back.Models.Domain.ComponentType)">
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.AtivoGerald(app_pm_back.Models.Domain.ComponentType)">
             <summary>
             Realiza uma busca interna de uma tabela por ativos.
             </summary>
             <param name="ativo">Tipo de ativo a ser buscado.</param>
             <returns>Resultado da operação de busca</returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.BuscarTimelineAsync(System.DateTime,System.DateTime,System.String)">
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.BuscarTimelineAsync(System.DateTime,System.DateTime,System.String)">
             <summary>
             Obtém uma timeline de fichas de um ativo para um range de data específico
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.GenericSearchService.BuscarFichasDataRenovacaoAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.BuscarFichasDataRenovacaoAsync(System.Object,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Realiza uma busca por fichas de dados renovação
             </summary>

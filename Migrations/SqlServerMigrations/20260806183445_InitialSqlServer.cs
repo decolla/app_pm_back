@@ -83,6 +83,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     ClassificacaoAutomatica = table.Column<int>(type: "int", nullable: false),
                     CriterioDataRenovacao = table.Column<int>(type: "int", nullable: false),
                     CriterioConfiabilidadeRenovacao = table.Column<int>(type: "int", nullable: false),
+                    CriarFichasPreventivas = table.Column<int>(type: "int", nullable: false),
                     DataModificacao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModificadoPorUsuario = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -981,8 +982,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
             migrationBuilder.InsertData(
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
-                columns: new[] { "Id", "ClassificacaoAutomatica", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 2, 3, new DateTime(2026, 8, 6, 13, 42, 23, 199, DateTimeKind.Utc).AddTicks(6833), 2, null });
+                columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 6, 18, 34, 44, 749, DateTimeKind.Utc).AddTicks(6395), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

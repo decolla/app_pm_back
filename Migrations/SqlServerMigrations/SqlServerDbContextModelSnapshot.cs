@@ -275,6 +275,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<int>("ClassificacaoAutomatica")
                         .HasColumnType("int");
 
+                    b.Property<int>("CriarFichasPreventivas")
+                        .HasColumnType("int");
+
                     b.Property<int>("CriterioConfiabilidadeRenovacao")
                         .HasColumnType("int");
 
@@ -299,9 +302,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         {
                             Id = 1,
                             ClassificacaoAutomatica = 0,
+                            CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 6, 13, 42, 23, 199, DateTimeKind.Utc).AddTicks(6833),
+                            DataModificacao = new DateTime(2026, 8, 6, 18, 34, 44, 749, DateTimeKind.Utc).AddTicks(6395),
                             FichasConfiabilidade = 2
                         });
                 });
