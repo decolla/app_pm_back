@@ -122,7 +122,7 @@ public class GenericSearchService
         Fichas? tFichas)
     {
         // realiza a filtragem dos dados
-        (List<NotaModel>, List<OrdemModel>) filtragem = await FiltraNotaOrdemAsync(busca, pagina, tamanho);
+        (List<NotaModel>, List<OrdemModel>) filtragem = await FiltraNotaOrdemAsync(busca);
         
         var notasDb = filtragem.Item1;
         var ordensDb = filtragem.Item2;
@@ -173,7 +173,7 @@ public class GenericSearchService
     /// <param name="p">Página de exibição.</param>
     /// <param name="t">Tamanho da página.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<(List<NotaModel>, List<OrdemModel>)> FiltraNotaOrdemAsync(dynamic busca,  int? p, int? t)
+    public async Task<(List<NotaModel>, List<OrdemModel>)> FiltraNotaOrdemAsync(dynamic busca)
     {
         if (busca == null)
         {
@@ -194,13 +194,6 @@ public class GenericSearchService
             .ThenInclude(pl => pl!.Estrategia)
             .AsNoTracking()
             .AsQueryable();
-        
-        
-        if (p.HasValue && t.HasValue)
-        {
-            notasQuery = notasQuery.Skip((p.Value - 1) * t.Value).Take(t.Value);
-            ordensQuery = ordensQuery.Skip((p.Value - 1) * t.Value).Take(t.Value);
-        }
 
         // safe check for properties of dynamic/anonymous object
         var buscaType = (Type)busca.GetType();
