@@ -132,13 +132,13 @@ public class FichasController : ControllerBase
     [HttpPost("busca")]
     public async Task<IActionResult> BuscarNotaOrdem(
         [FromBody] BuscaOrdemNotaDto busca,
-        [FromQuery] int? pagina = null,
-        [FromQuery] int? tamanho = null,
+        [FromQuery] int pagina,
+        [FromQuery] int tamanho,
         [FromQuery] Fichas? tFichas = Fichas.Ambas)
     {
         try
         {
-            if ((pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0))
+            if ((pagina <= 0) || (tamanho <= 0))
             {
                 return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
             }

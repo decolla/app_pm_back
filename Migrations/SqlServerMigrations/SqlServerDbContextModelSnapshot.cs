@@ -301,7 +301,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             ClassificacaoAutomatica = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 4, 17, 37, 12, 399, DateTimeKind.Utc).AddTicks(5904),
+                            DataModificacao = new DateTime(2026, 8, 6, 13, 42, 23, 199, DateTimeKind.Utc).AddTicks(6833),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -1129,9 +1129,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     b.Property<bool?>("Continua")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Cor")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Dias")
                         .HasColumnType("int");

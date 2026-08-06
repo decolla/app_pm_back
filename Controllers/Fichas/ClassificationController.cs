@@ -163,7 +163,7 @@ public class ClassificationController : ControllerBase
     [HttpPut("{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] CentroTrabalhoDto dto)
+    public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] RegraClassificacaoDto dto)
     {
         try
         {
@@ -178,12 +178,12 @@ public class ClassificationController : ControllerBase
                     { message = "Regra invalido na rota. Envie id maior que zero." });
             }
 
-            if (dto.IdCtm <= 0)
+            if (dto.IdRegra <= 0)
             {
-                dto.IdCtm = id;
+                dto.IdRegra = id;
             }
 
-            if (dto.IdCtm != id)
+            if (dto.IdRegra != id)
             {
                 return BadRequest(new { message = "Id da rota e regra do corpo devem ser iguais." });
             }
@@ -247,13 +247,13 @@ public class ClassificationController : ControllerBase
             var message = "";
             if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Notas)
             {
-                await _notaService.WordsClassification([]);
+                await _notaService.AutoClassifyWords();
                 message = "Notas classificadas com sucesso";
             }
 
             if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
             {
-                await _ordemService.WordsClassification([]);
+                await _ordemService.AutoClassifyWords();
                 message += "| Ordens classificadas com sucesso";
             }
 
@@ -320,59 +320,38 @@ public class ClassificationController : ControllerBase
     [HttpPost("filtro")]
     public async Task<IActionResult> BuscarNotaOrdem(
         [FromBody] BuscaOrdemNotaDto busca,
-        [FromQuery] int? pagina = null,
-        [FromQuery] int? tamanho = null,
         [FromQuery] Fichas? tFichas = Fichas.Ambas)
     {
         try
         {
-            if ((pagina.HasValue && pagina <= 0) || (tamanho.HasValue && tamanho <= 0))
-            {
-                return BadRequest(new { message = "Os parametros pagina e tamanho devem ser maiores que zero." });
-            }
+
 
             if (!tFichas.HasValue)
             {
                 tFichas = Fichas.Ambas;
             }
 
-            var resultadoBusca = await _searchService.FiltraNotaOrdemAsync(busca);
+            var resultadoBusca = await _searchService.FiltraNotaOrdemAsync(busca, null, null);
 
             List<object> resultados = new List<object>();
 
             if (tFichas == Fichas.Ambas || tFichas == Fichas.Notas)
             {
                 var notas = resultadoBusca.Item1;
-                if (pagina.HasValue && tamanho.HasValue)
-                {
-                    notas = notas.Skip((pagina.Value - 1) * tamanho.Value).Take(tamanho.Value).ToList();
-                }
-
                 resultados.Add(notas);
             }
 
             if (tFichas == Fichas.Ambas || tFichas == Fichas.Ordens)
             {
                 var ordens = resultadoBusca.Item2;
-                if (pagina.HasValue && tamanho.HasValue)
-                {
-                    ordens = ordens.Skip((pagina.Value - 1) * tamanho.Value).Take(tamanho.Value).ToList();
-                }
-
                 resultados.Add(ordens);
             }
             
             int totalGeral = resultados.Count;
-            int p = pagina ?? 1;
-            int t = tamanho ?? 20;
-            int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
             
             object resultado = new
             {
                 Total = totalGeral,
-                TotalPaginas = totalPaginas,
-                pagina = p,
-                Tamanho = t,
                 Resultado = resultados
             };
             

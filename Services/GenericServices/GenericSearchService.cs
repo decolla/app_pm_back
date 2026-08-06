@@ -50,6 +50,10 @@ public class GenericSearchService
         _dadosRenovacaoModels = context.PM_DadosRenovacao;
     }
 
+    /// <summary>
+    /// Lista as tabelas e seus campos armazenados do banco de dados.
+    /// </summary>
+    /// <returns></returns>
     public IReadOnlyDictionary<string, IReadOnlyList<string>> ListarTabelasCampos()
     {
         return Tabelas.ToDictionary(
@@ -101,44 +105,53 @@ public class GenericSearchService
         return await task.ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Busca por notas e ordens com base em uma filtragem aplicada.
+    /// </summary>
+    /// <param name="busca">Pacote de filtragens estabelecidas</param>
+    /// <param name="pagina">Página de exibição</param>
+    /// <param name="tamanho">Tamanho da página</param>
+    /// <param name="Tfichas">Se a busca será realizada em notas e/ou ordens</param>
+    /// <returns>Objeto completo com resultado da busca</returns>
     public async Task<object> BuscarNotaOrdemAsync(
         dynamic busca,
-        int? pagina,
-        int? tamanho,
+        int pagina,
+        int tamanho,
         Fichas? Tfichas)
     {
-        (List<NotaModel>, List<OrdemModel>) listaUnica = await FiltraNotaOrdemAsync(busca);
+        // realiza a filtragem dos dados
+        (List<NotaModel>, List<OrdemModel>) filtragem = await FiltraNotaOrdemAsync(busca, pagina, tamanho);
         
-        // busca Notas
-        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Notas)
-        {
-            var notas = listaUnica.Item1;
-        }
-
-        // busca Ordens
-        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Ordens)
-        {
-            var ordens = listaUnica.Item2;
-        }
+        var notasDb = filtragem.Item1;
+        var ordensDb = filtragem.Item2;
         
         List<object> lista = new List<object>();
         
-        lista.AddRange(listaUnica.Item1);
-        lista.AddRange(listaUnica.Item2);
+        // adiciona na lista final com base na condicional informada
+        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Notas)
+        {
+            lista.AddRange(notasDb);
+        }
 
-        // cálculos da paginação
+        if (Tfichas == Fichas.Ambas || Tfichas == Fichas.Ordens)
+        {
+            lista.AddRange(ordensDb);
+        }
+
+        // calculos de paginação
         int totalGeral = lista.Count;
-        int p = pagina ?? 1;
-        int t = tamanho ?? 20;
+        int p = pagina ;
+        int t = tamanho ;
         int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
 
-        //Pega os 'n' primeiros itens dependendo da página
+        // pega os n primeiros itens
         var itensPaginados = lista.Skip((p - 1) * t).Take(t).ToList();
 
-        //Separa de volta para preencher o NotaOrdemSearchResult
+        // separa de volta para preencher o resultado
         var notasResult = itensPaginados.OfType<NotaModel>().ToList();
         var ordensResult = itensPaginados.OfType<OrdemModel>().ToList();
 
+        // modela na formatação desejada
         var result = new NotaOrdemSearchResult(notasResult, ordensResult);
 
         return new
@@ -155,32 +168,43 @@ public class GenericSearchService
     /// Obtém um registro específico.
     /// </summary>
     /// <param name="busca">Parâmetro do método.</param>
+    /// <param name="p">Página de exibição.</param>
+    /// <param name="t">Tamanho da página.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<(List<NotaModel>, List<OrdemModel>)> FiltraNotaOrdemAsync(dynamic busca)
+    public async Task<(List<NotaModel>, List<OrdemModel>)> FiltraNotaOrdemAsync(dynamic busca,  int? p, int? t)
     {
         if (busca == null)
         {
             throw new ArgumentNullException(nameof(busca));
         }
 
-        // Includes para buscar o Plano e, em seguida, a Estratégia
+        // includes necessários para o funcionamento do filtro
         var notasQuery = _notaModels
             .Include(n => n.Ordens)
             .Include(n => n.Plano)
-            .ThenInclude(p => p.Estrategia)
+            .ThenInclude(pl => pl!.Estrategia)
             .AsNoTracking()
             .AsQueryable();
 
         var ordensQuery = _ordemModels
             .Include(n => n.Nota)
             .Include(o => o.Plano)
-            .ThenInclude(p => p.Estrategia)
+            .ThenInclude(pl => pl!.Estrategia)
             .AsNoTracking()
             .AsQueryable();
+        
+        
+        if (p.HasValue && t.HasValue)
+        {
+            notasQuery = notasQuery.Skip((p.Value - 1) * t.Value).Take(t.Value);
+            ordensQuery = ordensQuery.Skip((p.Value - 1) * t.Value).Take(t.Value);
+        }
 
-        // Safe check for properties of dynamic/anonymous object
+        // safe check for properties of dynamic/anonymous object
         var buscaType = (Type)busca.GetType();
 
+        // =============================== Condicionais de filtragem ===================================
+        
         StatusFichas? statusNota = buscaType.GetProperty("StatusNota")?.GetValue(busca);
         if (statusNota.HasValue)
         {
@@ -295,7 +319,7 @@ public class GenericSearchService
             ordensQuery = ordensQuery.Where(o => o.StatusOrdem == statusOrdem.Value);
         }
 
-        string? sapCode = buscaType.GetProperty("SapCode")?.GetValue(busca) as string;
+        string? sapCode = buscaType.GetProperty("SapName")?.GetValue(busca) as string;
         if (!string.IsNullOrEmpty(sapCode))
         {
             notasQuery = notasQuery.Where(n => n.SapCode == sapCode);
@@ -339,9 +363,12 @@ public class GenericSearchService
             notasQuery = notasQuery.Where(n => n.StatusNota == status);
             ordensQuery = ordensQuery.Where(o => o.StatusOrdem == status);
         }
+        
+        // =============================== Fim Condicionais de filtragem ===================================
 
         (List<NotaModel>, List<OrdemModel>) listaUnica = new([],[]);
 
+        // realiza ordenação das query e agrupamento na formatação de (notas, ordens)
         notasQuery = notasQuery.AplicarOrdenacao(_context);
         var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
         listaUnica.Item1?.AddRange(todasNotas);
@@ -413,6 +440,13 @@ public class GenericSearchService
         return new { Total = count, Result = result };
     }
 
+    /// <summary>
+    /// Busca interna de uma tabela por um campo e valor.
+    /// </summary>
+    /// <param name="tipo">Tipo da tabela a ser buscada</param>
+    /// <param name="campo">Campo a ser buscado na tabela</param>
+    /// <returns>Informação da propriedade</returns>
+    /// <exception cref="ArgumentException">Lançada quando o campo não existe na tabela</exception>
     private static PropertyInfo BuscarPropriedade(Type tipo, string campo)
     {
         var property = tipo
@@ -477,10 +511,10 @@ public class GenericSearchService
     }
 
     /// <summary>
-    /// Executa a ação correspondente.
+    /// Realiza uma busca interna de uma tabela por ativos.
     /// </summary>
-    /// <param name="ativo">Parâmetro do método.</param>
-    /// <returns>Resultado da operação.</returns>
+    /// <param name="ativo">Tipo de ativo a ser buscado.</param>
+    /// <returns>Resultado da operação de busca</returns>
     public async Task<object?> AtivoGerald(ComponentType ativo)
     {
         OrdemModel? ultimaOrdem = await _ordemModels
@@ -532,9 +566,9 @@ public class GenericSearchService
                 .Where(p => p.IdPlano == codigoPlanoParaBuscar.Value)
                 .FirstOrDefaultAsync();
         }
-        // retornar tipos c do plano, invés das estatégias
+        
+        // retornar tipos c do plano, invés das estratégias
         // ultima data puxar da tabela do lucas
-
         return new
         {
             Ativo = ativo,

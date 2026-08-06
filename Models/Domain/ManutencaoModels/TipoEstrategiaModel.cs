@@ -15,11 +15,6 @@ public class TipoEstrategiaModel
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdTipoEstrategia { get; set; }
-
-    /// <summary>
-    /// Cor atribuída ao tipo de estratégia
-    /// </summary>
-    public string? Cor { get; set; }
     
     /// <summary>
     /// Quantidade de dias para o ciclo. Exemplo: 90
