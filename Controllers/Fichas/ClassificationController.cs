@@ -313,7 +313,7 @@ public class ClassificationController : ControllerBase
             return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
         }
     }
-    
+
     /// <summary>
     /// Lista os arquivos de modelo do catboost
     /// </summary>
@@ -324,11 +324,18 @@ public class ClassificationController : ControllerBase
         try
         {
             var modelos = _catboostModelProviderService.ListarModelosDisponiveis();
+
+            if (!modelos.Any())
+            {
+                modelos = ["catboost_model.cbm", "model_meta.json"];
+            }
+
             return Task.FromResult<IActionResult>(Ok(modelos));
         }
         catch (Exception e)
         {
-            return Task.FromResult<IActionResult>(BadRequest(new { message = $"Erro ao listar modelos catboost: {e.Message}" }));
+            return Task.FromResult<IActionResult>(BadRequest(new
+                { message = $"Erro ao listar modelos catboost: {e.Message}" }));
         }
     }
 
@@ -355,6 +362,7 @@ public class ClassificationController : ControllerBase
             {
                 tFichas = Fichas.Ambas;
             }
+
             if (string.IsNullOrWhiteSpace(nomeModelo))
             {
                 return BadRequest(new { message = "O nome do modelo é obrigatório." });
