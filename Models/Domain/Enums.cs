@@ -65,7 +65,7 @@ public enum CategoriaTipoManutencao
 /// <summary>
 /// Unidade do ciclo.
 /// </summary>
-public enum UnidadeCiclo
+public enum UnidadeTempo
 {
     Dias = 0,
     Meses = 1,

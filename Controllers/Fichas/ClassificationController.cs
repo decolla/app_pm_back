@@ -18,6 +18,7 @@ public class ClassificationController : ControllerBase
     private readonly IMapper _mapper;
     private readonly ClassificationService<NotaModel> _notaService;
     private readonly ClassificationService<OrdemModel> _ordemService;
+    private readonly CatboostModelProviderService _catboostModelProviderService;
     private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
     private readonly GenericSearchService _searchService;
 
@@ -28,6 +29,7 @@ public class ClassificationController : ControllerBase
         ClassificationService<NotaModel> notaService,
         ClassificationService<OrdemModel> ordemService,
         GenericSearchService searchService,
+        CatboostModelProviderService catboostModelProviderService,
         ConfiguracaoGlobalService configuracaoGlobalService
     )
     {
@@ -38,6 +40,7 @@ public class ClassificationController : ControllerBase
         _ordemService = ordemService;
         _configuracaoGlobalService = configuracaoGlobalService;
         _searchService = searchService;
+        _catboostModelProviderService = catboostModelProviderService;
     }
 
     /// <summary>
@@ -308,6 +311,24 @@ public class ClassificationController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao classificar notas: {e.Message}" });
+        }
+    }
+    
+    /// <summary>
+    /// Lista os arquivos de modelo do catboost
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet("modelos-catboost")]
+    public Task<IActionResult> ListarModelosCatboost()
+    {
+        try
+        {
+            var modelos = _catboostModelProviderService.ListarModelosDisponiveis();
+            return Task.FromResult<IActionResult>(Ok(modelos));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult<IActionResult>(BadRequest(new { message = $"Erro ao listar modelos catboost: {e.Message}" }));
         }
     }
 
