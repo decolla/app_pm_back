@@ -20,21 +20,21 @@ public class ClassificationService<T> where T : class, IClassifiable
     protected readonly ConfiguracaoGlobalService _configuracaoService;
     protected readonly DbSet<T> _dbSet;
     protected readonly DbSet<RegraClassificacaoModel> _classificationModel;
-    protected readonly Cbm? _cbm;
-    protected readonly ModelMeta? _meta;
+    protected readonly CatboostModelProviderService _catboostProvider;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="ClassificationService{T}"/>.
     /// </summary>
-    public ClassificationService(AppDbContext context, ConfiguracaoGlobalService configuracaoService,
-        Cbm? modeloCatboost = null, ModelMeta? meta = null)
+    public ClassificationService(
+        AppDbContext context, 
+        ConfiguracaoGlobalService configuracaoService,
+        CatboostModelProviderService catboostProvider)
     {
         _context = context;
         _configuracaoService = configuracaoService;
         _dbSet = context.Set<T>();
+        _catboostProvider = catboostProvider;
         _classificationModel = context.Set<RegraClassificacaoModel>();
-        _cbm = modeloCatboost;
-        _meta = meta;
     }
 
     /// <summary>
@@ -208,14 +208,15 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// <summary>
     /// Classificação de notas/ordens com base no modelo Catboost.
     /// </summary>
-    public async Task<List<T>> CatboostClassification(List<T> query)
+    public async Task<List<T>> CatboostClassification(List<T> query, string nomeModelo = "")
     {
         // var config = await _configuracaoService.ObterConfiguracaoAsync();
         // if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarCatBoost)
         //     throw new InvalidOperationException(
         //         "Modo de classificação por catboost não habilitada nas classificações globais.");
 
-        if (_cbm == null || _meta == null)
+        var (cbm, meta) = _catboostProvider.ObterModelo(nomeModelo);
+        if (cbm == null || meta == null)
             throw new InvalidOperationException("Modelo CatBoost não carregado.");
 
         var notasAtualizadas = new List<T>();
@@ -261,10 +262,10 @@ public class ClassificationService<T> where T : class, IClassifiable
             for (int i = 0; i < lote.Count; i++)
             {
                 var nota = lote[i];
-                var rowCat = new string[_meta.cat_features.Count];
-                for (int j = 0; j < _meta.cat_features.Count; j++)
+                var rowCat = new string[meta.cat_features.Count];
+                for (int j = 0; j < meta.cat_features.Count; j++)
                 {
-                    var feature = _meta.cat_features[j];
+                    var feature = meta.cat_features[j];
                     string? valor = null;
 
                     if (cachePropsNotas.TryGetValue(feature, out var prop))
@@ -277,10 +278,10 @@ public class ClassificationService<T> where T : class, IClassifiable
 
                 catFeatures[i] = rowCat;
 
-                var rowText = new string[_meta.text_features.Count];
-                for (int j = 0; j < _meta.text_features.Count; j++)
+                var rowText = new string[meta.text_features.Count];
+                for (int j = 0; j < meta.text_features.Count; j++)
                 {
-                    string feature = _meta.text_features[j];
+                    string feature = meta.text_features[j];
                     string? valor = null;
 
                     if (cachePropsNotas.TryGetValue(feature, out var prop))
@@ -294,7 +295,7 @@ public class ClassificationService<T> where T : class, IClassifiable
                 textFeatures[i] = rowText;
             }
 
-            double[] probabilidades = _cbm.Predict([], catFeatures, textFeatures);
+            double[] probabilidades = cbm.Predict([], catFeatures, textFeatures);
 
             for (int i = 0; i < lote.Count; i++)
             {

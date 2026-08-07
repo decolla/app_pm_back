@@ -161,6 +161,8 @@ builder.Services.AddScoped<ReliabilityService>();
 builder.Services.AddScoped<AuditoriaService>();
 builder.Services.AddScoped<RegraClassificacaoService>();
 builder.Services.AddScoped<DiretorioService>();
+builder.Services.AddScoped<ExternIntegrationService>();
+builder.Services.AddScoped<CatboostModelProviderService>();
 
 // configuração de clientes http
 builder.Services.AddHttpClient<ExternIntegrationService>(client =>
@@ -204,27 +206,6 @@ builder.Services.AddHttpClient<ReliabilityService>(client =>
     client.DefaultRequestHeaders.Add("Accept", "application/json");
     client.Timeout = TimeSpan.FromSeconds(30);
 });
-
-var modelPath = Path.Combine(AppContext.BaseDirectory, "CatBoost", "catboost_model.cbm");
-var metaPath = Path.Combine(AppContext.BaseDirectory, "CatBoost", "model_meta.json");
-
-// verifica se os ficheiros existem antes de tentar ler (evita crash no 'dotnet ef')
-if (File.Exists(metaPath) && File.Exists(modelPath))
-{
-    var metaJson = File.ReadAllText(metaPath);
-    var modelMeta = JsonSerializer.Deserialize<ModelMeta>(metaJson);
-    if (modelMeta != null)
-    {
-        builder.Services.AddSingleton(modelMeta);
-    }
-
-    var catboostModel = new Cbm(modelPath);
-    builder.Services.AddSingleton(catboostModel);
-}
-else
-{
-    Console.WriteLine("Aviso: Ficheiros do CatBoost não encontrados. O modelo IA não será carregado.");
-}
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddHttpContextAccessor();

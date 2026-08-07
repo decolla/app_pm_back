@@ -315,6 +315,9 @@ public class ClassificationController : ControllerBase
     /// Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
     /// </summary>
     /// <param name="busca">Modelo de busca com campos comparáveis</param>
+    /// <param name="tFichas">Tipo de fichas que serão classificadas</param>
+    /// <param name="filtroClassificacao">Filtro de notas que serão classificadas</param>
+    /// <param name="nomeModelo">Nome do modelo a ser utilizado</param>
     /// <param name="pagina">Página a ser exibida</param>
     /// <param name="tamanho">Número de elementos presente na página</param>
     /// <returns>Lista de Nota e Ordens com base nos filtros</returns>
@@ -322,13 +325,18 @@ public class ClassificationController : ControllerBase
     public async Task<IActionResult> ClassificaNotaOrdem(
         [FromBody] BuscaOrdemNotaDto busca,
         [FromQuery] Fichas? tFichas,
-        [FromQuery] FiltroClassificacao filtroClassificacao)
+        [FromQuery] FiltroClassificacao filtroClassificacao,
+        [FromQuery] string nomeModelo)
     {
         try
         {
             if (!tFichas.HasValue)
             {
                 tFichas = Fichas.Ambas;
+            }
+            if (string.IsNullOrWhiteSpace(nomeModelo))
+            {
+                return BadRequest(new { message = "O nome do modelo é obrigatório." });
             }
 
             var resultadoBusca = await _searchService.FiltraNotaOrdemAsync(busca);
@@ -346,7 +354,7 @@ public class ClassificationController : ControllerBase
 
                 if (filtroClassificacao is FiltroClassificacao.Catboost or FiltroClassificacao.Ambos)
                 {
-                    notasClassificadas = await _notaService.CatboostClassification(notas);
+                    notasClassificadas = await _notaService.CatboostClassification(notas, nomeModelo);
                 }
 
                 resultados.Add(notasClassificadas);
@@ -363,7 +371,7 @@ public class ClassificationController : ControllerBase
 
                 if (filtroClassificacao is FiltroClassificacao.Catboost or FiltroClassificacao.Ambos)
                 {
-                    ordensClassificadas = await _ordemService.CatboostClassification(ordens);
+                    ordensClassificadas = await _ordemService.CatboostClassification(ordens, nomeModelo);
                 }
 
                 resultados.Add(ordensClassificadas);
@@ -377,7 +385,7 @@ public class ClassificationController : ControllerBase
                 Resultado = resultados
             };
 
-            return Ok(resultado);
+            return Ok("Fichas classificadas com sucesso!");
         }
         catch (Exception e)
         {
