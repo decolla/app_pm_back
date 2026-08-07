@@ -23,7 +23,6 @@ public class DashboardService
 
         return new
         {
-
         };
     }
 
@@ -114,7 +113,7 @@ public class DashboardService
         int notasSemOrdemAtrasadas = notas
             .Select(n => n.Ordens)
             .Count(o => o.Any(oo => oo.FimReal < DateTime.Now));
-        
+
         int notasComOrdemAtrasadas = notas
             .Select(n => n.Ordens)
             .Count(o => o.Any(oo => oo.FimReal > DateTime.Now));
@@ -129,15 +128,46 @@ public class DashboardService
         });
     }
 
-    private object TopLiOcorrencias(List<NotaModel> notas, List<OrdemModel> ordens)
+    private Dictionary<(string, string), int> TopLiOcorrencias(List<NotaModel> notas, List<OrdemModel> ordens)
     {
-        Dictionary<string, int> liOcorrencias = new();
-        
+        Dictionary<(string IdLi, DateTime? DataNota), int> liOcorrencias = new();
+
         foreach (var nota in notas)
         {
-            
+            if (nota.IdLi != null && nota.DataNota != null &&
+                liOcorrencias.TryAdd(((string, DateTime))(nota.IdLi, nota.DataNota), 1))
+            {
+            }
+            else if (nota.IdLi != null)
+            {
+                liOcorrencias[(nota.IdLi, nota.DataNota)]++;
+            }
         }
-        
-        return Task.FromResult<object>(liOcorrencias);
+
+        foreach (var ordem in ordens)
+        {
+            if (ordem.IdLi != null && ordem.DataCriacao != null &&
+                liOcorrencias.TryAdd(((string, DateTime))(ordem.IdLi, ordem.DataCriacao), 1))
+            {
+            }
+            else if (ordem.IdLi != null)
+            {
+                liOcorrencias[(ordem.IdLi, ordem.DataCriacao)]++;
+            }
+        }
+
+        Dictionary<(string, string), int> liOcorrenciasFormatted = new();
+
+        foreach (var liOcorrencia in liOcorrencias)
+        {
+            liOcorrenciasFormatted.Add(
+                (liOcorrencia.Key.Item1, liOcorrencia.Key.Item2?.ToString("yyyy") ?? string.Empty), liOcorrencia.Value);
+        }
+
+        return liOcorrenciasFormatted.OrderBy(x => x.Value)
+            .ToDictionary(x => x.Key, x => x.Value);
     }
+    
+    // TODO: FINALIZAR DASHBOARD
+
 }
