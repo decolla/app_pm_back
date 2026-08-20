@@ -51,7 +51,7 @@ public class ImportSheetService
         if (dbSchema == "cg")
             throw new ArgumentException("PEDRO ADVERTE: Importação de planilhas desabilitada para o schema CG.");
 
-        _logger.LogInformation("Baixando arquivo da rede para a memória (RAM) para processamento ultrarrápido...");
+        _logger.LogInformation("Baixando arquivo da rede para a memória (RAM)");
         
         //LER PARA MEMÓRIA
         // Isso evita que o leitor de Excel (EPPlus/ClosedXML) trave tentando fazer "seek" na rede.
@@ -74,6 +74,8 @@ public class ImportSheetService
 
         if (resultadoPlanilha.TipoIdentificado == "NOTA")
         {
+            _logger.LogInformation("Planilha identificada como nota");
+            
             if (!resultadoPlanilha.Notas.Any())
                 throw new ArgumentException("Planilha reconhecida, mas sem dados válidos.");
 
@@ -127,6 +129,7 @@ public class ImportSheetService
 
             if (idOrdens.Count > 0)
             {
+                _logger.LogInformation("Planilha identificada como ordem");
                 try
                 {
                     _logger.LogInformation("Iniciando sincronização APM para ordens...");
@@ -150,6 +153,7 @@ public class ImportSheetService
         }
         else if (resultadoPlanilha.TipoIdentificado == "ITEM")
         {
+            _logger.LogInformation("Planilha identificada como item");
             if (!resultadoPlanilha.Itens.Any())
                 throw new ArgumentException("Planilha de itens reconhecida, mas sem dados válidos.");
 
