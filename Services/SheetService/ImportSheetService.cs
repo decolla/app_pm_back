@@ -302,10 +302,15 @@ public class ImportSheetService
         // 4. Aplica o De/Para e limpa a navegação
         foreach (var ordem in ordens)
         {
-            if (ordem.Nota != null && notasNoBanco.TryGetValue(ordem.Nota.NumeroNota, out long idInterno))
+            if (ordem.Nota != null)
             {
-                ordem.IdNota = idInterno;
-                ordem.Nota = null; // Blindagem do EF
+                // Tenta achar o ID gerado para vincular a FK
+                if (notasNoBanco.TryGetValue(ordem.Nota.NumeroNota, out long idInterno))
+                {
+                    ordem.IdNota = idInterno;
+                }
+                
+                ordem.Nota = null; 
             }
         }
     }
