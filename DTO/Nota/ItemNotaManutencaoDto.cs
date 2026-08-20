@@ -15,9 +15,9 @@ public class ItemNotaManutencaoDto
     [SheetColumn("Nota")] public long IdNota { get; set; }
 
     // Descricao tecnica
-    [SheetColumn("Code parte obj.")] public string? Componente { get; set; }
+    [SheetColumn("Txt.cod.part.ob")] public string? Componente { get; set; }
 
-    [SheetColumn("Descrição")] public string? Sintoma { get; set; }
+    [SheetColumn("Txt.code prob.")] public string? Sintoma { get; set; }
 
     [SheetColumn("Txt.code causa")] public string? Causa { get; set; }
 }

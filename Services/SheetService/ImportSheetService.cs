@@ -118,6 +118,8 @@ public class ImportSheetService
             List<OrdemModel> ordensDeduplicadas = resultadoPlanilha.Ordens.DistinctBy(o => o.NumeroOrdem).ToList();
             _logger.LogInformation("Planilha lida com sucesso: {Count} ordens únicas encontradas. Iniciando gravação otimizada.", ordensDeduplicadas.Count);
 
+            await VincularOrdensNotasAsync(ordensDeduplicadas, cancellationToken);
+            
             // PROCESSAMENTO EM LOTES MAIORES USANDO MÉTODO GENÉRICO
             await ImportarComProgressoAsync(
                 ordensDeduplicadas, 
@@ -162,15 +164,20 @@ public class ImportSheetService
             var notasNoBanco = await _dbContext.PM_Notas
                 .Where(n => sapNumbers.Contains(n.NumeroNota))
                 .Select(n => new { n.IdNota, n.NumeroNota })
-                .ToDictionaryAsync(n => n.NumeroNota, n => n.IdNota, cancellationToken);
+                .GroupBy(n => n.NumeroNota) 
+                .ToDictionaryAsync(g => g.Key, g => g.First().IdNota, cancellationToken);
 
             var notasFaltantes = sapNumbers.Except(notasNoBanco.Keys).ToList();
             if (notasFaltantes.Any())
             {
                 await ImportGhostHelper.EnsureNotasAsync(_dbContext, notasFaltantes.Select(n => (long?)n));
-                foreach (var nota in notasFaltantes)
+                var notasNovas = await _dbContext.PM_Notas
+                    .Where(n => notasFaltantes.Contains(n.NumeroNota))
+                    .Select(n => new { n.IdNota, n.NumeroNota })
+                    .ToListAsync(cancellationToken);
+                foreach (var nota in notasNovas)
                 {
-                    notasNoBanco[nota] = nota;
+                    notasNoBanco[nota.NumeroNota] = nota.IdNota;
                 }
             }
 
@@ -250,6 +257,56 @@ public class ImportSheetService
             
             // LOG DE PROGRESSO
             _logger.LogInformation("PROGRESSO RÁPIDO: {Processadas} / {Total} {Entidade} processadas...", totalProcessadas, totalItens, nomeEntidade);
+        }
+    }
+    
+    /// <summary>
+    /// Resolve e prepara os vínculos de chaves estrangeiras entre Ordens e Notas antes da inserção no banco de dados.
+    /// </summary>
+    private async Task VincularOrdensNotasAsync(List<OrdemModel> ordens, CancellationToken cancellationToken)
+    {
+        // 1. Extrai os números (assumindo que 0 seria um valor inválido/vazio para a nota)
+        var sapNumbers = ordens
+            .Where(o => o.Nota != null && o.Nota.NumeroNota > 0)
+            .Select(o => o.Nota.NumeroNota)
+            .Distinct()
+            .ToList();
+
+        if (!sapNumbers.Any()) return;
+
+        // 2. Busca as existentes (agora a chave do dicionário é implicitamente long)
+        var notasNoBanco = await _dbContext.PM_Notas
+            .Where(n => sapNumbers.Contains(n.NumeroNota))
+            .Select(n => new { n.IdNota, n.NumeroNota })
+            .GroupBy(n => n.NumeroNota)
+            .ToDictionaryAsync(g => g.Key, g => g.First().IdNota, cancellationToken);
+
+        // 3. Cria as notas fantasmas
+        var notasFaltantes = sapNumbers.Except(notasNoBanco.Keys).ToList();
+        if (notasFaltantes.Any())
+        {
+            // O EnsureNotasAsync pede IEnumerable<long?>, então o cast (long?) é suficiente
+            await ImportGhostHelper.EnsureNotasAsync(_dbContext, notasFaltantes.Select(n => (long?)n));
+        
+            var notasNovas = await _dbContext.PM_Notas
+                .Where(n => notasFaltantes.Contains(n.NumeroNota))
+                .Select(n => new { n.IdNota, n.NumeroNota })
+                .ToListAsync(cancellationToken);
+
+            foreach (var nova in notasNovas) 
+            {
+                notasNoBanco[nova.NumeroNota] = nova.IdNota;
+            }
+        }
+
+        // 4. Aplica o De/Para e limpa a navegação
+        foreach (var ordem in ordens)
+        {
+            if (ordem.Nota != null && notasNoBanco.TryGetValue(ordem.Nota.NumeroNota, out long idInterno))
+            {
+                ordem.IdNota = idInterno;
+                ordem.Nota = null; // Blindagem do EF
+            }
         }
     }
 }
