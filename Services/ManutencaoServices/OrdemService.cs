@@ -30,13 +30,13 @@ public class OrdemService : BaseCrudService<OrdemModel>
     {
         if (ordens == null || !ordens.Any()) return;
 
-        var notaIds = ordens
-            .Where(o => o.IdNota.HasValue)
-            .Select(o => o.IdNota!.Value)
-            .Distinct()
-            .ToList();
+        //var notaIds = ordens
+           // .Where(o => o.IdNota.HasValue)
+           // .Select(o => o.IdNota!.Value)
+           // .Distinct()
+          //  .ToList();
 
-        await ImportGhostHelper.EnsureNotasAsync(_context, notaIds.Select(id => (long?)id));
+        //await ImportGhostHelper.EnsureNotasAsync(_context, notaIds.Select(id => (long?)id));
 
         var numerosOrdens = ordens
             .Where(o => o.NumeroOrdem.HasValue)

@@ -294,12 +294,6 @@ public class SpreadsheetService
                         {
                             valorConvertido = TryTranslateComponentType(valor);
                         }
-                        else if (tipo == typeof(long) &&
-                                 string.Equals(property.Name, "IdNota", StringComparison.OrdinalIgnoreCase) &&
-                                 string.Equals(nomeColunaExcel, "cdnotamanutencao", StringComparison.OrdinalIgnoreCase))
-                        {
-                            valorConvertido = TryTranslateSapCode(valor);
-                        }
                         else if (tipo == typeof(DateTime) && string.Equals(nomeColunaExcel, "data_expectativa_nota",
                                      StringComparison.OrdinalIgnoreCase))
                         {
@@ -577,7 +571,8 @@ public class SpreadsheetService
             FimReal = dto.FimReal,
             IdAtivo = dto.IdAtivo,
             IdLi = dto.IdLi,
-            IdNota = dto.IdNota,
+            Nota = dto.NumeroNota.HasValue ? new NotaModel { NumeroNota = dto.NumeroNota.Value } : null,
+            IdNota = null,
             ConfiabilidadeRestaurada = dto.ConfiabilidadeRestaurada ?? ConfiabilidadeRestaurada.NaoRestaura,
             IdGpm = dto.IdGpm,
             DnsIot = dto.DnsIot,
