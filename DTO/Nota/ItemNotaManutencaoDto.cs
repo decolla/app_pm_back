@@ -18,8 +18,10 @@ public class ItemNotaManutencaoDto
     [SheetColumn("Txt.cod.part.ob")] public string? Componente { get; set; }
 
     [SheetColumn("Txt.code prob.")] public string? Sintoma { get; set; }
-
+    
     [SheetColumn("Txt.code causa")] public string? Causa { get; set; }
+    
+    [SheetColumn("Descrição")] public string? Descricao { get; set; }
 }
 
 #pragma warning restore CS1591

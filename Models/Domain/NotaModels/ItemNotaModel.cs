@@ -49,6 +49,14 @@ public class ItemNotaModel : IAuditable
     [MaxLength(150)]
     [Display(Name = "Causa")]
     public string? Causa { get; set; }
+    
+    /// <summary>
+    /// Descrição adicional do item.
+    /// </summary>
+    /// <value>Máximo de 150 caracteres.</value>
+    [MaxLength(150)]
+    [Display(Name = "Descricao")]
+    public string? Descricao { get; set; }
 
     /// <summary>
     /// Chave estrangeira para a nota pai (<see cref="NotaModel"/>).

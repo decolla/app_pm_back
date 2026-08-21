@@ -147,6 +147,12 @@ public class OrdemModel : IClassifiable, IAuditable
     /// <example>Substituição do rolamento do motor principal devido a ruído anormal detectado durante inspeção de rotina.</example>
     [MaxLength(500, ErrorMessage = "A descrição não pode exceder 500 caracteres.")]
     public string? DescricaoBreve { get; set; }
+    
+    /// <summary>
+    /// Descrição longa da Nota
+    /// </summary>
+    [MaxLength(2000, ErrorMessage = "A descrição longa não pode exceder 2000 caracteres.")]
+    public string? DescricaoLonga { get; set; }
 
     #endregion
 

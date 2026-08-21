@@ -154,6 +154,12 @@ public class NotaModel : IClassifiable, IAuditable
     /// Fornece uma visão rápida do conteúdo da nota para listagens e resumos.
     /// </summary>
     public string? DescricaoBreve { get; set; }
+    
+    /// <summary>
+    /// Descrição longa da Nota
+    /// </summary>
+    [MaxLength(2000, ErrorMessage = "A descrição longa não pode exceder 2000 caracteres.")]
+    public string? DescricaoLonga { get; set; }
 
     /// <summary>
     /// Descrição detalhada da anomalia, problema ou situação observada.
