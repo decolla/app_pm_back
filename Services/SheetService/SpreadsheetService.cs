@@ -542,6 +542,7 @@ public class SpreadsheetService
             EquipamentoDisponivel = dto.EquipamentoDisponivel,
             AnomaliaObservada = dto.AnomaliaObservada,
             DescricaoBreve = dto.DescricaoBreve,
+            DescricaoLonga = dto.DescricaoLonga,
             ObservacoesComplementares = dto.ObservacoesComplementares,
             ReferenciaLocalizacaoAtivo = string.IsNullOrWhiteSpace(dto.ReferenciaLocalizacaoAtivo) ? "N/A" : dto.ReferenciaLocalizacaoAtivo,
             Finalidade = string.IsNullOrWhiteSpace(dto.Finalidade) ? "N/A" : dto.Finalidade,
@@ -573,6 +574,7 @@ public class SpreadsheetService
             ModificadaPorUsuario = dto.ModificadaPorUsuario,
             DataModificacao = dto.DataModificacao,
             DescricaoBreve = dto.DescricaoBreve,
+            DescricaoLonga = dto.DescricaoLonga,
             InicioPlanejado = dto.InicioPlanejado,
             FimPlanejado = dto.FimPlanejado,
             InicioReal = dto.InicioReal,
@@ -598,7 +600,8 @@ public class SpreadsheetService
             IdNota = dto.IdNota,
             Componente = dto.Componente,
             Sintoma = dto.Sintoma,
-            Causa = dto.Causa
+            Causa = dto.Causa,
+            Descricao = dto.Descricao
         };
     }
     private static OperacaoModel MapOperacaoOrdemDto(OperacaoOrdemDto dto)
