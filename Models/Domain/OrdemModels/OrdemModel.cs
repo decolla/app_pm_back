@@ -151,7 +151,7 @@ public class OrdemModel : IClassifiable, IAuditable
     /// <summary>
     /// Descrição longa da Nota
     /// </summary>
-    [MaxLength(2000, ErrorMessage = "A descrição longa não pode exceder 2000 caracteres.")]
+    [MaxLength(10000, ErrorMessage = "A descrição longa não pode exceder 10000 caracteres.")]
     public string? DescricaoLonga { get; set; }
 
     #endregion

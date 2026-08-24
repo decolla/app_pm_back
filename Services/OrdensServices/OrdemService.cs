@@ -82,6 +82,8 @@ public class OrdemService : BaseCrudService<OrdemModel>
             {
                 if (sobrescrever)
                 {
+                    ordem.IdOrdem = existente.IdOrdem; 
+                    
                     _context.Entry(existente).CurrentValues.SetValues(ordem);
                 }
             }
