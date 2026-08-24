@@ -244,10 +244,16 @@ public class SpreadsheetService
             else if (resultado.TipoIdentificado == "ORDEM")
             {
                 var dto = ReadLineForModel<OrdemDto>(row, columns);
-                resultado.Ordens.Add(MapOrdemDto(dto));
+                var ordemModel = MapOrdemDto(dto);
                 
                 var dtoAux = ReadLineForModel<OperacaoOrdemDto>(row, columns);
-                resultado.Operacoes.Add(MapOperacaoOrdemDto(dtoAux));
+                var operacaoModel = MapOperacaoOrdemDto(dtoAux);
+
+                // Vincula ordem a operacao ordem
+                operacaoModel.Ordem = ordemModel;
+
+                resultado.Ordens.Add(ordemModel);
+                resultado.Operacoes.Add(operacaoModel);
             }
             else if (resultado.TipoIdentificado == "ITEM")
             {

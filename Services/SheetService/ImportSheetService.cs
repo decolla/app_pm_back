@@ -13,6 +13,7 @@ public class ImportSheetService
     private readonly NotaService _notaService;
     private readonly OrdemService _ordemService;
     private readonly ItemNotaService _itemNotaService;
+    private readonly OperacaoService _operacaoService;
     private readonly DadosRenovacaoService _dadosRenovacaoService;
     private readonly SynchronizeAPMService _synchronizeApmService;
     private readonly ILogger<ImportSheetService> _logger;
@@ -25,6 +26,7 @@ public class ImportSheetService
         NotaService notaService,
         OrdemService ordemService,
         ItemNotaService itemNotaService,
+        OperacaoService operacaoService,
         DadosRenovacaoService dadosRenovacaoService,
         SynchronizeAPMService synchronizeApmService)
     {
@@ -33,6 +35,7 @@ public class ImportSheetService
         _notaService = notaService;
         _ordemService = ordemService;
         _itemNotaService = itemNotaService;
+        _operacaoService = operacaoService;
         _dadosRenovacaoService = dadosRenovacaoService;
         _synchronizeApmService = synchronizeApmService;
         _logger = logger;
@@ -126,6 +129,28 @@ public class ImportSheetService
                 "ordens", 
                 (lote, ct) => _ordemService.ImportarOrdensEmLoteSeguroAsync(lote, sobrescrever, adicionarNovas, ct), 
                 cancellationToken);
+            
+            if (resultadoPlanilha.Operacoes.Any())
+            {
+                _logger.LogInformation("Vinculando IDs gerados no banco para {Count} operações...", resultadoPlanilha.Operacoes.Count);
+
+                // Passa o ID real (que acabou de ser gerado pelo banco no passo acima) para a operação
+                foreach (var op in resultadoPlanilha.Operacoes)
+                {
+                    if (op.Ordem != null)
+                    {
+                        op.IdOrdem = op.Ordem.IdOrdem;
+                    }
+                }
+
+                _logger.LogInformation("Iniciando gravação de operações...");
+
+                await ImportarComProgressoAsync(
+                    resultadoPlanilha.Operacoes, 
+                    "operações", 
+                    (lote, ct) => _operacaoService.ImportarOperacoesEmLote(lote, sobrescrever, adicionarNovas, ct), 
+                    cancellationToken);
+            }
             
             var idOrdens = ordensDeduplicadas.Select(n => n.IdOrdem).ToList();
 
