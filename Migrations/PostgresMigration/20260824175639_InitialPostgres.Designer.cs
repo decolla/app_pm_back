@@ -14,7 +14,7 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations
 {
     [DbContext(typeof(PostgresDbContext))]
-    [Migration("20260824173903_InitialPostgres")]
+    [Migration("20260824175639_InitialPostgres")]
     partial class InitialPostgres
     {
         /// <inheritdoc />
@@ -309,7 +309,7 @@ namespace app_pm_back.Migrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 24, 17, 39, 2, 668, DateTimeKind.Utc).AddTicks(4465),
+                            DataModificacao = new DateTime(2026, 8, 24, 17, 56, 38, 285, DateTimeKind.Utc).AddTicks(2072),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -863,8 +863,8 @@ namespace app_pm_back.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdOperacao"));
 
                     b.Property<string>("Descricao")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
+                        .HasMaxLength(7000)
+                        .HasColumnType("character varying(7000)");
 
                     b.Property<double?>("Duracao")
                         .HasColumnType("double precision");

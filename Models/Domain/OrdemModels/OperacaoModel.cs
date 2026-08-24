@@ -27,7 +27,7 @@ public class OperacaoModel : IAuditable
     /// <summary>
     /// Detalhamento técnico do que deve ser executado.
     /// </summary>
-    [MaxLength(2000)]
+    [MaxLength(7000)]
     public string? Descricao { get; set; }
 
     /// <summary>

@@ -619,7 +619,9 @@ public class SpreadsheetService
             Nome = dto.Nome,
             Duracao = 24,
             NdeProfissionais = 1,
-            Descricao = dto.Descricao,
+            Descricao = (dto.Descricao != null && dto.Descricao.Length > 6000) 
+                ? dto.Descricao.Substring(0, 6000) 
+                : dto.Descricao,
             InicioEsperado =  dto.InicioEsperado,
             FimEsperado = dto.FimEsperado,
             IdCTM = dto.IdCTM,

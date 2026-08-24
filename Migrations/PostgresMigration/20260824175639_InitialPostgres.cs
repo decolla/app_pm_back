@@ -794,7 +794,7 @@ namespace app_pm_back.Migrations
                     IdOperacao = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    Descricao = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    Descricao = table.Column<string>(type: "character varying(7000)", maxLength: 7000, nullable: true),
                     Duracao = table.Column<double>(type: "double precision", nullable: true),
                     NdeProfissionais = table.Column<int>(type: "integer", nullable: true),
                     InicioEsperado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -904,7 +904,7 @@ namespace app_pm_back.Migrations
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 24, 17, 39, 2, 668, DateTimeKind.Utc).AddTicks(4465), 2, null });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 24, 17, 56, 38, 285, DateTimeKind.Utc).AddTicks(2072), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
