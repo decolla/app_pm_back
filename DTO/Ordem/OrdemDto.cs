@@ -38,6 +38,8 @@ public class OrdemDto
     [SheetColumn("Data modificacao")] public DateTime? DataModificacao { get; set; }
 
     [SheetColumn("Campo ordenação")] public string? DescricaoBreve { get; set; }
+    
+    [SheetColumn("TEXTO DESCRICAO LONGO (PROCV)")] public string? DescricaoLonga { get; set; }
 
     [SheetColumn("Início prog.")] public DateTime? InicioPlanejado { get; set; }
 

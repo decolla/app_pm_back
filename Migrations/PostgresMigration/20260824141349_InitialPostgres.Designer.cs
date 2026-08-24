@@ -11,10 +11,10 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     [DbContext(typeof(PostgresDbContext))]
-    [Migration("20260806183458_InitialPostgres")]
+    [Migration("20260824141349_InitialPostgres")]
     partial class InitialPostgres
     {
         /// <inheritdoc />
@@ -309,7 +309,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 6, 18, 34, 58, 257, DateTimeKind.Utc).AddTicks(2284),
+                            DataModificacao = new DateTime(2026, 8, 24, 14, 13, 48, 93, DateTimeKind.Utc).AddTicks(1130),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -712,6 +712,10 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
                     b.Property<long>("IdNota")
                         .HasColumnType("bigint");
 
@@ -769,6 +773,10 @@ namespace app_pm_back.Migrations.PostgresMigration
 
                     b.Property<string>("DescricaoBreve")
                         .HasColumnType("text");
+
+                    b.Property<string>("DescricaoLonga")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
 
                     b.Property<string>("DnsIot")
                         .HasMaxLength(100)
@@ -931,6 +939,10 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<string>("DescricaoBreve")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<string>("DescricaoLonga")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
 
                     b.Property<string>("DnsIot")
                         .HasMaxLength(100)

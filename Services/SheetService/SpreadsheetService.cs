@@ -97,6 +97,11 @@ public class SpreadsheetService
         /// Obtém ou define o valor de Itens.
         /// </summary>
         public List<ItemNotaModel> Itens { get; set; } = new();
+        
+        /// <summary>
+        /// Obtém ou define o valor de Itens.
+        /// </summary>
+        public List<OperacaoModel> Operacoes { get; set; } = new();
     }
 
     /// <summary>
@@ -240,6 +245,9 @@ public class SpreadsheetService
             {
                 var dto = ReadLineForModel<OrdemDto>(row, columns);
                 resultado.Ordens.Add(MapOrdemDto(dto));
+                
+                var dtoAux = ReadLineForModel<OperacaoOrdemDto>(row, columns);
+                resultado.Operacoes.Add(MapOperacaoOrdemDto(dtoAux));
             }
             else if (resultado.TipoIdentificado == "ITEM")
             {
@@ -591,6 +599,22 @@ public class SpreadsheetService
             Componente = dto.Componente,
             Sintoma = dto.Sintoma,
             Causa = dto.Causa
+        };
+    }
+    private static OperacaoModel MapOperacaoOrdemDto(OperacaoOrdemDto dto)
+    {
+        return new OperacaoModel
+        {
+            IdOperacao  = dto.IdOperacao,    
+            IdOrdem = dto.IdOrdem,
+            Nome = dto.Nome,
+            Duracao = 24,
+            NdeProfissionais = 1,
+            Descricao = dto.Descricao,
+            InicioEsperado =  dto.InicioEsperado,
+            FimEsperado = dto.FimEsperado,
+            IdCTM = dto.IdCTM,
+            IdTipoManutencao = dto.IdTipoManutencao
         };
     }
 }

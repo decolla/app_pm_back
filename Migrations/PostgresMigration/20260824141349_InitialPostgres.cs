@@ -6,7 +6,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     /// <inheritdoc />
     public partial class InitialPostgres : Migration
@@ -483,6 +483,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     EquipamentoDisponivel = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     ConfiabilidadeRestaurada = table.Column<int>(type: "integer", nullable: true),
                     DescricaoBreve = table.Column<string>(type: "text", nullable: true),
+                    DescricaoLonga = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
                     AnomaliaObservada = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     ObservacoesComplementares = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
                     Classificacao = table.Column<int>(type: "integer", nullable: false),
@@ -599,6 +600,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     Componente = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     Sintoma = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     Causa = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    Descricao = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     IdNota = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -633,6 +635,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     InicioReal = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     FimReal = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     DescricaoBreve = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    DescricaoLonga = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
                     CriadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     ModificadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     DataModificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -901,7 +904,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 6, 18, 34, 58, 257, DateTimeKind.Utc).AddTicks(2284), 2, null });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 24, 14, 13, 48, 93, DateTimeKind.Utc).AddTicks(1130), 2, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

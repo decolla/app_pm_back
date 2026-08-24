@@ -66,6 +66,8 @@ public class NotaDto
     [SheetColumn("Txt.code codif.")] public string? ObservacoesComplementares { get; set; }
 
     [SheetColumn("Txt.grp.codific")] public string? DescricaoBreve { get; set; }
+    
+    [SheetColumn("TEXTO DESCRICAO LONGO (PROCV)")] public string? DescricaoLonga { get; set; }
 
     [SheetColumn("Id Usuario")] public int? IdUsuario { get; set; }
 

@@ -9,21 +9,21 @@ namespace app_pm_back.DTO;
 /// </summary>
 public class OperacaoOrdemDto
 {
-    [SheetColumn("Id Operação")] public long IdOperacao { get; set; }
+    public long IdOperacao { get; set; }
 
-    [SheetColumn("Ordem")] public long? IdOrdem { get; set; }
+    public long? IdOrdem { get; set; }
 
-    [SheetColumn("Operação")] public string? Nome { get; set; }
+    [SheetColumn("Nº objeto")] public string? Nome { get; set; }
 
-    [SheetColumn("Duração")] public double? Duracao { get; set; }
+    public double? Duracao { get; set; }
 
-    [SheetColumn("Nº profissionais")] public int? NdeProfissionais { get; set; }
+    public int? NdeProfissionais { get; set; }
 
-    [SheetColumn("Texto breve")] public string? Descricao { get; set; }
+    [SheetColumn("TEXTO OPERAÇÃO LONGO (PROCV)")] public string? Descricao { get; set; }
 
-    [SheetColumn("Data início")] public DateTime? InicioEsperado { get; set; }
+    [SheetColumn("Início prog.")] public DateTime? InicioEsperado { get; set; }
 
-    [SheetColumn("Data fim")] public DateTime? FimEsperado { get; set; }
+    [SheetColumn("Fim programado")] public DateTime? FimEsperado { get; set; }
 
     public long? IdCTM { get; set; }
 
