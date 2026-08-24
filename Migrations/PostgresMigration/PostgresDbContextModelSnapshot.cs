@@ -306,7 +306,7 @@ namespace app_pm_back.Migrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 24, 16, 36, 40, 408, DateTimeKind.Utc).AddTicks(4651),
+                            DataModificacao = new DateTime(2026, 8, 24, 17, 39, 2, 668, DateTimeKind.Utc).AddTicks(4465),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -860,8 +860,8 @@ namespace app_pm_back.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdOperacao"));
 
                     b.Property<string>("Descricao")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
 
                     b.Property<double?>("Duracao")
                         .HasColumnType("double precision");
