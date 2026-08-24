@@ -161,11 +161,14 @@ public class ImportSheetService
 
             var sapNumbers = resultadoPlanilha.Itens.Select(i => i.IdNota).Distinct().ToList();
 
-            var notasNoBanco = await _dbContext.PM_Notas
+            var notasNoBancoList = await _dbContext.PM_Notas
                 .Where(n => sapNumbers.Contains(n.NumeroNota))
                 .Select(n => new { n.IdNota, n.NumeroNota })
+                .ToListAsync(cancellationToken);
+
+            var notasNoBanco = notasNoBancoList
                 .GroupBy(n => n.NumeroNota) 
-                .ToDictionaryAsync(g => g.Key, g => g.First().IdNota, cancellationToken);
+                .ToDictionary(g => g.Key, g => g.First().IdNota);
 
             var notasFaltantes = sapNumbers.Except(notasNoBanco.Keys).ToList();
             if (notasFaltantes.Any())
@@ -275,11 +278,14 @@ public class ImportSheetService
         if (!sapNumbers.Any()) return;
 
         // 2. Busca as existentes (agora a chave do dicionário é implicitamente long)
-        var notasNoBanco = await _dbContext.PM_Notas
+        var notasNoBancoList = await _dbContext.PM_Notas
             .Where(n => sapNumbers.Contains(n.NumeroNota))
             .Select(n => new { n.IdNota, n.NumeroNota })
+            .ToListAsync(cancellationToken);
+
+        var notasNoBanco = notasNoBancoList
             .GroupBy(n => n.NumeroNota)
-            .ToDictionaryAsync(g => g.Key, g => g.First().IdNota, cancellationToken);
+            .ToDictionary(g => g.Key, g => g.First().IdNota);
 
         // 3. Cria as notas fantasmas
         var notasFaltantes = sapNumbers.Except(notasNoBanco.Keys).ToList();

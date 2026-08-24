@@ -57,7 +57,7 @@ public class ClassificationController : ControllerBase
             var regra = _mapper.Map<RegraClassificacaoModel>(dto);
 
             var criado = await _regraClassificacaoService.CreateAsync(regra);
-            return CreatedAtAction(regra.IdRegra.ToString(), new { id = criado.IdRegra }, criado);
+            return CreatedAtAction(nameof(ObterPorId), new { id = criado.IdRegra }, criado);
         }
         catch (Exception e)
         {
@@ -73,7 +73,7 @@ public class ClassificationController : ControllerBase
     /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
     /// <response code="200">Sucesso ao listar registros.</response>
     /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
-    [HttpGet]
+    [HttpGet("regras")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)

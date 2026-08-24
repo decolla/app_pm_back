@@ -444,6 +444,12 @@
             Classifica as Ambas, Fichas ou Ordens usando a IA catboost
             </summary>
         </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ListarModelosCatboost">
+            <summary>
+            Lista os arquivos de modelo do catboost
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ClassificaNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{app_pm_back.Models.Domain.Fichas},app_pm_back.Controllers.FichasControllers.ClassificationController.FiltroClassificacao,System.String)">
             <summary>
             Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
@@ -2346,7 +2352,7 @@
             Tipo de tipo de manutencao/plano.
             </summary>
         </member>
-        <member name="T:app_pm_back.Models.Domain.UnidadeCiclo">
+        <member name="T:app_pm_back.Models.Domain.UnidadeTempo">
             <summary>
             Unidade do ciclo.
             </summary>
@@ -2978,6 +2984,12 @@
             </summary>
             <value>Máximo de 150 caracteres.</value>
         </member>
+        <member name="P:app_pm_back.Models.Domain.ItemNotaModel.Descricao">
+            <summary>
+            Descrição adicional do item.
+            </summary>
+            <value>Máximo de 150 caracteres.</value>
+        </member>
         <member name="P:app_pm_back.Models.Domain.ItemNotaModel.IdNota">
             <summary>
             Chave estrangeira para a nota pai (<see cref="T:app_pm_back.Models.Domain.NotaModel"/>).
@@ -3108,6 +3120,11 @@
             <summary>
             Descrição breve ou título resumido da nota.
             Fornece uma visão rápida do conteúdo da nota para listagens e resumos.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.DescricaoLonga">
+            <summary>
+            Descrição longa da Nota
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.AnomaliaObservada">
@@ -3560,6 +3577,11 @@
             Contém informações sobre o problema, atividades necessárias e contexto da ordem.
             </summary>
             <example>Substituição do rolamento do motor principal devido a ruído anormal detectado durante inspeção de rotina.</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.DescricaoLonga">
+            <summary>
+            Descrição longa da Nota
+            </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.CriadaPorUsuario">
             <summary>
@@ -4480,6 +4502,11 @@
         <member name="M:app_pm_back.Services.FichasServices.ImportSheetService.ImportarComProgressoAsync``1(System.Collections.Generic.List{``0},System.String,System.Func{System.Collections.Generic.List{``0},System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
             <summary>
             A cada 1000 linhas lidas no excel manda um log, cadastra em batches
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.ImportSheetService.VincularOrdensNotasAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel},System.Threading.CancellationToken)">
+            <summary>
+            Resolve e prepara os vínculos de chaves estrangeiras entre Ordens e Notas antes da inserção no banco de dados.
             </summary>
         </member>
         <member name="M:app_pm_back.Services.Extensions.QueryExtensions.AplicarOrdenacao``1(System.Linq.IQueryable{``0},Microsoft.EntityFrameworkCore.DbContext)">
