@@ -306,7 +306,7 @@ namespace app_pm_back.Migrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 24, 14, 13, 48, 93, DateTimeKind.Utc).AddTicks(1130),
+                            DataModificacao = new DateTime(2026, 8, 24, 16, 36, 40, 408, DateTimeKind.Utc).AddTicks(4651),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -772,8 +772,8 @@ namespace app_pm_back.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("DescricaoLonga")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
+                        .HasMaxLength(10000)
+                        .HasColumnType("character varying(10000)");
 
                     b.Property<string>("DnsIot")
                         .HasMaxLength(100)
@@ -938,8 +938,8 @@ namespace app_pm_back.Migrations
                         .HasColumnType("character varying(500)");
 
                     b.Property<string>("DescricaoLonga")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
+                        .HasMaxLength(10000)
+                        .HasColumnType("character varying(10000)");
 
                     b.Property<string>("DnsIot")
                         .HasMaxLength(100)
