@@ -247,13 +247,19 @@ public class SpreadsheetService
                 var ordemModel = MapOrdemDto(dto);
                 
                 var dtoAux = ReadLineForModel<OperacaoOrdemDto>(row, columns);
-                var operacaoModel = MapOperacaoOrdemDto(dtoAux);
+                if (!string.IsNullOrWhiteSpace(dtoAux.Descricao))
+                {
+                    var operacaoModel = MapOperacaoOrdemDto(dtoAux);
 
-                // Vincula ordem a operacao ordem
-                operacaoModel.Ordem = ordemModel;
+                    // Vincula a referência de memória
+                    operacaoModel.Ordem = ordemModel;
 
+                    ordemModel.Operacoes ??= new List<OperacaoModel>();
+                    ordemModel.Operacoes.Add(operacaoModel);
+
+                    resultado.Operacoes.Add(operacaoModel);
+                }
                 resultado.Ordens.Add(ordemModel);
-                resultado.Operacoes.Add(operacaoModel);
             }
             else if (resultado.TipoIdentificado == "ITEM")
             {
