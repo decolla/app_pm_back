@@ -124,18 +124,18 @@ public class DashboardService
     /// <returns></returns>
     private object RelacaoStatusOrdens(List<NotaModel> notas, int totalNotas)
     {
-        int notasComOrdem = notas.Select(n => n.Ordens).Count(o => o.Count != 0);
+        int notasComOrdem = notas.Count(n => n.Ordens != null && n.Ordens.Any());
         int notasSemOrdem = totalNotas - notasComOrdem;
         int notasRejeitadas = notas.Count(n => n.StatusNota == StatusFichas.Reprovada);
         int notasConcluidas = notas.Count(n => n.StatusNota == StatusFichas.Concluida);
 
-        return Task.FromResult<object>(new
+        return new
         {
             NotasSemOrdem = notasSemOrdem,
             NotasComOrdem = notasComOrdem,
             NotasRejeitadas = notasRejeitadas,
             NotasConcluidas = notasConcluidas
-        });
+        };
     }
 
     /// <summary>
@@ -162,15 +162,14 @@ public class DashboardService
         int notasComOrdemAtrasadas = notas
             .Select(n => n.Ordens)
             .Count(o => o.Any(oo => oo.FimReal > DateTime.Now));
-
-
-        return Task.FromResult<object>(new
+        
+        return new
         {
             NotasComOrdemNoPrazo = notasComOrdemNoPrazo,
             NotasSemOrdemNoPrazo = notasSemOrdemNoPrazo,
             NotasSemOrdemAtrasadas = notasSemOrdemAtrasadas,
             NotasComOrdemAtrasadas = notasComOrdemAtrasadas
-        });
+        };
     }
 
     /// <summary>
@@ -181,44 +180,28 @@ public class DashboardService
     /// <returns></returns>
     private Dictionary<(string, string), int> TopLiOcorrencias(List<NotaModel> notas, List<OrdemModel> ordens)
     {
-        Dictionary<(string IdLi, DateTime? DataNota), int> liOcorrencias = new();
+        var liOcorrencias = new Dictionary<(string IdLi, string Ano), int>();
 
-        // Checa pelos LIs em todas as notas
-        foreach (var nota in notas)
+        // processa ocorrência das notas 
+        void ProcessarOcorrencia(string? idLi, DateTime? data)
         {
-            if (nota.IdLi != null && nota.DataNota != null &&
-                liOcorrencias.TryAdd(((string, DateTime))(nota.IdLi, nota.DataNota), 1))
+            if (string.IsNullOrEmpty(idLi) || !data.HasValue) return;
+
+            var chave = (idLi, data.Value.ToString("yyyy"));
+
+            if (!liOcorrencias.TryAdd(chave, 1))
             {
-            }
-            else if (nota.IdLi != null)
-            {
-                liOcorrencias[(nota.IdLi, nota.DataNota)]++;
-            }
-        }
-        
-        // checa pelos LIs em todas as ordens
-        foreach (var ordem in ordens)
-        {
-            if (ordem.IdLi != null && ordem.DataCriacao != null &&
-                liOcorrencias.TryAdd(((string, DateTime))(ordem.IdLi, ordem.DataCriacao), 1))
-            {
-            }
-            else if (ordem.IdLi != null)
-            {
-                liOcorrencias[(ordem.IdLi, ordem.DataCriacao)]++;
+                liOcorrencias[chave]++;
             }
         }
 
-        Dictionary<(string, string), int> liOcorrenciasFormatted = new();
+        // chama a função para cada nota e ordem
+        foreach (var nota in notas) ProcessarOcorrencia(nota.IdLi, nota.DataNota);
+        foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdLi, ordem.DataCriacao);
 
-        // formata a ocorrência dos LIs por ano
-        foreach (var liOcorrencia in liOcorrencias)
-        {
-            liOcorrenciasFormatted.Add(
-                (liOcorrencia.Key.Item1, liOcorrencia.Key.Item2?.ToString("yyyy") ?? string.Empty), liOcorrencia.Value);
-        }
-
-        return liOcorrenciasFormatted.OrderBy(x => x.Value)
+        // ordena as notas
+        return liOcorrencias
+            .OrderByDescending(x => x.Value)
             .ToDictionary(x => x.Key, x => x.Value);
     }
 
