@@ -29,7 +29,8 @@ public class FichasController : ControllerBase
     public FichasController(SynchronizeAPMService synchronizeApmService, ILogger<FichasController> logger,
         GenericSearchService searchService,
         ClassificationService<NotaModel> notaService,
-        ClassificationService<OrdemModel> ordemService, ImportSheetService spreadsheetOrchestrator)
+        ClassificationService<OrdemModel> ordemService, ImportSheetService spreadsheetOrchestrator,
+        DashboardService dashboardService)
 
     {
         _searchService = searchService;
@@ -38,6 +39,7 @@ public class FichasController : ControllerBase
         _notaService = notaService;
         _ordemService = ordemService;
         _spreadsheetOrchestrator = spreadsheetOrchestrator;
+        _dashboardService = dashboardService;
     }
 
     /// <summary>
