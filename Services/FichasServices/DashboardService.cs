@@ -28,21 +28,31 @@ public class DashboardService
         List<NotaModel> notas = await GetNotasAsync(filtro);
         List<OrdemModel> ordens = await GetOrdensAsync(filtro);
         
+        var statusSemana = RelacaoStatusOrdensSemana(notas);
+
         // retorna objeto com todas as informações do Dashboard
         return new
         {
             RelacaoStatusOrdens = RelacaoStatusOrdens(notas, notas.Count),
             NotasAbertasRelacaoPrazo = NotasAbertasRelacaoPrazo(notas),
             TopLiOcorrencias = TopLiOcorrencias(notas, ordens).ToList(),
-            RelacaoStatusOrdensSemana = RelacaoStatusOrdensSemana(notas).Item1,
-            NotasAbertasRelacaoPrazoSemana = RelacaoStatusOrdensSemana(notas).Item2,
+            RelacaoStatusOrdensSemana = statusSemana.Item1,
+            NotasAbertasRelacaoPrazoSemana = statusSemana.Item2,
             RankingTempoVida = RankingTempoVida(notas, ordens)
         };
     }
 
+    /// <summary>
+    /// Aplica filtragem nas notas 
+    /// </summary>
+    /// <param name="filtro">Filtro estabelecido</param>
+    /// <returns>Notas filtradas</returns>
     private async Task<List<NotaModel>> GetNotasAsync(FiltroDashboardDTO filtro)
     {
-        var query = _context.PM_Notas.AsQueryable();
+        var query = _context.PM_Notas
+            .Include(n => n.Ordens)
+            .AsNoTracking()
+            .AsQueryable();
 
         if (filtro.Ativo.HasValue)
         {
@@ -65,12 +75,22 @@ public class DashboardService
             query = query.Where(n => n.IdLi == filtro.IdLi);
         }
 
+        // retorna notas filtradas
         return await query.ToListAsync();
     }
 
+    /// <summary>
+    /// Filtra ordens 
+    /// </summary>
+    /// <param name="filtro">Filtro a ser aplicado</param>
+    /// <returns></returns>
     private async Task<List<OrdemModel>> GetOrdensAsync(FiltroDashboardDTO filtro)
     {
-        var query = _context.PM_Ordens.AsQueryable();
+        var query = _context.PM_Ordens
+            .Include(o => o.Nota)
+            .ThenInclude(n => n.Ordens)
+            .AsNoTracking()
+            .AsQueryable();
 
         if (filtro.Ativo.HasValue)
         {
@@ -184,11 +204,17 @@ public class DashboardService
 
     private (List<object>, List<object>) RelacaoStatusOrdensSemana(List<NotaModel> notas)
     {
+        if (!notas.Any(n => n.DataNota.HasValue)) return (new(), new());
+        
         List<object> relacaoStatus = new();
         List<object> relacaoPrazo = new();
 
         var notasOrdenadas = notas.OrderBy(n => n.DataNota).ToList();
-        DateTime? dataInicial = notasOrdenadas.First(n => n.DataNota.HasValue).DataNota;
+
+        DateTime? dataInicial = notasOrdenadas.Any()
+            ? notasOrdenadas.FirstOrDefault(n => n.DataNota.HasValue)?.DataNota
+            : DateTime.Now;
+
         int semana = 1;
 
         for (; dataInicial < DateTime.Now; dataInicial = dataInicial.Value.AddDays(7))
@@ -232,51 +258,49 @@ public class DashboardService
     private List<((long?, TimeSpan?), (long?, TimeSpan?))> RankingTempoVida(List<NotaModel> notas,
         List<OrdemModel> ordens)
     {
-        List<((long?, TimeSpan?), (long? , TimeSpan? ))> ranking =
-            new();
+        var rankingTotal = new List<((long?, TimeSpan?), (long?, TimeSpan?))>();
 
-        var notasOrdenadas = notas.OrderBy(n => n.Ordens
-            .First(o => o.FimReal.HasValue).FimReal - n.DataNota).ToList();
-        var ordensOrdenadas = ordens.OrderBy(o => o.FimReal - o.DataCriacao).ToList();
-
-        int j = 0;
-        int k = 0;
-        for (int i = 0; i < notasOrdenadas.Count; i++)
+        // processa todas notas e ordens 
+        foreach (var nota in notas)
         {
-            var nota = notasOrdenadas[j];
-            var ordem = ordensOrdenadas[k];
+            var ordemAssociada = nota.Ordens?.FirstOrDefault(o => o.FimReal.HasValue);
 
-            if (nota.Ordens.First(o => o.FimReal.HasValue).FimReal - nota.DataNota < ordem.FimReal - ordem.DataCriacao)
-            {
-                var ordemAssociada = nota.Ordens.First(o => o.FimReal.HasValue);
-                
-                long idNota = nota.IdNota;
-                TimeSpan? vidaNota = ordemAssociada.FimReal - nota.DataNota; 
-                
-                long idOrdem = ordemAssociada.IdOrdem;
-                TimeSpan? vidaOrdem = ordemAssociada.FimReal - ordemAssociada.DataCriacao;
-                
-                ranking[i] = ((idNota, vidaNota), (idOrdem, vidaOrdem));
+            TimeSpan? vidaNota = ordemAssociada?.FimReal - nota.DataNota;
+            TimeSpan? vidaOrdem = ordemAssociada?.FimReal - ordemAssociada?.DataCriacao;
 
-                j++;
-            }
-            else
-            {
-                var notaAssociada = ordem.Nota;
-                long idNota = notaAssociada.IdNota;
-                TimeSpan? vidaNota = notaAssociada.Ordens.First(o => o.FimReal.HasValue).FimReal - notaAssociada.DataNota;
-
-                long idOrdem = ordem.IdOrdem;
-                TimeSpan? vidaOrdem = ordem.FimReal - ordem.DataCriacao;
-
-                ranking[i] = ((idNota, vidaNota), (idOrdem, vidaOrdem));
-
-                k++;
-            }
-            
+            rankingTotal.Add(((nota.IdNota, vidaNota), (ordemAssociada?.IdOrdem, vidaOrdem)));
         }
-        return ranking;
+
+        // hash para não duplicar ordens já processadas
+        var idsOrdensJaProcessadas = notas
+            .SelectMany(n => n.Ordens ?? new List<OrdemModel>())
+            .Select(o => o.IdOrdem)
+            .ToHashSet();
+
+        // processam ordens soltas
+        foreach (var ordem in ordens)
+        {
+            if (idsOrdensJaProcessadas.Contains(ordem.IdOrdem))
+                continue;
+
+            var notaAssociada = ordem.Nota;
+
+            TimeSpan? vidaOrdem = ordem.FimReal - ordem.DataCriacao;
+            TimeSpan? vidaNota = notaAssociada?.Ordens?.FirstOrDefault(o => o.FimReal.HasValue)?.FimReal -
+                                 notaAssociada?.DataNota;
+
+            rankingTotal.Add(((notaAssociada?.IdNota, vidaNota), (ordem.IdOrdem, vidaOrdem)));
+        }
+
+        // limpa e ordena gerando um top 20
+        var top = rankingTotal
+            .Where(r => r.Item1.Item2.HasValue || r.Item2.Item2.HasValue)
+            .OrderBy(r => r.Item1.Item2 ?? r.Item2.Item2 ?? TimeSpan.MaxValue)
+            .Take(20) 
+            .ToList();
+
+        return top;
+        
     }
 
-    // TODO: FINALIZAR DASHBOARD
 }

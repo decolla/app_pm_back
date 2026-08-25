@@ -421,11 +421,4 @@ public class ClassificationController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar nota/ordem: {e.Message}." });
         }
     }
-
-    public enum FiltroClassificacao
-    {
-        Ambos = 0,
-        Catboost = 1,
-        Algoritmo = 2,
-    }
 }

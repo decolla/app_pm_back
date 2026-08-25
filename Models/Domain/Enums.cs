@@ -197,6 +197,16 @@ public enum Fichas
 }
 
 /// <summary>
+/// Filtros para classificação de fichas.
+/// </summary>
+public enum FiltroClassificacao
+{
+    Ambos = 0,
+    Catboost = 1,
+    Algoritmo = 2,
+}
+
+/// <summary>
 /// Define se um usuário é Admin ou não. ADICIONAR MAIS NÍVEIS DEPOIS
 /// </summary>
 public enum NivelPermissao
