@@ -27,7 +27,7 @@ public class DashboardService
         // aplica a filtragem em notas e ordens
         List<NotaModel> notas = await GetNotasAsync(filtro);
         List<OrdemModel> ordens = await GetOrdensAsync(filtro);
-        
+
         var statusSemana = RelacaoStatusOrdensSemana(notas);
 
         // retorna objeto com todas as informações do Dashboard
@@ -35,10 +35,18 @@ public class DashboardService
         {
             RelacaoStatusOrdens = RelacaoStatusOrdens(notas, notas.Count),
             NotasAbertasRelacaoPrazo = NotasAbertasRelacaoPrazo(notas),
-            TopLiOcorrencias = TopLiOcorrencias(notas, ordens).ToList(),
+            TopLiOcorrencias = TopLiOcorrencias(notas, ordens)
+                .Select(x => new { IdLi = x.Key.Item1, Ano = x.Key.Item2, Ocorrencias = x.Value })
+                .ToList(),
             RelacaoStatusOrdensSemana = statusSemana.Item1,
             NotasAbertasRelacaoPrazoSemana = statusSemana.Item2,
             RankingTempoVida = RankingTempoVida(notas, ordens)
+                .Select(x => new
+                {
+                    Nota = new { IdNota = x.Item1.Item1, VidaNota = x.Item1.Item2 },
+                    Ordem = new { IdOrdem = x.Item2.Item1, VidaOrdem = x.Item2.Item2 }
+                })
+                .ToList()
         };
     }
 
@@ -89,7 +97,6 @@ public class DashboardService
         var query = _context.PM_Ordens
             .Include(o => o.Nota)
             .ThenInclude(n => n.Ordens)
-            .AsNoTracking()
             .AsQueryable();
 
         if (filtro.Ativo.HasValue)
@@ -162,7 +169,7 @@ public class DashboardService
         int notasComOrdemAtrasadas = notas
             .Select(n => n.Ordens)
             .Count(o => o.Any(oo => oo.FimReal > DateTime.Now));
-        
+
         return new
         {
             NotasComOrdemNoPrazo = notasComOrdemNoPrazo,
@@ -202,6 +209,7 @@ public class DashboardService
         // ordena as notas
         return liOcorrencias
             .OrderByDescending(x => x.Value)
+            .Take(20)
             .ToDictionary(x => x.Key, x => x.Value);
     }
 
@@ -213,7 +221,7 @@ public class DashboardService
     private (List<object>, List<object>) RelacaoStatusOrdensSemana(List<NotaModel> notas)
     {
         if (!notas.Any(n => n.DataNota.HasValue)) return (new(), new());
-        
+
         List<object> relacaoStatus = new();
         List<object> relacaoPrazo = new();
 
@@ -302,8 +310,8 @@ public class DashboardService
             var notaAssociada = ordem.Nota;
 
             TimeSpan? vidaOrdem = ordem.FimReal - ordem.DataCriacao;
-            TimeSpan? vidaNota = notaAssociada?.Ordens?.FirstOrDefault(o => o.FimReal.HasValue)?.FimReal -
-                                 notaAssociada?.DataNota;
+            TimeSpan? vidaNota = notaAssociada?.DataNota -
+                                 notaAssociada?.Ordens?.FirstOrDefault(o => o.FimReal.HasValue)?.FimReal;
 
             rankingTotal.Add(((notaAssociada?.IdNota, vidaNota), (ordem.IdOrdem, vidaOrdem)));
         }
@@ -312,10 +320,9 @@ public class DashboardService
         var top = rankingTotal
             .Where(r => r.Item1.Item2.HasValue || r.Item2.Item2.HasValue)
             .OrderBy(r => r.Item1.Item2 ?? r.Item2.Item2 ?? TimeSpan.MaxValue)
-            .Take(20) 
+            .Take(20)
             .ToList();
 
         return top;
-        
     }
 }
