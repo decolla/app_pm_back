@@ -84,7 +84,30 @@ public class OrdemService : BaseCrudService<OrdemModel>
                 {
                     ordem.IdOrdem = existente.IdOrdem; 
                     
-                    _context.Entry(existente).CurrentValues.SetValues(ordem);
+                    // Pega o rastreador da entidade existente no banco
+                    var entry = _context.Entry(existente);
+
+                    // Varre todas as propriedades (colunas) da Ordem
+                    foreach (var property in entry.Properties)
+                    {
+                        var propInfo = typeof(OrdemModel).GetProperty(property.Metadata.Name);
+                        
+                        if (propInfo != null && propInfo.CanRead)
+                        {
+                            // Pega qual valor veio da planilha para essa coluna
+                            var novoValor = propInfo.GetValue(ordem);
+                            
+                            // Só atualiza se o valor NÃO for nulo e NÃO for uma string vazia
+                            if (novoValor != null && !(novoValor is string str && string.IsNullOrWhiteSpace(str)))
+                            {
+                                //Se for um DateTime, não apagar a data original.
+                                if (novoValor is DateTime dt && dt == DateTime.MinValue) 
+                                    continue;
+                                
+                                property.CurrentValue = novoValor;
+                            }
+                        }
+                    }
                 }
             }
             else if (adicionarNovas)
