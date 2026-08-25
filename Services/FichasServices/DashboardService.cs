@@ -83,7 +83,7 @@ public class DashboardService
     /// Filtra ordens 
     /// </summary>
     /// <param name="filtro">Filtro a ser aplicado</param>
-    /// <returns></returns>
+    /// <returns>Ordens filtradas</returns>
     private async Task<List<OrdemModel>> GetOrdensAsync(FiltroDashboardDTO filtro)
     {
         var query = _context.PM_Ordens
@@ -116,6 +116,12 @@ public class DashboardService
         return await query.ToListAsync();
     }
 
+    /// <summary>
+    /// Estatísticas de status de notas 
+    /// </summary>
+    /// <param name="notas"></param>
+    /// <param name="totalNotas"></param>
+    /// <returns></returns>
     private object RelacaoStatusOrdens(List<NotaModel> notas, int totalNotas)
     {
         int notasComOrdem = notas.Select(n => n.Ordens).Count(o => o.Count != 0);
@@ -132,6 +138,11 @@ public class DashboardService
         });
     }
 
+    /// <summary>
+    /// Estatísticas de notas abertas com relação ao seu prazo
+    /// </summary>
+    /// <param name="notas"></param>
+    /// <returns></returns>
     private object NotasAbertasRelacaoPrazo(List<NotaModel> notas)
     {
         int notasComOrdemNoPrazo = notas
@@ -162,10 +173,17 @@ public class DashboardService
         });
     }
 
+    /// <summary>
+    /// Estatísticas de top LI por ocorrência
+    /// </summary>
+    /// <param name="notas"></param>
+    /// <param name="ordens"></param>
+    /// <returns></returns>
     private Dictionary<(string, string), int> TopLiOcorrencias(List<NotaModel> notas, List<OrdemModel> ordens)
     {
         Dictionary<(string IdLi, DateTime? DataNota), int> liOcorrencias = new();
 
+        // Checa pelos LIs em todas as notas
         foreach (var nota in notas)
         {
             if (nota.IdLi != null && nota.DataNota != null &&
@@ -177,7 +195,8 @@ public class DashboardService
                 liOcorrencias[(nota.IdLi, nota.DataNota)]++;
             }
         }
-
+        
+        // checa pelos LIs em todas as ordens
         foreach (var ordem in ordens)
         {
             if (ordem.IdLi != null && ordem.DataCriacao != null &&
@@ -192,6 +211,7 @@ public class DashboardService
 
         Dictionary<(string, string), int> liOcorrenciasFormatted = new();
 
+        // formata a ocorrência dos LIs por ano
         foreach (var liOcorrencia in liOcorrencias)
         {
             liOcorrenciasFormatted.Add(
@@ -202,6 +222,11 @@ public class DashboardService
             .ToDictionary(x => x.Key, x => x.Value);
     }
 
+    /// <summary>
+    /// Gera a relação de status de ordem e relação de prazo de notas
+    /// </summary>
+    /// <param name="notas"></param>
+    /// <returns></returns>
     private (List<object>, List<object>) RelacaoStatusOrdensSemana(List<NotaModel> notas)
     {
         if (!notas.Any(n => n.DataNota.HasValue)) return (new(), new());
@@ -211,12 +236,14 @@ public class DashboardService
 
         var notasOrdenadas = notas.OrderBy(n => n.DataNota).ToList();
 
+        // obtém a data inicial com base na nota mais velha encontrada
         DateTime? dataInicial = notasOrdenadas.Any()
             ? notasOrdenadas.FirstOrDefault(n => n.DataNota.HasValue)?.DataNota
             : DateTime.Now;
 
         int semana = 1;
 
+        // preenche os dados com base nas semanas
         for (; dataInicial < DateTime.Now; dataInicial = dataInicial.Value.AddDays(7))
         {
             var notasSemana = notasOrdenadas
@@ -255,6 +282,12 @@ public class DashboardService
         return (relacaoStatus, relacaoPrazo);
     }
 
+    /// <summary>
+    /// Ranking de tempo de vida das notas e ordens
+    /// </summary>
+    /// <param name="notas"></param>
+    /// <param name="ordens"></param>
+    /// <returns></returns>
     private List<((long?, TimeSpan?), (long?, TimeSpan?))> RankingTempoVida(List<NotaModel> notas,
         List<OrdemModel> ordens)
     {
@@ -302,5 +335,4 @@ public class DashboardService
         return top;
         
     }
-
 }

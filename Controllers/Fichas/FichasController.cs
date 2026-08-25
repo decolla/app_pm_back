@@ -24,6 +24,7 @@ public class FichasController : ControllerBase
     private readonly ClassificationService<NotaModel> _notaService;
     private readonly ClassificationService<OrdemModel> _ordemService;
     private readonly ImportSheetService _spreadsheetOrchestrator;
+    private readonly DashboardService _dashboardService;
 
     public FichasController(SynchronizeAPMService synchronizeApmService, ILogger<FichasController> logger,
         GenericSearchService searchService,
@@ -190,6 +191,27 @@ public class FichasController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao buscar fichas por dados de renovação: {e.Message}." });
+        }
+    }
+    
+    /// <summary>
+    /// Extrai os dados necessários para o Dashboard
+    /// </summary>
+    /// <param name="filtro">Filtro a ser aplicado nas fichas</param>
+    /// <returns>Estatísticas do dashboard</returns>
+    [HttpGet("dashboard")]
+    public async Task<IActionResult> GetDashboard(
+        [FromBody] FiltroDashboardDTO filtro)
+    {
+        try
+        {
+            var resultados = await _dashboardService.GetDashboardDataAsync(filtro);
+
+            return Ok(resultados);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar dashboard: {e.Message}." });
         }
     }
 }
