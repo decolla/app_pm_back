@@ -73,6 +73,8 @@ public class NotaDto
 
     [SheetColumn("Escopo")] public long? Escopo { get; set; }
 
+    [SheetColumn("Corretiva?")] public bool IndicadorCorretiva { get; set; }
+
     public List<VariavelNotaDto>? Variaveis { get; set; } = new List<VariavelNotaDto>();
 
     public List<ItemNotaManutencaoDto>? Itens { get; set; } = new List<ItemNotaManutencaoDto>();

@@ -346,6 +346,20 @@ public class SpreadsheetService
                         {
                             valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
                         }
+                        else if (string.Equals(nomeColunaExcel, "CondInstApósMed",
+                                     StringComparison.OrdinalIgnoreCase) && tipo == typeof(ConfiabilidadeRestaurada) &&
+                                 valor.Contains("3"))
+                        {
+                            valorConvertido = ConfiabilidadeRestaurada.RestauraLI;
+                        }
+                        else if (tipo == typeof(bool))
+                        {
+                            // Traduz de string para bool
+                            valorConvertido = string.Equals(valor, "SIM", StringComparison.OrdinalIgnoreCase) ||
+                                              string.Equals(valor, "S", StringComparison.OrdinalIgnoreCase) ||
+                                              string.Equals(valor, "TRUE", StringComparison.OrdinalIgnoreCase) ||
+                                              valor == "1";
+                        }
                         else if (tipo == typeof(StatusFichas) && string.Equals(property.Name, "StatusNota",
                                      StringComparison.OrdinalIgnoreCase))
                         {
@@ -542,8 +556,8 @@ public class SpreadsheetService
         {
             NumeroNota = dto.NumeroNota,
             TipoNota = dto.TipoNota,
-            Classificacao = dto.Classificacao,
-            MetodoClassificacao = MetodoClassificacao.NAOCLASSIFICADA,
+            Classificacao = dto.IndicadorCorretiva ? Classificacao.CORRETIVA : dto.Classificacao,
+            MetodoClassificacao = dto.IndicadorCorretiva ? MetodoClassificacao.HUMANA : MetodoClassificacao.NAOCLASSIFICADA,
             StatusNota = StatusFichas.EmAndamento,
             DnsIot = dto.DnsIot,
             DataFim = dto.DataFim,
