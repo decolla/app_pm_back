@@ -79,7 +79,30 @@ public class NotaService : BaseCrudService<NotaModel>
                     //Iguala o ID da planilha ao ID do banco.
                     nota.IdNota = existente.IdNota;
 
-                    _context.Entry(existente).CurrentValues.SetValues(nota);
+                    // Pega o rastreador da entidade existente no banco
+                    var entry = _context.Entry(existente);
+
+                    // Varre todas as propriedades (colunas) da Nota
+                    foreach (var property in entry.Properties)
+                    {
+                        var propInfo = typeof(NotaModel).GetProperty(property.Metadata.Name);
+                        
+                        if (propInfo != null && propInfo.CanRead)
+                        {
+                            // Pega qual valor veio da planilha para essa coluna
+                            var novoValor = propInfo.GetValue(nota);
+                            
+                            // Só atualiza se o valor NÃO for nulo e NÃO for uma string vazia
+                            if (novoValor != null && !(novoValor is string str && string.IsNullOrWhiteSpace(str)))
+                            {
+                                //Se for um DateTime, não apagar a data original.
+                                if (novoValor is DateTime dt && dt == DateTime.MinValue) 
+                                    continue;
+                                
+                                property.CurrentValue = novoValor;
+                            }
+                        }
+                    }
                 }
             }
             else if (adicionarNovas)
