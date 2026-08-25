@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using app_pm_back.Data;
 using app_pm_back.DTO.Buscas;
 using app_pm_back.Models.Domain;
@@ -35,9 +36,7 @@ public class DashboardService
         {
             RelacaoStatusOrdens = RelacaoStatusOrdens(notas, notas.Count),
             NotasAbertasRelacaoPrazo = NotasAbertasRelacaoPrazo(notas),
-            TopLiOcorrencias = TopLiOcorrencias(notas, ordens)
-                .Select(x => new { IdLi = x.Key.Item1, Ano = x.Key.Item2, Ocorrencias = x.Value })
-                .ToList(),
+            TopLiOcorrencias = TopLiOcorrencias(notas, ordens),
             RelacaoStatusOrdensSemana = statusSemana.Item1,
             NotasAbertasRelacaoPrazoSemana = statusSemana.Item2,
             RankingTempoVida = RankingTempoVida(notas, ordens)
@@ -69,7 +68,14 @@ public class DashboardService
 
         if (filtro.Ultimos.HasValue && filtro.Ultimos.Value > 0)
         {
-            var dataLimite = DateTime.Now.AddDays(-filtro.Ultimos.Value);
+            DateTime dataLimite;
+            if (filtro.UnidadeTempo == UnidadeTempo.Meses)
+                dataLimite = DateTime.Now.AddMonths(-filtro.Ultimos.Value);
+            else if (filtro.UnidadeTempo == UnidadeTempo.Anos)
+                dataLimite = DateTime.Now.AddYears(-filtro.Ultimos.Value);
+            else
+                dataLimite = DateTime.Now.AddDays(-filtro.Ultimos.Value);
+
             query = query.Where(n => n.DataNota >= dataLimite);
         }
 
@@ -106,7 +112,14 @@ public class DashboardService
 
         if (filtro.Ultimos.HasValue && filtro.Ultimos.Value > 0)
         {
-            var dataLimite = DateTime.Now.AddDays(-filtro.Ultimos.Value);
+            DateTime dataLimite;
+            if (filtro.UnidadeTempo == UnidadeTempo.Meses)
+                dataLimite = DateTime.Now.AddMonths(-filtro.Ultimos.Value);
+            else if (filtro.UnidadeTempo == UnidadeTempo.Anos)
+                dataLimite = DateTime.Now.AddYears(-filtro.Ultimos.Value);
+            else
+                dataLimite = DateTime.Now.AddDays(-filtro.Ultimos.Value);
+
             query = query.Where(n => n.DataCriacao >= dataLimite);
         }
 
@@ -185,31 +198,39 @@ public class DashboardService
     /// <param name="notas"></param>
     /// <param name="ordens"></param>
     /// <returns></returns>
-    private Dictionary<(string, string), int> TopLiOcorrencias(List<NotaModel> notas, List<OrdemModel> ordens)
+    private Dictionary<string, (int notas, int ordens)> TopLiOcorrencias(List<NotaModel> notas, List<OrdemModel> ordens)
     {
-        var liOcorrencias = new Dictionary<(string IdLi, string Ano), int>();
+        var liOcorrencias = new Dictionary<string, (int notas, int ordens)>();
 
-        // processa ocorrência das notas 
-        void ProcessarOcorrencia(string? idLi, DateTime? data)
+        // processa ocorrência das fichas 
+        void ProcessarOcorrencia(string? idLi, bool ehNota)
         {
-            if (string.IsNullOrEmpty(idLi) || !data.HasValue) return;
+            if (!string.IsNullOrEmpty(idLi))
+                return;
 
-            var chave = (idLi, data.Value.ToString("yyyy"));
-
-            if (!liOcorrencias.TryAdd(chave, 1))
+            if (!liOcorrencias.TryGetValue(idLi, out var ocorrencia))
             {
-                liOcorrencias[chave]++;
+                ocorrencia = (0, 0);
             }
+
+            if (ehNota)
+                ocorrencia.notas++;
+            else
+                ocorrencia.ordens++;
+
+            liOcorrencias[idLi] = ocorrencia;
         }
 
         // chama a função para cada nota e ordem
-        foreach (var nota in notas) ProcessarOcorrencia(nota.IdLi, nota.DataNota);
-        foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdLi, ordem.DataCriacao);
+        foreach (var nota in notas) ProcessarOcorrencia(nota.IdLi, true);
+        foreach (var nota in notas) ProcessarOcorrencia(nota.IdAtivo.ToString(), true);
+        foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdLi, false);
+        foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdAtivo.ToString(), false);
 
         // ordena as notas
         return liOcorrencias
             .OrderByDescending(x => x.Value)
-            .Take(20)
+            .Take(7)
             .ToDictionary(x => x.Key, x => x.Value);
     }
 
@@ -220,27 +241,35 @@ public class DashboardService
     /// <returns></returns>
     private (List<object>, List<object>) RelacaoStatusOrdensSemana(List<NotaModel> notas)
     {
-        if (!notas.Any(n => n.DataNota.HasValue)) return (new(), new());
+        var notasComData = notas.Where(n => n.DataNota.HasValue).ToList();
+        if (!notasComData.Any()) return (new(), new());
 
         List<object> relacaoStatus = new();
         List<object> relacaoPrazo = new();
 
-        var notasOrdenadas = notas.OrderBy(n => n.DataNota).ToList();
+        var notasOrdenadas = notasComData.OrderBy(n => n.DataNota).ToList();
+        DateTime dataInicial = notasOrdenadas.First().DataNota!.Value;
 
-        // obtém a data inicial com base na nota mais velha encontrada
-        DateTime? dataInicial = notasOrdenadas.Any()
-            ? notasOrdenadas.FirstOrDefault(n => n.DataNota.HasValue)?.DataNota
-            : DateTime.Now;
+        // agrupa as notas por semana
+        var notasPorSemana = notasOrdenadas
+            .GroupBy(n => (int)((n.DataNota!.Value - dataInicial).TotalDays / 7) + 1)
+            .ToDictionary(g => g.Key, g => g.ToList());
 
-        int semana = 1;
+        int totalSemanas = (int)((DateTime.Now - dataInicial).TotalDays / 7) + 1;
 
-        // preenche os dados com base nas semanas
-        for (; dataInicial < DateTime.Now; dataInicial = dataInicial.Value.AddDays(7))
+        for (int semana = 1; semana <= totalSemanas; semana++)
         {
-            var notasSemana = notasOrdenadas
-                .Where(n => n.DataNota >= dataInicial && n.DataNota < dataInicial.Value.AddDays(7)).ToList();
+            if (!notasPorSemana.TryGetValue(semana, out var notasSemana) || notasSemana.Count == 0)
+            {
+                // se a série for muito longa
+                if (totalSemanas > 52)
+                    continue;
+
+                notasSemana = new List<NotaModel>();
+            }
+
             int notasComOrdem = notasSemana.Select(n => n.Ordens).Count(o => o.Count != 0);
-            int notasSemOrdem = notasSemana.Count() - notasComOrdem;
+            int notasSemOrdem = notasSemana.Count - notasComOrdem;
             int notasRejeitadas = notasSemana.Count(n => n.StatusNota == StatusFichas.Reprovada);
             int notasConcluidas = notasSemana.Count(n => n.StatusNota == StatusFichas.Concluida);
 
@@ -267,7 +296,6 @@ public class DashboardService
                 NotasSemOrdemAtrasadas = notasSemOrdemAtrasadas,
                 NotasComOrdemAtrasadas = notasComOrdemAtrasadas
             });
-            semana++;
         }
 
         return (relacaoStatus, relacaoPrazo);
@@ -287,10 +315,14 @@ public class DashboardService
         // processa todas notas e ordens 
         foreach (var nota in notas)
         {
+            if (nota.StatusNota == StatusFichas.Concluida) continue;
+
             var ordemAssociada = nota.Ordens?.FirstOrDefault(o => o.FimReal.HasValue);
 
-            TimeSpan? vidaNota = ordemAssociada?.FimReal - nota.DataNota;
-            TimeSpan? vidaOrdem = ordemAssociada?.FimReal - ordemAssociada?.DataCriacao;
+            TimeSpan? vidaNota = DateTime.UtcNow - nota.DataNota;
+            TimeSpan? vidaOrdem = ordemAssociada?.DataCriacao != null
+                ? DateTime.UtcNow - ordemAssociada?.DataCriacao
+                : (TimeSpan?)null;
 
             rankingTotal.Add(((nota.IdNota, vidaNota), (ordemAssociada?.IdOrdem, vidaOrdem)));
         }
@@ -304,14 +336,15 @@ public class DashboardService
         // processam ordens soltas
         foreach (var ordem in ordens)
         {
-            if (idsOrdensJaProcessadas.Contains(ordem.IdOrdem))
+            if (idsOrdensJaProcessadas.Contains(ordem.IdOrdem) || ordem.StatusOrdem == StatusFichas.Concluida)
                 continue;
 
             var notaAssociada = ordem.Nota;
 
-            TimeSpan? vidaOrdem = ordem.FimReal - ordem.DataCriacao;
-            TimeSpan? vidaNota = notaAssociada?.DataNota -
-                                 notaAssociada?.Ordens?.FirstOrDefault(o => o.FimReal.HasValue)?.FimReal;
+            TimeSpan? vidaOrdem = DateTime.UtcNow - ordem.DataCriacao;
+            TimeSpan? vidaNota = notaAssociada?.DataNota != null
+                ? DateTime.UtcNow - notaAssociada?.DataNota
+                : (TimeSpan?)null;
 
             rankingTotal.Add(((notaAssociada?.IdNota, vidaNota), (ordem.IdOrdem, vidaOrdem)));
         }
@@ -320,7 +353,7 @@ public class DashboardService
         var top = rankingTotal
             .Where(r => r.Item1.Item2.HasValue || r.Item2.Item2.HasValue)
             .OrderBy(r => r.Item1.Item2 ?? r.Item2.Item2 ?? TimeSpan.MaxValue)
-            .Take(20)
+            .Take(7)
             .ToList();
 
         return top;
