@@ -36,7 +36,8 @@ public class DashboardService
         {
             RelacaoStatusOrdens = RelacaoStatusOrdens(notas, notas.Count),
             NotasAbertasRelacaoPrazo = NotasAbertasRelacaoPrazo(notas),
-            TopLiOcorrencias = TopLiOcorrencias(notas, ordens),
+            TopLiOcorrencias = TopLiOcorrencias(notas, ordens)
+                .ToDictionary(x => x.Key, x => new { Notas = x.Value.notas, Ordens = x.Value.ordens }),
             RelacaoStatusOrdensSemana = statusSemana.Item1,
             NotasAbertasRelacaoPrazoSemana = statusSemana.Item2,
             RankingTempoVida = RankingTempoVida(notas, ordens)
@@ -205,7 +206,7 @@ public class DashboardService
         // processa ocorrência das fichas 
         void ProcessarOcorrencia(string? idLi, bool ehNota)
         {
-            if (!string.IsNullOrEmpty(idLi))
+            if (string.IsNullOrEmpty(idLi))
                 return;
 
             if (!liOcorrencias.TryGetValue(idLi, out var ocorrencia))
@@ -223,9 +224,9 @@ public class DashboardService
 
         // chama a função para cada nota e ordem
         foreach (var nota in notas) ProcessarOcorrencia(nota.IdLi, true);
-        foreach (var nota in notas) ProcessarOcorrencia(nota.IdAtivo.ToString(), true);
+        foreach (var nota in notas) ProcessarOcorrencia(nota.IdAtivo?.ToString(), true);
         foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdLi, false);
-        foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdAtivo.ToString(), false);
+        foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdAtivo?.ToString(), false);
 
         // ordena as notas
         return liOcorrencias
