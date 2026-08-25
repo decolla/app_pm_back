@@ -66,7 +66,7 @@ public class ClassificationController : ControllerBase
     }
 
     /// <summary>
-    /// Lista os registros cadastrados com paginação.
+    /// Lista as regras cadastradas com paginação.
     /// </summary>
     /// <param name="pagina">Número da página (1-based) para paginação.</param>
     /// <param name="tamanho">Quantidade de itens por página.</param>
@@ -103,14 +103,14 @@ public class ClassificationController : ControllerBase
     }
 
     /// <summary>
-    /// Obtém um registro pelo seu identificador.
+    /// Obtém uma regra pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
     /// <returns>O objeto correspondente cadastrado.</returns>
     /// <response code="200">Sucesso ao obter o registro.</response>
     /// <response code="400">ID fornecido inválido.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
-    [HttpGet("{id:long}")]
+    [HttpGet("regra/{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -138,11 +138,11 @@ public class ClassificationController : ControllerBase
     }
 
     /// <summary>
-    /// Obtém o total de registros cadastrados.
+    /// Obtém o total de regras cadastradas.
     /// </summary>
     /// <returns>Resultado da operação.</returns>
     /// <exception cref="System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
-    [HttpGet("count")]
+    [HttpGet("regra/count")]
     public async Task<IActionResult> Contar()
     {
         try
@@ -157,14 +157,14 @@ public class ClassificationController : ControllerBase
     }
 
     /// <summary>
-    /// Atualiza um registro existente.
+    /// Atualiza uam regra existente.
     /// </summary>
     /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
     /// <param name="dto">DTO contendo os novos dados para atualização.</param>
     /// <returns>Mensagem de confirmação da atualização.</returns>
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-    [HttpPut("{id:long}")]
+    [HttpPut("regra/{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] RegraClassificacaoDto dto)
@@ -203,13 +203,13 @@ public class ClassificationController : ControllerBase
     }
 
     /// <summary>
-    /// Exclui um registro pelo seu identificador.
+    /// Exclui uma regra pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
     /// <returns>Mensagem de confirmação da exclusão.</returns>
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
-    [HttpDelete("{id:long}")]
+    [HttpDelete("regra/{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar([FromRoute] long id)

@@ -10,7 +10,7 @@ public class FiltroDashboardDTO
     
     public UnidadeTempo UnidadeTempo { get; set; }
     
-    public long? NumeroRegistro { get; set; }
+    // public long? NumeroRegistro { get; set; }
     
     public string? IdLi { get; set; }
     
