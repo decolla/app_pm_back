@@ -51,6 +51,7 @@ public class SpreadSheetServiceTests
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
+        var mockOperacaoService = new Mock<OperacaoService>(context);
         
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
         var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
@@ -63,6 +64,7 @@ public class SpreadSheetServiceTests
             mockNotaService.Object,
             mockOrdemService.Object,
             mockItemNotaService.Object,
+            mockOperacaoService.Object,
             mockDadosRenovacaoService.Object,
             mockSyncApmService.Object
         );
@@ -99,6 +101,7 @@ public class SpreadSheetServiceTests
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
+        var mockOperacaoService = new Mock<OperacaoService>(context);
 
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
         var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
@@ -111,6 +114,7 @@ public class SpreadSheetServiceTests
             mockNotaService.Object,
             mockOrdemService.Object,
             mockItemNotaService.Object,
+            mockOperacaoService.Object,
             mockDadosRenovacaoService.Object,
             mockSyncApmService.Object
         );
@@ -156,6 +160,7 @@ public class SpreadSheetServiceTests
 
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
+        var mockOperacaoService = new Mock<OperacaoService>(context);
         
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
         var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
@@ -168,6 +173,7 @@ public class SpreadSheetServiceTests
             mockNotaService.Object,
             mockOrdemService.Object,
             mockItemNotaService.Object,
+            mockOperacaoService.Object,
             mockDadosRenovacaoService.Object,
             mockSyncApmService.Object
         );
@@ -208,6 +214,7 @@ public class SpreadSheetServiceTests
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
+        var mockOperacaoService = new Mock<OperacaoService>(context);
         
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
         var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
@@ -220,6 +227,7 @@ public class SpreadSheetServiceTests
             mockNotaService.Object,
             mockOrdemService.Object,
             mockItemNotaService.Object,
+            mockOperacaoService.Object,
             mockDadosRenovacaoService.Object,
             mockSyncApmService.Object
         );
@@ -265,6 +273,7 @@ public class SpreadSheetServiceTests
             .Returns(Task.CompletedTask);
 
         var mockItemNotaService = new Mock<ItemNotaService>(context);
+        var mockOperacaoService = new Mock<OperacaoService>(context);
         
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
         var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
@@ -282,6 +291,7 @@ public class SpreadSheetServiceTests
             mockNotaService.Object,
             mockOrdemService.Object,
             mockItemNotaService.Object,
+            mockOperacaoService.Object,
             mockDadosRenovacaoService.Object,
             mockSyncApmService.Object
         );
@@ -324,6 +334,7 @@ public class SpreadSheetServiceTests
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
+        var mockOperacaoService = new Mock<OperacaoService>(context);
         
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
         var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
@@ -336,6 +347,7 @@ public class SpreadSheetServiceTests
             mockNotaService.Object,
             mockOrdemService.Object,
             mockItemNotaService.Object,
+            mockOperacaoService.Object,
             mockDadosRenovacaoService.Object,
             mockSyncApmService.Object
         );
@@ -384,6 +396,7 @@ public class SpreadSheetServiceTests
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         mockItemNotaService.Setup(s => s.ImportarItensEmLoteSeguroAsync(It.IsAny<List<ItemNotaModel>>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
+        var mockOperacaoService = new Mock<OperacaoService>(context);
 
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
         var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
@@ -396,6 +409,7 @@ public class SpreadSheetServiceTests
             mockNotaService.Object,
             mockOrdemService.Object,
             mockItemNotaService.Object,
+            mockOperacaoService.Object,
             mockDadosRenovacaoService.Object,
             mockSyncApmService.Object
         );
@@ -436,6 +450,7 @@ public class SpreadSheetServiceTests
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
+        var mockOperacaoService = new Mock<OperacaoService>(context);
         
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
         var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
@@ -448,6 +463,7 @@ public class SpreadSheetServiceTests
             mockNotaService.Object,
             mockOrdemService.Object,
             mockItemNotaService.Object,
+            mockOperacaoService.Object,
             mockDadosRenovacaoService.Object,
             mockSyncApmService.Object
         );

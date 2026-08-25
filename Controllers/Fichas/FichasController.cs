@@ -201,7 +201,7 @@ public class FichasController : ControllerBase
     /// <returns>Estatísticas do dashboard</returns>
     [HttpGet("dashboard")]
     public async Task<IActionResult> GetDashboard(
-        [FromBody] FiltroDashboardDTO filtro)
+        [FromQuery] FiltroDashboardDTO filtro)
     {
         try
         {

@@ -389,7 +389,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
-            Lista os registros cadastrados com paginação.
+            Lista as regras cadastradas com paginação.
             </summary>
             <param name="pagina">Número da página (1-based) para paginação.</param>
             <param name="tamanho">Quantidade de itens por página.</param>
@@ -399,7 +399,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ObterPorId(System.Int64)">
             <summary>
-            Obtém um registro pelo seu identificador.
+            Obtém uma regra pelo seu identificador.
             </summary>
             <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
             <returns>O objeto correspondente cadastrado.</returns>
@@ -409,14 +409,14 @@
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Contar">
             <summary>
-            Obtém o total de registros cadastrados.
+            Obtém o total de regras cadastradas.
             </summary>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Atualizar(System.Int64,app_pm_back.DTO.RegraClassificacaoDto)">
             <summary>
-            Atualiza um registro existente.
+            Atualiza uam regra existente.
             </summary>
             <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
             <param name="dto">DTO contendo os novos dados para atualização.</param>
@@ -426,7 +426,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Deletar(System.Int64)">
             <summary>
-            Exclui um registro pelo seu identificador.
+            Exclui uma regra pelo seu identificador.
             </summary>
             <param name="id">Identificador exclusivo do registro a ser excluído.</param>
             <returns>Mensagem de confirmação da exclusão.</returns>
@@ -450,7 +450,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ClassificaNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{app_pm_back.Models.Domain.Fichas},app_pm_back.Controllers.FichasControllers.ClassificationController.FiltroClassificacao,System.String)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ClassificaNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{app_pm_back.Models.Domain.Fichas},app_pm_back.Models.Domain.FiltroClassificacao,System.String)">
             <summary>
             Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
             </summary>
@@ -639,6 +639,13 @@
             <returns>Lista de fichas com base nos filtros</returns>
             <response code="200">Retorna a lista de fichas</response>
             <response code="400">Retorna um erro se os parâmetros forem inválidos</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.GetDashboard(app_pm_back.DTO.Buscas.FiltroDashboardDTO)">
+            <summary>
+            Extrai os dados necessários para o Dashboard
+            </summary>
+            <param name="filtro">Filtro a ser aplicado nas fichas</param>
+            <returns>Estatísticas do dashboard</returns>
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.LinhaTemporalController.ObterLinhaTemporal(System.Int32,System.Int32)">
             <summary>
@@ -2400,6 +2407,11 @@
         <member name="T:app_pm_back.Models.Domain.Fichas">
             <summary>
             Tipo de fichas a serem geradas durante a busca de fichas.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.FiltroClassificacao">
+            <summary>
+            Filtros para classificação de fichas.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.NivelPermissao">
@@ -4213,16 +4225,16 @@
             Interface para controle do contexto do usuário, incluindo escopos e identificação do usuário atual.
             </summary>
         </member>
-        <member name="T:app_pm_back.Migrations.PostgresMigration.InitialPostgres">
+        <member name="T:app_pm_back.Migrations.InitialPostgres">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
             <inheritdoc />
         </member>
-        <member name="M:app_pm_back.Migrations.PostgresMigration.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+        <member name="M:app_pm_back.Migrations.InitialPostgres.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
         <member name="T:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer">
@@ -4474,6 +4486,70 @@
             <summary>
             A partir de uma lista de LI, busca a última data de renovaçãano de cada um
             </summary>
+        </member>
+        <member name="T:app_pm_back.Services.FichasServices.DashboardService">
+            <summary>
+            Gera as estatísticas do dashboard 
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DashboardService.GetDashboardDataAsync(app_pm_back.DTO.Buscas.FiltroDashboardDTO)">
+            <summary>
+            Função principal que chamará todas as outras funções para gerar as estatísticas com base nas fichas após filtragem.
+            </summary>
+            <param name="filtro">Filtro para notas e ordens</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DashboardService.GetNotasAsync(app_pm_back.DTO.Buscas.FiltroDashboardDTO)">
+            <summary>
+            Aplica filtragem nas notas 
+            </summary>
+            <param name="filtro">Filtro estabelecido</param>
+            <returns>Notas filtradas</returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DashboardService.GetOrdensAsync(app_pm_back.DTO.Buscas.FiltroDashboardDTO)">
+            <summary>
+            Filtra ordens 
+            </summary>
+            <param name="filtro">Filtro a ser aplicado</param>
+            <returns>Ordens filtradas</returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DashboardService.RelacaoStatusOrdens(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel},System.Int32)">
+            <summary>
+            Estatísticas de status de notas 
+            </summary>
+            <param name="notas"></param>
+            <param name="totalNotas"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DashboardService.NotasAbertasRelacaoPrazo(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel})">
+            <summary>
+            Estatísticas de notas abertas com relação ao seu prazo
+            </summary>
+            <param name="notas"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DashboardService.TopLiOcorrencias(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel},System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel})">
+            <summary>
+            Estatísticas de top LI por ocorrência
+            </summary>
+            <param name="notas"></param>
+            <param name="ordens"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DashboardService.RelacaoStatusOrdensSemana(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel})">
+            <summary>
+            Gera a relação de status de ordem e relação de prazo de notas
+            </summary>
+            <param name="notas"></param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.DashboardService.RankingTempoVida(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel},System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel})">
+            <summary>
+            Ranking de tempo de vida das notas e ordens
+            </summary>
+            <param name="notas"></param>
+            <param name="ordens"></param>
+            <returns></returns>
         </member>
         <member name="T:app_pm_back.Services.FichasServices.ApmResponse">
             <summary>
@@ -4789,56 +4865,6 @@
             Cria um tipo manutenção, tipo estratégia e uma estratégia para cada tipo de LI
             </summary>
         </member>
-        <member name="T:app_pm_back.Services.Manutencao.OrdemService">
-            <summary>
-            Classe OrdemService.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.DiretorioService)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.OrdemService"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ImportarOrdensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel},System.Boolean,System.Boolean,System.Threading.CancellationToken)">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="ordens">Parâmetro do método.</param>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.GetFichasPorAtivoAsync(app_pm_back.Models.Domain.ComponentType,System.String)">
-            <summary>
-            Obtém um registro específico.
-            </summary>
-            <param name="ativo">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.GetGruposResponsaveis(System.Int64)">
-            <summary>
-            Obtém os usuários e grupos pertencentes a uma ordem.
-            </summary>
-            <param name="idOrdem">Id da ordem a ser realizada a busca</param>
-            <returns>GPM, CTM, e usuários dos respetivos grupos</returns>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.AtualizarOrdemCompletaAsync(app_pm_back.Models.Domain.OrdemModel)">
-            <summary>
-            Atualiza uma nota por completo com base no DTO da tela do frontend.
-            </summary>
-            <param name="ordemTela">Nota completa</param>
-            <returns>Nota atualizada</returns>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ImportarOrdemAsync(System.Int64)">
-            <summary>
-            Gera um payload de ordem a partir de uma nota.
-            </summary>
-            <param name="idNota">Id da nota de referência</param>
-            <returns>Ordem payload</returns>
-            <exception cref="T:System.ArgumentNullException">Nota não existe</exception>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ObterDiretoriosDaOrdemAsync(System.Int64)">
-            <summary>
-            Retorna todas as pastas onde uma Ordem específica está guardada
-            </summary>
-        </member>
         <member name="T:app_pm_back.Services.Manutencao.PlanoManutencaoService">
             <summary>
             Classe PlanoManutencaoService.
@@ -5029,23 +5055,6 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.VariavelNotaService"/>.
             </summary>
         </member>
-        <member name="T:app_pm_back.Services.Manutencao.FerramentaService">
-            <summary>
-            Classe FerramentaService.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.FerramentaService"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.BuscarPorTipoManutencaoAsync(System.Int64)">
-            <summary>
-            Obtém um registro específico.
-            </summary>
-            <param name="tipoManutencaoId">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-        </member>
         <member name="T:app_pm_back.Services.Manutencao.OperacaoService">
             <summary>
             Classe OperacaoService.
@@ -5057,6 +5066,78 @@
             </summary>
         </member>
         <member name="M:app_pm_back.Services.Manutencao.OperacaoService.BuscarPorTipoManutencaoAsync(System.Int64)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="tipoManutencaoId">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OperacaoService.ImportarOperacoesEmLote(System.Collections.Generic.List{app_pm_back.Models.Domain.OperacaoModel},System.Boolean,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Importa operações em lote de forma segura, garantindo o relacionamento com a Ordem.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.OrdemService">
+            <summary>
+            Classe OrdemService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.DiretorioService)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.OrdemService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ImportarOrdensEmLoteSeguroAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel},System.Boolean,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="ordens">Parâmetro do método.</param>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.GetFichasPorAtivoAsync(app_pm_back.Models.Domain.ComponentType,System.String)">
+            <summary>
+            Obtém um registro específico.
+            </summary>
+            <param name="ativo">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.GetGruposResponsaveis(System.Int64)">
+            <summary>
+            Obtém os usuários e grupos pertencentes a uma ordem.
+            </summary>
+            <param name="idOrdem">Id da ordem a ser realizada a busca</param>
+            <returns>GPM, CTM, e usuários dos respetivos grupos</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.AtualizarOrdemCompletaAsync(app_pm_back.Models.Domain.OrdemModel)">
+            <summary>
+            Atualiza uma nota por completo com base no DTO da tela do frontend.
+            </summary>
+            <param name="ordemTela">Nota completa</param>
+            <returns>Nota atualizada</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ImportarOrdemAsync(System.Int64)">
+            <summary>
+            Gera um payload de ordem a partir de uma nota.
+            </summary>
+            <param name="idNota">Id da nota de referência</param>
+            <returns>Ordem payload</returns>
+            <exception cref="T:System.ArgumentNullException">Nota não existe</exception>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.ObterDiretoriosDaOrdemAsync(System.Int64)">
+            <summary>
+            Retorna todas as pastas onde uma Ordem específica está guardada
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.Manutencao.FerramentaService">
+            <summary>
+            Classe FerramentaService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.FerramentaService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.BuscarPorTipoManutencaoAsync(System.Int64)">
             <summary>
             Obtém um registro específico.
             </summary>
@@ -5362,6 +5443,11 @@
             </summary>
         </member>
         <member name="P:app_pm_back.Services.SpreadsheetService.ResultadoPlanilha.Itens">
+            <summary>
+            Obtém ou define o valor de Itens.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Services.SpreadsheetService.ResultadoPlanilha.Operacoes">
             <summary>
             Obtém ou define o valor de Itens.
             </summary>
