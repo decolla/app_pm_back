@@ -49,15 +49,12 @@ public class ClassificationController : ControllerBase
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
     [HttpPost("regras")]
-    public async Task<IActionResult> CriarRegraClassificacao([FromBody] RegraClassificacaoDto dto,
-        [FromQuery] Fichas buscaTabela)
+    public async Task<IActionResult> CriarRegraClassificacao([FromBody] List<RegraClassificacaoDto> dtos)
     {
         try
         {
-            var regra = _mapper.Map<RegraClassificacaoModel>(dto);
-
-            var criado = await _regraClassificacaoService.CreateAsync(regra);
-            return CreatedAtAction(nameof(ObterPorId), new { id = criado.IdRegra }, criado);
+            var criado = await _regraClassificacaoService.CadastrarPalavrasAsync(dtos);
+            return CreatedAtAction(nameof(ObterPorId), new { id = criado.First().IdRegra }, criado);
         }
         catch (Exception e)
         {
@@ -199,16 +196,7 @@ public class ClassificationController : ControllerBase
                 return BadRequest(new
                     { message = "Regra invalido na rota. Envie id maior que zero." });
             }
-
-            if (dto.IdRegra <= 0)
-            {
-                dto.IdRegra = id;
-            }
-
-            if (dto.IdRegra != id)
-            {
-                return BadRequest(new { message = "Id da rota e regra do corpo devem ser iguais." });
-            }
+            
 
             var regra = _mapper.Map<RegraClassificacaoModel>(dto);
             var result = await _regraClassificacaoService.UpdateAsync(regra);

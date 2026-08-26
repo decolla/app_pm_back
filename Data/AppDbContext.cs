@@ -52,7 +52,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<AnexoOrdemModel>().HasKey(e => e.IdAnexoOrdem);
         modelBuilder.Entity<DadosRenovacaoModel>().HasKey(e => e.IdDados);
         modelBuilder.Entity<ConfiguracaoGlobalModel>().HasKey(c => c.Id);
-        modelBuilder.Entity<RegraClassificacaoDto>().HasKey(e => e.IdRegra);
+        modelBuilder.Entity<RegraClassificacaoModel>().HasKey(e => e.IdRegra);
 
         // 1-to-1: CTM e GPM 
         modelBuilder.Entity<CtmModel>()

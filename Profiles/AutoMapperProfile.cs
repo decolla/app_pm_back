@@ -108,5 +108,6 @@ public class AutoMapperProfile : Profile
         CreateMap<AnexoOrdemDto, AnexoOrdemModel>();
         
         CreateMap<RegraClassificacaoDto, RegraClassificacaoModel>();
+        
     }
 }

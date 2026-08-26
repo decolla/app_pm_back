@@ -9,8 +9,6 @@ public class RegraClassificacaoDto
     /// <summary>
     /// Id da Regra
     /// </summary>
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdRegra { get; set; }
 
     /// <summary>
