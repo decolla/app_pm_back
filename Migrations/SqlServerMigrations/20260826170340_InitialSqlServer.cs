@@ -79,6 +79,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    ModeloCatboostPadrao = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FichasConfiabilidade = table.Column<int>(type: "int", nullable: false),
                     ClassificacaoAutomatica = table.Column<int>(type: "int", nullable: false),
                     CriterioDataRenovacao = table.Column<int>(type: "int", nullable: false),
@@ -356,6 +357,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 {
                     IdTipoEstrategia = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Cor = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Dias = table.Column<int>(type: "int", nullable: true),
                     ToleranciaPositiva = table.Column<double>(type: "float", nullable: true),
                     ToleranciaNegativa = table.Column<double>(type: "float", nullable: true),
@@ -520,6 +522,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     EquipamentoDisponivel = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ConfiabilidadeRestaurada = table.Column<int>(type: "int", nullable: true),
                     DescricaoBreve = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DescricaoLonga = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: true),
                     AnomaliaObservada = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     ObservacoesComplementares = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
                     Classificacao = table.Column<int>(type: "int", nullable: false),
@@ -648,6 +651,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     Componente = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     Sintoma = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     Causa = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    Descricao = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     IdNota = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -684,6 +688,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     InicioReal = table.Column<DateTime>(type: "datetime2", nullable: true),
                     FimReal = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DescricaoBreve = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    DescricaoLonga = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: true),
                     CriadaPorUsuario = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     ModificadaPorUsuario = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     DataModificacao = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -859,7 +864,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     IdOperacao = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    Descricao = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Descricao = table.Column<string>(type: "nvarchar(max)", maxLength: 7000, nullable: true),
                     Duracao = table.Column<double>(type: "float", nullable: true),
                     NdeProfissionais = table.Column<int>(type: "int", nullable: true),
                     InicioEsperado = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -982,8 +987,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
             migrationBuilder.InsertData(
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
-                columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 6, 18, 34, 44, 749, DateTimeKind.Utc).AddTicks(6395), 2, null });
+                columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario" },
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 26, 17, 3, 39, 917, DateTimeKind.Utc).AddTicks(6824), 2, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

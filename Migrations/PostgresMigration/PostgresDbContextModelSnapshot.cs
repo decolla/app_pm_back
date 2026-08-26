@@ -10,7 +10,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations
+namespace app_pm_back.Migrations.PostgresMigration
 {
     [DbContext(typeof(PostgresDbContext))]
     partial class PostgresDbContextModelSnapshot : ModelSnapshot
@@ -291,6 +291,9 @@ namespace app_pm_back.Migrations
                     b.Property<int>("FichasConfiabilidade")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ModeloCatboostPadrao")
+                        .HasColumnType("text");
+
                     b.Property<string>("ModificadoPorUsuario")
                         .HasColumnType("text");
 
@@ -306,7 +309,7 @@ namespace app_pm_back.Migrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 24, 17, 56, 38, 285, DateTimeKind.Utc).AddTicks(2072),
+                            DataModificacao = new DateTime(2026, 8, 26, 17, 3, 56, 882, DateTimeKind.Utc).AddTicks(190),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -1146,6 +1149,9 @@ namespace app_pm_back.Migrations
 
                     b.Property<bool?>("Continua")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("Cor")
+                        .HasColumnType("text");
 
                     b.Property<int?>("Dias")
                         .HasColumnType("integer");

@@ -6,7 +6,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations
+namespace app_pm_back.Migrations.PostgresMigration
 {
     /// <inheritdoc />
     public partial class InitialPostgres : Migration
@@ -75,6 +75,7 @@ namespace app_pm_back.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ModeloCatboostPadrao = table.Column<string>(type: "text", nullable: true),
                     FichasConfiabilidade = table.Column<int>(type: "integer", nullable: false),
                     ClassificacaoAutomatica = table.Column<int>(type: "integer", nullable: false),
                     CriterioDataRenovacao = table.Column<int>(type: "integer", nullable: false),
@@ -335,6 +336,7 @@ namespace app_pm_back.Migrations
                 {
                     IdTipoEstrategia = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Cor = table.Column<string>(type: "text", nullable: true),
                     Dias = table.Column<int>(type: "integer", nullable: true),
                     ToleranciaPositiva = table.Column<double>(type: "double precision", nullable: true),
                     ToleranciaNegativa = table.Column<double>(type: "double precision", nullable: true),
@@ -903,8 +905,8 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
-                columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 24, 17, 56, 38, 285, DateTimeKind.Utc).AddTicks(2072), 2, null });
+                columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario" },
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 26, 17, 3, 56, 882, DateTimeKind.Utc).AddTicks(190), 2, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

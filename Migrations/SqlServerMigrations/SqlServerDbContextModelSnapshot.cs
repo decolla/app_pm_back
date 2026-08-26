@@ -290,6 +290,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<int>("FichasConfiabilidade")
                         .HasColumnType("int");
 
+                    b.Property<string>("ModeloCatboostPadrao")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ModificadoPorUsuario")
                         .HasColumnType("nvarchar(max)");
 
@@ -305,7 +308,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 6, 18, 34, 44, 749, DateTimeKind.Utc).AddTicks(6395),
+                            DataModificacao = new DateTime(2026, 8, 26, 17, 3, 39, 917, DateTimeKind.Utc).AddTicks(6824),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -708,6 +711,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
                     b.Property<long>("IdNota")
                         .HasColumnType("bigint");
 
@@ -764,6 +771,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DescricaoBreve")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DescricaoLonga")
+                        .HasMaxLength(10000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DnsIot")
@@ -851,8 +862,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdOperacao"));
 
                     b.Property<string>("Descricao")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(7000)
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("Duracao")
                         .HasColumnType("float");
@@ -927,6 +938,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<string>("DescricaoBreve")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("DescricaoLonga")
+                        .HasMaxLength(10000)
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DnsIot")
                         .HasMaxLength(100)
@@ -1133,6 +1148,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     b.Property<bool?>("Continua")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Cor")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Dias")
                         .HasColumnType("int");
