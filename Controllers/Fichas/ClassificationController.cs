@@ -274,6 +274,7 @@ public class ClassificationController : ControllerBase
         }
     }
 
+
     /// <summary>
     /// Classifica as Ambas, Fichas ou Ordens usando a IA catboost
     /// </summary>
@@ -318,26 +319,65 @@ public class ClassificationController : ControllerBase
     /// Lista os arquivos de modelo do catboost
     /// </summary>
     /// <returns></returns>
-    [HttpGet("modelos-catboost")]
-    public Task<IActionResult> ListarModelosCatboost()
+    [HttpGet("catboost/modelos")]
+    public async Task<IActionResult> ListarModelosCatboost()
     {
         try
         {
+            var modelos = _catboostModelProviderService.ListarModelosDisponiveis();
+            var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
+
+            if (!modelos.Any())
+            {
+                modelos = ["catboost_model.cbm", "model_meta.json"];
+            }
+            
+            object result = new
+            {
+                modelos = modelos,
+                modeloPadrao = config.ModeloCatboostPadrao
+            };
+            
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new
+                { message = $"Erro ao listar modelos catboost: {e.Message}" });
+        }
+    }
+
+    /// <summary>
+    /// Atualiza o modelo padrão para classificação do Catboost
+    /// </summary>
+    [HttpPatch("catboost/padrao")]
+    public async Task<IActionResult> AtualizarModeloPadrao([FromQuery] string modelo)
+    {
+        try
+        {   
             var modelos = _catboostModelProviderService.ListarModelosDisponiveis();
 
             if (!modelos.Any())
             {
                 modelos = ["catboost_model.cbm", "model_meta.json"];
             }
+            
+            if(!modelos.Contains(modelo))
+            {
+                return BadRequest(new { message = $"Modelo {modelo} não encontrado entre os modelos disponíveis." });
+            }
+            
+            await _configuracaoGlobalService.SalvarModeloCatboost(modelo);
 
-            return Task.FromResult<IActionResult>(Ok(modelos));
+            return Ok(new { message = "Modelo padrão atualizado com sucesso" });
         }
         catch (Exception e)
         {
-            return Task.FromResult<IActionResult>(BadRequest(new
-                { message = $"Erro ao listar modelos catboost: {e.Message}" }));
+            Console.WriteLine(e);
+            throw;
         }
     }
+
 
     /// <summary>
     /// Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes

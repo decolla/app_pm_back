@@ -42,4 +42,12 @@ public class ConfiguracaoGlobalService
         
         await _context.SaveChangesAsync();
     }
+
+    public async Task SalvarModeloCatboost(string nomeModelo)
+    {
+        var config = await ObterConfiguracaoAsync();
+        
+        config.ModeloCatboostPadrao = nomeModelo;
+        await _context.SaveChangesAsync();
+    }
 }

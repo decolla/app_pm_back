@@ -11,6 +11,8 @@ namespace app_pm_back.DTO;
 public class TipoManutencaoDto
 {
     [SheetColumn("Id Tipo Manutenção")] public long IdTipoManutencao { get; set; }
+    
+    [SheetColumn("Cor")] public string? Cor { get; set; }
 
     [SheetColumn("Categoria")] public CategoriaTipoManutencao? Categoria { get; set; }
 

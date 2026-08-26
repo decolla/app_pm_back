@@ -7,6 +7,11 @@ public class ConfiguracaoGlobalModel
 {
     [System.ComponentModel.DataAnnotations.Key]
     public int Id { get; set; } = 1; // travado em 1 para garantir linha única
+    
+    /// <summary>
+    /// Modelo declarado como padrão para a classificação do catboost
+    /// </summary>
+    public string? ModeloCatboostPadrao {get; set;}
 
     /// <summary>
     /// Fichas que serão usadas para calcular a confiabilidade.

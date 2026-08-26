@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using app_pm_back.Data;
@@ -26,7 +27,7 @@ public class ClassificationService<T> where T : class, IClassifiable
     /// Inicializa uma nova instância da classe <see cref="ClassificationService{T}"/>.
     /// </summary>
     public ClassificationService(
-        AppDbContext context, 
+        AppDbContext context,
         ConfiguracaoGlobalService configuracaoService,
         CatboostModelProviderService catboostProvider)
     {
@@ -202,18 +203,30 @@ public class ClassificationService<T> where T : class, IClassifiable
                                                     n.MetodoClassificacao != MetodoClassificacao.CATBOOST) ||
                                                 n.MetodoClassificacao == MetodoClassificacao.CATBOOST)
             .ToListAsync();
-        return await CatboostClassification(query);
+        return await CatboostClassification(query, null);
     }
 
     /// <summary>
     /// Classificação de notas/ordens com base no modelo Catboost.
     /// </summary>
-    public async Task<List<T>> CatboostClassification(List<T> query, string nomeModelo = "")
+    public async Task<List<T>> CatboostClassification(List<T> query, string? nomeModelo)
     {
         // var config = await _configuracaoService.ObterConfiguracaoAsync();
         // if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarCatBoost)
         //     throw new InvalidOperationException(
         //         "Modo de classificação por catboost não habilitada nas classificações globais.");
+
+        if (string.IsNullOrEmpty(nomeModelo))
+        {
+            var config = await _configuracaoService.ObterConfiguracaoAsync();
+            nomeModelo = config.ModeloCatboostPadrao;
+
+            if (string.IsNullOrWhiteSpace(nomeModelo))
+            {
+                throw new InvalidOperationException(
+                    "Nenhum modelo CatBoost foi selecionado e nenhum modelo padrão está configurado.");
+            }
+        }
 
         var (cbm, meta) = _catboostProvider.ObterModelo(nomeModelo);
         if (cbm == null || meta == null)
