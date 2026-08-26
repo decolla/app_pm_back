@@ -53,6 +53,9 @@ public class ClassificationController : ControllerBase
     {
         try
         {
+            if (dtos == null || !dtos.Any())
+                return BadRequest(new { message = "A lista de regras não pode estar vazia." });
+
             var criado = await _regraClassificacaoService.CadastrarPalavrasAsync(dtos);
             return CreatedAtAction(nameof(ObterPorId), new { id = criado.First().IdRegra }, criado);
         }

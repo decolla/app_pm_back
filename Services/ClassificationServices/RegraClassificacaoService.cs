@@ -51,6 +51,9 @@ public class RegraClassificacaoService : BaseCrudService<RegraClassificacaoModel
             _context.Entry(itemBanco).State = EntityState.Deleted;
         }
 
+        // criar uma lista para armazenar os models 
+        var modelosProcessados = new List<RegraClassificacaoModel>();
+
         // mapeia e processa atualizações
         foreach (var itemTela in palavras)
         {
@@ -72,10 +75,22 @@ public class RegraClassificacaoService : BaseCrudService<RegraClassificacaoModel
             {
                 _context.Entry(model).State = EntityState.Modified;
             }
+
+            // model na lista
+            modelosProcessados.Add(model);
         }
 
+        // ef core preenche os ids
         await _context.SaveChangesAsync();
 
-        return palavras;
+        // mapeia os models para a resposta
+        return modelosProcessados.Select(m => new RegraClassificacaoDto
+        {
+            IdRegra = m.IdRegra,
+            PalavraChave = m.PalavraChave,
+            ClassificacaoAplicada = m.ClassificacaoAplicada,
+            Permitida = m.Permitida,
+            OrdemPrioridade = m.OrdemPrioridade
+        }).ToList();
     }
 }

@@ -380,7 +380,7 @@
             <response code="200">Sucesso ao deletar o registro.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.CriarRegraClassificacao(app_pm_back.DTO.RegraClassificacaoDto,app_pm_back.Models.Domain.Fichas)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.CriarRegraClassificacao(System.Collections.Generic.List{app_pm_back.DTO.RegraClassificacaoDto})">
             <summary>
             Cria uma regra de classificação por palavras para Ambas, Fichas ou Ordens
             </summary>
@@ -4418,6 +4418,13 @@
             Obtém todas as regras divididas por sua classificação e permissão
             </summary>
             <returns>Objeto com fichas divididas</returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.RegraClassificacaoService.CadastrarPalavrasAsync(System.Collections.Generic.List{app_pm_back.DTO.RegraClassificacaoDto})">
+            <summary>
+            Cadastra ou atualiza as palavras
+            </summary>
+            <param name="palavras">Lista de palavras a serem cadastradas</param>
+            <returns>Lista de palavras cadastradas</returns>
         </member>
         <member name="T:app_pm_back.Services.FichasServices.DadosRenovacaoService">
             <summary>
