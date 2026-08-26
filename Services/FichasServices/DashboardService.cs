@@ -326,10 +326,10 @@ public class DashboardService
         {
             if (nota.StatusNota == StatusFichas.Concluida) continue;
 
-            var ordemAssociada = nota.Ordens?.FirstOrDefault(o => o.FimReal.HasValue);
+            var ordemAssociada = nota.Ordens?.FirstOrDefault(o => o.DataCriacao.HasValue);
 
             TimeSpan? vidaNota = DateTime.UtcNow - nota.DataNota;
-            TimeSpan? vidaOrdem = ordemAssociada?.DataCriacao != null
+            TimeSpan? vidaOrdem = ordemAssociada?.DataCriacao != null && ordemAssociada?.DataCriacao > nota.DataNota
                 ? DateTime.UtcNow - ordemAssociada?.DataCriacao
                 : (TimeSpan?)null;
 
@@ -351,7 +351,7 @@ public class DashboardService
             var notaAssociada = ordem.Nota;
 
             TimeSpan? vidaOrdem = DateTime.UtcNow - ordem.DataCriacao;
-            TimeSpan? vidaNota = notaAssociada?.DataNota != null
+            TimeSpan? vidaNota = notaAssociada?.DataNota != null && ordem.DataCriacao < notaAssociada?.DataNota
                 ? DateTime.UtcNow - notaAssociada?.DataNota
                 : (TimeSpan?)null;
 
@@ -361,7 +361,7 @@ public class DashboardService
         // limpa e ordena gerando um top 20
         var top = rankingTotal
             .Where(r => r.Item1.Item2.HasValue || r.Item2.Item2.HasValue)
-            .OrderBy(r => r.Item1.Item2 ?? r.Item2.Item2 ?? TimeSpan.MaxValue)
+            .OrderByDescending(r => r.Item1.Item2 ?? r.Item2.Item2 ?? TimeSpan.MaxValue)
             .Take(7)
             .ToList();
 
