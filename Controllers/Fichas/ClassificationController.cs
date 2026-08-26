@@ -393,8 +393,7 @@ public class ClassificationController : ControllerBase
     public async Task<IActionResult> ClassificaNotaOrdem(
         [FromBody] BuscaOrdemNotaDto busca,
         [FromQuery] Fichas? tFichas,
-        [FromQuery] FiltroClassificacao filtroClassificacao,
-        [FromQuery] string nomeModelo)
+        [FromQuery] FiltroClassificacao filtroClassificacao)
     {
         try
         {
@@ -402,11 +401,7 @@ public class ClassificationController : ControllerBase
             {
                 tFichas = Fichas.Ambas;
             }
-
-            if (string.IsNullOrWhiteSpace(nomeModelo))
-            {
-                return BadRequest(new { message = "O nome do modelo é obrigatório." });
-            }
+            
 
             var resultadoBusca = await _searchService.FiltraNotaOrdemAsync(busca);
 
@@ -423,7 +418,7 @@ public class ClassificationController : ControllerBase
 
                 if (filtroClassificacao is FiltroClassificacao.Catboost or FiltroClassificacao.Ambos)
                 {
-                    notasClassificadas = await _notaService.CatboostClassification(notas, nomeModelo);
+                    notasClassificadas = await _notaService.CatboostClassification(notas, null);
                 }
 
                 resultados.Add(notasClassificadas);
@@ -440,7 +435,7 @@ public class ClassificationController : ControllerBase
 
                 if (filtroClassificacao is FiltroClassificacao.Catboost or FiltroClassificacao.Ambos)
                 {
-                    ordensClassificadas = await _ordemService.CatboostClassification(ordens, nomeModelo);
+                    ordensClassificadas = await _ordemService.CatboostClassification(ordens, null);
                 }
 
                 resultados.Add(ordensClassificadas);
