@@ -7,8 +7,8 @@ public class FiltroDashboardDTO
     public ComponentType? Ativo { get; set; }
     
     public int? Ultimos { get; set; }
-    
-    public UnidadeTempo UnidadeTempo { get; set; }
+
+    public UnidadeTempo UnidadeTempo { get; set; } = UnidadeTempo.Meses;
     
     // public long? NumeroRegistro { get; set; }
     

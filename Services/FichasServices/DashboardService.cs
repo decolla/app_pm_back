@@ -29,7 +29,7 @@ public class DashboardService
         List<NotaModel> notas = await GetNotasAsync(filtro);
         List<OrdemModel> ordens = await GetOrdensAsync(filtro);
 
-        var statusSemana = RelacaoStatusOrdensSemana(notas);
+        var statusSemana = RelacaoStatusOrdensSemana(notas, filtro.UnidadeTempo);
 
         // retorna objeto com todas as informações do Dashboard
         return new
@@ -239,8 +239,9 @@ public class DashboardService
     /// Gera a relação de status de ordem e relação de prazo de notas
     /// </summary>
     /// <param name="notas"></param>
+    /// <param name="unidadeTempo"></param>
     /// <returns></returns>
-    private (List<object>, List<object>) RelacaoStatusOrdensSemana(List<NotaModel> notas)
+    private (List<object>, List<object>) RelacaoStatusOrdensSemana(List<NotaModel> notas, UnidadeTempo unidadeTempo)
     {
         var notasComData = notas.Where(n => n.DataNota.HasValue).ToList();
         if (!notasComData.Any()) return (new(), new());
@@ -251,47 +252,54 @@ public class DashboardService
         var notasOrdenadas = notasComData.OrderBy(n => n.DataNota).ToList();
         DateTime dataInicial = notasOrdenadas.First().DataNota!.Value;
 
+        int valorTemporal = 1;
+        
+        if(unidadeTempo == UnidadeTempo.Meses)
+            valorTemporal = 30;
+        else if(unidadeTempo == UnidadeTempo.Anos)
+            valorTemporal = 365;
+
         // agrupa as notas por semana
         var notasPorSemana = notasOrdenadas
-            .GroupBy(n => (int)((n.DataNota!.Value - dataInicial).TotalDays / 7) + 1)
+            .GroupBy(n => (int)((n.DataNota!.Value - dataInicial).TotalDays / valorTemporal) + 1)
             .ToDictionary(g => g.Key, g => g.ToList());
 
-        int totalSemanas = (int)((DateTime.Now - dataInicial).TotalDays / 7) + 1;
+        int totalSemanas = (int)((DateTime.Now - dataInicial).TotalDays / valorTemporal) + 1;
 
-        for (int semana = 1; semana <= totalSemanas; semana++)
+        for (int tempo = 1; tempo <= totalSemanas; tempo++)
         {
-            if (!notasPorSemana.TryGetValue(semana, out var notasSemana) || notasSemana.Count == 0)
+            if (!notasPorSemana.TryGetValue(tempo, out var notasTempo) || notasTempo.Count == 0)
             {
-                // se a série for muito longa
-                if (totalSemanas > 52)
-                    continue;
+                // // se a série for muito longa
+                // if (totalSemanas > 52)
+                //     continue;
 
-                notasSemana = new List<NotaModel>();
+                notasTempo = new List<NotaModel>();
             }
 
-            int notasComOrdem = notasSemana.Select(n => n.Ordens).Count(o => o.Count != 0);
-            int notasSemOrdem = notasSemana.Count - notasComOrdem;
-            int notasRejeitadas = notasSemana.Count(n => n.StatusNota == StatusFichas.Reprovada);
-            int notasConcluidas = notasSemana.Count(n => n.StatusNota == StatusFichas.Concluida);
+            int notasComOrdem = notasTempo.Select(n => n.Ordens).Count(o => o.Count != 0);
+            int notasSemOrdem = notasTempo.Count - notasComOrdem;
+            int notasRejeitadas = notasTempo.Count(n => n.StatusNota == StatusFichas.Reprovada);
+            int notasConcluidas = notasTempo.Count(n => n.StatusNota == StatusFichas.Concluida);
 
             relacaoStatus.Add(new
             {
-                Semana = semana,
+                Indice = tempo,
                 NotasSemOrdem = notasSemOrdem,
                 NotasComOrdem = notasComOrdem,
                 NotasRejeitadas = notasRejeitadas,
                 NotasConcluidas = notasConcluidas
             });
 
-            int notasComOrdemPrazo = notasSemana.Count(n => n.Ordens.Any(o => o.FimPlanejado > DateTime.Now));
-            int notasSemOrdemPrazo = notasSemana.Count(n =>
+            int notasComOrdemPrazo = notasTempo.Count(n => n.Ordens.Any(o => o.FimPlanejado > DateTime.Now));
+            int notasSemOrdemPrazo = notasTempo.Count(n =>
                 n.Ordens.Count == 0 && n.DataAvaria.HasValue && n.FimDesejado < DateTime.Now);
-            int notasSemOrdemAtrasadas = notasSemana.Count(n => n.Ordens.Any(o => o.FimReal < DateTime.Now));
-            int notasComOrdemAtrasadas = notasSemana.Count(n => n.Ordens.Any(o => o.FimReal > DateTime.Now));
+            int notasSemOrdemAtrasadas = notasTempo.Count(n => n.Ordens.Any(o => o.FimReal < DateTime.Now));
+            int notasComOrdemAtrasadas = notasTempo.Count(n => n.Ordens.Any(o => o.FimReal > DateTime.Now));
 
             relacaoPrazo.Add(new
             {
-                Semana = semana,
+                Indice = tempo,
                 NotasSemOrdemPrazo = notasSemOrdemPrazo,
                 NotasComOrdemPrazo = notasComOrdemPrazo,
                 NotasSemOrdemAtrasadas = notasSemOrdemAtrasadas,

@@ -4536,11 +4536,12 @@
             <param name="ordens"></param>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Services.FichasServices.DashboardService.RelacaoStatusOrdensSemana(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel})">
+        <member name="M:app_pm_back.Services.FichasServices.DashboardService.RelacaoStatusOrdensSemana(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel},app_pm_back.Models.Domain.UnidadeTempo)">
             <summary>
             Gera a relação de status de ordem e relação de prazo de notas
             </summary>
             <param name="notas"></param>
+            <param name="unidadeTempo"></param>
             <returns></returns>
         </member>
         <member name="M:app_pm_back.Services.FichasServices.DashboardService.RankingTempoVida(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel},System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel})">
