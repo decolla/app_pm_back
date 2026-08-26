@@ -387,6 +387,12 @@
             <param name="regra">Regra a ser aplicada</param>
             <returns>Regra criada</returns>
         </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ObterRegrasDivididas">
+            <summary>
+            Obtém todas as regras divididas por sua classificação e permissão
+            </summary>
+            <returns>Objeto com regras divididas</returns>
+        </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista as regras cadastradas com paginação.
@@ -455,7 +461,7 @@
             Atualiza o modelo padrão para classificação do Catboost
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ClassificaNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{app_pm_back.Models.Domain.Fichas},app_pm_back.Models.Domain.FiltroClassificacao,System.String)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ClassificaNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{app_pm_back.Models.Domain.Fichas},app_pm_back.Models.Domain.FiltroClassificacao)">
             <summary>
             Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
             </summary>
@@ -4406,6 +4412,12 @@
             </summary>
             <param name="columnName">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.RegraClassificacaoService.ObterRegrasDivididasAsync">
+            <summary>
+            Obtém todas as regras divididas por sua classificação e permissão
+            </summary>
+            <returns>Objeto com fichas divididas</returns>
         </member>
         <member name="T:app_pm_back.Services.FichasServices.DadosRenovacaoService">
             <summary>

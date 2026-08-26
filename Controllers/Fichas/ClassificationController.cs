@@ -66,6 +66,24 @@ public class ClassificationController : ControllerBase
     }
 
     /// <summary>
+    /// Obtém todas as regras divididas por sua classificação e permissão
+    /// </summary>
+    /// <returns>Objeto com regras divididas</returns>
+    [HttpGet("regras/divididas")]
+    public async Task<IActionResult> ObterRegrasDivididas()
+    {
+        try
+        {
+            var regras = await _regraClassificacaoService.ObterRegrasDivididasAsync();
+            return Ok(regras);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao obter regras divididas: {e.Message}" });
+        }
+    }
+
+    /// <summary>
     /// Lista as regras cadastradas com paginação.
     /// </summary>
     /// <param name="pagina">Número da página (1-based) para paginação.</param>
