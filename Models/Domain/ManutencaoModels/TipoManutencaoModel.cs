@@ -14,7 +14,12 @@ public class TipoManutencaoModel
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdTipoManutencao { get; set; }
-
+    
+    /// <summary>
+    /// Cor da bolinha
+    /// </summary>
+    public string Cor { get; set; } = "#FF0000";
+    
     /// <summary>
     /// Categoria associada ao tipo de manutenção.
     /// </summary>

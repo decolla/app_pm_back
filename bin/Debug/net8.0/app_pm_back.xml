@@ -2730,11 +2730,6 @@
             Identificador único do Tipo de Estratégia.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.Cor">
-            <summary>
-            Cor da bolinha
-            </summary>
-        </member>
         <member name="P:app_pm_back.Models.Domain.TipoEstrategiaModel.Dias">
             <summary>
             Quantidade de dias para o ciclo. Exemplo: 90
@@ -2803,6 +2798,11 @@
         <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.IdTipoManutencao">
             <summary>
             Identificador único do Tipo de Manutenção.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.Cor">
+            <summary>
+            Cor da bolinha
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.Categoria">
