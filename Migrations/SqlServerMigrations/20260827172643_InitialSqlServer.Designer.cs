@@ -12,7 +12,7 @@ using app_pm_back.Data;
 namespace app_pm_back.Migrations.SqlServerMigrations
 {
     [DbContext(typeof(SqlServerDbContext))]
-    [Migration("20260827140217_InitialSqlServer")]
+    [Migration("20260827172643_InitialSqlServer")]
     partial class InitialSqlServer
     {
         /// <inheritdoc />
@@ -285,7 +285,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 27, 14, 2, 16, 951, DateTimeKind.Utc).AddTicks(410),
+                            DataModificacao = new DateTime(2026, 8, 27, 17, 26, 42, 566, DateTimeKind.Utc).AddTicks(6388),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -684,9 +684,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("Componente")
+                    b.Property<int?>("Componente")
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("int");
 
                     b.Property<string>("Descricao")
                         .HasMaxLength(150)

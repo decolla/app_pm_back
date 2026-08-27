@@ -21,40 +21,102 @@ public class SpreadsheetService
     private static readonly ConcurrentDictionary<Type, List<(PropertyInfo Property, string ColName)>> _propertyCache =
         new();
 
+    // mapeamento de string para ComponentType
     private static readonly (ComponentType Type, string[] Terms)[] ComponentTypeMatchers =
     [
-        (ComponentType.Shutoff,
-            new[]
-            {
-                "shut-off", "shutoff", "shut off", "sbr", "sdv", "bloqueio remoto", "sistema bloqueio remoto",
-                "valvula saida"
-            }),
-        (ComponentType.PilotValve, new[] { "valvula piloto", "pilot valve", "pilot", "piloto" }),
-        (ComponentType.RegulatorValve, new[] { "valvula reguladora", "regulator valve" }),
-        (ComponentType.Regulator, new[] { "regulador", "regulator", "reguladores" }),
         (ComponentType.FlowSensor,
-            new[]
-            {
-                "flow", "flowtrail", "flow sensor", "flow trail", "sensor de vazao", "sensor de fluxo", "medidor"
-            }),
+            new[] { "flow", "flowtrail", "flow sensor", "flow trail", "sensor de vazao", "sensor de fluxo" }),
+
+        (ComponentType.Shutoff,
+            new[] { "shut-off", "shutoff", "shut off", "sbr", "sdv", "bloqueio remoto", "sistema bloqueio remoto" }),
+
+        (ComponentType.PilotValve,
+            new[] { "valvula piloto", "pilot valve", "pilot", "piloto", "pre-piloto" }),
+
+        (ComponentType.RegulatorValve,
+            new[] { "valvula reguladora", "regulator valve" }),
+
+        (ComponentType.Regulator,
+            new[] { "regulador", "regulator", "reguladores" }),
+
         (ComponentType.FillValveV9,
             new[] { "abastecimento de odorante", "valvula de abastecimento", "fill valve", "v9" }),
-        (ComponentType.OdorantPump, new[] { "bomba odorante", "bomba de odorante", "odorante bomba", "pump", "bomba" }),
-        (ComponentType.OdorantTank, new[] { "tanque de odorante", "tanque odorante", "reservatorio de odorante" }),
-        (ComponentType.ManifoldIn, new[] { "manifold in", "manifold entrada" }),
-        (ComponentType.ManifoldDischarge, new[] { "manifold discharge", "manifold saida" }),
-        (ComponentType.GasFilter, new[] { "filtro", "filtrante", "filtro de gas" }),
-        (ComponentType.ManifoldPneumaticRelay, new[] { "rele pneumatico", "pneumatic relay" }),
-        (ComponentType.Ventsorv, new[] { "venteio", "vent" }),
-        (ComponentType.ExpansionTank, new[] { "tanque de expansao", "expansion tank" }),
-        (ComponentType.AlimentationPanel, new[] { "painel de alimentacao", "nobreak" }),
-        (ComponentType.Battery, new[] { "bateria", "baterias" }),
-        (ComponentType.SolarPanel, new[] { "painel solar", "solar" }),
+
+        (ComponentType.OdorantPump,
+            new[] { "bomba odorante", "bomba de odorante", "odorante bomba", "pump", "bomba" }),
+
+        (ComponentType.OdorantTank,
+            new[] { "tanque de odorante", "tanque odorante", "reservatorio de odorante" }),
+
+        (ComponentType.ManifoldIn,
+            new[] { "manifold in", "manifold entrada" }),
+
+        (ComponentType.ManifoldDischarge,
+            new[] { "manifold discharge", "manifold saida" }),
+
+        (ComponentType.GasFilter,
+            new[] { "filtrante", "filtro de gas" }),
+
+        (ComponentType.ManifoldPneumaticRelay,
+            new[] { "rele pneumatico", "pneumatic relay" }),
+
+        (ComponentType.Ventsorv,
+            new[] { "venteio", "vent" }),
+
+        (ComponentType.ExpansionTank,
+            new[] { "tanque de expansao", "expansion tank" }),
+
+        (ComponentType.AlimentationPanel,
+            new[]
+            {
+                "painel de alimentacao", "nobreak", "painel eletrico", "aterramento"
+            }), // DUVIDOSO: 'aterramento' mapeado aqui por falta de categoria elétrica específica
+
+        (ComponentType.Battery,
+            new[] { "bateria", "baterias" }),
+
+        (ComponentType.SolarPanel,
+            new[] { "painel solar", "solar" }),
+
         (ComponentType.CommunicationInterface,
-            new[] { "comunicacao", "telemetria", "modem", "vsat", "antena", "chip", "ethernet", "serial" }),
-        (ComponentType.Controller, new[] { "controlador", "scada", "ihm", "datalogger", "data logger" }),
-        (ComponentType.ChargeControllerPanel, new[] { "controlador de carga", "painel controlador de carga" }),
-        (ComponentType.Plc, new[] { "plc" })
+            new[]
+            {
+                "comunicacao", "telemetria", "modem", "vsat", "antena", "chip", "ethernet", "serial", "transmissores",
+                "sinal de operadora"
+            }),
+
+        (ComponentType.Controller,
+            new[]
+            {
+                "controlador", "scada", "ihm", "datalogger", "data logger", "data-logger", "alarme",
+                "caixa do datalogger", "poste do datalogger",
+                "crm", "erp", "erd", "cm", "cr", "crc", "ers", "estacao", "indicadores cspe", "civil erp", "civil crc",
+                "civil crm", "civil erd",
+                "civil marco de sinalizacao", "civil instalacao de alvenaria", "civil pavimentacao",
+                "civil poste do datalogger", "civil poste de respiro"
+            }), // DUVIDOSO: estações físicas, obras civis genéricas e alarmes
+
+        (ComponentType.ChargeControllerPanel,
+            new[] { "controlador de carga", "painel controlador de carga" }),
+
+        (ComponentType.Plc,
+            new[] { "plc" }),
+
+        (ComponentType.ERPFilter,
+            new[] { "filtro" }),
+
+        (ComponentType.ReliefValve,
+            new[] { "valvula de alivio", "alivio" }),
+
+        (ComponentType.LineValve,
+            new[]
+            {
+                "valvula da instalacao", "valvulas de bloqueio", "valvula de retencao", "vb de rede",
+                "valvula de entrada", "valvula de saida", "valvula vgb", "civil vgb", "civil valvula de rede"
+            }),
+
+        (ComponentType.ERPMeter,
+            new[] { "medidor" })
     ];
 
     private readonly ConvertService _convertService;
@@ -97,7 +159,7 @@ public class SpreadsheetService
         /// Obtém ou define o valor de Itens.
         /// </summary>
         public List<ItemNotaModel> Itens { get; set; } = new();
-        
+
         /// <summary>
         /// Obtém ou define o valor de Itens.
         /// </summary>
@@ -245,7 +307,7 @@ public class SpreadsheetService
             {
                 var dto = ReadLineForModel<OrdemDto>(row, columns);
                 var ordemModel = MapOrdemDto(dto);
-                
+
                 var dtoAux = ReadLineForModel<OperacaoOrdemDto>(row, columns);
                 if (!string.IsNullOrWhiteSpace(dtoAux.Descricao))
                 {
@@ -259,6 +321,7 @@ public class SpreadsheetService
 
                     resultado.Operacoes.Add(operacaoModel);
                 }
+
                 resultado.Ordens.Add(ordemModel);
             }
             else if (resultado.TipoIdentificado == "ITEM")
@@ -290,13 +353,13 @@ public class SpreadsheetService
                     props.Add((property, atributo.NomeDaColuna));
                 }
             }
-            
+
             // Guarda o resultado no dicionário estático para uso imediato nas próximas milhares de iterações.
             _propertyCache[type] = props;
         }
-        
+
         // Iteramos sobre a lista processada armazenada no cache (velocidade máxima), eliminando o uso de GetProperties() aqui.
-        foreach(var(property, nomeColunaExcel) in props)
+        foreach (var (property, nomeColunaExcel) in props)
         {
             if (columns.TryGetValue(nomeColunaExcel.ToUpperInvariant(), out var idx) && idx < row.Length)
             {
@@ -309,8 +372,9 @@ public class SpreadsheetService
                         Type tipo = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
                         object? valorConvertido = null;
 
-                        if (tipo == typeof(ComponentType) && string.Equals(property.Name, "IdAtivo",
-                                StringComparison.OrdinalIgnoreCase))
+                        if (tipo == typeof(ComponentType) && (string.Equals(property.Name, "IdAtivo",
+                                StringComparison.OrdinalIgnoreCase) || string.Equals(property.Name, "Componente",
+                                StringComparison.OrdinalIgnoreCase)))
                         {
                             valorConvertido = TryTranslateComponentType(valor);
                         }
@@ -425,7 +489,7 @@ public class SpreadsheetService
 
         return model;
     }
-    
+
 
     private static ComponentType? TryTranslateComponentType(string rawValue)
     {
@@ -557,7 +621,8 @@ public class SpreadsheetService
             NumeroNota = dto.NumeroNota,
             TipoNota = dto.TipoNota,
             Classificacao = dto.IndicadorCorretiva ? Classificacao.CORRETIVA : dto.Classificacao,
-            MetodoClassificacao = dto.IndicadorCorretiva ? MetodoClassificacao.HUMANA : MetodoClassificacao.NAOCLASSIFICADA,
+            MetodoClassificacao =
+                dto.IndicadorCorretiva ? MetodoClassificacao.HUMANA : MetodoClassificacao.NAOCLASSIFICADA,
             StatusNota = StatusFichas.EmAndamento,
             DnsIot = dto.DnsIot,
             DataFim = dto.DataFim,
@@ -570,7 +635,9 @@ public class SpreadsheetService
             DescricaoBreve = dto.DescricaoBreve,
             DescricaoLonga = dto.DescricaoLonga,
             ObservacoesComplementares = dto.ObservacoesComplementares,
-            ReferenciaLocalizacaoAtivo = string.IsNullOrWhiteSpace(dto.ReferenciaLocalizacaoAtivo) ? "N/A" : dto.ReferenciaLocalizacaoAtivo,
+            ReferenciaLocalizacaoAtivo = string.IsNullOrWhiteSpace(dto.ReferenciaLocalizacaoAtivo)
+                ? "N/A"
+                : dto.ReferenciaLocalizacaoAtivo,
             Finalidade = string.IsNullOrWhiteSpace(dto.Finalidade) ? "N/A" : dto.Finalidade,
             IdPlano = dto.IdPlano,
             IdUsuario = dto.IdUsuario,
@@ -630,19 +697,20 @@ public class SpreadsheetService
             Descricao = dto.Descricao
         };
     }
+
     private static OperacaoModel MapOperacaoOrdemDto(OperacaoOrdemDto dto)
     {
         return new OperacaoModel
         {
-            IdOperacao  = dto.IdOperacao,    
+            IdOperacao = dto.IdOperacao,
             IdOrdem = dto.IdOrdem,
             Nome = dto.Nome,
             Duracao = 24,
             NdeProfissionais = 1,
-            Descricao = (dto.Descricao != null && dto.Descricao.Length > 6000) 
-                ? dto.Descricao.Substring(0, 6000) 
+            Descricao = (dto.Descricao != null && dto.Descricao.Length > 6000)
+                ? dto.Descricao.Substring(0, 6000)
                 : dto.Descricao,
-            InicioEsperado =  dto.InicioEsperado,
+            InicioEsperado = dto.InicioEsperado,
             FimEsperado = dto.FimEsperado,
             IdCTM = dto.IdCTM,
             IdTipoManutencao = dto.IdTipoManutencao

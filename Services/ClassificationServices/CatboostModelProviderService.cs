@@ -26,7 +26,16 @@ public class CatboostModelProviderService
             return new List<string?>();
         }
 
-        return Directory.GetDirectories(_basePath).Select(Path.GetFileName).ToList();
+        var modelos = Directory.GetDirectories(_basePath).Select(Path.GetFileName).ToList();
+
+        // Se existirem os arquivos de modelo padrão diretamente na pasta base, adiciona como opção
+        if (File.Exists(Path.Combine(_basePath, "catboost_model.cbm")) && 
+            File.Exists(Path.Combine(_basePath, "model_meta.json")))
+        {
+            modelos.Add("catboost_model.cbm");
+        }
+
+        return modelos;
     }
 
     /// <summary>
@@ -47,7 +56,19 @@ public class CatboostModelProviderService
 
             if (!File.Exists(modelPath) || !File.Exists(metaPath))
             {
-                throw new FileNotFoundException($"Os ficheiros não foram encontrados para o modelo: {modelo}");
+                // se 'modelo' for "catboost_model.cbm" ou se os arquivos existirem diretamente na pasta base
+                var directModelPath = Path.Combine(_basePath, "catboost_model.cbm");
+                var directMetaPath = Path.Combine(_basePath, "model_meta.json");
+
+                if (File.Exists(directModelPath) && File.Exists(directMetaPath))
+                {
+                    modelPath = directModelPath;
+                    metaPath = directMetaPath;
+                }
+                else
+                {
+                    throw new FileNotFoundException($"Os ficheiros não foram encontrados para o modelo: {modelo}");
+                }
             }
 
             var cbm = new Cbm(modelPath);

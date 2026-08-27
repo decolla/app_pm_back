@@ -223,8 +223,17 @@ public class ClassificationService<T> where T : class, IClassifiable
 
             if (string.IsNullOrWhiteSpace(nomeModelo))
             {
-                throw new InvalidOperationException(
-                    "Nenhum modelo CatBoost foi selecionado e nenhum modelo padrão está configurado.");
+                // se houver o modelo padrão no disco, usa-o
+                var directModelPath = Path.Combine(AppContext.BaseDirectory, "CatBoost", "Modelos", "catboost_model.cbm");
+                if (File.Exists(directModelPath))
+                {
+                    nomeModelo = "catboost_model.cbm";
+                }
+                else
+                {
+                    throw new InvalidOperationException(
+                        "Nenhum modelo CatBoost foi selecionado e nenhum modelo padrão está configurado.");
+                }
             }
         }
 

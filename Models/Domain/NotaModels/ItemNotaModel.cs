@@ -32,7 +32,7 @@ public class ItemNotaModel : IAuditable
     /// <value>Máximo de 150 caracteres.</value>
     [MaxLength(150)]
     [Display(Name = "Componente")]
-    public string? Componente { get; set; }
+    public ComponentType? Componente { get; set; }
 
     /// <summary>
     /// Descrição do sintoma observado no componente.

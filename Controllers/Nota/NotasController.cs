@@ -273,7 +273,7 @@ public class NotasController : ControllerBase
     /// <summary>
     /// Retorna os itens de uma nota 
     /// </summary>
-    [HttpGet("{notaId:long}/items")]
+    [HttpGet("{notaId:long}/itens")]
     public async Task<IActionResult> BuscarItensNota(long notaId)
     {
         try

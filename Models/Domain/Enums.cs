@@ -122,7 +122,13 @@ public enum ComponentType
     CommunicationInterface = 18,    
     Controller = 19,                 
     ChargeControllerPanel = 20,      
-    Plc = 21                        
+    Plc = 21,
+            
+    //ERP-New
+    ERPFilter = 22,
+    ReliefValve = 23,
+    LineValve = 24,
+    ERPMeter = 25,
 }
 
 /// <summary>

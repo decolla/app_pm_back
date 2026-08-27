@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO;
 
@@ -15,7 +16,7 @@ public class ItemNotaManutencaoDto
     [SheetColumn("Nota")] public long IdNota { get; set; }
 
     // Descricao tecnica
-    [SheetColumn("Txt.cod.part.ob")] public string? Componente { get; set; }
+    [SheetColumn("Txt.cod.part.ob")] public ComponentType? Componente { get; set; }
 
     [SheetColumn("Txt.code prob.")] public string? Sintoma { get; set; }
     
