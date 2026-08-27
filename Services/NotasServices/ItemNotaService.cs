@@ -25,27 +25,38 @@ public class ItemNotaService : BaseCrudService<ItemNotaModel>
     {
         if (itens == null || !itens.Any()) return;
 
-        var notaIds = itens.Select(i => (long?)i.IdNota).Distinct().ToList();
-        await ImportGhostHelper.EnsureNotasAsync(_context, notaIds);
+        // garante que as notas existam
+        var notaIds = itens.Select(i => i.IdNota).Distinct().ToList();
+        await ImportGhostHelper.EnsureNotasAsync(_context, notaIds.Cast<long?>().ToList());
 
-        var idsItens = itens.Select(i => i.IdItemNota).Distinct().ToList();
-        var existentes = await _context.PM_ItensNota
-            .Where(i => idsItens.Contains(i.IdItemNota))
-            .ToDictionaryAsync(i => i.IdItemNota);
+        // busca pelos itens já existentes
+        var itensExistentes = await _context.PM_ItensNota
+            .Where(i => notaIds.Contains(i.IdNota))
+            .ToListAsync(cancellationToken);
 
         var novos = new List<ItemNotaModel>();
-        foreach (var item in itens)
+        foreach (var itemTela in itens)
         {
-            if (existentes.TryGetValue(item.IdItemNota, out var existente))
+            // verifica a existência de notas com os mesmos dados
+            var existente = itensExistentes.FirstOrDefault(e => 
+                e.IdNota == itemTela.IdNota && 
+                e.Componente == itemTela.Componente && 
+                e.Sintoma == itemTela.Sintoma && 
+                e.Causa == itemTela.Causa);
+            
+            if (existente != null)
             {
-                ImportMergeHelper.MergeNonEmpty(existente, item);
+                // caso de item existente
+                ImportMergeHelper.MergeNonEmpty(existente, itemTela);
             }
             else
             {
-                novos.Add(item);
+                // caso de item novo
+                novos.Add(itemTela);
+                itensExistentes.Add(itemTela);
             }
         }
-
+        
         if (novos.Any())
         {
             cancellationToken.ThrowIfCancellationRequested();
