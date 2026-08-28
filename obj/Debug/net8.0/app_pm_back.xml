@@ -380,20 +380,20 @@
             <response code="200">Sucesso ao deletar o registro.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.CriarRegraClassificacao(System.Collections.Generic.List{app_pm_back.DTO.RegraClassificacaoDto})">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.CriarRegraClassificacao(System.Collections.Generic.List{app_pm_back.DTO.RegraClassificacaoDto})">
             <summary>
             Cria uma regra de classificação por palavras para Ambas, Fichas ou Ordens
             </summary>
             <param name="regra">Regra a ser aplicada</param>
             <returns>Regra criada</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ObterRegrasDivididas">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.ObterRegrasDivididas">
             <summary>
             Obtém todas as regras divididas por sua classificação e permissão
             </summary>
             <returns>Objeto com regras divididas</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.Listar(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista as regras cadastradas com paginação.
             </summary>
@@ -403,7 +403,7 @@
             <response code="200">Sucesso ao listar registros.</response>
             <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ObterPorId(System.Int64)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.ObterPorId(System.Int64)">
             <summary>
             Obtém uma regra pelo seu identificador.
             </summary>
@@ -413,14 +413,14 @@
             <response code="400">ID fornecido inválido.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Contar">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.Contar">
             <summary>
             Obtém o total de regras cadastradas.
             </summary>
             <returns>Resultado da operação.</returns>
             <exception cref="T:System.Exception">Lançada em caso de erro interno ou falha no processamento.</exception>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Atualizar(System.Int64,app_pm_back.DTO.RegraClassificacaoDto)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.Atualizar(System.Int64,app_pm_back.DTO.RegraClassificacaoDto)">
             <summary>
             Atualiza uam regra existente.
             </summary>
@@ -430,7 +430,7 @@
             <response code="200">Sucesso ao atualizar o registro.</response>
             <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.Deletar(System.Int64)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.Deletar(System.Int64)">
             <summary>
             Exclui uma regra pelo seu identificador.
             </summary>
@@ -439,29 +439,29 @@
             <response code="200">Sucesso ao deletar o registro.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ClassificacaoPalavrasNotaCongas(app_pm_back.Models.Domain.Fichas)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.ClassificacaoPalavrasNotaCongas(app_pm_back.Models.Domain.Fichas)">
             <summary>
             Classifica para Ambas, Fichas ou Ordens com base uma lista de palavras armazenadas no banco
             </summary>
             <returns>Lista de notas atualizadas</returns>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ClassificacaoCatboostNota(app_pm_back.Models.Domain.Fichas)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.ClassificacaoCatboostNota(app_pm_back.Models.Domain.Fichas)">
             <summary>
             Classifica as Ambas, Fichas ou Ordens usando a IA catboost
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ListarModelosCatboost">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.ListarModelosCatboost">
             <summary>
             Lista os arquivos de modelo do catboost
             </summary>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.AtualizarModeloPadrao(System.String)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.AtualizarModeloPadrao(System.String)">
             <summary>
             Atualiza o modelo padrão para classificação do Catboost
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificationController.ClassificaNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{app_pm_back.Models.Domain.Fichas},app_pm_back.Models.Domain.FiltroClassificacao)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.ClassificaNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{app_pm_back.Models.Domain.Fichas},app_pm_back.Models.Domain.FiltroClassificacao)">
             <summary>
             Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
             </summary>
