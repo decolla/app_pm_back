@@ -1,6 +1,5 @@
-using System.Collections.Generic;
 
-namespace teste_catboost_cs;
+namespace app_pm_back.CatBoost;
 
 public class ModelMeta
 {

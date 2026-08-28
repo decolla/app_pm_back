@@ -11,7 +11,7 @@ namespace app_pm_back.Controllers.FichasControllers;
 
 [ApiController]
 [Route(Config.RouteConfig.BaseRoute + "/classificacao")]
-public class ClassificationController : ControllerBase
+public class ClassificacaoController : ControllerBase
 {
     private readonly RegraClassificacaoService _regraClassificacaoService;
     private readonly ILogger<FichasController> _logger;
@@ -22,7 +22,7 @@ public class ClassificationController : ControllerBase
     private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
     private readonly GenericSearchService _searchService;
 
-    public ClassificationController(
+    public ClassificacaoController(
         RegraClassificacaoService regraClassificacaoService,
         IMapper mapper,
         ILogger<FichasController> logger,

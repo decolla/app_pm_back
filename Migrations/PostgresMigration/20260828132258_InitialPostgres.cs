@@ -890,7 +890,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 27, 17, 27, 20, 184, DateTimeKind.Utc).AddTicks(7519), 2, null, null });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 28, 13, 22, 58, 335, DateTimeKind.Utc).AddTicks(4198), 2, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

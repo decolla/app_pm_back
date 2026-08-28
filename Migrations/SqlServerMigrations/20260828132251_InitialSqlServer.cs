@@ -971,7 +971,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 27, 17, 26, 42, 566, DateTimeKind.Utc).AddTicks(6388), 2, null, null });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 28, 13, 22, 51, 480, DateTimeKind.Utc).AddTicks(5829), 2, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
