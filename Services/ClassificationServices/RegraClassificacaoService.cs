@@ -3,12 +3,15 @@ using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace app_pm_back.Services.FichasServices;
+namespace app_pm_back.Services.ClassificationServices;
 
 public class RegraClassificacaoService : BaseCrudService<RegraClassificacaoModel>
 {
-    public RegraClassificacaoService(AppDbContext context) : base(context)
+    private readonly ILogger<RegraClassificacaoService> _logger;
+    
+    public RegraClassificacaoService(AppDbContext context, ILogger<RegraClassificacaoService> logger) : base(context)
     {
+        _logger = logger;
     }
 
     /// <summary>
@@ -80,6 +83,8 @@ public class RegraClassificacaoService : BaseCrudService<RegraClassificacaoModel
             modelosProcessados.Add(model);
         }
 
+        _logger.LogInformation("RegrasClassificacaoService: CadastrarPalavrasAsync: {QuantidadePalavras} palavras cadastradas", modelosProcessados.Count);
+        
         // ef core preenche os ids
         await _context.SaveChangesAsync();
 

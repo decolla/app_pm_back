@@ -121,7 +121,7 @@ public class ClassificationService<T> where T : class, IClassifiable
         // dicionário para armazenar um cache das propriedades
         Dictionary<string, PropertyInfo> cache = new Dictionary<string, PropertyInfo>();
 
-        List<string> camposAlvos = [];
+        List<string> camposAlvos;
 
         // realiza os campos alvos dependendo do tipo de modelo
         if (typeof(T) == typeof(NotaModel))

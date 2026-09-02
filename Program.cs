@@ -7,6 +7,7 @@ using app_pm_back.Interfaces;
 using app_pm_back.Middlewares;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using app_pm_back.Services.ClassificationServices;
 using app_pm_back.Services.ExternIntegationsServices;
 using app_pm_back.Services.Manutencao;
 using app_pm_back.Services.FichasServices;

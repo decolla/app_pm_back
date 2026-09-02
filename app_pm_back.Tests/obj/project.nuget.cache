@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XvHYa5YOafbmq0rwYu3enPE2bgP6Of+euQyz6uE2t7ATeadPOJWuZUQRCEQGaD3BbpDy1Sp9gY9fNgj71e8e2A==",
+  "dgSpecHash": "wftGPZyZy28=",
   "success": true,
-  "projectFilePath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj",
+  "projectFilePath": "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj",
   "expectedPackageFiles": [
     "/home/decolla/.nuget/packages/automapper/12.0.1/automapper.12.0.1.nupkg.sha512",
     "/home/decolla/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/12.0.1/automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",

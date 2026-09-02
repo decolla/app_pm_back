@@ -5,6 +5,7 @@ using app_pm_back.Data;
 using app_pm_back.DTO.Restauracao;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using app_pm_back.Services.ExternIntegationsServices;
 using AutoMapper.Internal;
 using Microsoft.EntityFrameworkCore;
 

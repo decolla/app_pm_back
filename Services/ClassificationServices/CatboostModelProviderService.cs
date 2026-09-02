@@ -7,13 +7,15 @@ namespace app_pm_back.Services.FichasServices;
 
 public class CatboostModelProviderService
 {
+    private readonly ILogger<CatboostModelProviderService> _logger;
     private readonly IMemoryCache _cache;
     private readonly string _basePath;
 
-    public CatboostModelProviderService(IMemoryCache cache)
+    public CatboostModelProviderService(IMemoryCache cache, ILogger<CatboostModelProviderService> logger)
     {
         _cache = cache;
         _basePath = Path.Combine(AppContext.BaseDirectory, "CatBoost", "Modelos");
+        _logger = logger;
     }
 
     /// <summary>
@@ -24,6 +26,7 @@ public class CatboostModelProviderService
     {
         if (!Directory.Exists(_basePath))
         {
+            _logger.LogInformation("Nenhum modelo de catboost encontrado.");
             return new List<string?>();
         }
 
@@ -35,7 +38,8 @@ public class CatboostModelProviderService
         {
             modelos.Add("catboost_model.cbm");
         }
-
+        
+        _logger.LogInformation("{ModelosCount} Modelos encontrados", modelos.Count);
         return modelos;
     }
 
@@ -54,6 +58,8 @@ public class CatboostModelProviderService
             // se não estiver no cache, carrega do disco
             var modelPath = Path.Combine(_basePath, modelo, "catboost_model.cbm");
             var metaPath = Path.Combine(_basePath, modelo, "model_meta.json");
+            
+            _logger.LogInformation("Carregando do disco modelo {Modelo} da pasta {Pasta}", modelo, modelo);
 
             if (!File.Exists(modelPath) || !File.Exists(metaPath))
             {
@@ -70,7 +76,7 @@ public class CatboostModelProviderService
                 {
                     throw new FileNotFoundException($"Os ficheiros não foram encontrados para o modelo: {modelo}");
                 }
-            }
+            } else _logger.LogInformation("Carregando do cache modelo {Modelo} da pasta {Pasta}", modelo, _basePath);
 
             var cbm = new Cbm(modelPath);
             var metaJson = File.ReadAllText(metaPath);
@@ -83,6 +89,7 @@ public class CatboostModelProviderService
                 .SetPriority(CacheItemPriority.High);
 
             _cache.Set(cacheKey, modelTuple, cacheOptions);
+            _logger.LogInformation("Modelo {Modelo} carregado em cache com sucesso", modelo);
         }
 
         return modelTuple;

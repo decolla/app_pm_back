@@ -12,14 +12,16 @@ namespace app_pm_back.Services.FichasServices;
 public class DashboardService
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<DashboardService> _logger;
 
-    public DashboardService(AppDbContext context)
+    public DashboardService(AppDbContext context, ILogger<DashboardService> logger)
     {
+        _logger = logger;
         _context = context;
     }
 
     /// <summary>
-    /// Função principal que chamará todas as outras funções para gerar as estatísticas com base nas fichas após filtragem.
+    /// Função principal que chamará todas as outras funções para gerar as estatísticas com baKse nas fichas após filtragem.
     /// </summary>
     /// <param name="filtro">Filtro para notas e ordens</param>
     /// <returns></returns>
@@ -30,7 +32,7 @@ public class DashboardService
         List<OrdemModel> ordens = await GetOrdensAsync(filtro);
 
         var statusSemana = RelacaoStatusOrdensSemana(notas, filtro.UnidadeTempo);
-
+        
         // retorna objeto com todas as informações do Dashboard
         return new
         {
@@ -89,6 +91,8 @@ public class DashboardService
         {
             query = query.Where(n => n.IdLi == filtro.IdLi);
         }
+        
+        _logger.LogInformation("Filtro aplicado com sucesso em Notas: {filtro}", filtro);
 
         // retorna notas filtradas
         return await query.ToListAsync();
@@ -133,6 +137,8 @@ public class DashboardService
         {
             query = query.Where(n => n.IdLi == filtro.IdLi);
         }
+        
+        _logger.LogInformation("Filtro aplicado com sucesso em Ordens: {filtro}", filtro);
 
         return await query.ToListAsync();
     }
@@ -184,6 +190,8 @@ public class DashboardService
             .Select(n => n.Ordens)
             .Count(o => o.Any(oo => oo.FimReal > DateTime.Now));
 
+        _logger.LogInformation("Notas abertas com realção ao prazo geradas com suceeso.");
+        
         return new
         {
             NotasComOrdemNoPrazo = notasComOrdemNoPrazo,
@@ -228,6 +236,8 @@ public class DashboardService
         foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdLi, false);
         foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdAtivo?.ToString(), false);
 
+        _logger.LogInformation("Top (7) ocorrências de locais de insalação gerados com sucesso.");
+        
         // ordena as notas
         return liOcorrencias
             .OrderByDescending(x => x.Value)
@@ -306,6 +316,8 @@ public class DashboardService
                 NotasComOrdemAtrasadas = notasComOrdemAtrasadas
             });
         }
+        
+        _logger.LogInformation("Relação semanal de status e prazos gerados com sucesso.");
 
         return (relacaoStatus, relacaoPrazo);
     }
@@ -364,6 +376,8 @@ public class DashboardService
             .OrderByDescending(r => r.Item1.Item2 ?? r.Item2.Item2 ?? TimeSpan.MaxValue)
             .Take(7)
             .ToList();
+        
+        _logger.LogInformation("Ranking de top (7) tempos de vida gerado com sucesso.");
 
         return top;
     }

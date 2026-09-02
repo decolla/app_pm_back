@@ -1,7 +1,7 @@
-using System.Text.Json;
 using System.Net.Http.Headers;
+using System.Text.Json;
 
-namespace app_pm_back.Services;
+namespace app_pm_back.Services.ExternIntegationsServices;
 
 public class ExternIntegrationService
 {
