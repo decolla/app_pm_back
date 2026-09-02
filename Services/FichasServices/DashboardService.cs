@@ -59,43 +59,52 @@ public class DashboardService
     /// <returns>Notas filtradas</returns>
     private async Task<List<NotaModel>> GetNotasAsync(FiltroDashboardDTO filtro)
     {
-        var query = _context.PM_Notas
-            .Include(n => n.Ordens)
-            .AsNoTracking()
-            .AsQueryable();
-
-        if (filtro.Ativo.HasValue)
+        try
         {
-            query = query.Where(n => n.IdAtivo == filtro.Ativo.Value);
+            var query = _context.PM_Notas
+                .Include(n => n.Ordens)
+                .AsNoTracking()
+                .AsQueryable();
+
+            if (filtro.Ativo.HasValue)
+            {
+                query = query.Where(n => n.IdAtivo == filtro.Ativo.Value);
+            }
+
+            if (filtro.Ultimos.HasValue && filtro.Ultimos.Value > 0)
+            {
+                DateTime dataLimite;
+                if (filtro.UnidadeTempo == UnidadeTempo.Meses)
+                    dataLimite = DateTime.Now.AddMonths(-filtro.Ultimos.Value);
+                else if (filtro.UnidadeTempo == UnidadeTempo.Anos)
+                    dataLimite = DateTime.Now.AddYears(-filtro.Ultimos.Value);
+                else
+                    dataLimite = DateTime.Now.AddDays(-filtro.Ultimos.Value);
+
+                query = query.Where(n => n.DataNota >= dataLimite);
+            }
+
+            // if (filtro.NumeroRegistro.HasValue)
+            // {
+            //     query = query.Where(n => n.IdNota == filtro.NumeroRegistro.Value);
+            // }
+
+            if (!string.IsNullOrEmpty(filtro.IdLi))
+            {
+                query = query.Where(n => n.IdLi == filtro.IdLi);
+            }
+
+            _logger.LogInformation("Filtro aplicado com sucesso em Notas: {filtro}", filtro);
+
+            // retorna notas filtradas
+            return await query.ToListAsync();
         }
-
-        if (filtro.Ultimos.HasValue && filtro.Ultimos.Value > 0)
+        catch (Exception ex)
         {
-            DateTime dataLimite;
-            if (filtro.UnidadeTempo == UnidadeTempo.Meses)
-                dataLimite = DateTime.Now.AddMonths(-filtro.Ultimos.Value);
-            else if (filtro.UnidadeTempo == UnidadeTempo.Anos)
-                dataLimite = DateTime.Now.AddYears(-filtro.Ultimos.Value);
-            else
-                dataLimite = DateTime.Now.AddDays(-filtro.Ultimos.Value);
-
-            query = query.Where(n => n.DataNota >= dataLimite);
-        }
-
-        // if (filtro.NumeroRegistro.HasValue)
-        // {
-        //     query = query.Where(n => n.IdNota == filtro.NumeroRegistro.Value);
-        // }
-
-        if (!string.IsNullOrEmpty(filtro.IdLi))
-        {
-            query = query.Where(n => n.IdLi == filtro.IdLi);
+            _logger.LogError(ex, "Erro ao filtrar notas: {filtro}", filtro);
+            throw new ArgumentException("Erro ao filtrar notas: {filtro}", ex);
         }
         
-        _logger.LogInformation("Filtro aplicado com sucesso em Notas: {filtro}", filtro);
-
-        // retorna notas filtradas
-        return await query.ToListAsync();
     }
 
     /// <summary>
@@ -105,42 +114,51 @@ public class DashboardService
     /// <returns>Ordens filtradas</returns>
     private async Task<List<OrdemModel>> GetOrdensAsync(FiltroDashboardDTO filtro)
     {
-        var query = _context.PM_Ordens
-            .Include(o => o.Nota)
-            .ThenInclude(n => n.Ordens)
-            .AsQueryable();
 
-        if (filtro.Ativo.HasValue)
+        try
         {
-            query = query.Where(n => n.IdAtivo == filtro.Ativo.Value);
-        }
+            var query = _context.PM_Ordens
+                .Include(o => o.Nota)
+                .ThenInclude(n => n.Ordens)
+                .AsQueryable();
 
-        if (filtro.Ultimos.HasValue && filtro.Ultimos.Value > 0)
+            if (filtro.Ativo.HasValue)
+            {
+                query = query.Where(n => n.IdAtivo == filtro.Ativo.Value);
+            }
+
+            if (filtro.Ultimos.HasValue && filtro.Ultimos.Value > 0)
+            {
+                DateTime dataLimite;
+                if (filtro.UnidadeTempo == UnidadeTempo.Meses)
+                    dataLimite = DateTime.Now.AddMonths(-filtro.Ultimos.Value);
+                else if (filtro.UnidadeTempo == UnidadeTempo.Anos)
+                    dataLimite = DateTime.Now.AddYears(-filtro.Ultimos.Value);
+                else
+                    dataLimite = DateTime.Now.AddDays(-filtro.Ultimos.Value);
+
+                query = query.Where(n => n.DataCriacao >= dataLimite);
+            }
+
+            // if (filtro.NumeroRegistro.HasValue)
+            // {
+            //     query = query.Where(n => n.IdOrdem == filtro.NumeroRegistro.Value);
+            // }
+
+            if (!string.IsNullOrEmpty(filtro.IdLi))
+            {
+                query = query.Where(n => n.IdLi == filtro.IdLi);
+            }
+
+            _logger.LogInformation("Filtro aplicado com sucesso em Ordens: {filtro}", filtro);
+
+            return await query.ToListAsync();
+        }
+        catch (Exception ex)
         {
-            DateTime dataLimite;
-            if (filtro.UnidadeTempo == UnidadeTempo.Meses)
-                dataLimite = DateTime.Now.AddMonths(-filtro.Ultimos.Value);
-            else if (filtro.UnidadeTempo == UnidadeTempo.Anos)
-                dataLimite = DateTime.Now.AddYears(-filtro.Ultimos.Value);
-            else
-                dataLimite = DateTime.Now.AddDays(-filtro.Ultimos.Value);
-
-            query = query.Where(n => n.DataCriacao >= dataLimite);
+            _logger.LogError(ex, "Erro ao filtrar ordens: {filtro}", filtro);
+            throw new ArgumentException("Erro ao filtrar ordens: {filtro}", ex);
         }
-
-        // if (filtro.NumeroRegistro.HasValue)
-        // {
-        //     query = query.Where(n => n.IdOrdem == filtro.NumeroRegistro.Value);
-        // }
-
-        if (!string.IsNullOrEmpty(filtro.IdLi))
-        {
-            query = query.Where(n => n.IdLi == filtro.IdLi);
-        }
-        
-        _logger.LogInformation("Filtro aplicado com sucesso em Ordens: {filtro}", filtro);
-
-        return await query.ToListAsync();
     }
 
     /// <summary>
