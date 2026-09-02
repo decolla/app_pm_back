@@ -6,6 +6,7 @@ using app_pm_back.Data;
 using app_pm_back.DTO;
 using app_pm_back.Interfaces;
 using app_pm_back.Models.Domain;
+using app_pm_back.Services.GenericServices;
 using Microsoft.EntityFrameworkCore;
 using teste_catboost_cs;
 

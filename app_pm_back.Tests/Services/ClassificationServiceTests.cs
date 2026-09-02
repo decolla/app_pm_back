@@ -8,6 +8,7 @@ using app_pm_back.Services.FichasServices;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using app_pm_back.Services.GenericServices;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
@@ -48,7 +49,8 @@ public class ClassificationServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var configService = new ConfiguracaoGlobalService(context);
+        var configService =
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory()));
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
         var catboostProvider = new CatboostModelProviderService(memoryCache, null);
         var service = new ClassificationService<NotaModel>(context, configService, catboostProvider);
@@ -89,7 +91,8 @@ public class ClassificationServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var configService = new ConfiguracaoGlobalService(context);
+        var configService =
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory()));
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
         var catboostProvider = new CatboostModelProviderService(memoryCache, null);
         var service = new ClassificationService<NotaModel>(context, configService, catboostProvider);
@@ -107,7 +110,8 @@ public class ClassificationServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var configService = new ConfiguracaoGlobalService(context);
+        var configService =
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory()));
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
         var catboostProvider = new CatboostModelProviderService(memoryCache, null);
         var service = new ClassificationService<NotaModel>(context, configService, catboostProvider);
@@ -136,7 +140,8 @@ public class ClassificationServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var configService = new ConfiguracaoGlobalService(context);
+        var configService =
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory()));
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
         var catboostProvider = new CatboostModelProviderService(memoryCache, null);
         var service = new ClassificationService<NotaModel>(context, configService, catboostProvider);

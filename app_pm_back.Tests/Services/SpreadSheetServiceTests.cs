@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using app_pm_back.Services.GenericServices;
 
 namespace app_pm_back.Tests.Services;
 
@@ -30,7 +31,8 @@ public class SpreadSheetServiceTests
         return new AppDbContext(options);
     }
 
-    private (Mock<IConfiguration> mockConfig, Mock<ILogger<DadosRenovacaoService>> mockLogger, HttpClient httpClient) CreateDadosRenovacaoDeps()
+    private (Mock<IConfiguration> mockConfig, Mock<ILogger<DadosRenovacaoService>> mockLogger, HttpClient httpClient)
+        CreateDadosRenovacaoDeps()
     {
         var mockConfig = new Mock<IConfiguration>();
         mockConfig.Setup(c => c["APIs:APM"]).Returns("http://fake-apm");
@@ -46,15 +48,17 @@ public class SpreadSheetServiceTests
         Environment.SetEnvironmentVariable("DATABASE_SCHEMA", "cg");
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        
+
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
-        
+
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
-        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
+        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object,
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory())),
+            httpClient);
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
@@ -77,7 +81,7 @@ public class SpreadSheetServiceTests
         // Assert
         await act.Should().ThrowAsync<ArgumentException>()
             .WithMessage("PEDRO ADVERTE: Importação de planilhas desabilitada para o schema CG.");
-            
+
         // Reset env
         Environment.SetEnvironmentVariable("DATABASE_SCHEMA", null);
     }
@@ -91,7 +95,8 @@ public class SpreadSheetServiceTests
         using var context = CreateDbContext(dbName);
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s =>
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "NOTA",
@@ -104,7 +109,9 @@ public class SpreadSheetServiceTests
         var mockOperacaoService = new Mock<OperacaoService>(context);
 
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
-        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
+        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object,
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory())),
+            httpClient);
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
@@ -127,7 +134,7 @@ public class SpreadSheetServiceTests
         // Assert
         await act.Should().ThrowAsync<ArgumentException>()
             .WithMessage("Planilha reconhecida, mas sem dados válidos.");
-            
+
         Environment.SetEnvironmentVariable("DATABASE_SCHEMA", null);
     }
 
@@ -147,7 +154,8 @@ public class SpreadSheetServiceTests
         };
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s =>
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "NOTA",
@@ -155,15 +163,18 @@ public class SpreadSheetServiceTests
             });
 
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
-        mockNotaService.Setup(s => s.ImportarNotasEmLoteSeguroAsync(It.IsAny<List<NotaModel>>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+        mockNotaService.Setup(s => s.ImportarNotasEmLoteSeguroAsync(It.IsAny<List<NotaModel>>(), It.IsAny<bool>(),
+                It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
-        
+
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
-        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
+        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object,
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory())),
+            httpClient);
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
@@ -186,7 +197,8 @@ public class SpreadSheetServiceTests
         // Assert
         result.Should().Be(2); // Deduplicated count
         mockNotaService.Verify(s => s.ImportarNotasEmLoteSeguroAsync(
-            It.Is<List<NotaModel>>(list => list.Count == 2 && list.Any(n => n.IdNota == 1) && list.Any(n => n.IdNota == 3)),
+            It.Is<List<NotaModel>>(list =>
+                list.Count == 2 && list.Any(n => n.IdNota == 1) && list.Any(n => n.IdNota == 3)),
             true,
             false,
             It.IsAny<CancellationToken>()
@@ -204,7 +216,8 @@ public class SpreadSheetServiceTests
         using var context = CreateDbContext(dbName);
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s =>
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ORDEM",
@@ -215,9 +228,11 @@ public class SpreadSheetServiceTests
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
-        
+
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
-        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
+        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object,
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory())),
+            httpClient);
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
@@ -255,12 +270,14 @@ public class SpreadSheetServiceTests
         var ordens = new List<OrdemModel>
         {
             new OrdemModel { IdOrdem = 1, NumeroOrdem = 5001, DescricaoBreve = "Ordem 1", DataCriacao = DateTime.Now },
-            new OrdemModel { IdOrdem = 2, NumeroOrdem = 5001, DescricaoBreve = "Ordem 1 Dup", DataCriacao = DateTime.Now },
+            new OrdemModel
+                { IdOrdem = 2, NumeroOrdem = 5001, DescricaoBreve = "Ordem 1 Dup", DataCriacao = DateTime.Now },
             new OrdemModel { IdOrdem = 3, NumeroOrdem = 5002, DescricaoBreve = "Ordem 2", DataCriacao = DateTime.Now }
         };
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s =>
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ORDEM",
@@ -269,15 +286,19 @@ public class SpreadSheetServiceTests
 
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
-        mockOrdemService.Setup(s => s.ImportarOrdensEmLoteSeguroAsync(It.IsAny<List<OrdemModel>>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+        mockOrdemService.Setup(s => s.ImportarOrdensEmLoteSeguroAsync(It.IsAny<List<OrdemModel>>(), It.IsAny<bool>(),
+                It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
-        
+
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
-        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
-        mockDadosRenovacaoService.Setup(s => s.ImportarDadosOrdemAsync(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
+        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object,
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory())),
+            httpClient);
+        mockDadosRenovacaoService
+            .Setup(s => s.ImportarDadosOrdemAsync(It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(2);
 
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
@@ -310,7 +331,9 @@ public class SpreadSheetServiceTests
             It.IsAny<CancellationToken>()
         ), Times.Once);
         mockSyncApmService.Verify(s => s.SynchronizeApmAsync(It.IsAny<CancellationToken>()), Times.Once);
-        mockDadosRenovacaoService.Verify(s => s.ImportarDadosOrdemAsync(It.Is<List<long>>(l => l.Count == 2), It.IsAny<CancellationToken>()), Times.Once);
+        mockDadosRenovacaoService.Verify(
+            s => s.ImportarDadosOrdemAsync(It.Is<List<long>>(l => l.Count == 2), It.IsAny<CancellationToken>()),
+            Times.Once);
 
         Environment.SetEnvironmentVariable("DATABASE_SCHEMA", null);
     }
@@ -324,7 +347,8 @@ public class SpreadSheetServiceTests
         using var context = CreateDbContext(dbName);
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s =>
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ITEM",
@@ -335,9 +359,11 @@ public class SpreadSheetServiceTests
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
-        
+
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
-        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
+        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object,
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory())),
+            httpClient);
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
@@ -383,7 +409,8 @@ public class SpreadSheetServiceTests
         };
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s =>
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ITEM",
@@ -392,14 +419,17 @@ public class SpreadSheetServiceTests
 
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
-        
+
         var mockItemNotaService = new Mock<ItemNotaService>(context);
-        mockItemNotaService.Setup(s => s.ImportarItensEmLoteSeguroAsync(It.IsAny<List<ItemNotaModel>>(), It.IsAny<CancellationToken>()))
+        mockItemNotaService.Setup(s =>
+                s.ImportarItensEmLoteSeguroAsync(It.IsAny<List<ItemNotaModel>>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
         var mockOperacaoService = new Mock<OperacaoService>(context);
 
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
-        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
+        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object,
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory())),
+            httpClient);
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(
@@ -421,7 +451,7 @@ public class SpreadSheetServiceTests
 
         // Assert
         result.Should().Be(1);
-        
+
         // The service should map the item's IdNota to the database internal Id (50)
         itens.First().IdNota.Should().Be(50);
         mockItemNotaService.Verify(s => s.ImportarItensEmLoteSeguroAsync(
@@ -441,7 +471,8 @@ public class SpreadSheetServiceTests
         using var context = CreateDbContext(dbName);
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        mockSpreadsheetService.Setup(s => s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+        mockSpreadsheetService.Setup(s =>
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "DESCONHECIDO"
@@ -451,9 +482,11 @@ public class SpreadSheetServiceTests
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
-        
+
         var (mockConfig, mockLogger, httpClient) = CreateDadosRenovacaoDeps();
-        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object, new ConfiguracaoGlobalService(context), httpClient);
+        var mockDadosRenovacaoService = new Mock<DadosRenovacaoService>(context, mockLogger.Object, mockConfig.Object,
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory())),
+            httpClient);
         var mockSyncApmService = new Mock<SynchronizeAPMService>(context, null!, null!);
 
         var service = new ImportSheetService(

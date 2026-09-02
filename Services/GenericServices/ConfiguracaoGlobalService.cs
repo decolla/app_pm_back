@@ -3,15 +3,17 @@ using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace app_pm_back.Services;
+namespace app_pm_back.Services.GenericServices;
 
 public class ConfiguracaoGlobalService
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<ConfiguracaoGlobalService> _logger;
 
-    public ConfiguracaoGlobalService(AppDbContext context)
+    public ConfiguracaoGlobalService(AppDbContext context, ILogger<ConfiguracaoGlobalService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public async Task<ConfiguracaoGlobalModel> ObterConfiguracaoAsync()
@@ -41,6 +43,8 @@ public class ConfiguracaoGlobalService
         config.ModificadoPorUsuario = usuario;
         
         await _context.SaveChangesAsync();
+        
+        _logger.LogInformation("Configuração global salva com sucesso: {config}", config);
     }
 
     public async Task SalvarModeloCatboost(string nomeModelo)

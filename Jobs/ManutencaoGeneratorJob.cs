@@ -1,6 +1,7 @@
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using app_pm_back.Services.GenericServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Jobs;

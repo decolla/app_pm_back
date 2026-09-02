@@ -5,6 +5,7 @@ using app_pm_back.DTO;
 using app_pm_back.Services.Extensions;
 using app_pm_back.Models.Domain;
 using app_pm_back.DTO.Restauracao;
+using app_pm_back.Services.GenericServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services.FichasServices;
