@@ -34,6 +34,12 @@ spec:
               value: "Server=10.3.192.199;Port=5432;Database=postgres;User Id=postgres;Password=42rI1FxGCOuv"
             - name: TWINS_KEY
               value: "Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$x8y"
+            - name: Keycloak__ClientId
+                  "comgas§pm"
+            - name: Keycloak__Url
+              value: "$(KEYCLOAK__URL)"
+            - name: Keycloak__Authority
+              value: "$(KEYCLOAK__AUTHORITY)"
           envFrom:
           - configMapRef:
               name: env-config
