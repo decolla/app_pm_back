@@ -12,6 +12,11 @@ services:
       ASPNETCORE_HTTPS_PORT: 60135
       DATABASE_SCHEMA: ${SCHEMA}
       TWINS_KEY: ${TWINS_KEY}
+      SCHEMA: ${SCHEMA}
+#      Services__APM: ${APM}
+      Keycloak__Url: ${KeycloakUrl:-http://10.3.192.199:8092}
+      Keycloak__ClientId: ${KeycloakClientId:-lri§gerencia_ied}
+      Keycloak__Realm: ${KeycloakRealm:-portal}
       ConnectionStrings__DefaultConnection: ${PHYSIS_POSTGRESQL}; Include Error Detail=True
 #    depends_on:
 #      postgres:

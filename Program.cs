@@ -14,6 +14,7 @@ using app_pm_back.Services.FichasServices;
 using app_pm_back.Services.GenericServices;
 using Hangfire;
 using Hangfire.PostgreSql;
+using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -62,6 +63,11 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 //  Memory Cache para LinhaTemporal
 builder.Services.AddMemoryCache();
+
+// KEYCLOAK
+
+builder.Services.AddAuthorization();
+builder.Services.AddKeycloakAuthentication(builder.Configuration, "APIs:APM");
 
 var databaseSchema = app_pm_back.Config.RouteConfig.GetDatabaseSchema();
 
@@ -295,6 +301,9 @@ app.UseSwaggerUI();
 
 // permite que o angular realize 
 app.UseCors("AllowAll");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // app.UseHttpsRedirection();
 

@@ -64,6 +64,18 @@
               "target": "Package",
               "version": "[1.8.23, )"
             },
+            "Keycloak.AuthServices.Authentication": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "Keycloak.AuthServices.Sdk": {
+              "target": "Package",
+              "version": "[2.7.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.6, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.23, )"
@@ -81,6 +93,10 @@
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
               "version": "[8.0.24, )"
+            },
+            "Microsoft.Extensions.Configuration.Json": {
+              "target": "Package",
+              "version": "[8.0.1, )"
             },
             "Microsoft.IdentityModel.Tokens": {
               "target": "Package",

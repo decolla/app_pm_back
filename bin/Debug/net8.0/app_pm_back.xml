@@ -217,7 +217,7 @@
             Controller para configurações globais do sistema.
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.ConfiguracaoGlobalController.#ctor(app_pm_back.Services.ConfiguracaoGlobalService,app_pm_back.Interfaces.IUserContext)">
+        <member name="M:app_pm_back.Controllers.ConfiguracaoGlobalController.#ctor(app_pm_back.Services.GenericServices.ConfiguracaoGlobalService,app_pm_back.Interfaces.IUserContext)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.ConfiguracaoGlobalController"/>.
             </summary>
@@ -4375,7 +4375,7 @@
             </summary>
             <typeparam name="T">Tipo genérico para qualquer parâmetro classificável (nota ou ordem)</typeparam>
         </member>
-        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ConfiguracaoGlobalService,app_pm_back.Services.FichasServices.CatboostModelProviderService)">
+        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.GenericServices.ConfiguracaoGlobalService,app_pm_back.Services.FichasServices.CatboostModelProviderService)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.FichasServices.ClassificationService`1"/>.
             </summary>
@@ -4413,25 +4413,12 @@
             <param name="columnName">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Services.FichasServices.RegraClassificacaoService.ObterRegrasDivididasAsync">
-            <summary>
-            Obtém todas as regras divididas por sua classificação e permissão
-            </summary>
-            <returns>Objeto com fichas divididas</returns>
-        </member>
-        <member name="M:app_pm_back.Services.FichasServices.RegraClassificacaoService.CadastrarPalavrasAsync(System.Collections.Generic.List{app_pm_back.DTO.RegraClassificacaoDto})">
-            <summary>
-            Cadastra ou atualiza as palavras
-            </summary>
-            <param name="palavras">Lista de palavras a serem cadastradas</param>
-            <returns>Lista de palavras cadastradas</returns>
-        </member>
         <member name="T:app_pm_back.Services.FichasServices.DadosRenovacaoService">
             <summary>
             Classe DadosRenovacaoService.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.FichasServices.DadosRenovacaoService},Microsoft.Extensions.Configuration.IConfiguration,app_pm_back.Services.ConfiguracaoGlobalService,System.Net.Http.HttpClient)">
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.#ctor(app_pm_back.Data.AppDbContext,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.FichasServices.DadosRenovacaoService},Microsoft.Extensions.Configuration.IConfiguration,app_pm_back.Services.GenericServices.ConfiguracaoGlobalService,System.Net.Http.HttpClient)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.FichasServices.DadosRenovacaoService"/>.
             </summary>
@@ -4528,7 +4515,7 @@
         </member>
         <member name="M:app_pm_back.Services.FichasServices.DashboardService.GetDashboardDataAsync(app_pm_back.DTO.Buscas.FiltroDashboardDTO)">
             <summary>
-            Função principal que chamará todas as outras funções para gerar as estatísticas com base nas fichas após filtragem.
+            Função principal que chamará todas as outras funções para gerar as estatísticas com baKse nas fichas após filtragem.
             </summary>
             <param name="filtro">Filtro para notas e ordens</param>
             <returns></returns>
@@ -4620,18 +4607,31 @@
             Resolve e prepara os vínculos de chaves estrangeiras entre Ordens e Notas antes da inserção no banco de dados.
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.ClassificationServices.RegraClassificacaoService.ObterRegrasDivididasAsync">
+            <summary>
+            Obtém todas as regras divididas por sua classificação e permissão
+            </summary>
+            <returns>Objeto com fichas divididas</returns>
+        </member>
+        <member name="M:app_pm_back.Services.ClassificationServices.RegraClassificacaoService.CadastrarPalavrasAsync(System.Collections.Generic.List{app_pm_back.DTO.RegraClassificacaoDto})">
+            <summary>
+            Cadastra ou atualiza as palavras
+            </summary>
+            <param name="palavras">Lista de palavras a serem cadastradas</param>
+            <returns>Lista de palavras cadastradas</returns>
+        </member>
         <member name="M:app_pm_back.Services.Extensions.QueryExtensions.AplicarOrdenacao``1(System.Linq.IQueryable{``0},Microsoft.EntityFrameworkCore.DbContext)">
             <summary>
             Aplica uma ordenação padrão a uma consulta com base na chave primária da entidade.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.ExternIntegrationService.#ctor(System.Net.Http.HttpClient)">
+        <member name="M:app_pm_back.Services.ExternIntegationsServices.ExternIntegrationService.#ctor(System.Net.Http.HttpClient)">
             <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ExternIntegrationService"/>.
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ExternIntegationsServices.ExternIntegrationService"/>.
             </summary>
             <param name="httpClient"></param>
         </member>
-        <member name="M:app_pm_back.Services.ExternIntegrationService.GetDataAsync(System.String,System.Threading.CancellationToken)">
+        <member name="M:app_pm_back.Services.ExternIntegationsServices.ExternIntegrationService.GetDataAsync(System.String,System.Threading.CancellationToken)">
             <summary>
             Obtém dados de uma rota externa.
             </summary>
@@ -4639,7 +4639,7 @@
             <param name="cancellationToken">Token de cancelamento</param>
             <returns></returns>
         </member>
-        <member name="M:app_pm_back.Services.ExternIntegrationService.PostDataAsync(System.String,System.Object,System.Threading.CancellationToken)">
+        <member name="M:app_pm_back.Services.ExternIntegationsServices.ExternIntegrationService.PostDataAsync(System.String,System.Object,System.Threading.CancellationToken)">
             <summary>
             Envia dados para uma rota externa.
             </summary>
@@ -4653,7 +4653,7 @@
             Sincroniza os dados de APM com as notas e ordens de serviço do sistema.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ExternIntegrationService,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService})">
+        <member name="M:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.ExternIntegationsServices.ExternIntegrationService,Microsoft.Extensions.Logging.ILogger{app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService})">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.ExternIntegationsServices.SynchronizeAPMService"/>.
             </summary>
