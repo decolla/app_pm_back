@@ -49,7 +49,7 @@ public class OrdemDto
 
     [SheetColumn("Dt.real fim")] public DateTime? FimReal { get; set; }
 
-    [SheetColumn("Texto breve")] public ComponentType? IdAtivo { get; set; }
+    [SheetColumn("Texto breve")] public List<ComponentType>? IdsAtivo { get; set; }
 
     [SheetColumn("Loc.instalação")] public string? IdLi { get; set; }
 

@@ -116,7 +116,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                     nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraLI;
                     _logger.LogDebug("Nota {IdNota} marcada como RestauraLI por texto (renovação)", nota.IdNota);
                 }
-                else if (temTroca && nota.IdAtivo.HasValue)
+                else if (temTroca && nota.IdsAtivo.Any())
                 {
                     nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
                     _logger.LogDebug("Nota {IdNota} marcada como RestauraAtivo por texto (troca)", nota.IdNota);
@@ -124,11 +124,11 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                 else if (notasComItensRenovacao.Contains(nota.IdNota))
                 {
                     // Se as regras de texto não pegaram, cai na regra de item (fallback)
-                    if (nota.IdAtivo.HasValue)
+                    if (nota.IdsAtivo.Any())
                     {
                         nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
                         _logger.LogDebug("Nota {IdNota} marcada como RestauraAtivo pelo Item (IdAtivo={IdAtivo})",
-                            nota.IdNota, nota.IdAtivo);
+                            nota.IdNota, nota.IdsAtivo);
                     }
                     else if (!string.IsNullOrWhiteSpace(nota.IdLi))
                     {
@@ -218,7 +218,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                         ordem.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraLI;
                         _logger.LogDebug("Ordem {IdOrdem} marcada como RestauraLI", ordem.IdOrdem);
                     }
-                    else if (temTroca && ordem.IdAtivo.HasValue)
+                    else if (temTroca && ordem.IdsAtivo.Any())
                     {
                         ordem.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
                         _logger.LogDebug("Ordem {IdOrdem} marcada como RestauraAtivo", ordem.IdOrdem);
@@ -268,7 +268,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         {
             //Uma estrutura de dados comum para evitar duplicar toda a lógica de loops e lotes
             var itensParaProcessar =
-                new List<(ConfiabilidadeRestaurada? Conf, ComponentType? Ativo, long? NotaId, long? OrdemId, DateTime
+                new List<(ConfiabilidadeRestaurada? Conf, List<ComponentType>? Ativo, long? NotaId, long? OrdemId, DateTime
                     Data, OrigemUR Origem, string Li, Classificacao Classif)>();
 
             //Chunk para AMBOS os cenários, garantindo segurança contra limites do banco de dados
@@ -282,7 +282,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                         .ToListAsync();
 
                     itensParaProcessar.AddRange(notasLote.Select(n => (
-                        n.ConfiabilidadeRestaurada, n.IdAtivo, (long?)n.IdNota, (long?)null,
+                        n.ConfiabilidadeRestaurada, n.IdsAtivo, (long?)n.IdNota, (long?)null,
                         n.DataNota ?? DateTime.UtcNow, OrigemUR.Nota, n.IdLi ?? string.Empty, n.Classificacao
                     )));
                 }
@@ -293,7 +293,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                         .ToListAsync();
 
                     itensParaProcessar.AddRange(ordensLote.Select(o => (
-                        o.ConfiabilidadeRestaurada, o.IdAtivo, (long?)null, (long?)o.IdOrdem,
+                        o.ConfiabilidadeRestaurada, o.IdsAtivo, (long?)null, (long?)o.IdOrdem,
                         o.DataCriacao ?? DateTime.UtcNow, OrigemUR.Ordem, o.IdLi ?? string.Empty, o.Classificacao
                     )));
                 }
@@ -371,7 +371,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
     /// <returns>A quantidade de registros inseridos ou atualizados imediatamente</returns>
     private async Task<int> ProcessarPorConfiabilidadeAsync(
         ConfiabilidadeRestaurada? confiabilidade,
-        ComponentType? idAtivo,
+        List<ComponentType>? idsAtivo,
         long? idNota,
         long? idOrdem,
         DateTime dataSource,
@@ -391,20 +391,23 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
         {
             // OTIMIZAÇÃO: Removemos o if/else redundante. 
             // O método já aceita idAtivo nulo, então repassamos o valor diretamente.
-            if (idAtivo.HasValue)
-                _logger.LogDebug("Processando RestauraAtivo para IdAtivo={IdAtivo}", idAtivo.Value);
+            if (idsAtivo != null && idsAtivo.Any())
+                _logger.LogDebug("Processando RestauraAtivo para IdAtivo={IdAtivo}", idsAtivo);
             else
                 _logger.LogWarning("RestauraAtivo com IdAtivo nulo. Gravando com IdAtivo = null na LI={IdLi}", idLi);
 
-            inseridos = await InserirOuAtualizarPorAtivoAsync(
-                idAtivo: idAtivo, // ← Passa o parâmetro anulável direto
-                idNota,
-                idOrdem,
-                dataSource,
-                origem,
-                idLi,
-                tipoDados
-            );
+            foreach (var ativo in idsAtivo)
+            {
+                inseridos += await InserirOuAtualizarPorAtivoAsync(
+                    idAtivo: ativo, // Passa o ativo atual do loop
+                    idNota,
+                    idOrdem,
+                    dataSource,
+                    origem,
+                    idLi,
+                    tipoDados
+                );
+            }
         }
         else if (confiabilidade == ConfiabilidadeRestaurada.RestauraLI)
         {

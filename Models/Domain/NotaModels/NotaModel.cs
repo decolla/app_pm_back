@@ -266,7 +266,7 @@ public class NotaModel : IClassifiable, IAuditable
     /// Identifica qual equipamento ou item está relacionado à ocorrência.
     /// </summary>
     /// <example>150</example>
-    public ComponentType? IdAtivo { get; set; }
+    public List<ComponentType>? IdsAtivo { get; set; }
     
     /// <summary>
     /// Chave estrangeira para a localização de instalação do ativo.

@@ -256,8 +256,8 @@ public class GenericSearchService
                 .Cast<ComponentType?>()
                 .ToList();
 
-            notasQuery = notasQuery.Where(n => listaAtivosConvertida.Contains(n.IdAtivo));
-            ordensQuery = ordensQuery.Where(o => listaAtivosConvertida.Contains(o.IdAtivo));
+            notasQuery = notasQuery.Where(n => n.IdsAtivo.Any(ativo => listaAtivosConvertida.Contains(ativo)));
+            ordensQuery = ordensQuery.Where(o => o.IdsAtivo.Any(ativo => listaAtivosConvertida.Contains(ativo)));
         }
 
         DateTime? notaDataInicio = buscaType.GetProperty("NotaDataInicio")?.GetValue(busca) as DateTime?;
@@ -337,8 +337,8 @@ public class GenericSearchService
 
         if (buscaType.GetProperty("Componente")?.GetValue(busca) is ComponentType componente)
         {
-            notasQuery = notasQuery.Where(n => n.IdAtivo == componente);
-            ordensQuery = ordensQuery.Where(o => o.IdAtivo == componente);
+            notasQuery = notasQuery.Where(n => n.IdsAtivo.Contains(componente));
+            ordensQuery = ordensQuery.Where(o => o.IdsAtivo.Contains(componente));
         }
 
         if (buscaType.GetProperty("DataInicio")?.GetValue(busca) is DateTime dataInicio)
@@ -513,12 +513,12 @@ public class GenericSearchService
     public async Task<object?> AtivoGerald(ComponentType ativo)
     {
         OrdemModel? ultimaOrdem = await _ordemModels
-            .Where(o => o.IdAtivo == ativo)
+            .Where(o => o.IdsAtivo.Contains(ativo))
             .OrderByDescending(o => o.DataCriacao)
             .FirstOrDefaultAsync();
 
         NotaModel? ultimaNota = await _notaModels
-            .Where(o => o.IdAtivo == ativo)
+            .Where(o => o.IdsAtivo.Contains(ativo)) 
             .OrderByDescending(o => o.DataAvaria)
             .FirstOrDefaultAsync();
 

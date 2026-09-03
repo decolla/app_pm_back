@@ -129,7 +129,7 @@ public class NotaService : BaseCrudService<NotaModel>
     {
         var query = _dbSet.AsQueryable();
 
-        query = query.Where(n => n.IdAtivo == ativo);
+        query = query.Where(n => n.IdsAtivo.Contains(ativo));
 
         var fichas = await query.Select(n => new
         {

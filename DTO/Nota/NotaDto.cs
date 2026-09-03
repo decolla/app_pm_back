@@ -41,7 +41,7 @@ public class NotaDto
 
     [SheetColumn("Fim avaria")] public DateTime? FimDesejado { get; set; }
 
-    [SheetColumn("Txt.code codif.")] public ComponentType? IdAtivo { get; set; }
+    [SheetColumn("Txt.code codif.")] public List<ComponentType>? IdsAtivo { get; set; }
 
     [SheetColumn("Loc.instalação")] public string? IdLi { get; set; }
 

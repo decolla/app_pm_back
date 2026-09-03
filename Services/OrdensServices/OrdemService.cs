@@ -134,7 +134,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
     {
         var query = _dbSet.AsQueryable();
 
-        query = query.Where(n => n.Nota != null && n.Nota.IdAtivo == ativo);
+        query = query.Where(n => n.Nota != null && n.Nota.IdsAtivo.Contains(ativo));
 
         var fichas = await query.Select(n => new
         {
@@ -269,7 +269,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
             Classificacao = nota.Classificacao,
             MetodoClassificacao = nota.MetodoClassificacao,
             ConfiabilidadeRestaurada = nota.ConfiabilidadeRestaurada,
-            IdAtivo = nota.IdAtivo,
+            IdsAtivo = nota.IdsAtivo,
             IdGpm = nota.IdGpm,
             FimPlanejado = nota.FimDesejado,
         };

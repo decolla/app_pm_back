@@ -196,7 +196,7 @@ public class OrdemModel : IClassifiable, IAuditable
     /// Este campo armazena apenas o ID do ativo, sem relacionamento direto no EF.
     /// </summary>
     /// <example>5001, 10025</example>
-    public ComponentType? IdAtivo { get; set; }
+    public List<ComponentType>? IdsAtivo { get; set; }
     
     /// <summary>
     /// Chave estrangeira para a localização de instalação do ativo.

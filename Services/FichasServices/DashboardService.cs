@@ -68,7 +68,7 @@ public class DashboardService
 
             if (filtro.Ativo.HasValue)
             {
-                query = query.Where(n => n.IdAtivo == filtro.Ativo.Value);
+                query = query.Where(n => n.IdsAtivo.Contains(filtro.Ativo.Value));
             }
 
             if (filtro.Ultimos.HasValue && filtro.Ultimos.Value > 0)
@@ -124,7 +124,7 @@ public class DashboardService
 
             if (filtro.Ativo.HasValue)
             {
-                query = query.Where(n => n.IdAtivo == filtro.Ativo.Value);
+                query = query.Where(n => n.IdsAtivo.Contains(filtro.Ativo.Value));
             }
 
             if (filtro.Ultimos.HasValue && filtro.Ultimos.Value > 0)
@@ -250,9 +250,9 @@ public class DashboardService
 
         // chama a função para cada nota e ordem
         foreach (var nota in notas) ProcessarOcorrencia(nota.IdLi, true);
-        foreach (var nota in notas) ProcessarOcorrencia(nota.IdAtivo?.ToString(), true);
+        foreach (var nota in notas) ProcessarOcorrencia(nota.IdsAtivo?.ToString(), true);
         foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdLi, false);
-        foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdAtivo?.ToString(), false);
+        foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdsAtivo?.ToString(), false);
 
         _logger.LogInformation("Top (7) ocorrências de locais de insalação gerados com sucesso.");
         

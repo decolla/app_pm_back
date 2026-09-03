@@ -122,11 +122,8 @@ public class SynchronizeAPMService
             {
                 if (nota.IdLi != null && (dnsByName.TryGetValue(nota.IdLi, out var duple) || dnsBySap.TryGetValue(nota.IdLi, out duple)))
                 {
-                    if (duple.ComponentTypes != null && !duple.ComponentTypes.Any(a => a == nota.IdAtivo))
-                    {
-                        nota.IdAtivo = null;
+                    if (nota.IdsAtivo != null && nota.IdsAtivo.RemoveAll(a => duple.ComponentTypes?.Contains(a) != true) > 0)
                         notasAtualizadas++;
-                    }
 
                     if (nota.DnsIot != duple.DnsIot)
                     {
@@ -140,9 +137,8 @@ public class SynchronizeAPMService
             {
                 if (ordem.IdLi != null && (dnsByName.TryGetValue(ordem.IdLi, out var duple) || dnsBySap.TryGetValue(ordem.IdLi, out duple)))
                 {
-                    if (duple.ComponentTypes != null && !duple.ComponentTypes.Any(a => a == ordem.IdAtivo))
+                    if (ordem.IdsAtivo != null && ordem.IdsAtivo.RemoveAll(a => duple.ComponentTypes?.Contains(a) != true) > 0)
                     {
-                        ordem.IdAtivo = null;
                         ordensAtualizadas++;
                     }
 
