@@ -3,6 +3,7 @@ using app_pm_back.Models.Domain;
 using app_pm_back.Services.Manutencao;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace app_pm_back.Controllers;
 
@@ -11,6 +12,7 @@ namespace app_pm_back.Controllers;
 /// </summary>
 [ApiController]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/variaveis")]
+[Authorize(Policy = "View")]
 public class VariaveisController : ControllerBase
 {
     private readonly VariavelNotaService _variavelNotaService;
@@ -33,6 +35,7 @@ public class VariaveisController : ControllerBase
     /// <response code="201">Registro criado com sucesso.</response>
     /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CriarVariavel([FromBody] VariavelNotaDto dto)
@@ -163,6 +166,7 @@ public class VariaveisController : ControllerBase
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AtualizarVariavel([FromRoute] long id, [FromBody] VariavelNotaDto dto)
@@ -207,6 +211,7 @@ public class VariaveisController : ControllerBase
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeletarVariavel(long id)

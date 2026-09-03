@@ -1,10 +1,12 @@
 using app_pm_back.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Controllers;
 
 [ApiController]
+[Authorize(Policy = "View")]
 [Route(Config.RouteConfig.BaseRoute + "/auditoria")]
 public class AuditoriaController : ControllerBase
 {

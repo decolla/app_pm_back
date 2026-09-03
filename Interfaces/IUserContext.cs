@@ -8,4 +8,6 @@ public interface IUserContext
     List<long> GetEscoposDoUsuario();
 
     int? GetUsuarioIdAtual();
+
+    string? GetUsuarioIdentificador();
 }

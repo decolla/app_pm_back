@@ -1,9 +1,11 @@
-﻿using app_pm_back.Services.FichasServices;
+using app_pm_back.Services.FichasServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers.FichasControllers;
 
 [ApiController]
+[Authorize(Policy = "View")]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/linha-temporal")]
 public class LinhaTemporalController : ControllerBase
 {

@@ -64,14 +64,6 @@
               "target": "Package",
               "version": "[1.8.23, )"
             },
-            "Keycloak.AuthServices.Authentication": {
-              "target": "Package",
-              "version": "[2.5.0, )"
-            },
-            "Keycloak.AuthServices.Sdk": {
-              "target": "Package",
-              "version": "[2.7.0, )"
-            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[8.0.6, )"

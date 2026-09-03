@@ -3,6 +3,7 @@ using app_pm_back.Models.Domain;
 using app_pm_back.Services.Manutencao;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace app_pm_back.Controllers.PlanoManutencao;
 
@@ -11,6 +12,7 @@ namespace app_pm_back.Controllers.PlanoManutencao;
 /// </summary>
 [ApiController]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/planos-manutencao")]
+[Authorize(Policy = "View")]
 public class PlanoManutencaoController : ControllerBase
 {
     private readonly string _operador = "plano de mantuenção";
@@ -33,6 +35,7 @@ public class PlanoManutencaoController : ControllerBase
     /// </summary>
     /// <param name="dto">Objeto a ser adicionado</param>
     [HttpPost]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> Criar([FromBody] PlanoManutencaoDto dto)
     {
         try
@@ -152,6 +155,7 @@ public class PlanoManutencaoController : ControllerBase
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] PlanoManutencaoDto dto)
@@ -201,6 +205,7 @@ public class PlanoManutencaoController : ControllerBase
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar([FromRoute] long id)
@@ -222,6 +227,7 @@ public class PlanoManutencaoController : ControllerBase
     /// Cria um novo plano de forma simplificada a partir de nomeLi e nomeEstrategia
     /// </summary>
     [HttpPost("simplificado")]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> CriarSimplifcado([FromQuery] string nomeLi, [FromQuery] string nomeEstrategia)
     {
         try
@@ -244,6 +250,7 @@ public class PlanoManutencaoController : ControllerBase
     /// Cria plano para todos os ativos a partir de uma estratégia
     /// </summary>
     [HttpPost("plano-automatico")]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> CriarSimplifcado([FromQuery] string nomeEstrategia)
     {
         try

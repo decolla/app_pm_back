@@ -1,10 +1,7 @@
 using app_pm_back.DTO;
 using app_pm_back.Interfaces;
-using app_pm_back.Models.Domain;
-using app_pm_back.Services;
-using app_pm_back.Services.FichasServices;
 using app_pm_back.Services.GenericServices;
-using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
@@ -13,6 +10,7 @@ namespace app_pm_back.Controllers;
 /// Controller para configurações globais do sistema.
 /// </summary>
 [ApiController]
+[Authorize(Policy = "View")]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/configuracao-global")]
 public class ConfiguracaoGlobalController : ControllerBase
 {
@@ -58,13 +56,14 @@ public class ConfiguracaoGlobalController : ControllerBase
     /// <response code="200">Configuração global salva com sucesso.</response>
     /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPut]
+    [Authorize(Policy = "Manage")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateConfiguracao([FromBody] ConfiguracaoGlobalDto dto)
     {
         try
         {
-            var usuarioId = _userContext.GetUsuarioIdAtual()?.ToString() ?? "Sistema";
+            var usuarioId = _userContext.GetUsuarioIdentificador() ?? _userContext.GetUsuarioIdAtual()?.ToString() ?? "Sistema";
             await _configuracaoService.SalvarConfiguracaoAsync(dto, usuarioId);
             
             // // instancia automaticamente a classificação automática em segundo plano se a configuração permitir

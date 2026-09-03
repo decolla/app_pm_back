@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using app_pm_back.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace app_pm_back.Controllers.FichasControllers;
@@ -14,6 +15,7 @@ namespace app_pm_back.Controllers.FichasControllers;
 /// </summary>
 [ApiController]
 [Route(Config.RouteConfig.BaseRoute + "/dados-renovacao")]
+[Authorize(Policy = "View")]
 public class DadosRenovacaoController : ControllerBase
 {
     private readonly DadosRenovacaoService _dadosRenovacaoService;
@@ -38,6 +40,7 @@ public class DadosRenovacaoController : ControllerBase
     /// <param name="dto">DTO de dados renovação</param>
     /// <returns>IActionResult</returns>
     [HttpPost]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> CriarDadosRenovacao([FromBody] DadosRenovacaoDto dto)
     {
         try
@@ -138,6 +141,7 @@ public class DadosRenovacaoController : ControllerBase
     /// <param name="dto">Dto com os dados atualizados</param>
     /// <returns>IActionResult</returns>
     [HttpPut("{id}")]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> AtualizarDadosRenovacao(int id, [FromBody] DadosRenovacaoDto dto)
     {
         try
@@ -183,6 +187,7 @@ public class DadosRenovacaoController : ControllerBase
     /// <param name="id">Id do dado a ser deletado</param>
     /// <returns>IActionResult</returns>
     [HttpDelete("{id:long}")]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> DeletarDadosRenovacao([FromRoute] long id)
     {
         try
@@ -202,6 +207,7 @@ public class DadosRenovacaoController : ControllerBase
     /// Busca todas as Fichas, Notas ou Ordens para preencher a tabela de Dados Renovacao
     /// </summary>
     [HttpPost("renovacao-fichas")]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> GerarRenovacaoFichas(Fichas buscaTabela, CancellationToken cancellationToken)
     {
         try
@@ -293,6 +299,7 @@ public class DadosRenovacaoController : ControllerBase
     /// Busca a última data de renovação do LI
     /// </summary>
     [HttpPut("lista-li")]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> BuscaListaLi([FromBody] List<NomesLiDto> nomesLi)
     {
         try

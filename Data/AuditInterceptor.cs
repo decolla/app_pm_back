@@ -38,7 +38,8 @@ public class AuditInterceptor : SaveChangesInterceptor
             return await base.SavingChangesAsync(eventData, result, cancellationToken);
 
         _pendentes = new List<(EntityEntry, AuditoriaModel)>();
-        int? usuarioId = _userContext.GetUsuarioIdAtual();
+        // TODO: anotar o padrão para capturar usuários a partir do http
+        string? usuarioId = _userContext.GetUsuarioIdentificador() ?? _userContext.GetUsuarioIdAtual()?.ToString();
 
         foreach (var entry in context.ChangeTracker.Entries<IAuditable>())
         {
@@ -115,7 +116,7 @@ public class AuditInterceptor : SaveChangesInterceptor
 
             var auditoria = new AuditoriaModel
             {
-                IdUsuario = usuarioId?.ToString(),
+                IdUsuario = usuarioId,
                 NomeTabela = entry.Metadata.GetTableName() ?? entry.Metadata.Name,
                 Acao = entry.State,
                 ChavePrimaria = chave,

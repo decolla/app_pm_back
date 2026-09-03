@@ -5,6 +5,7 @@ using app_pm_back.Services.Manutencao;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace app_pm_back.Controllers.Estrategia;
 
@@ -13,6 +14,7 @@ namespace app_pm_back.Controllers.Estrategia;
 /// </summary>
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/tipos-estrategia")]
 [ApiController]
+[Authorize(Policy = "View")]
 public class TipoEstrategiaController : ControllerBase
 {
     private readonly string _operador = "tipo de estratégia";
@@ -36,6 +38,7 @@ public class TipoEstrategiaController : ControllerBase
     /// <response code="201">Registro criado com sucesso.</response>
     /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Criar([FromBody] TipoEstrategiaDto dto, [FromServices] AppDbContext context)
@@ -167,6 +170,7 @@ public class TipoEstrategiaController : ControllerBase
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] TipoEstrategiaDto dto)
@@ -218,6 +222,7 @@ public class TipoEstrategiaController : ControllerBase
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar(long id)

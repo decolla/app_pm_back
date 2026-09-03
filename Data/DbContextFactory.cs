@@ -12,6 +12,7 @@ public class DesignTimeUserContext : IUserContext
 {
     public List<long> GetEscoposDoUsuario() => new List<long>();
     public int? GetUsuarioIdAtual() => null;
+    public string? GetUsuarioIdentificador() => null; // TODO: identificação futura de requisição de usuários  
 }
 
 /// <summary>

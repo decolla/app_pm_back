@@ -7,11 +7,13 @@ using app_pm_back.Services.FichasServices;
 using app_pm_back.Services.GenericServices;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace app_pm_back.Controllers.FichasControllers;
 
 [ApiController]
 [Route(Config.RouteConfig.BaseRoute + "/classificacao")]
+[Authorize(Policy = "View")]
 public class ClassificacaoController : ControllerBase
 {
     private readonly RegraClassificacaoService _regraClassificacaoService;
@@ -50,6 +52,7 @@ public class ClassificacaoController : ControllerBase
     /// <param name="regra">Regra a ser aplicada</param>
     /// <returns>Regra criada</returns>
     [HttpPost("regras")]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> CriarRegraClassificacao([FromBody] List<RegraClassificacaoDto> dtos)
     {
         try
@@ -184,6 +187,7 @@ public class ClassificacaoController : ControllerBase
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("regra/{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] RegraClassificacaoDto dto)
@@ -220,6 +224,7 @@ public class ClassificacaoController : ControllerBase
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("regra/{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar([FromRoute] long id)
@@ -361,6 +366,7 @@ public class ClassificacaoController : ControllerBase
     /// Atualiza o modelo padrão para classificação do Catboost
     /// </summary>
     [HttpPatch("catboost/padrao")]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> AtualizarModeloPadrao([FromQuery] string modelo)
     {
         try

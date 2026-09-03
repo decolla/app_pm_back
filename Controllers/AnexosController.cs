@@ -1,6 +1,7 @@
 using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
@@ -9,6 +10,7 @@ namespace app_pm_back.Controllers;
 /// Controller para anexos
 /// </summary>
 [ApiController]
+[Authorize(Policy = "View")]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/anexos")]
 public class AnexosController : ControllerBase
 {
@@ -26,6 +28,7 @@ public class AnexosController : ControllerBase
     /// Realiza upload de um arquivo.
     /// </summary>
     [HttpPost("upload")]
+    [Authorize(Policy = "Edit")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadArquivo([FromForm] UploadAnnexRequestDto request)
     {
@@ -104,6 +107,7 @@ public class AnexosController : ControllerBase
     /// <response code="400">ID fornecido inválido.</response>
     /// <response code="404">Anexo não encontrado.</response>
     [HttpDelete("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -134,6 +138,7 @@ public class AnexosController : ControllerBase
     /// <response code="400">Dados inválidos ou ID inválido.</response>
     /// <response code="404">Anexo não encontrado.</response>
     [HttpPut("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [Consumes("multipart/form-data")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

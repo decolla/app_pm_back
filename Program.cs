@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Text.Json;
 using api.Communications.Service.Impl.Data;
 using app_pm_back.Data;
 using app_pm_back.DTO;
@@ -14,12 +13,11 @@ using app_pm_back.Services.FichasServices;
 using app_pm_back.Services.GenericServices;
 using Hangfire;
 using Hangfire.PostgreSql;
-using Keycloak.AuthServices.Authentication;
+using app_pm_back.Extensions;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Npgsql;
-using teste_catboost_cs;
 
 
 // apagar depois essa gambiarra aqui
@@ -34,6 +32,31 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
         $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
     c.CustomSchemaIds(type => type.FullName ?? type.Name);
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Insira o token JWT no formato: Bearer {seu_token}",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
 
 builder.Services.AddCors(option => option.AddPolicy("AllowAll", policy =>
@@ -65,9 +88,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddMemoryCache();
 
 // KEYCLOAK
-
-builder.Services.AddAuthorization();
-builder.Services.AddKeycloakAuthentication(builder.Configuration, "APIs:APM");
+builder.Services.AddKeycloakAuthentication(builder.Configuration);
 
 var databaseSchema = app_pm_back.Config.RouteConfig.GetDatabaseSchema();
 

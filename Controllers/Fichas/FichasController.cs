@@ -6,6 +6,7 @@ using app_pm_back.Services;
 using app_pm_back.Services.ExternIntegationsServices;
 using app_pm_back.Services.FichasServices;
 using app_pm_back.Services.GenericServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,7 @@ namespace app_pm_back.Controllers.FichasControllers;
 /// Endpoints de Fichas
 /// </summary>
 [ApiController]
+[Authorize(Policy = "View")]
 [Route(Config.RouteConfig.BaseRoute + "/fichas")]
 public class FichasController : ControllerBase
 {
@@ -46,6 +48,7 @@ public class FichasController : ControllerBase
     /// Sincroniza as fichas do PM com os ativos do APM
     /// </summary>
     [HttpGet("synchronize-apm")]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> SynchronizeApm(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Recebida requisição GET em /synchronize-apm.");
@@ -80,6 +83,7 @@ public class FichasController : ControllerBase
     /// Faz o upload e processamento de planilhas de Notas, Ordens ou Itens
     /// </summary>
     [HttpPost("upload")]
+    [Authorize(Policy = "Edit")]
     [DisableRequestSizeLimit]
     [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
     public async Task<IActionResult> UploadPlanilha(

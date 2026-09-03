@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace app_pm_back.Controllers.PlanoManutencao;
 
@@ -13,6 +14,7 @@ namespace app_pm_back.Controllers.PlanoManutencao;
 /// </summary>
 [ApiController]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/ferramentas")]
+[Authorize(Policy = "View")]
 public class FerramentaController : ControllerBase
 {
     private readonly FerramentaService _service;
@@ -35,6 +37,7 @@ public class FerramentaController : ControllerBase
     /// <response code="201">Registro criado com sucesso.</response>
     /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Criar([FromBody] FerramentaTipoDto dto)
@@ -96,6 +99,7 @@ public class FerramentaController : ControllerBase
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] FerramentaTipoDto dto)
@@ -119,6 +123,7 @@ public class FerramentaController : ControllerBase
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar([FromRoute] long id)

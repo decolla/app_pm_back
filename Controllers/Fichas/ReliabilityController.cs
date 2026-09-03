@@ -1,11 +1,13 @@
-﻿using app_pm_back.DTO;
+using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services.FichasServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers.FichasControllers;
 
 [ApiController]
+[Authorize(Policy = "View")]
 [Route(Config.RouteConfig.BaseRoute + "/reliability")]
 public class ReliabilityController : ControllerBase
 {
@@ -45,6 +47,7 @@ public class ReliabilityController : ControllerBase
     /// Sincroniza todos os LI do apm e preenche a tabela de Reliability
     /// </summary>
     [HttpGet("SyncLI")]
+    [Authorize(Policy = "Edit")]
     public async Task<IActionResult> SyncReliability()
     {
         try

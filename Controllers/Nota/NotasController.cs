@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using Npgsql;
+using Microsoft.AspNetCore.Authorization;
 
 namespace app_pm_back.Controllers;
 
@@ -16,6 +17,7 @@ namespace app_pm_back.Controllers;
 /// </summary>
 [ApiController]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/notas")]
+[Authorize(Policy = "View")]
 public class NotasController : ControllerBase
 {
     private readonly DadosRenovacaoService _dadosRenovacaoService;
@@ -49,6 +51,7 @@ public class NotasController : ControllerBase
     /// <response code="201">Registro criado com sucesso.</response>
     /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CriarNota([FromBody] NotaDto dto)
@@ -210,6 +213,7 @@ public class NotasController : ControllerBase
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AtualizarNota([FromRoute] long id, [FromBody] NotaDto dto,CancellationToken cancellationToken)
@@ -253,6 +257,7 @@ public class NotasController : ControllerBase
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeletarNota(long id)
@@ -298,6 +303,7 @@ public class NotasController : ControllerBase
     /// <response code="400">Erros na validação do usuário ou ID informado inválido.</response>
     /// <response code="404">Registro não encontrado.</response>
     [HttpPatch("classificacao/{id:long}")]
+    [Authorize(Policy = "Edit")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -2,6 +2,7 @@ using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services.Manutencao;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
@@ -10,6 +11,7 @@ namespace app_pm_back.Controllers;
 /// Classe UsuariosController.
 /// </summary>
 [ApiController]
+[Authorize(Policy = "View")]
 [Route(app_pm_back.Config.RouteConfig.BaseRoute + "/usuarios")]
 public class UsuariosController : ControllerBase
 {
@@ -34,6 +36,7 @@ public class UsuariosController : ControllerBase
     /// <response code="201">Registro criado com sucesso.</response>
     /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost]
+    [Authorize(Policy = "Manage")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Criar([FromBody] UsuarioDto dto)
@@ -160,6 +163,7 @@ public class UsuariosController : ControllerBase
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
     [HttpPut("{id:long}")]
+    [Authorize(Policy = "Manage")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] UsuarioDto dto)
@@ -204,6 +208,7 @@ public class UsuariosController : ControllerBase
     /// <response code="200">Sucesso ao deletar o registro.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
     [HttpDelete("{id:long}")]
+    [Authorize(Policy = "Manage")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Deletar([FromRoute] long id)
@@ -226,6 +231,7 @@ public class UsuariosController : ControllerBase
     /// </summary>
     /// <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
     [HttpPost("atribuir")]
+    [Authorize(Policy = "Manage")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AtribuirOrdem([FromQuery] string nome, [FromQuery] long ordem)
     {

@@ -1,11 +1,13 @@
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace app_pm_back.Controllers.FichasControllers;
 
 [ApiController]
 [Route(Config.RouteConfig.BaseRoute + "/diretorios")]
+[Authorize(Policy = "View")]
 public class DiretoriosController : ControllerBase
 {
     private readonly DiretorioService _diretorioService;
@@ -42,6 +44,7 @@ public class DiretoriosController : ControllerBase
     /// <param name="idDiretorioPai">ID do diretório pai</param>
     /// <returns></returns>
     [HttpPost]
+    [Authorize(Policy = "Edit")]
     [Route("criar")]
     public async Task<IActionResult> CriarDiretorio([FromQuery] string nome, [FromQuery] long? idDiretorioPai)
     {
@@ -64,6 +67,7 @@ public class DiretoriosController : ControllerBase
     /// <param name="idDiretorioPai">ID do diretório de destino</param>
     /// <returns></returns>
     [HttpPost]
+    [Authorize(Policy = "Edit")]
     [Route("mover")]
     public async Task<IActionResult> MoverDiretorio([FromQuery] long idDiretorio, [FromQuery] long? idDiretorioPai)
     {
@@ -87,6 +91,7 @@ public class DiretoriosController : ControllerBase
     /// <param name="tipo">Tipo da ficha (Notas ou Ordens)</param>
     /// <returns></returns>
     [HttpPost]
+    [Authorize(Policy = "Edit")]
     [Route("vincular")]
     public async Task<IActionResult> VincularFicha(
         [FromQuery] long idDiretorio,
@@ -121,6 +126,7 @@ public class DiretoriosController : ControllerBase
     /// <param name="nome">Novo nome do diretório</param>
     /// <returns></returns>
     [HttpPut]
+    [Authorize(Policy = "Edit")]
     [Route("atualizar")]
     public async Task<IActionResult> AtualizarDiretorio([FromQuery] long idDiretorio, [FromQuery] string nome)
     {
@@ -142,6 +148,7 @@ public class DiretoriosController : ControllerBase
     /// <param name="idDiretorio">ID do diretório a ser removido</param>
     /// <returns></returns>
     [HttpDelete]
+    [Authorize(Policy = "Edit")]
     [Route("remover")]
     public async Task<IActionResult> RemoverDiretorio([FromQuery] long idDiretorio)
     {
@@ -165,6 +172,7 @@ public class DiretoriosController : ControllerBase
     /// <param name="tipo">Tipo da ficha (Notas ou Ordens)</param>
     /// <returns></returns>
     [HttpDelete]
+    [Authorize(Policy = "Edit")]
     [Route("remover/ficha")]
     public async Task<IActionResult> DesvincularFicha(
         [FromQuery] long idDiretorio,

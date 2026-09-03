@@ -1,4 +1,5 @@
 using app_pm_back.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace app_pm_back.Controllers;
@@ -8,6 +9,7 @@ namespace app_pm_back.Controllers;
 /// </summary>
 [ApiController]
 [Route("health")]
+[AllowAnonymous]
 public class HealthController : ControllerBase
 {
     private readonly IReportService _reportService;
