@@ -6,7 +6,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     /// <inheritdoc />
     public partial class InitialPostgres : Migration
@@ -482,7 +482,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     Escopo = table.Column<long>(type: "bigint", nullable: true),
                     IdPlano = table.Column<long>(type: "bigint", nullable: true),
                     IdUsuario = table.Column<long>(type: "bigint", nullable: true),
-                    IdAtivo = table.Column<int>(type: "integer", nullable: true),
+                    IdsAtivo = table.Column<int[]>(type: "integer[]", nullable: true),
                     IdLi = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     IdGpm = table.Column<long>(type: "bigint", nullable: true),
                     DnsIot = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
@@ -626,7 +626,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     ModificadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     DataModificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Escopo = table.Column<long>(type: "bigint", nullable: true),
-                    IdAtivo = table.Column<int>(type: "integer", nullable: true),
+                    IdsAtivo = table.Column<int[]>(type: "integer[]", nullable: true),
                     IdLi = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     DnsIot = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     IdNota = table.Column<long>(type: "bigint", nullable: true),
@@ -890,7 +890,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 8, 28, 13, 22, 58, 335, DateTimeKind.Utc).AddTicks(4198), 2, null, null });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 3, 19, 42, 10, 129, DateTimeKind.Utc).AddTicks(5760), 2, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

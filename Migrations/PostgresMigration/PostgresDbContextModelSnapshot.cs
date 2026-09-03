@@ -10,7 +10,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     [DbContext(typeof(PostgresDbContext))]
     partial class PostgresDbContextModelSnapshot : ModelSnapshot
@@ -283,7 +283,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 28, 13, 22, 58, 335, DateTimeKind.Utc).AddTicks(4198),
+                            DataModificacao = new DateTime(2026, 9, 3, 19, 42, 10, 129, DateTimeKind.Utc).AddTicks(5760),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -770,9 +770,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)");
 
-                    b.Property<int?>("IdAtivo")
-                        .HasColumnType("integer");
-
                     b.Property<long?>("IdGpm")
                         .HasColumnType("bigint");
 
@@ -785,6 +782,9 @@ namespace app_pm_back.Migrations.PostgresMigration
 
                     b.Property<long?>("IdUsuario")
                         .HasColumnType("bigint");
+
+                    b.Property<int[]>("IdsAtivo")
+                        .HasColumnType("integer[]");
 
                     b.Property<int>("MetodoClassificacao")
                         .HasMaxLength(100)
@@ -931,9 +931,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<DateTime?>("FimReal")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int?>("IdAtivo")
-                        .HasColumnType("integer");
-
                     b.Property<long?>("IdCtm")
                         .HasColumnType("bigint");
 
@@ -949,6 +946,9 @@ namespace app_pm_back.Migrations.PostgresMigration
 
                     b.Property<long?>("IdPlano")
                         .HasColumnType("bigint");
+
+                    b.Property<int[]>("IdsAtivo")
+                        .HasColumnType("integer[]");
 
                     b.Property<DateTime?>("InicioPlanejado")
                         .HasColumnType("timestamp without time zone");
