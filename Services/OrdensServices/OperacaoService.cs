@@ -76,4 +76,11 @@ public class OperacaoService : BaseCrudService<OperacaoModel>
 
         await _context.SaveChangesAsync(cancellationToken);
     }
+    
+    public async Task<IEnumerable<OperacaoModel>> ObterOperacoesSemOrdemAsync()
+    {
+        return await _context.PM_Operacoes 
+            .Where(o => o.IdOrdem == null)
+            .ToListAsync();
+    }
 }

@@ -612,17 +612,38 @@ public class SpreadsheetService
 
         return builder.ToString().Normalize(NormalizationForm.FormC);
     }
+    
+    /// <summary>
+    /// Aplica a regra de negócio de classificação com base no indicador "Corretiva?" e na "Natureza Causa".
+    /// </summary>
+    private static (Classificacao Classificacao, string? NaturezaCausa, MetodoClassificacao MetodoClassificacao)
+        DeterminarClassificacao(bool indicadorCorretiva, string? naturezaCausa)
+    {
+        if (indicadorCorretiva)
+        {
+            return (Classificacao.CORRETIVA, naturezaCausa, MetodoClassificacao.HUMANA);
+        }
+
+        if (!string.IsNullOrWhiteSpace(naturezaCausa))
+        {
+            return (Classificacao.OCORRENCIAALHEIA, naturezaCausa, MetodoClassificacao.HUMANA);
+        }
+
+        return (Classificacao.NAOCLASSIFICADA, null, MetodoClassificacao.NAOCLASSIFICADA);
+    }
 
     private static NotaModel MapNotaDto(NotaDto dto)
     {
+        var (classificacao, naturezaCausa, metodoClassificacao) =
+            DeterminarClassificacao(dto.IndicadorCorretiva, dto.NaturezaCausa);
         // converte string em tipo Prioridade
         return new NotaModel
         {
             NumeroNota = dto.NumeroNota,
             TipoNota = dto.TipoNota,
-            Classificacao = dto.IndicadorCorretiva ? Classificacao.CORRETIVA : dto.Classificacao,
-            MetodoClassificacao =
-                dto.IndicadorCorretiva ? MetodoClassificacao.HUMANA : MetodoClassificacao.NAOCLASSIFICADA,
+            Classificacao = classificacao,
+            NaturezaCausa = naturezaCausa,
+            MetodoClassificacao = metodoClassificacao,
             StatusNota = StatusFichas.EmAndamento,
             DnsIot = dto.DnsIot,
             DataFim = dto.DataFim,
@@ -652,12 +673,15 @@ public class SpreadsheetService
 
     private static OrdemModel MapOrdemDto(OrdemDto dto)
     {
+        var (classificacao, naturezaCausa, metodoClassificacao) =
+            DeterminarClassificacao(dto.IndicadorCorretiva, dto.NaturezaCausa);
         return new OrdemModel
         {
             NumeroOrdem = dto.NumeroOrdem,
             TipoOrdem = dto.TipoOrdem,
-            Classificacao = dto.Classificacao,
-            MetodoClassificacao = MetodoClassificacao.NAOCLASSIFICADA,
+            Classificacao = classificacao,
+            NaturezaCausa = naturezaCausa,
+            MetodoClassificacao = metodoClassificacao,
             ClassificadoPor = dto.ClassificadoPor,
             DataClassificacao = dto.DataClassificacao,
             StatusOrdem = dto.StatusOrdem ?? StatusFichas.EmAndamento,

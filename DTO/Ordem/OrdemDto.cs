@@ -15,7 +15,10 @@ public class OrdemDto
     [SheetColumn("Ordem")] public long? NumeroOrdem { get; set; }
 
     [SheetColumn("Tipo de ordem")] public string? TipoOrdem { get; set; }
-
+    
+    [SheetColumn("Natureza Causa")] public string? NaturezaCausa { get; set; }
+    
+    [SheetColumn("Corretiva?")] public bool IndicadorCorretiva { get; set; }
     [SheetColumn("Classificação")] public Classificacao Classificacao { get; set; } = Classificacao.NAOCLASSIFICADA;
 
     [SheetColumn("Método classificação")]

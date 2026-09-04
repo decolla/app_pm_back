@@ -62,8 +62,9 @@ public class TarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Listar()
     {
-        var todas = await _service.GetAllAsync();
-        return Ok(todas);
+        var operacoesSemOrdem = await _service.ObterOperacoesSemOrdemAsync();
+    
+        return Ok(operacoesSemOrdem);
     }
 
     /// <summary>
@@ -127,4 +128,5 @@ public class TarefaController : ControllerBase
         if (!deleted) return NotFound(new { message = "Tarefa nao encontrada." });
         return Ok(new { message = "Tarefa removida com sucesso." });
     }
+    
 }

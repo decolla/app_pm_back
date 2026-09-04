@@ -16,6 +16,8 @@ public class NotaDto
     [SheetColumn("N/A")] public string? TipoNota { get; set; }
 
     [SheetColumn("cdnotamanutencao")] public string? SapCode { get; set; }
+    
+    [SheetColumn("Natureza Causa")] public string? NaturezaCausa { get; set; }
 
     [SheetColumn("Classificação")] public Classificacao Classificacao { get; set; } = Classificacao.NAOCLASSIFICADA;
 

@@ -94,6 +94,8 @@ public class ImportSheetService
             
             idNotas = notasDeduplicadas.Select(n => n.IdNota).ToList();
             
+            await PropagarClassificacaoParaOrdensAsync(notasDeduplicadas, cancellationToken);
+            
             if (idNotas.Count > 0) 
             {
                 try 
@@ -331,18 +333,76 @@ public class ImportSheetService
         }
 
         // 4. Aplica o De/Para e limpa a navegação
+        var atualizacoesNota = new List<(long IdNota, Classificacao Classificacao, string? NaturezaCausa, MetodoClassificacao MetodoClassificacao)>();
+
         foreach (var ordem in ordens)
         {
             if (ordem.Nota != null)
             {
-                // Tenta achar o ID gerado para vincular a FK
                 if (notasNoBanco.TryGetValue(ordem.Nota.NumeroNota, out long idInterno))
                 {
                     ordem.IdNota = idInterno;
+
+                    if (ordem.Classificacao != Classificacao.NAOCLASSIFICADA || !string.IsNullOrWhiteSpace(ordem.NaturezaCausa))
+                    {
+                        atualizacoesNota.Add((idInterno, ordem.Classificacao, ordem.NaturezaCausa, ordem.MetodoClassificacao));
+                    }
                 }
-                
-                ordem.Nota = null; 
+
+                ordem.Nota = null;
             }
         }
+
+        if (atualizacoesNota.Any())
+        {
+            foreach (var (idNota, classificacao, naturezaCausa, metodoClassificacao) in atualizacoesNota)
+            {
+                var notaExistente = await _dbContext.PM_Notas.FirstOrDefaultAsync(n => n.IdNota == idNota, cancellationToken);
+                if (notaExistente != null)
+                {
+                    notaExistente.Classificacao = classificacao;
+                    notaExistente.NaturezaCausa = naturezaCausa;
+                    notaExistente.MetodoClassificacao = metodoClassificacao;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+    }
+    
+    /// <summary>
+    /// Ao importar Notas, propaga a classificação/NaturezaCausa para todas as Ordens já existentes
+    /// vinculadas a cada Nota (via IdNota).
+    /// </summary>
+    private async Task PropagarClassificacaoParaOrdensAsync(List<NotaModel> notas, CancellationToken cancellationToken)
+    {
+        var notasComClassificacao = notas
+            .Where(n => n.Classificacao != Classificacao.NAOCLASSIFICADA || !string.IsNullOrWhiteSpace(n.NaturezaCausa))
+            .ToList();
+
+        if (!notasComClassificacao.Any()) return;
+
+        var idNotas = notasComClassificacao.Select(n => n.IdNota).ToList();
+
+        var ordensVinculadas = await _dbContext.PM_Ordens
+            .Where(o => o.IdNota.HasValue && idNotas.Contains(o.IdNota.Value))
+            .ToListAsync(cancellationToken);
+
+        if (!ordensVinculadas.Any()) return;
+
+        var mapaPorNota = notasComClassificacao
+            .ToDictionary(n => n.IdNota, n => (n.Classificacao, n.NaturezaCausa, n.MetodoClassificacao));
+
+        foreach (var ordem in ordensVinculadas)
+        {
+            if (ordem.IdNota.HasValue && mapaPorNota.TryGetValue(ordem.IdNota.Value, out var valores))
+            {
+                ordem.Classificacao = valores.Classificacao;
+                ordem.NaturezaCausa = valores.NaturezaCausa;
+                ordem.MetodoClassificacao = valores.MetodoClassificacao;
+            }
+        }
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
