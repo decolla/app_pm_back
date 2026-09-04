@@ -591,7 +591,7 @@ public class SpreadsheetService
         if (normalized.Contains("preventiva") || normalized.Contains("0"))
             return Classificacao.PREVENTIVA;
         if (normalized.Contains("zs"))
-            return Classificacao.SERVICO;
+            return Classificacao.OCORRENCIAALHEIA;
 
         return Classificacao.NAOCLASSIFICADA;
     }

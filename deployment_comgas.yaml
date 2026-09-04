@@ -27,7 +27,7 @@ spec:
             - name: ASPNETCORE_HTTPS_PORT
               value: "60135"
             - name: ASPNETCORE_ENVIRONMENT
-              value: "development"
+              value: "Development"
             - name: DATABASE_SCHEMA
               value: "comgas"
             - name: DATABASE_CONNECTION

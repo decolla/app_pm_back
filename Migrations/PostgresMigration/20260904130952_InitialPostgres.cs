@@ -472,6 +472,7 @@ namespace app_pm_back.Migrations
                     DescricaoLonga = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: true),
                     AnomaliaObservada = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     ObservacoesComplementares = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    NaturezaCausa = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Classificacao = table.Column<int>(type: "integer", nullable: false),
                     MetodoClassificacao = table.Column<int>(type: "integer", maxLength: 100, nullable: false),
                     ClassificadoPor = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
@@ -610,6 +611,7 @@ namespace app_pm_back.Migrations
                     DataCriacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     StatusOrdem = table.Column<int>(type: "integer", nullable: true),
                     Criticidade = table.Column<int>(type: "integer", nullable: true),
+                    NaturezaCausa = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Classificacao = table.Column<int>(type: "integer", nullable: false),
                     MetodoClassificacao = table.Column<int>(type: "integer", maxLength: 100, nullable: false),
                     ClassificadoPor = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
@@ -890,7 +892,7 @@ namespace app_pm_back.Migrations
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 3, 19, 42, 10, 129, DateTimeKind.Utc).AddTicks(5760), 2, null, null });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 4, 13, 9, 51, 791, DateTimeKind.Utc).AddTicks(8433), 2, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

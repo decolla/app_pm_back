@@ -283,7 +283,7 @@ namespace app_pm_back.Migrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 3, 19, 42, 10, 129, DateTimeKind.Utc).AddTicks(5760),
+                            DataModificacao = new DateTime(2026, 9, 4, 13, 9, 51, 791, DateTimeKind.Utc).AddTicks(8433),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -794,6 +794,10 @@ namespace app_pm_back.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<string>("NaturezaCausa")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<long>("NumeroNota")
                         .HasColumnType("bigint");
 
@@ -963,6 +967,10 @@ namespace app_pm_back.Migrations
                     b.Property<string>("ModificadaPorUsuario")
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
+
+                    b.Property<string>("NaturezaCausa")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<long?>("NumeroOrdem")
                         .HasColumnType("bigint");

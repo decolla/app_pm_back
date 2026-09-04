@@ -88,7 +88,11 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddMemoryCache();
 
 // KEYCLOAK
-builder.Services.AddKeycloakAuthentication(builder.Configuration);
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddKeycloakAuthentication(builder.Configuration);
+}
+
 
 var databaseSchema = app_pm_back.Config.RouteConfig.GetDatabaseSchema();
 

@@ -180,7 +180,13 @@ public class NotaModel : IClassifiable, IAuditable
     #endregion
 
     #region Classificação
-
+    
+    /// <summary>
+    /// Natureza da Causa da classificação
+    /// </summary>
+    /// <example>Inundação, vandalismo, sujeira, etc</example>
+    [MaxLength(100)]
+    public string? NaturezaCausa { get; set; }
     /// <summary>
     /// Categoria ou tipo atribuído à nota após análise.
     /// Permite agrupamento e filtragem de notas por similaridade.

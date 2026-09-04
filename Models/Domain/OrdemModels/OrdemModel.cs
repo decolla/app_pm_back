@@ -60,6 +60,13 @@ public class OrdemModel : IClassifiable, IAuditable
     public Prioridade? Criticidade { get; set; }
 
     /// <summary>
+    /// Natureza da Causa da classificação
+    /// </summary>
+    /// <example>Inundação, vandalismo, sujeira, etc</example>
+    [MaxLength(100)]
+    public string? NaturezaCausa { get; set; }
+    
+    /// <summary>
     /// Classificação da ordem conforme a interface IClassifiable.
     /// Permite categorização customizada da ordem segundo regras de negócio.
     /// </summary>

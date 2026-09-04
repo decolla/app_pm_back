@@ -167,7 +167,7 @@ public enum Classificacao
     NAOCLASSIFICADA = 0,
     CORRETIVA = 1,
     PREVENTIVA= 2,
-    SERVICO = 3
+    OCORRENCIAALHEIA = 3
 }
 
 /// <summary>
