@@ -92,6 +92,17 @@ if (!builder.Environment.IsDevelopment())
 {
     builder.Services.AddKeycloakAuthentication(builder.Configuration);
 }
+else
+{
+    //Cria políticas falsas que sempre autorizam o acesso, evitando o erro 500.
+    builder.Services.AddAuthorization(options =>
+    {
+        // Libera a política "View", "Admin" e "Edit"
+        options.AddPolicy("View", policy => policy.RequireAssertion(_ => true));
+        options.AddPolicy("Admin", policy => policy.RequireAssertion(_ => true));
+        options.AddPolicy("Edit", policy => policy.RequireAssertion(_ => true));
+    });
+}
 
 
 var databaseSchema = app_pm_back.Config.RouteConfig.GetDatabaseSchema();
