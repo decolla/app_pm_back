@@ -109,5 +109,7 @@ public class AutoMapperProfile : Profile
         
         CreateMap<RegraClassificacaoDto, RegraClassificacaoModel>();
         
+        CreateMap<NaturezasCausaDto, NaturezasCausaModel>();
+        
     }
 }
