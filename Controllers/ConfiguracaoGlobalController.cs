@@ -47,6 +47,29 @@ public class ConfiguracaoGlobalController : ControllerBase
             return BadRequest(new { message = $"Erro ao obter configuração global: {e.Message}" });
         }
     }
+    
+    /// <summary>
+    /// Obtém as palavras de natureza de causa
+    /// </summary>
+    /// <param name="corretiva">Indica se a natureza de causa é corretiva. False para causa alheia</param>
+    /// <returns>O objeto de configuração global cadastrado.</returns>
+    /// <response code="200">Sucesso ao obter a configuração global.</response>
+    /// <response code="400">Erro ao processar a requisição.</response>
+    [HttpGet("natureza-causa/{corretiva:bool}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetNaturezaCausa([FromRoute] bool corretiva)
+    {
+        try
+        {
+            var config = await _configuracaoService.ObterNaturezaCausaAsync(corretiva);
+            return Ok(config);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao obter configuração global: {e.Message}" });
+        }
+    }
 
     /// <summary>
     /// Salva/atualiza a configuração global do sistema.

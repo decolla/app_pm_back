@@ -29,6 +29,14 @@ public class ConfiguracaoGlobalService
 
         return config;
     }
+    
+    public async Task<List<string>> ObterNaturezaCausaAsync(bool corretiva)
+    {
+        var config = await ObterConfiguracaoAsync();
+
+        if (corretiva) return config.PalavrasNaturezaCausaCorretiva;
+        return config.PalavrasNaturezaCausaAlheia;
+    }
 
     public async Task SalvarConfiguracaoAsync(ConfiguracaoGlobalDto dto, string usuario)
     {

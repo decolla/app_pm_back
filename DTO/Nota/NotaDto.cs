@@ -56,6 +56,8 @@ public class NotaDto
     [SheetColumn("Denominacao")] public string? ReferenciaLocalizacaoAtivo { get; set; }
 
     [SheetColumn("Tipo de nota")] public string? Finalidade { get; set; }
+    
+    [SheetColumn("Loc.instalação")] public TiposLI? TipoLi { get; set; }
 
     [SheetColumn("InícioAvar")] public DateTime? DataAvaria { get; set; }
 

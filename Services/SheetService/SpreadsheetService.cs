@@ -118,6 +118,23 @@ public class SpreadsheetService
         (ComponentType.ERPMeter,
             new[] { "medidor" })
     ];
+    
+    private static readonly (TiposLI Type, string[] Terms)[] TiposLIMatchers =
+    [
+        (TiposLI.Erp, new[] { "erp", "ecd", "ecs", "ecp"}),
+        (TiposLI.Crm, new[] { "crm", "ecm" }),
+        (TiposLI.Odorant, new[] { "odorante", "odorant", "eod" }),
+        (TiposLI.Cable, new[] { "cabo", "cable" }),
+        (TiposLI.Substation, new[] { "subestacao", "substation"}),
+        (TiposLI.CircuitBreaker, new[] { "circuito", "circuit", "breaker", "quebra" }),
+        (TiposLI.Transformer, new[] { "transformer", "transf" }),
+        (TiposLI.Disconnector, new[] { "disconnector", "disconecto" }),
+        (TiposLI.Bar, new[] { "bar"}),
+        (TiposLI.ElectricMotor, new[] { "motor", "electric", "eletrico" }),
+        (TiposLI.GenericEletricalCharge, new[] { "carga", "charge" }),
+        (TiposLI.Feeder, new[] { "alimentador", "feeder" }),
+        //(TiposLI.Outros , new[] { "crc"}),
+    ];
 
     private readonly ConvertService _convertService;
 

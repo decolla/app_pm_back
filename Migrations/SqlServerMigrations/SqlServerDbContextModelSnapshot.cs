@@ -272,6 +272,14 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("PalavrasNaturezaCausaAlheia")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PalavrasNaturezaCausaCorretiva")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("PM_ConfiguracoesGlobais", "dbo");
@@ -284,8 +292,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 8, 11, 43, 51, 179, DateTimeKind.Utc).AddTicks(16),
-                            FichasConfiabilidade = 2
+                            DataModificacao = new DateTime(2026, 9, 8, 14, 8, 47, 890, DateTimeKind.Utc).AddTicks(3649),
+                            FichasConfiabilidade = 2,
+                            PalavrasNaturezaCausaAlheia = "[]",
+                            PalavrasNaturezaCausaCorretiva = "[]"
                         });
                 });
 
@@ -818,6 +828,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<int?>("StatusNota")
                         .HasColumnType("int");
 
+                    b.Property<int?>("TipoLi")
+                        .HasColumnType("int");
+
                     b.Property<string>("TipoNota")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -977,6 +990,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("bigint");
 
                     b.Property<int?>("StatusOrdem")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TipoLi")
                         .HasColumnType("int");
 
                     b.Property<string>("TipoOrdem")

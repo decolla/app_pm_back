@@ -42,6 +42,16 @@ public class ConfiguracaoGlobalModel
     public CriarFichasPreventivas CriarFichasPreventivas { get; set; }
     
     /// <summary>
+    /// Lista de palavras de cadastro de natureza de causa corretiva. 
+    /// </summary>
+    public List<string> PalavrasNaturezaCausaCorretiva { get; set; } = new List<string>();
+    
+    /// <summary>
+    /// Lista de palavras de cadastro de natureza de causa de alheia.
+    /// </summary>
+    public List<string> PalavrasNaturezaCausaAlheia { get; set; } = new List<string>();
+    
+    /// <summary>
     /// Data da última modificação da configuração global.
     /// </summary>
     public DateTime DataModificacao { get; set; } = DateTime.UtcNow;

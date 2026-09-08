@@ -55,6 +55,8 @@ public class OrdemDto
     [SheetColumn("Texto breve")] public List<ComponentType>? IdsAtivo { get; set; }
 
     [SheetColumn("Loc.instalação")] public string? IdLi { get; set; }
+    
+    [SheetColumn("Loc.instalação")] public TiposLI? TipoLi { get; set; }
 
     [SheetColumn("Nota")] public long? NumeroNota { get; set; }
     

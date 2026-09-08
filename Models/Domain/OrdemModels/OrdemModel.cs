@@ -213,6 +213,11 @@ public class OrdemModel : IClassifiable, IAuditable
     public string? IdLi { get; set; }
     
     /// <summary>
+    /// Tipo do local de instalação
+    /// </summary>
+    public TiposLI? TipoLi { get; set; }
+    
+    /// <summary>
     /// Nomeclatura alternativa para o ativo, também usada para verificar se existe no APM
     /// </summary>
     [MaxLength(100)]

@@ -19,4 +19,9 @@ public class ConfiguracaoGlobalDto
     
     [EnumDataType(typeof(CriarFichasPreventivas))]
     public CriarFichasPreventivas CriarFichasPreventivas { get; set; }
+    
+    public List<string> PalavrasNaturezaCausaCorretiva { get; set; } = new List<string>();
+    
+    public List<string> PalavrasNaturezaCausaAlheia { get; set; } = new List<string>();
+
 }

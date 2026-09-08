@@ -89,6 +89,11 @@ public class NotaModel : IClassifiable, IAuditable
     /// <example>"Corrigir vazamento de óleo", "Inspeção preventiva trimestral"</example>
     [MaxLength(120, ErrorMessage = "A finalidade não pode exceder 120 caracteres.")]
     public string? Finalidade { get; set; }
+    
+    /// <summary>
+    /// Tipo do Local de instalação
+    /// </summary>
+    public TiposLI? TipoLi { get; set; }
 
     #endregion
 
