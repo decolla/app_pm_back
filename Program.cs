@@ -207,6 +207,7 @@ builder.Services.AddScoped<DiretorioService>();
 builder.Services.AddScoped<ExternIntegrationService>();
 builder.Services.AddScoped<CatboostModelProviderService>();
 builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<NaturezasCausaService>();
 
 // configuração de clientes http
 builder.Services.AddHttpClient<ExternIntegrationService>(client =>
