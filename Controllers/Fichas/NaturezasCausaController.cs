@@ -48,10 +48,6 @@ public class NaturezasCausaController : ControllerBase
                 }
 
                 var naturezaCausa = _mapper.Map<NaturezasCausaModel>(dto);
-                if (naturezaCausa.IdRegra <= 0)
-                {
-                    return BadRequest(new { message = "IdRegra invalido. Envie IdRegra maior que zero." });
-                }
 
                 var criado = await _service.CreateAsync(naturezaCausa);
                 return CreatedAtAction(nameof(ObterPorId), new { id = criado.IdRegra }, criado);
