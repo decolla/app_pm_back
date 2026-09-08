@@ -39,6 +39,10 @@ public class ConfiguracaoGlobalService
         config.ClassificacaoAutomatica = dto.ClassificacaoAutomatica;
         config.CriterioDataRenovacao = dto.CriterioDataRenovacao;
         config.CriterioConfiabilidadeRenovacao = dto.CriterioConfiabilidadeRenovacao;
+        config.CriarFichasPreventivas = dto.CriarFichasPreventivas;
+        // copia a lista de strings
+        config.CadastrarNaturezaCausaCorretiva = dto.CadastrarNaturezaCausaCorretiva;
+        config.CadastrarNaturezaCausaAlheia = dto.CadastrarNaturezaCausaAlheia;
         config.DataModificacao = DateTime.UtcNow;
         config.ModificadoPorUsuario = usuario;
         

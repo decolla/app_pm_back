@@ -75,8 +75,4 @@
       <Compile Remove="Migrations\SqlServerMigrations\20260803155942_InitialSqlServer.Designer.cs" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Migrations\" />
-    </ItemGroup>
-
 </Project>

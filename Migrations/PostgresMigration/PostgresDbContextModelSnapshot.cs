@@ -10,7 +10,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations
+namespace app_pm_back.Migrations.PostgresMigration
 {
     [DbContext(typeof(PostgresDbContext))]
     partial class PostgresDbContextModelSnapshot : ModelSnapshot
@@ -247,6 +247,14 @@ namespace app_pm_back.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<List<string>>("CadastrarNaturezaCausaAlheia")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<List<string>>("CadastrarNaturezaCausaCorretiva")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
                     b.Property<int>("ClassificacaoAutomatica")
                         .HasColumnType("integer");
 
@@ -266,10 +274,12 @@ namespace app_pm_back.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("ModeloCatboostPadrao")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("ModificadoPorUsuario")
-                        .HasColumnType("text");
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id");
 
@@ -279,11 +289,13 @@ namespace app_pm_back.Migrations
                         new
                         {
                             Id = 1,
+                            CadastrarNaturezaCausaAlheia = new List<string>(),
+                            CadastrarNaturezaCausaCorretiva = new List<string>(),
                             ClassificacaoAutomatica = 0,
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 4, 13, 9, 51, 791, DateTimeKind.Utc).AddTicks(8433),
+                            DataModificacao = new DateTime(2026, 9, 8, 10, 49, 46, 244, DateTimeKind.Utc).AddTicks(63),
                             FichasConfiabilidade = 2
                         });
                 });

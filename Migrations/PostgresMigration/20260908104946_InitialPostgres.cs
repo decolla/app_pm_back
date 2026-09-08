@@ -6,7 +6,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations
+namespace app_pm_back.Migrations.PostgresMigration
 {
     /// <inheritdoc />
     public partial class InitialPostgres : Migration
@@ -75,14 +75,16 @@ namespace app_pm_back.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ModeloCatboostPadrao = table.Column<string>(type: "text", nullable: true),
+                    ModeloCatboostPadrao = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     FichasConfiabilidade = table.Column<int>(type: "integer", nullable: false),
                     ClassificacaoAutomatica = table.Column<int>(type: "integer", nullable: false),
                     CriterioDataRenovacao = table.Column<int>(type: "integer", nullable: false),
                     CriterioConfiabilidadeRenovacao = table.Column<int>(type: "integer", nullable: false),
                     CriarFichasPreventivas = table.Column<int>(type: "integer", nullable: false),
+                    CadastrarNaturezaCausaCorretiva = table.Column<List<string>>(type: "text[]", nullable: false),
+                    CadastrarNaturezaCausaAlheia = table.Column<List<string>>(type: "text[]", nullable: false),
                     DataModificacao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModificadoPorUsuario = table.Column<string>(type: "text", nullable: true)
+                    ModificadoPorUsuario = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -891,8 +893,8 @@ namespace app_pm_back.Migrations
 
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
-                columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 4, 13, 9, 51, 791, DateTimeKind.Utc).AddTicks(8433), 2, null, null });
+                columns: new[] { "Id", "CadastrarNaturezaCausaAlheia", "CadastrarNaturezaCausaCorretiva", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario" },
+                values: new object[] { 1, new List<string>(), new List<string>(), 0, 0, 2, 3, new DateTime(2026, 9, 8, 10, 49, 46, 244, DateTimeKind.Utc).AddTicks(63), 2, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace app_pm_back.Models.Domain;
 
 /// <summary>
@@ -11,6 +13,7 @@ public class ConfiguracaoGlobalModel
     /// <summary>
     /// Modelo declarado como padrão para a classificação do catboost
     /// </summary>
+    [MaxLength(255)]
     public string? ModeloCatboostPadrao {get; set;}
 
     /// <summary>
@@ -39,6 +42,16 @@ public class ConfiguracaoGlobalModel
     public CriarFichasPreventivas CriarFichasPreventivas { get; set; }
     
     /// <summary>
+    /// Lista de palavras de natureza de causa para o cadastro de corretivas
+    /// </summary>
+    public List<string> CadastrarNaturezaCausaCorretiva { get; set; } = new List<string>();
+    
+    /// <summary>
+    /// Lista de palavras de natureza de causa alheia
+    /// </summary>
+    public List<string> CadastrarNaturezaCausaAlheia { get; set; } = new List<string>();
+    
+    /// <summary>
     /// Data da última modificação da configuração global.
     /// </summary>
     public DateTime DataModificacao { get; set; } = DateTime.UtcNow;
@@ -46,5 +59,6 @@ public class ConfiguracaoGlobalModel
     /// <summary>
     /// Usuário que realizou a última modificação na configuração global
     /// </summary>
+    [MaxLength(255)]
     public string? ModificadoPorUsuario { get; set; }
 }

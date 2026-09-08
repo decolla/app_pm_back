@@ -246,6 +246,14 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CadastrarNaturezaCausaAlheia")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CadastrarNaturezaCausaCorretiva")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ClassificacaoAutomatica")
                         .HasColumnType("int");
 
@@ -265,10 +273,12 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("int");
 
                     b.Property<string>("ModeloCatboostPadrao")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ModificadoPorUsuario")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
@@ -278,11 +288,13 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         new
                         {
                             Id = 1,
+                            CadastrarNaturezaCausaAlheia = "[]",
+                            CadastrarNaturezaCausaCorretiva = "[]",
                             ClassificacaoAutomatica = 0,
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 8, 28, 13, 22, 51, 480, DateTimeKind.Utc).AddTicks(5829),
+                            DataModificacao = new DateTime(2026, 9, 8, 10, 49, 39, 78, DateTimeKind.Utc).AddTicks(5210),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -769,9 +781,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
 
-                    b.Property<int?>("IdAtivo")
-                        .HasColumnType("int");
-
                     b.Property<long?>("IdGpm")
                         .HasColumnType("bigint");
 
@@ -785,6 +794,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<long?>("IdUsuario")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("IdsAtivo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MetodoClassificacao")
                         .HasMaxLength(100)
                         .HasColumnType("int");
@@ -792,6 +804,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<string>("ModificadaPorUsuario")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("NaturezaCausa")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<long>("NumeroNota")
                         .HasColumnType("bigint");
@@ -930,9 +946,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<DateTime?>("FimReal")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("IdAtivo")
-                        .HasColumnType("int");
-
                     b.Property<long?>("IdCtm")
                         .HasColumnType("bigint");
 
@@ -949,6 +962,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<long?>("IdPlano")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("IdsAtivo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("InicioPlanejado")
                         .HasColumnType("datetime2");
 
@@ -962,6 +978,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<string>("ModificadaPorUsuario")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("NaturezaCausa")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<long?>("NumeroOrdem")
                         .HasColumnType("bigint");
