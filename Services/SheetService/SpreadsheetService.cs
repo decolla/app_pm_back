@@ -416,6 +416,10 @@ public class SpreadsheetService
                                 valorConvertido = dataOffset.UtcDateTime;
                             }
                         }
+                        else if (tipo == typeof(TiposLI))
+                        {
+                            valorConvertido = TryTranslateTipoSLi(valor);
+                        }
                         else if (string.Equals(nomeColunaExcel, "CondInstApósMed",
                                      StringComparison.OrdinalIgnoreCase) && tipo == typeof(ConfiabilidadeRestaurada) &&
                                  valor.Contains("3"))
@@ -522,7 +526,24 @@ public class SpreadsheetService
 
         return null;
     }
+    
+    private static TiposLI? TryTranslateTipoSLi(string? rawValue)
+    {
+        if (rawValue == null) return null;
+        
+        var normalized = NormalizeText(rawValue);
+        if (string.IsNullOrEmpty(normalized))
+            return null;
 
+        foreach (var (type, terms) in TiposLIMatchers)
+        {
+            if (terms.Any(term => normalized.Contains(term)))
+                return type;
+        }
+
+        return null;
+    }
+    
     public long? TryTranslateSapCode(string rawValue)
     {
         if (string.IsNullOrWhiteSpace(rawValue)) return null;
@@ -681,6 +702,7 @@ public class SpreadsheetService
             IdUsuario = dto.IdUsuario,
             IdsAtivo = dto.IdsAtivo,
             IdLi = dto.IdLi,
+            TipoLi = TryTranslateTipoSLi(dto.IdLi),
             CriadaPorUsuario = dto.CriadaPorUsuario,
             ModificadaPorUsuario = dto.ModificadaPorUsuario,
             DataModificacao = dto.DataModificacao,
@@ -715,6 +737,7 @@ public class SpreadsheetService
             FimReal = dto.FimReal,
             IdsAtivo = dto.IdsAtivo,
             IdLi = dto.IdLi,
+            TipoLi = TryTranslateTipoSLi(dto.IdLi),
             Nota = dto.NumeroNota.HasValue ? new NotaModel { NumeroNota = dto.NumeroNota.Value } : null,
             IdNota = null,
             ConfiabilidadeRestaurada = dto.ConfiabilidadeRestaurada ?? ConfiabilidadeRestaurada.NaoRestaura,
