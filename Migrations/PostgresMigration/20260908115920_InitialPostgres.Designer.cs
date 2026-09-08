@@ -11,10 +11,10 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     [DbContext(typeof(PostgresDbContext))]
-    [Migration("20260908114358_InitialPostgres")]
+    [Migration("20260908115920_InitialPostgres")]
     partial class InitialPostgres
     {
         /// <inheritdoc />
@@ -288,7 +288,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 8, 11, 43, 57, 924, DateTimeKind.Utc).AddTicks(3946),
+                            DataModificacao = new DateTime(2026, 9, 8, 11, 59, 19, 647, DateTimeKind.Utc).AddTicks(2824),
                             FichasConfiabilidade = 2
                         });
                 });
@@ -707,6 +707,26 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.HasIndex("IdNota");
 
                     b.ToTable("PM_ItensNota");
+                });
+
+            modelBuilder.Entity("app_pm_back.Models.Domain.NaturezasCausaModel", b =>
+                {
+                    b.Property<long>("IdRegra")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdRegra"));
+
+                    b.Property<bool>("EhCorretiva")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PalavraChave")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("IdRegra");
+
+                    b.ToTable("PM_NaturezasCausa");
                 });
 
             modelBuilder.Entity("app_pm_back.Models.Domain.NotaModel", b =>

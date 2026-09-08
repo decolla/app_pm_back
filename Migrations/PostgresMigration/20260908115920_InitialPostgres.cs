@@ -6,7 +6,7 @@ using app_pm_back.Models.Domain;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations
 {
     /// <inheritdoc />
     public partial class InitialPostgres : Migration
@@ -148,6 +148,20 @@ namespace app_pm_back.Migrations.PostgresMigration
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PM_Imobilizados", x => x.IdImobilizado);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PM_NaturezasCausa",
+                columns: table => new
+                {
+                    IdRegra = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PalavraChave = table.Column<string>(type: "text", nullable: false),
+                    EhCorretiva = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_NaturezasCausa", x => x.IdRegra);
                 });
 
             migrationBuilder.CreateTable(
@@ -892,7 +906,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 8, 11, 43, 57, 924, DateTimeKind.Utc).AddTicks(3946), 2, null, null });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 8, 11, 59, 19, 647, DateTimeKind.Utc).AddTicks(2824), 2, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
@@ -1139,6 +1153,9 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.DropTable(
                 name: "PM_ItensNota");
+
+            migrationBuilder.DropTable(
+                name: "PM_NaturezasCausa");
 
             migrationBuilder.DropTable(
                 name: "PM_Reliability");

@@ -224,6 +224,7 @@ public class AppDbContext : DbContext
     public DbSet<AuditoriaModel> PM_Auditorias { get; set; }
     public DbSet<RegraClassificacaoModel> PM_RuleClassification { get; set; }
     public DbSet<DiretorioModel> PM_Diretorios { get; set; }
+    public DbSet<NaturezasCausaModel> PM_NaturezasCausa { get; set; }
 }
 
 public class SqlServerDbContext : AppDbContext
