@@ -101,6 +101,7 @@ else
         options.AddPolicy("View", policy => policy.RequireAssertion(_ => true));
         options.AddPolicy("Admin", policy => policy.RequireAssertion(_ => true));
         options.AddPolicy("Edit", policy => policy.RequireAssertion(_ => true));
+        options.AddPolicy("Manage", policy => policy.RequireAssertion(_ => true));
     });
 }
 
