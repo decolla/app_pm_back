@@ -9,7 +9,7 @@ namespace app_pm_back.Config;
 public static class RouteConfig
 {
     public const string ClientName = "";
-    public const string BaseRoute = "api/V1" + ClientName;
+    public const string BaseRoute = "v1" + ClientName;
 
     /// <summary>
     /// Obtém o valor bruto da variável de ambiente SCHEMA
