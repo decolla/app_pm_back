@@ -48,6 +48,8 @@ public class ConfiguracaoGlobalService
         config.CriterioDataRenovacao = dto.CriterioDataRenovacao;
         config.CriterioConfiabilidadeRenovacao = dto.CriterioConfiabilidadeRenovacao;
         config.CriarFichasPreventivas = dto.CriarFichasPreventivas;
+        config.PalavrasNaturezaCausaCorretiva = dto.PalavrasNaturezaCausaCorretiva;
+        config.PalavrasNaturezaCausaAlheia = dto.PalavrasNaturezaCausaAlheia;
         config.DataModificacao = DateTime.UtcNow;
         config.ModificadoPorUsuario = usuario;
         
