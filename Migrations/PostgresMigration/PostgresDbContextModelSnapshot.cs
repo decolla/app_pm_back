@@ -323,7 +323,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 10, 14, 8, 18, 224, DateTimeKind.Utc).AddTicks(1614),
+                            DataModificacao = new DateTime(2026, 9, 10, 16, 52, 55, 666, DateTimeKind.Utc).AddTicks(4945),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = new List<string>(),
                             PalavrasNaturezaCausaCorretiva = new List<string>()
@@ -365,6 +365,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<long>("IdCTM")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdCTM"));
 
                     b.Property<string>("AreaCTM")
                         .IsRequired()
@@ -1497,12 +1499,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.HasOne("app_pm_back.Models.Domain.CpmModel", "CPM")
                         .WithMany("Ctms")
                         .HasForeignKey("IdCPM")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("app_pm_back.Models.Domain.GpmModel", null)
-                        .WithOne()
-                        .HasForeignKey("app_pm_back.Models.Domain.CtmModel", "IdCTM")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -322,7 +322,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 10, 14, 8, 10, 860, DateTimeKind.Utc).AddTicks(2037),
+                            DataModificacao = new DateTime(2026, 9, 10, 16, 52, 48, 612, DateTimeKind.Utc).AddTicks(9050),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = "[]",
                             PalavrasNaturezaCausaCorretiva = "[]"
@@ -364,6 +364,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<long>("IdCTM")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdCTM"));
 
                     b.Property<string>("AreaCTM")
                         .IsRequired()
@@ -1496,12 +1498,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.HasOne("app_pm_back.Models.Domain.CpmModel", "CPM")
                         .WithMany("Ctms")
                         .HasForeignKey("IdCPM")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("app_pm_back.Models.Domain.GpmModel", null)
-                        .WithOne()
-                        .HasForeignKey("app_pm_back.Models.Domain.CtmModel", "IdCTM")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

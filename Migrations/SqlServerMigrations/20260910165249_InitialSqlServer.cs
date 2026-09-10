@@ -315,6 +315,30 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PM_Ctms",
+                schema: "dbo",
+                columns: table => new
+                {
+                    IdCTM = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    AreaCTM = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    IdCPM = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Ctms", x => x.IdCTM);
+                    table.ForeignKey(
+                        name: "FK_PM_Ctms_PM_Cpms_IdCPM",
+                        column: x => x.IdCPM,
+                        principalSchema: "dbo",
+                        principalTable: "PM_Cpms",
+                        principalColumn: "IdCPM",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PM_Gpms",
                 schema: "dbo",
                 columns: table => new
@@ -403,32 +427,29 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PM_Ctms",
+                name: "PM_CtmUsuario",
                 schema: "dbo",
                 columns: table => new
                 {
                     IdCTM = table.Column<long>(type: "bigint", nullable: false),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    AreaCTM = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Descricao = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    IdCPM = table.Column<long>(type: "bigint", nullable: false)
+                    IdUsuario = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PM_Ctms", x => x.IdCTM);
+                    table.PrimaryKey("PK_PM_CtmUsuario", x => new { x.IdCTM, x.IdUsuario });
                     table.ForeignKey(
-                        name: "FK_PM_Ctms_PM_Cpms_IdCPM",
-                        column: x => x.IdCPM,
-                        principalSchema: "dbo",
-                        principalTable: "PM_Cpms",
-                        principalColumn: "IdCPM",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PM_Ctms_PM_Gpms_IdCTM",
+                        name: "FK_PM_CtmUsuario_PM_Ctms_IdCTM",
                         column: x => x.IdCTM,
                         principalSchema: "dbo",
-                        principalTable: "PM_Gpms",
-                        principalColumn: "IdGPM",
+                        principalTable: "PM_Ctms",
+                        principalColumn: "IdCTM",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_CtmUsuario_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalSchema: "dbo",
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -549,33 +570,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PM_CtmUsuario",
-                schema: "dbo",
-                columns: table => new
-                {
-                    IdCTM = table.Column<long>(type: "bigint", nullable: false),
-                    IdUsuario = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PM_CtmUsuario", x => new { x.IdCTM, x.IdUsuario });
-                    table.ForeignKey(
-                        name: "FK_PM_CtmUsuario_PM_Ctms_IdCTM",
-                        column: x => x.IdCTM,
-                        principalSchema: "dbo",
-                        principalTable: "PM_Ctms",
-                        principalColumn: "IdCTM",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PM_CtmUsuario_PM_Usuarios_IdUsuario",
-                        column: x => x.IdUsuario,
-                        principalSchema: "dbo",
-                        principalTable: "PM_Usuarios",
-                        principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1025,7 +1019,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 10, 14, 8, 10, 860, DateTimeKind.Utc).AddTicks(2037), 2, null, null, "[]", "[]" });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 10, 16, 52, 48, 612, DateTimeKind.Utc).AddTicks(9050), 2, null, null, "[]", "[]" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

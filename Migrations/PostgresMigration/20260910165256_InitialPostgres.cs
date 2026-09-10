@@ -298,6 +298,28 @@ namespace app_pm_back.Migrations.PostgresMigration
                 });
 
             migrationBuilder.CreateTable(
+                name: "PM_Ctms",
+                columns: table => new
+                {
+                    IdCTM = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Nome = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    AreaCTM = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                    IdCPM = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_Ctms", x => x.IdCTM);
+                    table.ForeignKey(
+                        name: "FK_PM_Ctms_PM_Cpms_IdCPM",
+                        column: x => x.IdCPM,
+                        principalTable: "PM_Cpms",
+                        principalColumn: "IdCPM",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PM_Gpms",
                 columns: table => new
                 {
@@ -377,29 +399,26 @@ namespace app_pm_back.Migrations.PostgresMigration
                 });
 
             migrationBuilder.CreateTable(
-                name: "PM_Ctms",
+                name: "PM_CtmUsuario",
                 columns: table => new
                 {
                     IdCTM = table.Column<long>(type: "bigint", nullable: false),
-                    Nome = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    AreaCTM = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
-                    IdCPM = table.Column<long>(type: "bigint", nullable: false)
+                    IdUsuario = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PM_Ctms", x => x.IdCTM);
+                    table.PrimaryKey("PK_PM_CtmUsuario", x => new { x.IdCTM, x.IdUsuario });
                     table.ForeignKey(
-                        name: "FK_PM_Ctms_PM_Cpms_IdCPM",
-                        column: x => x.IdCPM,
-                        principalTable: "PM_Cpms",
-                        principalColumn: "IdCPM",
+                        name: "FK_PM_CtmUsuario_PM_Ctms_IdCTM",
+                        column: x => x.IdCTM,
+                        principalTable: "PM_Ctms",
+                        principalColumn: "IdCTM",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PM_Ctms_PM_Gpms_IdCTM",
-                        column: x => x.IdCTM,
-                        principalTable: "PM_Gpms",
-                        principalColumn: "IdGPM",
+                        name: "FK_PM_CtmUsuario_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -510,30 +529,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PM_CtmUsuario",
-                columns: table => new
-                {
-                    IdCTM = table.Column<long>(type: "bigint", nullable: false),
-                    IdUsuario = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PM_CtmUsuario", x => new { x.IdCTM, x.IdUsuario });
-                    table.ForeignKey(
-                        name: "FK_PM_CtmUsuario_PM_Ctms_IdCTM",
-                        column: x => x.IdCTM,
-                        principalTable: "PM_Ctms",
-                        principalColumn: "IdCTM",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PM_CtmUsuario_PM_Usuarios_IdUsuario",
-                        column: x => x.IdUsuario,
-                        principalTable: "PM_Usuarios",
-                        principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -939,7 +934,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 10, 14, 8, 18, 224, DateTimeKind.Utc).AddTicks(1614), 2, null, null, new List<string>(), new List<string>() });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 10, 16, 52, 55, 666, DateTimeKind.Utc).AddTicks(4945), 2, null, null, new List<string>(), new List<string>() });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

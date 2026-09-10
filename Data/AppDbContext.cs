@@ -60,13 +60,6 @@ public class AppDbContext : DbContext
             .WithMany() 
             .HasForeignKey(n => n.IdUsuario)
             .OnDelete(DeleteBehavior.SetNull); 
-        
-        // 1-to-1: CTM e GPM 
-        modelBuilder.Entity<CtmModel>()
-            .HasOne<GpmModel>()
-            .WithOne()
-            .HasForeignKey<CtmModel>(c => c.IdCTM)
-            .OnDelete(DeleteBehavior.Cascade);
 
         // 1. Ferramentas/Operacoes
         modelBuilder.Entity<OperacaoModel>()
