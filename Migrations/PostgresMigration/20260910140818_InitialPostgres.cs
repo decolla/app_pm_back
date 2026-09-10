@@ -508,7 +508,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                         name: "FK_PM_Notas_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
                         principalTable: "PM_Usuarios",
-                        principalColumn: "IdUsuario");
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -605,6 +606,30 @@ namespace app_pm_back.Migrations.PostgresMigration
                 });
 
             migrationBuilder.CreateTable(
+                name: "PM_NotaUsuario",
+                columns: table => new
+                {
+                    IdNota = table.Column<long>(type: "bigint", nullable: false),
+                    IdUsuario = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_NotaUsuario", x => new { x.IdNota, x.IdUsuario });
+                    table.ForeignKey(
+                        name: "FK_PM_NotaUsuario_PM_Notas_IdNota",
+                        column: x => x.IdNota,
+                        principalTable: "PM_Notas",
+                        principalColumn: "IdNota",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_NotaUsuario_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PM_Ordens",
                 columns: table => new
                 {
@@ -638,8 +663,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     IdNota = table.Column<long>(type: "bigint", nullable: true),
                     IdGpm = table.Column<long>(type: "bigint", nullable: true),
                     IdCtm = table.Column<long>(type: "bigint", nullable: true),
-                    IdPlano = table.Column<long>(type: "bigint", nullable: true),
-                    UsuarioModelIdUsuario = table.Column<long>(type: "bigint", nullable: true)
+                    IdPlano = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -665,11 +689,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                         column: x => x.IdPlano,
                         principalTable: "PM_Planos",
                         principalColumn: "IdPlano");
-                    table.ForeignKey(
-                        name: "FK_PM_Ordens_PM_Usuarios_UsuarioModelIdUsuario",
-                        column: x => x.UsuarioModelIdUsuario,
-                        principalTable: "PM_Usuarios",
-                        principalColumn: "IdUsuario");
                 });
 
             migrationBuilder.CreateTable(
@@ -816,6 +835,30 @@ namespace app_pm_back.Migrations.PostgresMigration
                 });
 
             migrationBuilder.CreateTable(
+                name: "PM_OrdemUsuario",
+                columns: table => new
+                {
+                    IdOrdem = table.Column<long>(type: "bigint", nullable: false),
+                    IdUsuario = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_OrdemUsuario", x => new { x.IdOrdem, x.IdUsuario });
+                    table.ForeignKey(
+                        name: "FK_PM_OrdemUsuario_PM_Ordens_IdOrdem",
+                        column: x => x.IdOrdem,
+                        principalTable: "PM_Ordens",
+                        principalColumn: "IdOrdem",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_OrdemUsuario_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PM_TiposPlano",
                 columns: table => new
                 {
@@ -896,7 +939,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 8, 14, 8, 54, 863, DateTimeKind.Utc).AddTicks(2399), 2, null, null, new List<string>(), new List<string>() });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 10, 14, 8, 18, 224, DateTimeKind.Utc).AddTicks(1614), 2, null, null, new List<string>(), new List<string>() });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
@@ -1004,6 +1047,11 @@ namespace app_pm_back.Migrations.PostgresMigration
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PM_NotaUsuario_IdUsuario",
+                table: "PM_NotaUsuario",
+                column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PM_Operacoes_IdCTM",
                 table: "PM_Operacoes",
                 column: "IdCTM");
@@ -1017,6 +1065,11 @@ namespace app_pm_back.Migrations.PostgresMigration
                 name: "IX_PM_Operacoes_IdTipoManutencao",
                 table: "PM_Operacoes",
                 column: "IdTipoManutencao");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_OrdemUsuario_IdUsuario",
+                table: "PM_OrdemUsuario",
+                column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ordens_IdCtm",
@@ -1037,11 +1090,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                 name: "IX_PM_Ordens_IdPlano",
                 table: "PM_Ordens",
                 column: "IdPlano");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PM_Ordens_UsuarioModelIdUsuario",
-                table: "PM_Ordens",
-                column: "UsuarioModelIdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Planos_IdEstrategia",
@@ -1143,6 +1191,12 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.DropTable(
                 name: "PM_ItensNota");
+
+            migrationBuilder.DropTable(
+                name: "PM_NotaUsuario");
+
+            migrationBuilder.DropTable(
+                name: "PM_OrdemUsuario");
 
             migrationBuilder.DropTable(
                 name: "PM_Reliability");

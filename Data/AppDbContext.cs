@@ -54,6 +54,13 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<ConfiguracaoGlobalModel>().HasKey(c => c.Id);
         modelBuilder.Entity<RegraClassificacaoModel>().HasKey(e => e.IdRegra);
 
+        // resolve ambiguidade de relacionamento
+        modelBuilder.Entity<NotaModel>()
+            .HasOne(n => n.Usuario)
+            .WithMany() 
+            .HasForeignKey(n => n.IdUsuario)
+            .OnDelete(DeleteBehavior.SetNull); 
+        
         // 1-to-1: CTM e GPM 
         modelBuilder.Entity<CtmModel>()
             .HasOne<GpmModel>()
@@ -135,6 +142,34 @@ public class AppDbContext : DbContext
                 {
                     j.HasKey("IdCTM", "IdUsuario");
                     j.ToTable("PM_CtmUsuario");
+                });
+        
+        // 6. Ordem/Usuario
+        modelBuilder.Entity<OrdemModel>()
+            .HasMany(o => o.Usuarios)
+            .WithMany(u => u.Ordens)
+            .UsingEntity<Dictionary<string, object>>(
+                "OrdemUsuario",
+                j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<OrdemModel>().WithMany().HasForeignKey("IdOrdem").OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("IdOrdem", "IdUsuario");
+                    j.ToTable("PM_OrdemUsuario");
+                });
+
+        // 7. Nota/Usuario
+        modelBuilder.Entity<NotaModel>()
+            .HasMany(n => n.Usuarios)
+            .WithMany(u => u.Notas)
+            .UsingEntity<Dictionary<string, object>>(
+                "NotaUsuario",
+                j => j.HasOne<UsuarioModel>().WithMany().HasForeignKey("IdUsuario").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<NotaModel>().WithMany().HasForeignKey("IdNota").OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey("IdNota", "IdUsuario");
+                    j.ToTable("PM_NotaUsuario");
                 });
 
         // adiciona um valor padrão inicial caso a tabela esteja vazia nas migrations

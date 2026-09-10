@@ -99,6 +99,36 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.ToTable("PM_GpmUsuario", (string)null);
                 });
 
+            modelBuilder.Entity("NotaUsuario", b =>
+                {
+                    b.Property<long>("IdNota")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("IdUsuario")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("IdNota", "IdUsuario");
+
+                    b.HasIndex("IdUsuario");
+
+                    b.ToTable("PM_NotaUsuario", (string)null);
+                });
+
+            modelBuilder.Entity("OrdemUsuario", b =>
+                {
+                    b.Property<long>("IdOrdem")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("IdUsuario")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("IdOrdem", "IdUsuario");
+
+                    b.HasIndex("IdUsuario");
+
+                    b.ToTable("PM_OrdemUsuario", (string)null);
+                });
+
             modelBuilder.Entity("app_pm_back.Models.Domain.AlmoxarifadoModel", b =>
                 {
                     b.Property<long>("IdAlmoxarifado")
@@ -293,7 +323,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 8, 14, 8, 54, 863, DateTimeKind.Utc).AddTicks(2399),
+                            DataModificacao = new DateTime(2026, 9, 10, 14, 8, 18, 224, DateTimeKind.Utc).AddTicks(1614),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = new List<string>(),
                             PalavrasNaturezaCausaCorretiva = new List<string>()
@@ -1000,9 +1030,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<long?>("UsuarioModelIdUsuario")
-                        .HasColumnType("bigint");
-
                     b.HasKey("IdOrdem");
 
                     b.HasIndex("IdCtm");
@@ -1012,8 +1039,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.HasIndex("IdNota");
 
                     b.HasIndex("IdPlano");
-
-                    b.HasIndex("UsuarioModelIdUsuario");
 
                     b.ToTable("PM_Ordens");
                 });
@@ -1415,6 +1440,36 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("NotaUsuario", b =>
+                {
+                    b.HasOne("app_pm_back.Models.Domain.NotaModel", null)
+                        .WithMany()
+                        .HasForeignKey("IdNota")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("app_pm_back.Models.Domain.UsuarioModel", null)
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("OrdemUsuario", b =>
+                {
+                    b.HasOne("app_pm_back.Models.Domain.OrdemModel", null)
+                        .WithMany()
+                        .HasForeignKey("IdOrdem")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("app_pm_back.Models.Domain.UsuarioModel", null)
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("app_pm_back.Models.Domain.AnexoNotaModel", b =>
                 {
                     b.HasOne("app_pm_back.Models.Domain.NotaModel", "Nota")
@@ -1565,8 +1620,9 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasForeignKey("IdPlano");
 
                     b.HasOne("app_pm_back.Models.Domain.UsuarioModel", "Usuario")
-                        .WithMany("Notas")
-                        .HasForeignKey("IdUsuario");
+                        .WithMany()
+                        .HasForeignKey("IdUsuario")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("GPM");
 
@@ -1614,10 +1670,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.HasOne("app_pm_back.Models.Domain.PlanoModel", "Plano")
                         .WithMany()
                         .HasForeignKey("IdPlano");
-
-                    b.HasOne("app_pm_back.Models.Domain.UsuarioModel", null)
-                        .WithMany("Ordens")
-                        .HasForeignKey("UsuarioModelIdUsuario");
 
                     b.Navigation("CTM");
 
@@ -1785,10 +1837,6 @@ namespace app_pm_back.Migrations.PostgresMigration
             modelBuilder.Entity("app_pm_back.Models.Domain.UsuarioModel", b =>
                 {
                     b.Navigation("DadosRenovacao");
-
-                    b.Navigation("Notas");
-
-                    b.Navigation("Ordens");
                 });
 #pragma warning restore 612, 618
         }

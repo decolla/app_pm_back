@@ -298,6 +298,11 @@ public class OrdemModel : IClassifiable, IAuditable
     /// Diretórios vincluados a essa ordem
     /// </summary>
     public virtual ICollection<DiretorioOrdemModel> DiretoriosVinculados { get; set; } = new List<DiretorioOrdemModel>();
+    
+    /// <summary>
+    /// Usuários atribuídos à execução ou acompanhamento desta ordem.
+    /// </summary>
+    public virtual ICollection<UsuarioModel> Usuarios { get; set; } = new List<UsuarioModel>();
 
     #endregion
 }

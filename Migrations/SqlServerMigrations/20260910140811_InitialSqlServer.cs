@@ -547,7 +547,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         column: x => x.IdUsuario,
                         principalSchema: "dbo",
                         principalTable: "PM_Usuarios",
-                        principalColumn: "IdUsuario");
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -654,6 +655,33 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PM_NotaUsuario",
+                schema: "dbo",
+                columns: table => new
+                {
+                    IdNota = table.Column<long>(type: "bigint", nullable: false),
+                    IdUsuario = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_NotaUsuario", x => new { x.IdNota, x.IdUsuario });
+                    table.ForeignKey(
+                        name: "FK_PM_NotaUsuario_PM_Notas_IdNota",
+                        column: x => x.IdNota,
+                        principalSchema: "dbo",
+                        principalTable: "PM_Notas",
+                        principalColumn: "IdNota",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_NotaUsuario_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalSchema: "dbo",
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PM_Ordens",
                 schema: "dbo",
                 columns: table => new
@@ -688,8 +716,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     IdNota = table.Column<long>(type: "bigint", nullable: true),
                     IdGpm = table.Column<long>(type: "bigint", nullable: true),
                     IdCtm = table.Column<long>(type: "bigint", nullable: true),
-                    IdPlano = table.Column<long>(type: "bigint", nullable: true),
-                    UsuarioModelIdUsuario = table.Column<long>(type: "bigint", nullable: true)
+                    IdPlano = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -719,12 +746,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         principalSchema: "dbo",
                         principalTable: "PM_Planos",
                         principalColumn: "IdPlano");
-                    table.ForeignKey(
-                        name: "FK_PM_Ordens_PM_Usuarios_UsuarioModelIdUsuario",
-                        column: x => x.UsuarioModelIdUsuario,
-                        principalSchema: "dbo",
-                        principalTable: "PM_Usuarios",
-                        principalColumn: "IdUsuario");
                 });
 
             migrationBuilder.CreateTable(
@@ -886,6 +907,33 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PM_OrdemUsuario",
+                schema: "dbo",
+                columns: table => new
+                {
+                    IdOrdem = table.Column<long>(type: "bigint", nullable: false),
+                    IdUsuario = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PM_OrdemUsuario", x => new { x.IdOrdem, x.IdUsuario });
+                    table.ForeignKey(
+                        name: "FK_PM_OrdemUsuario_PM_Ordens_IdOrdem",
+                        column: x => x.IdOrdem,
+                        principalSchema: "dbo",
+                        principalTable: "PM_Ordens",
+                        principalColumn: "IdOrdem",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PM_OrdemUsuario_PM_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalSchema: "dbo",
+                        principalTable: "PM_Usuarios",
+                        principalColumn: "IdUsuario",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PM_TiposPlano",
                 schema: "dbo",
                 columns: table => new
@@ -977,7 +1025,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 8, 14, 8, 47, 890, DateTimeKind.Utc).AddTicks(3649), 2, null, null, "[]", "[]" });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 10, 14, 8, 10, 860, DateTimeKind.Utc).AddTicks(2037), 2, null, null, "[]", "[]" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
@@ -1106,6 +1154,12 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PM_NotaUsuario_IdUsuario",
+                schema: "dbo",
+                table: "PM_NotaUsuario",
+                column: "IdUsuario");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PM_Operacoes_IdCTM",
                 schema: "dbo",
                 table: "PM_Operacoes",
@@ -1122,6 +1176,12 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_Operacoes",
                 column: "IdTipoManutencao");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PM_OrdemUsuario_IdUsuario",
+                schema: "dbo",
+                table: "PM_OrdemUsuario",
+                column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ordens_IdCtm",
@@ -1146,12 +1206,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_Ordens",
                 column: "IdPlano");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PM_Ordens_UsuarioModelIdUsuario",
-                schema: "dbo",
-                table: "PM_Ordens",
-                column: "UsuarioModelIdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Planos_IdEstrategia",
@@ -1277,6 +1331,14 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
             migrationBuilder.DropTable(
                 name: "PM_ItensNota",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "PM_NotaUsuario",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "PM_OrdemUsuario",
                 schema: "dbo");
 
             migrationBuilder.DropTable(

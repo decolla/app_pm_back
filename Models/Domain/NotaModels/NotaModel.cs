@@ -372,6 +372,11 @@ public class NotaModel : IClassifiable, IAuditable
     /// Diretórios vinculados a esta nota.
     /// </summary>
     public virtual ICollection<DiretorioNotaModel> DiretoriosVinculados { get; set; } = new List<DiretorioNotaModel>();
+    
+    /// <summary>
+    /// Usuários atribuídos ao acompanhamento ou resolução desta nota.
+    /// </summary>
+    public virtual ICollection<UsuarioModel> Usuarios { get; set; } = new List<UsuarioModel>();
 
     #endregion
 }

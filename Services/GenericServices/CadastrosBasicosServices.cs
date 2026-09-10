@@ -44,35 +44,54 @@ public class CtmService : BaseCrudService<CtmModel>
         return await _context.Set<UsuarioModel>().Where(u => u.Ctms.Contains(ctm)).ToListAsync();
     }
     
-    public async Task<List<object>> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo,
-        List<long> idsUsuarios)
+    public async Task<bool> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo, List<long> idsUsuariosSelecionados)
     {
-        var usuarios = await _context.Set<UsuarioModel>().Where(u => idsUsuarios.Contains(u.IdUsuario)).ToListAsync();
+        // busca usuários deste grupo
+        var usuariosValidosDoGrupo = await _context.Set<UsuarioModel>()
+            .Where(u => u.Ctms.Any(c => c.IdCTM == idGrupo))
+            .ToListAsync();
+
+        var idsValidosDoGrupo = usuariosValidosDoGrupo.Select(u => u.IdUsuario).ToList();
 
         if (tipoFicha == NotaOrdem.Ordem)
         {
-            OrdemModel? ficha;
-            ficha = await _context.Set<OrdemModel>().FirstOrDefaultAsync(o => o.IdOrdem == idFicha);
+            var ficha = await _context.Set<OrdemModel>()
+                .Include(o => o.Usuarios)
+                .FirstOrDefaultAsync(o => o.IdOrdem == idFicha);
 
             if (ficha == null) throw new KeyNotFoundException($"Ordem com ID {idFicha} não encontrada.");
 
-            foreach (var usuario in usuarios) usuario.Ordens.Add(ficha);
+            var usuariosAtuaisDesteGrupo = ficha.Usuarios.Where(u => idsValidosDoGrupo.Contains(u.IdUsuario)).ToList();
+
+            var remover = usuariosAtuaisDesteGrupo.Where(u => !idsUsuariosSelecionados.Contains(u.IdUsuario)).ToList();
+            foreach (var u in remover) ficha.Usuarios.Remove(u);
+
+            var idsAtuaisNaFicha = ficha.Usuarios.Select(x => x.IdUsuario).ToList();
+            var adicionar = usuariosValidosDoGrupo.Where(u => idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
+            
+            foreach (var u in adicionar) ficha.Usuarios.Add(u);
         }
-        else
+        else 
         {
-            NotaModel? ficha;
-            ficha = await _context.Set<NotaModel>().FirstOrDefaultAsync(n => n.IdNota == idFicha);
+            var ficha = await _context.Set<NotaModel>()
+                .Include(n => n.Usuarios)
+                .FirstOrDefaultAsync(n => n.IdNota == idFicha);
 
             if (ficha == null) throw new KeyNotFoundException($"Nota com ID {idFicha} não encontrada.");
 
-            foreach (var usuario in usuarios)
-            {
-                usuario.Notas.Add(ficha);
-            }
+            var usuariosAtuaisDesteGrupo = ficha.Usuarios.Where(u => idsValidosDoGrupo.Contains(u.IdUsuario)).ToList();
+
+            var remover = usuariosAtuaisDesteGrupo.Where(u => !idsUsuariosSelecionados.Contains(u.IdUsuario)).ToList();
+            foreach (var u in remover) ficha.Usuarios.Remove(u);
+
+            var idsAtuaisNaFicha = ficha.Usuarios.Select(x => x.IdUsuario).ToList();
+            var adicionar = usuariosValidosDoGrupo.Where(u => idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
+            
+            foreach (var u in adicionar) ficha.Usuarios.Add(u);
         }
 
         await _context.SaveChangesAsync();
-        return new List<object>();
+        return true; 
     }
 }
     
@@ -103,34 +122,59 @@ public class GpmService : BaseCrudService<GpmModel>
         return await _context.Set<UsuarioModel>().Where(u => u.Gpms.Contains(gpm)).ToListAsync();
     }
     
-    public async Task<List<object>> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo,
-        List<long> idsUsuarios)
+   public async Task<bool> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo, List<long> idsUsuariosSelecionados)
     {
-        var usuarios = await _context.Set<UsuarioModel>().Where(u => idsUsuarios.Contains(u.IdUsuario)).ToListAsync();
+        // busca usuários deste grupo
+        var usuariosValidosDoGrupo = await _context.Set<UsuarioModel>()
+            .Where(u => u.Gpms.Any(g => g.IdGPM == idGrupo))
+            .ToListAsync();
+
+        var idsValidosDoGrupo = usuariosValidosDoGrupo.Select(u => u.IdUsuario).ToList();
 
         if (tipoFicha == NotaOrdem.Ordem)
         {
-            OrdemModel? ficha;
-            ficha = await _context.Set<OrdemModel>().FirstOrDefaultAsync(o => o.IdOrdem == idFicha);
+            var ficha = await _context.Set<OrdemModel>()
+                .Include(o => o.Usuarios)
+                .FirstOrDefaultAsync(o => o.IdOrdem == idFicha);
 
             if (ficha == null) throw new KeyNotFoundException($"Ordem com ID {idFicha} não encontrada.");
 
-            foreach (var usuario in usuarios) usuario.Ordens.Add(ficha);
+            var usuariosAtuaisDesteGrupo = ficha.Usuarios.Where(u => idsValidosDoGrupo.Contains(u.IdUsuario)).ToList();
+
+            var remover = usuariosAtuaisDesteGrupo.Where(u => !idsUsuariosSelecionados.Contains(u.IdUsuario)).ToList();
+            foreach (var u in remover)
+            {
+                ficha.Usuarios.Remove(u);
+            }
+
+            var idsAtuaisNaFicha = ficha.Usuarios.Select(x => x.IdUsuario).ToList();
+            var adicionar = usuariosValidosDoGrupo.Where(u => idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
+            
+            foreach (var u in adicionar)
+            {
+                ficha.Usuarios.Add(u);
+            }
         }
-        else
+        else 
         {
-            NotaModel? ficha;
-            ficha = await _context.Set<NotaModel>().FirstOrDefaultAsync(n => n.IdNota == idFicha);
+            var ficha = await _context.Set<NotaModel>()
+                .Include(n => n.Usuarios)
+                .FirstOrDefaultAsync(n => n.IdNota == idFicha);
 
             if (ficha == null) throw new KeyNotFoundException($"Nota com ID {idFicha} não encontrada.");
 
-            foreach (var usuario in usuarios)
-            {
-                usuario.Notas.Add(ficha);
-            }
+            var usuariosAtuaisDesteGrupo = ficha.Usuarios.Where(u => idsValidosDoGrupo.Contains(u.IdUsuario)).ToList();
+
+            var remover = usuariosAtuaisDesteGrupo.Where(u => !idsUsuariosSelecionados.Contains(u.IdUsuario)).ToList();
+            foreach (var u in remover) ficha.Usuarios.Remove(u);
+
+            var idsAtuaisNaFicha = ficha.Usuarios.Select(x => x.IdUsuario).ToList();
+            var adicionar = usuariosValidosDoGrupo.Where(u => idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
+            
+            foreach (var u in adicionar) ficha.Usuarios.Add(u);
         }
 
         await _context.SaveChangesAsync();
-        return new List<object>();
+        return true; 
     }
 }
