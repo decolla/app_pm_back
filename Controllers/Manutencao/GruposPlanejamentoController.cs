@@ -49,10 +49,6 @@ public class GruposPlanejamentoController : ControllerBase
             }
 
             var grupo = _mapper.Map<GpmModel>(dto);
-            if (grupo.IdGPM <= 0)
-            {
-                return BadRequest(new { message = "IdGpm/IdGPM invalido. Envie maior que zero." });
-            }
 
             var criado = await _service.CreateAsync(grupo);
             return CreatedAtAction(nameof(ObterPorId), new { id = criado.IdGPM }, criado);

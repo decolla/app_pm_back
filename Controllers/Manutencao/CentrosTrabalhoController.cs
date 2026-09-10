@@ -49,10 +49,6 @@ public class CentrosTrabalhoController : ControllerBase
             }
 
             var centro = _mapper.Map<CtmModel>(dto);
-            if (centro.IdCTM <= 0)
-            {
-                return BadRequest(new { message = "IdCTM/IdCentroTrabalho invalido. Envie maior que zero." });
-            }
 
             var criado = await _service.CreateAsync(centro);
             return CreatedAtAction(nameof(ObterPorId), new { id = criado.IdCTM }, criado);

@@ -49,10 +49,6 @@ public class CentrosPlanejamentoController : ControllerBase
             }
 
             var centro = _mapper.Map<CpmModel>(dto);
-            if (centro.IdCPM <= 0)
-            {
-                return BadRequest(new { message = "IdCPM invalido. Envie IdCPM maior que zero." });
-            }
 
             var criado = await _service.CreateAsync(centro);
             return CreatedAtAction(nameof(ObterPorId), new { id = criado.IdCPM }, criado);
