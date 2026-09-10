@@ -262,6 +262,7 @@ public class NotaService : BaseCrudService<NotaModel>
             .Include(n => n.Itens)
             .Include(n => n.Variaveis)
             .Include(n => n.Ordens.Take(1))
+            .Include(n => n.Usuarios)
             .AsNoTracking()
             .FirstOrDefaultAsync(n => n.IdNota == idnota);
 

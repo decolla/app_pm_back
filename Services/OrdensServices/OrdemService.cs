@@ -301,6 +301,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
     {
         var ordem = await _dbSet
             .Include(n => n.Operacoes)
+            .Include(n => n.Usuarios)
             .AsNoTracking()
             .FirstOrDefaultAsync(n => n.IdOrdem == idOrdem);
 
