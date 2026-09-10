@@ -136,6 +136,50 @@ public class CentrosTrabalhoController : ControllerBase
     }
 
     /// <summary>
+    /// Lista os registros cadastrados com paginação.
+    /// </summary>
+    /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+    /// <response code="200">Sucesso ao listar registros.</response>
+    /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+    [HttpGet("{id:long}/usuarios")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> ListaUsuarios([FromRoute] long id)
+    {
+        try{
+            var todos = await _service.GetUsuariosCtmAsync(id);
+            return Ok(todos);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao processar {_operador}: {e.Message}." });
+        }
+    }
+    
+    /// <summary>
+    /// Atribui usuários de um centro de trabalho a uma ficha específica
+    /// </summary>
+    /// <param name="tipoFicha">Nota ou ordem</param>
+    /// <param name="idFicha">Id da nota/ordem a ser atribuída</param>
+    /// <param name="idGrupo">Id do grupo nos quais os usuários são pertencentes</param>
+    /// <param name="idsUsuarios">Lista de usuários</param>
+    /// <returns></returns>
+    [HttpPost("{id:long}/usuarios/atribuir")]
+    public async Task<IActionResult> AtribuirUsuariosFicha([FromQuery] NotaOrdem tipoFicha, [FromQuery] long idFicha, [FromRoute]long idGrupo,
+        [FromQuery] List<long> idsUsuarios)
+    {
+        try
+        {
+            var result = await _service.AtribuirFichas(tipoFicha, idFicha, idGrupo, idsUsuarios);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao processar {_operador}: {e.Message}." });
+        }
+    }
+
+    /// <summary>
     /// Obtém o total de registros cadastrados.
     /// </summary>
     /// <returns>Resultado da operação.</returns>

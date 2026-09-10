@@ -203,6 +203,21 @@ public enum Fichas
 }
 
 /// <summary>
+/// Tipo de ficha a ser gerada.
+/// </summary>
+public enum NotaOrdem
+{
+    Nota = 0,
+    Ordem = 1
+}
+
+public enum Grupos
+{
+    Gpm = 0,
+    Ctm = 1
+}
+
+/// <summary>
 /// Filtros para classificação de fichas.
 /// </summary>
 public enum FiltroClassificacao

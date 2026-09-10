@@ -47,7 +47,7 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
             throw;
         }
     }
-    
+
     public async Task<List<UsuarioModel>> SearchUsuario(string? cpf, string? nome, string? funcao, int? schema)
     {
         var usuarios = await _context.Set<UsuarioModel>()
@@ -59,5 +59,36 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
             .ToListAsync();
 
         return usuarios;
+    }
+
+    public async Task<List<object>> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo,
+        List<long> idsUsuarios)
+    {
+        var usuarios = await _context.Set<UsuarioModel>().Where(u => idsUsuarios.Contains(u.IdUsuario)).ToListAsync();
+
+        if (tipoFicha == NotaOrdem.Ordem)
+        {
+            OrdemModel? ficha;
+            ficha = await _context.Set<OrdemModel>().FirstOrDefaultAsync(o => o.IdOrdem == idFicha);
+
+            if (ficha == null) throw new KeyNotFoundException($"Ordem com ID {idFicha} não encontrada.");
+
+            foreach (var usuario in usuarios) usuario.Ordens.Add(ficha);
+        }
+        else
+        {
+            NotaModel? ficha;
+            ficha = await _context.Set<NotaModel>().FirstOrDefaultAsync(n => n.IdNota == idFicha);
+
+            if (ficha == null) throw new KeyNotFoundException($"Nota com ID {idFicha} não encontrada.");
+
+            foreach (var usuario in usuarios)
+            {
+                usuario.Notas.Add(ficha);
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        return new List<object>();
     }
 }
