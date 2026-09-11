@@ -145,7 +145,8 @@ public class CentrosTrabalhoController : ControllerBase
         try
         {
             var todos = await _service.GetUsuariosCtmAsync(id);
-            return Ok(todos);
+            var dto = _mapper.Map<List<UsuarioDto>>(todos);
+            return Ok(dto);
         }
         catch (Exception e)
         {
@@ -175,8 +176,10 @@ public class CentrosTrabalhoController : ControllerBase
                     { message = "IdCentroTrabalho/IdGPM invalido na rota. Envie id maior que zero." });
             }
 
-            var result = await _service.AdicionarUsuariosCpmAsync(id, idsUsuarios);
-            return Ok(result);
+            var result = await _service.AdicionarUsuariosCtmAsync(id, idsUsuarios);
+            
+            var dto = _mapper.Map<List<UsuarioDto>>(result);
+            return Ok(dto);
         }
         catch (Exception e)
         {

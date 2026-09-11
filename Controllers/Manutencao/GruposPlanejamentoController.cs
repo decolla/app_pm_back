@@ -145,7 +145,8 @@ public class GruposPlanejamentoController : ControllerBase
     {
         try{
             var todos = await _service.GetUsuariosGpmAsync(id);
-            return Ok(todos);
+            var dto = _mapper.Map<List<UsuarioDto>>(todos);
+            return Ok(dto);
         }
         catch (Exception e)
         {
@@ -176,7 +177,8 @@ public class GruposPlanejamentoController : ControllerBase
             }
 
             var result = await _service.AdicionarUsuariosGpmAsync(id, idsUsuarios);
-            return Ok(result);
+            var dto = _mapper.Map<List<UsuarioDto>>(result);
+            return Ok(dto);
         }
         catch (Exception e)
         {

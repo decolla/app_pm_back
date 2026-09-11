@@ -52,7 +52,7 @@ public class CtmService : BaseCrudService<CtmModel>
     /// <param name="idsUsuarios">Lista contendo id dos usuários a serem adicionados</param>
     /// <returns>Lista de usuários associados ao ctm</returns>
     /// <exception cref="KeyNotFoundException">O id passado do grupo não existe</exception>
-    public async Task<List<UsuarioModel>> AdicionarUsuariosCpmAsync(long ctmId, List<long> idsUsuarios)
+    public async Task<List<UsuarioModel>> AdicionarUsuariosCtmAsync(long ctmId, List<long> idsUsuarios)
     {
         // busca o centro de trabalho
         var ctm = await _context.Set<CtmModel>()
@@ -69,6 +69,13 @@ public class CtmService : BaseCrudService<CtmModel>
             await _context.Set<UsuarioModel>()
                 .Where(u => idsUsuarios.Contains(u.IdUsuario))
                 .ToListAsync();
+        
+        // usuarios a serem removidos
+        var usuariosRemover = ctm.Usuarios.Where(u => !idsUsuarios.Contains(u.IdUsuario)).ToList();
+        foreach (var u in usuariosRemover)
+        {
+            ctm.Usuarios.Remove(u);
+        }
 
         var idsAtuais = ctm.Usuarios.Select(u => u.IdUsuario).ToList();
         var usuariosAdicionar = listaUsuarios.Where(u => !idsAtuais.Contains(u.IdUsuario)).ToList();
@@ -183,6 +190,13 @@ public class GpmService : BaseCrudService<GpmModel>
             await _context.Set<UsuarioModel>()
                 .Where(u => idsUsuarios.Contains(u.IdUsuario))
                 .ToListAsync();
+        
+        // usuarios a serem removidos
+        var usuariosRemover = gpm.Usuarios.Where(u => !idsUsuarios.Contains(u.IdUsuario)).ToList();
+        foreach (var u in usuariosRemover)
+        {
+            gpm.Usuarios.Remove(u);
+        }
 
         var idsAtuais = gpm.Usuarios.Select(u => u.IdUsuario).ToList();
         var usuariosAdicionar = listaUsuarios.Where(u => !idsAtuais.Contains(u.IdUsuario)).ToList();
