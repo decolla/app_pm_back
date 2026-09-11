@@ -359,6 +359,12 @@ public class GenericSearchService
             ordensQuery = ordensQuery.Where(o => o.StatusOrdem == status);
         }
         
+        if (buscaType.GetProperty("JaAtribuida")?.GetValue(busca) is bool jaAtribuida)
+        {
+            notasQuery = notasQuery.Where(n => n.Usuarios.Any() == jaAtribuida);
+            ordensQuery = ordensQuery.Where(o => o.Usuarios.Any() == jaAtribuida);
+        }
+        
         // =============================== Fim Condicionais de filtragem ===================================
 
         (List<NotaModel>, List<OrdemModel>) listaUnica = new([],[]);

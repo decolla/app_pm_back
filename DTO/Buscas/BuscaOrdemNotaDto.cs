@@ -63,4 +63,6 @@ public class BuscaOrdemNotaDto
     public DateTime? DataFim { get; set; }
     
     public StatusFichas? Status { get; set; }
+    
+    public bool JaAtribuida { get; set; }
 }

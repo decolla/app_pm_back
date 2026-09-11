@@ -161,7 +161,7 @@ public class GruposPlanejamentoController : ControllerBase
     /// <param name="idGrupo">Id do grupo nos quais os usuários são pertencentes</param>
     /// <param name="idsUsuarios">Lista de usuários</param>
     /// <returns></returns>
-    [HttpPost("{id:long}/usuarios/atribuir")]
+    [HttpPut("{idGrupo:long}/usuarios/atribuir")]
     public async Task<IActionResult> AtribuirUsuariosFicha([FromQuery] NotaOrdem tipoFicha, [FromQuery] long idFicha, [FromRoute]long idGrupo,
         [FromQuery] List<long> idsUsuarios)
     {
