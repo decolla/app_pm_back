@@ -28,7 +28,7 @@ public class CtmService : BaseCrudService<CtmModel>
     public CtmService(AppDbContext context) : base(context)
     {
     }
-    
+
     /// <summary>
     /// Obtém os usuários associados a um centro de trabalho.
     /// </summary>
@@ -41,10 +41,60 @@ public class CtmService : BaseCrudService<CtmModel>
         {
             return new List<UsuarioModel>();
         }
+
         return await _context.Set<UsuarioModel>().Where(u => u.Ctms.Contains(ctm)).ToListAsync();
     }
     
-    public async Task<bool> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo, List<long> idsUsuariosSelecionados)
+    /// <summary>
+    /// Adiciona usuários a um centro de trabalho.
+    /// </summary>
+    /// <param name="ctmId">Id do ctm</param>
+    /// <param name="idsUsuarios">Lista contendo id dos usuários a serem adicionados</param>
+    /// <returns>Lista de usuários associados ao ctm</returns>
+    /// <exception cref="KeyNotFoundException">O id passado do grupo não existe</exception>
+    public async Task<List<UsuarioModel>> AdicionarUsuariosCpmAsync(long ctmId, List<long> idsUsuarios)
+    {
+        // busca o centro de trabalho
+        var ctm = await _context.Set<CtmModel>()
+            .Include(g => g.Usuarios)
+            .FirstOrDefaultAsync(g => g.IdCTM == ctmId);
+        
+        if (ctm == null)
+        {
+            throw new KeyNotFoundException($"Centro de trabalho com ID {ctmId} não encontrado.");
+        }
+
+        // busca os usuários associados aos ids da lista 
+        var listaUsuarios =
+            await _context.Set<UsuarioModel>()
+                .Where(u => idsUsuarios.Contains(u.IdUsuario))
+                .ToListAsync();
+
+        var idsAtuais = ctm.Usuarios.Select(u => u.IdUsuario).ToList();
+        var usuariosAdicionar = listaUsuarios.Where(u => !idsAtuais.Contains(u.IdUsuario)).ToList();
+        
+        // adiciona os usuários ainda não adicionados
+        foreach (var u in usuariosAdicionar)
+        {
+            ctm.Usuarios.Add(u);
+        }
+
+        await _context.SaveChangesAsync(); 
+        
+        return ctm.Usuarios.ToList();
+    }
+
+    /// <summary>
+    /// Atribui fichas a um grupo de usuários
+    /// </summary>
+    /// <param name="tipoFicha"></param>
+    /// <param name="idFicha"></param>
+    /// <param name="idGrupo"></param>
+    /// <param name="idsUsuariosSelecionados"></param>
+    /// <returns></returns>
+    /// <exception cref="KeyNotFoundException"></exception>
+    public async Task<bool> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo,
+        List<long> idsUsuariosSelecionados)
     {
         // busca usuários deste grupo
         var usuariosValidosDoGrupo = await _context.Set<UsuarioModel>()
@@ -67,11 +117,12 @@ public class CtmService : BaseCrudService<CtmModel>
             foreach (var u in remover) ficha.Usuarios.Remove(u);
 
             var idsAtuaisNaFicha = ficha.Usuarios.Select(x => x.IdUsuario).ToList();
-            var adicionar = usuariosValidosDoGrupo.Where(u => idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
-            
+            var adicionar = usuariosValidosDoGrupo.Where(u =>
+                idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
+
             foreach (var u in adicionar) ficha.Usuarios.Add(u);
         }
-        else 
+        else
         {
             var ficha = await _context.Set<NotaModel>()
                 .Include(n => n.Usuarios)
@@ -85,16 +136,17 @@ public class CtmService : BaseCrudService<CtmModel>
             foreach (var u in remover) ficha.Usuarios.Remove(u);
 
             var idsAtuaisNaFicha = ficha.Usuarios.Select(x => x.IdUsuario).ToList();
-            var adicionar = usuariosValidosDoGrupo.Where(u => idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
-            
+            var adicionar = usuariosValidosDoGrupo.Where(u =>
+                idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
+
             foreach (var u in adicionar) ficha.Usuarios.Add(u);
         }
 
         await _context.SaveChangesAsync();
-        return true; 
+        return true;
     }
 }
-    
+
 /// <summary>
 /// Classe GpmService.
 /// </summary>
@@ -106,7 +158,46 @@ public class GpmService : BaseCrudService<GpmModel>
     public GpmService(AppDbContext context) : base(context)
     {
     }
-    
+
+    /// <summary>
+    /// Adiciona usuários a um centro de trabalho.
+    /// </summary>
+    /// <param name="ctmId">Id do ctm</param>
+    /// <param name="idsUsuarios">Lista contendo id dos usuários a serem adicionados</param>
+    /// <returns>Lista de usuários associados ao ctm</returns>
+    /// <exception cref="KeyNotFoundException">O id passado do grupo não existe</exception>
+    public async Task<List<UsuarioModel>> AdicionarUsuariosGpmAsync(long gpmId, List<long> idsUsuarios)
+    {
+        // busca o grupo de planejamento
+        var gpm = await _context.Set<GpmModel>()
+            .Include(g => g.Usuarios)
+            .FirstOrDefaultAsync(g => g.IdGPM == gpmId);
+        
+        if (gpm == null)
+        {
+            throw new KeyNotFoundException($"Grupo de planejamento com ID {gpmId} não encontrado.");
+        }
+
+        // busca os usuários associados aos ids da lista 
+        var listaUsuarios =
+            await _context.Set<UsuarioModel>()
+                .Where(u => idsUsuarios.Contains(u.IdUsuario))
+                .ToListAsync();
+
+        var idsAtuais = gpm.Usuarios.Select(u => u.IdUsuario).ToList();
+        var usuariosAdicionar = listaUsuarios.Where(u => !idsAtuais.Contains(u.IdUsuario)).ToList();
+        
+        // adiciona os usuários ainda não adicionados
+        foreach (var u in usuariosAdicionar)
+        {
+            gpm.Usuarios.Add(u);
+        }
+
+        await _context.SaveChangesAsync(); 
+        
+        return gpm.Usuarios.ToList();
+    }
+
     /// <summary>
     /// Obtém os usuários associados a um grupo de planejamento.
     /// </summary>
@@ -119,10 +210,21 @@ public class GpmService : BaseCrudService<GpmModel>
         {
             return new List<UsuarioModel>();
         }
+
         return await _context.Set<UsuarioModel>().Where(u => u.Gpms.Contains(gpm)).ToListAsync();
     }
-    
-   public async Task<bool> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo, List<long> idsUsuariosSelecionados)
+
+    /// <summary>
+    /// Atribui fichas a um grupo de usuários
+    /// </summary>
+    /// <param name="tipoFicha"></param>
+    /// <param name="idFicha"></param>
+    /// <param name="idGrupo"></param>
+    /// <param name="idsUsuariosSelecionados"></param>
+    /// <returns></returns>
+    /// <exception cref="KeyNotFoundException"></exception>
+    public async Task<bool> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo,
+        List<long> idsUsuariosSelecionados)
     {
         // busca usuários deste grupo
         var usuariosValidosDoGrupo = await _context.Set<UsuarioModel>()
@@ -148,14 +250,15 @@ public class GpmService : BaseCrudService<GpmModel>
             }
 
             var idsAtuaisNaFicha = ficha.Usuarios.Select(x => x.IdUsuario).ToList();
-            var adicionar = usuariosValidosDoGrupo.Where(u => idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
-            
+            var adicionar = usuariosValidosDoGrupo.Where(u =>
+                idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
+
             foreach (var u in adicionar)
             {
                 ficha.Usuarios.Add(u);
             }
         }
-        else 
+        else
         {
             var ficha = await _context.Set<NotaModel>()
                 .Include(n => n.Usuarios)
@@ -169,12 +272,13 @@ public class GpmService : BaseCrudService<GpmModel>
             foreach (var u in remover) ficha.Usuarios.Remove(u);
 
             var idsAtuaisNaFicha = ficha.Usuarios.Select(x => x.IdUsuario).ToList();
-            var adicionar = usuariosValidosDoGrupo.Where(u => idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
-            
+            var adicionar = usuariosValidosDoGrupo.Where(u =>
+                idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
+
             foreach (var u in adicionar) ficha.Usuarios.Add(u);
         }
 
         await _context.SaveChangesAsync();
-        return true; 
+        return true;
     }
 }

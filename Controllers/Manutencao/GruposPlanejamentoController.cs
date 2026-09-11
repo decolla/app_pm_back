@@ -154,6 +154,38 @@ public class GruposPlanejamentoController : ControllerBase
     }
     
     /// <summary>
+    /// Atualiza os usuários de um grupo de planejamento
+    /// </summary>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="idsUsuarios">Ids dos usuários a serem adicionados.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+    [HttpPut("{id:long}/usuarios")]
+    [Authorize(Policy = "Edit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AdicionarUsuarios([FromRoute] long id, [FromQuery] List<long> idsUsuarios)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new
+                    { message = "IdCentroTrabalho/IdGPM invalido na rota. Envie id maior que zero." });
+            }
+
+            var result = await _service.AdicionarUsuariosGpmAsync(id, idsUsuarios);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao atualizar {_operador}: {e}." });
+        }
+    }
+
+    
+    /// <summary>
     /// Atribui usuários de um grupo de planejamento a uma ficha específica
     /// </summary>
     /// <param name="tipoFicha">Nota ou ordem</param>

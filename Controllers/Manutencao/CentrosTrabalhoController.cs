@@ -142,7 +142,8 @@ public class CentrosTrabalhoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> ListaUsuarios([FromRoute] long id)
     {
-        try{
+        try
+        {
             var todos = await _service.GetUsuariosCtmAsync(id);
             return Ok(todos);
         }
@@ -151,7 +152,38 @@ public class CentrosTrabalhoController : ControllerBase
             return BadRequest(new { message = $"Erro ao processar {_operador}: {e.Message}." });
         }
     }
-    
+
+    /// <summary>
+    /// Atualiza os usuários de um centro de trabalho
+    /// </summary>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="idsUsuarios">Ids dos usuários a serem adicionados.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+    [HttpPut("{id:long}/usuarios")]
+    [Authorize(Policy = "Edit")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AdicionarUsuarios([FromRoute] long id, [FromQuery] List<long> idsUsuarios)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new
+                    { message = "IdCentroTrabalho/IdGPM invalido na rota. Envie id maior que zero." });
+            }
+
+            var result = await _service.AdicionarUsuariosCpmAsync(id, idsUsuarios);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao atualizar {_operador}: {e}." });
+        }
+    }
+
     /// <summary>
     /// Atribui usuários de um centro de trabalho a uma ficha específica
     /// </summary>
@@ -161,7 +193,8 @@ public class CentrosTrabalhoController : ControllerBase
     /// <param name="idsUsuarios">Lista de usuários</param>
     /// <returns></returns>
     [HttpPut("{idGrupo:long}/usuarios/atribuir")]
-    public async Task<IActionResult> AtribuirUsuariosFicha([FromQuery] NotaOrdem tipoFicha, [FromQuery] long idFicha, [FromRoute]long idGrupo,
+    public async Task<IActionResult> AtribuirUsuariosFicha([FromQuery] NotaOrdem tipoFicha, [FromQuery] long idFicha,
+        [FromRoute] long idGrupo,
         [FromQuery] List<long> idsUsuarios)
     {
         try
