@@ -1,5 +1,6 @@
 using app_pm_back.Data;
 using app_pm_back.DTO;
+using app_pm_back.DTO.Buscas;
 using app_pm_back.Models.Domain;
 using app_pm_back.Models.Domain.Diretorios;
 using Microsoft.EntityFrameworkCore;
@@ -80,15 +81,16 @@ public class DiretorioService
                 // verifica se a nota e o diretorio existem
                 var nota = await _context.PM_Notas.FindAsync(idNota);
                 if (nota == null) throw new KeyNotFoundException($"Nota com ID {idNota} não encontrada no sistema.");
-                
+
                 var diretorio = await _context.PM_Diretorios.FindAsync(idDiretorio);
-                if (diretorio == null) throw new KeyNotFoundException($"Diretório com ID {idDiretorio} não encontrado.");
-                
+                if (diretorio == null)
+                    throw new KeyNotFoundException($"Diretório com ID {idDiretorio} não encontrado.");
+
                 // vincula uma nota 
                 _context.Set<DiretorioNotaModel>().Add(new DiretorioNotaModel
                     { IdDiretorio = idDiretorio, IdNota = idNota });
                 await _context.SaveChangesAsync();
-                
+
                 return diretorio;
             }
             catch (Exception ex)
@@ -119,12 +121,13 @@ public class DiretorioService
                 if (ordem == null) throw new KeyNotFoundException($"Ordem com ID {idOrdem} não encontrada.");
 
                 var diretorio = await _context.PM_Diretorios.FindAsync(idDiretorio);
-                if (diretorio == null) throw new KeyNotFoundException($"Diretório com ID {idDiretorio} não encontrado.");
+                if (diretorio == null)
+                    throw new KeyNotFoundException($"Diretório com ID {idDiretorio} não encontrado.");
 
                 _context.Set<DiretorioOrdemModel>().Add(new DiretorioOrdemModel
                     { IdDiretorio = idDiretorio, IdOrdem = idOrdem });
                 await _context.SaveChangesAsync();
-                
+
                 return diretorio;
             }
             catch (Exception ex)
@@ -132,10 +135,10 @@ public class DiretorioService
                 throw new InvalidOperationException($"Erro ao vincular ordem ao diretório: {ex.Message}", ex);
             }
         }
-        
+
         throw new Exception($"A ordem com ID {idOrdem} já está vinculada ao diretório com ID {idDiretorio}.");
     }
-    
+
     /// <summary>
     /// Método auxiliar para evitar loops infinitos ao mover diretórios. Verifica se o novo pai é descendente do diretório original.
     /// </summary>
@@ -155,7 +158,7 @@ public class DiretorioService
             var diretorioAcima = await _context.PM_Diretorios
                 .AsNoTracking()
                 .FirstOrDefaultAsync(d => d.IdDiretorio == paiAtual.Value);
-            
+
             paiAtual = diretorioAcima?.IdDiretorioPai;
         }
 
@@ -243,7 +246,7 @@ public class DiretorioService
         await PrepararRemocaoRecursivaAsync(idDiretorio);
         await _context.SaveChangesAsync();
     }
-    
+
     /// <summary>
     /// Função auxiliar de remoção recursiva
     /// </summary>
@@ -306,6 +309,75 @@ public class DiretorioService
             .ToListAsync();
     }
 
+    // public async Task<List<object>> ObterFichasDiretorio(long idDiretorio, Fichas tipoFicha, dynamic busca)
+    // {
+    //     var diretorio = await _context.PM_Diretorios
+    //         .Include(d => d.NotasVinculadas).ThenInclude(dn => dn.Nota)
+    //         .Include(d => d.OrdensVinculadas).ThenInclude(do_ => do_.Ordem)
+    //         .ThenInclude(ordemModel => ordemModel.Nota)
+    //         .FirstOrDefaultAsync(d => d.IdDiretorio == idDiretorio);
+    //
+    //     if (diretorio == null)
+    //     {
+    //         throw new KeyNotFoundException($"Diretório com ID {idDiretorio} não encontrado.");
+    //     }
+    //
+    //     var notasQuery = diretorio.NotasVinculadas.Select(n => n.Nota).AsQueryable();
+    //     var ordensQuery = diretorio.OrdensVinculadas.Select(o => o.Ordem).AsQueryable();
+    //
+    //     string? sapCode = buscaType.GetProperty("SapName")?.GetValue(busca) as string;
+    //     if (!string.IsNullOrEmpty(sapCode))
+    //     {
+    //         notasQuery = notasQuery.Where(n => n.SapCode == sapCode);
+    //         ordensQuery = ordensQuery.Where(o => o.Nota != null && o.Nota.SapCode == sapCode);
+    //     }
+    //
+    //     string? dnsIot = buscaType.GetProperty("DnsIot")?.GetValue(busca) as string;
+    //     if (!string.IsNullOrEmpty(dnsIot))
+    //     {
+    //         notasQuery = notasQuery.Where(n => n.DnsIot == dnsIot);
+    //         ordensQuery = ordensQuery.Where(o => o.DnsIot == dnsIot);
+    //     }
+    //
+    //     if (true)
+    //     {
+    //         // notasQuery = notasQuery.Where(n => n.IdNota == busca.NumeroRegistro.Value);
+    //         // ordensQuery = ordensQuery.Where(o => o.NumeroRegistro == busca.NumeroRegistro.Value);
+    //     }
+    //
+    //     if (buscaType.GetProperty("Componente")?.GetValue(busca) is ComponentType componente)
+    //     {
+    //         notasQuery = notasQuery.Where(n => n.IdsAtivo.Contains(componente));
+    //         ordensQuery = ordensQuery.Where(o => o.IdsAtivo.Contains(componente));
+    //     }
+    //
+    //     var folhas = new List<object>();
+    //
+    //     folhas.AddRange(diretorio.NotasVinculadas.Where(n =>
+    //         n.Nota.SapCode.Contains(busca.SapName)).Select(dn => new
+    //     {
+    //         Id = dn.IdNota,
+    //         NumeroFicha = dn.Nota?.NumeroNota,
+    //         SapName = dn.Nota?.SapCode,
+    //         DnsIot = dn.Nota?.DnsIot,
+    //         Componente = dn.Nota?.IdsAtivo,
+    //         Tipo = "Nota"
+    //     }));
+    //
+    //     folhas.AddRange(diretorio.OrdensVinculadas.Select(do_ => new
+    //     {
+    //         Id = do_.IdOrdem,
+    //         NumeroFicha = do_.Ordem?.NumeroOrdem,
+    //         SapName = "N/A",
+    //         DnsIot = do_.Ordem?.DnsIot,
+    //         Componente = do_.Ordem?.IdsAtivo,
+    //         Tipo = "Ordem"
+    //     }));
+    //
+    //     return folhas;
+    // }
+
+
     /// <summary>
     /// Move o diretório
     /// </summary>
@@ -325,13 +397,14 @@ public class DiretorioService
         {
             bool isDescendente = await VerificarSePaiEDescendente(idDiretorio, idDiretorioPai.Value);
             if (isDescendente)
-                throw new InvalidOperationException("Não é possível mover um diretório para dentro de uma das suas próprias subpastas.");
+                throw new InvalidOperationException(
+                    "Não é possível mover um diretório para dentro de uma das suas próprias subpastas.");
         }
 
         diretorio.IdDiretorioPai = idDiretorioPai;
- 
+
         await _context.SaveChangesAsync();
-        
+
         return diretorio;
     }
 
@@ -357,5 +430,17 @@ public class DiretorioService
         }
 
         return caminho;
+    }
+
+    public async Task<List<NotaModel>> ObterNotasDiretorioAsync(long id)
+    {
+        var diretorio = await ObterDiretorioAsync(id);
+        return diretorio?.NotasVinculadas.Select(dn => dn.Nota).ToList() ?? new List<NotaModel>();
+    }
+    
+    public async Task<List<OrdemModel>> ObterOrdensDiretorioAsync(long id)
+    {
+        var diretorio = await ObterDiretorioAsync(id);
+        return diretorio?.OrdensVinculadas.Select(do_ => do_.Ordem).ToList() ?? new List<OrdemModel>();
     }
 }

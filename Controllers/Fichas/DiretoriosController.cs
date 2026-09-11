@@ -1,5 +1,7 @@
+using app_pm_back.DTO.Buscas;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using app_pm_back.Services.GenericServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
@@ -11,10 +13,12 @@ namespace app_pm_back.Controllers.FichasControllers;
 public class DiretoriosController : ControllerBase
 {
     private readonly DiretorioService _diretorioService;
+    private readonly GenericSearchService _searchService;
 
-    public DiretoriosController(DiretorioService diretorioService)
+    public DiretoriosController(DiretorioService diretorioService, GenericSearchService searchService)
     {
         _diretorioService = diretorioService;
+        _searchService = searchService;
     }
 
     /// <summary>
@@ -218,6 +222,38 @@ public class DiretoriosController : ControllerBase
         {
             return StatusCode(500,
                 new { message = "Ocorreu um erro ao obter as folhas do diretório.", details = ex.Message });
+        }
+    }
+
+    [HttpGet("fichas")]
+    public async Task<IActionResult> ObterFichasDiretorio([FromQuery] long idDiretorio, [FromQuery] Fichas tipo,
+        [FromQuery] int pagina, [FromQuery] int tamanho, [FromQuery] BuscaDiretorioDto? busca)
+    {
+        try
+        {
+            List<object> fichas = new List<object>();
+
+            if (tipo == Fichas.Notas)
+            {
+                // TODO: melhorar essa parte, obter e filtrar ao mesmo tempo, com paginação já aplicada
+                var notas = await _diretorioService.ObterNotasDiretorioAsync(idDiretorio);
+
+            }else if (tipo == Fichas.Ordens)
+            {
+                
+            }
+            else
+            {
+                
+            }
+            
+            
+            return Ok(fichas);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500,
+                new { message = "Ocorreu um erro ao obter as fichas do diretório.", details = ex.Message });
         }
     }
 

@@ -195,7 +195,19 @@ public class GenericSearchService
             .AsNoTracking()
             .AsQueryable();
 
-        // safe check for properties of dynamic/anonymous object
+        return await QueryNotaOrdemAsync(busca, notasQuery, ordensQuery);
+    }
+
+    /// <summary>
+    /// Realiza a consulta de notas e ordens com base em critérios de filtragem.
+    /// </summary>
+    /// <param name="busca">Objeto de busca.</param>
+    /// <param name="notasQuery">Consulta de notas.</param>
+    /// <param name="ordensQuery">Consulta de ordens.</param>
+    /// <returns>Resultado da operação.</returns>
+    public async Task<(List<NotaModel>, List<OrdemModel>)> QueryNotaOrdemAsync(dynamic busca, IQueryable<NotaModel> notasQuery, IQueryable<OrdemModel> ordensQuery)
+    {
+        // safe check
         var buscaType = (Type)busca.GetType();
 
         // =============================== Condicionais de filtragem ===================================
