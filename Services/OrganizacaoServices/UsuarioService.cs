@@ -19,11 +19,6 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
         _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<UsuarioService>.Instance;
     }
 
-    // Include related collections when fetching users for list endpoints so callers (controllers)
-    // receive populated navigation properties (Notas, Ordens, Ctms, etc.).
-    // The controller calls GetNotasPaginadasAsync/GetAllNotasAsync (existing methods on BaseCrudService)
-    // so we provide new implementations that include navigation properties.
-
 
     public new async Task<List<UsuarioModel>> GetAllNotasAsync()
     {
@@ -32,9 +27,9 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
     }
 
     /// <summary>
-    /// Retorna as notas paginadas
+    /// Retorna os usuários paginados
     /// </summary>
-    public new async Task<object> GetNotasPaginadasAsync(int pagina, int tamanho)
+    public new async Task<object> GetPagedAsync(int pagina, int tamanho)
     {
         var query = AplicarIncludes(_context.Set<UsuarioModel>().AsQueryable());
 

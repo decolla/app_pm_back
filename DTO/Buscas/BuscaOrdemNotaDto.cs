@@ -64,5 +64,5 @@ public class BuscaOrdemNotaDto
     
     public StatusFichas? Status { get; set; }
     
-    public bool JaAtribuida { get; set; }
+    public bool? JaAtribuida { get; set; }
 }
