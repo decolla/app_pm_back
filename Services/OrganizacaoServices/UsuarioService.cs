@@ -19,6 +19,47 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
         _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<UsuarioService>.Instance;
     }
 
+    // Include related collections when fetching users for list endpoints so callers (controllers)
+    // receive populated navigation properties (Notas, Ordens, Ctms, etc.).
+    // The controller calls GetNotasPaginadasAsync/GetAllNotasAsync (existing methods on BaseCrudService)
+    // so we provide new implementations that include navigation properties.
+
+
+    public new async Task<List<UsuarioModel>> GetAllNotasAsync()
+    {
+        var query = AplicarIncludes(_context.Set<UsuarioModel>().AsQueryable());
+        return await query.ToListAsync();
+    }
+
+    /// <summary>
+    /// Retorna as notas paginadas
+    /// </summary>
+    public new async Task<object> GetNotasPaginadasAsync(int pagina, int tamanho)
+    {
+        var query = AplicarIncludes(_context.Set<UsuarioModel>().AsQueryable());
+
+        int count = await query.CountAsync();
+
+        var result = await query
+            .OrderBy(u => u.IdUsuario)
+            .Skip((pagina - 1) * tamanho)
+            .Take(tamanho)
+            .ToListAsync();
+
+        return new { Total = count, Result = result };
+    }
+
+    /// <summary>
+    /// Aplica includes na consulta
+    /// </summary>
+    protected override IQueryable<UsuarioModel> AplicarIncludes(IQueryable<UsuarioModel> query)
+    {
+        return query
+            .Include(u => u.Ctms)
+            .Include(u => u.Notas)
+            .Include(u => u.Ordens);
+    }
+
     /// <summary>
     /// Atribui a reponsabilidade de uma ordem para um usuário
     /// </summary>
@@ -60,5 +101,5 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
 
         return usuarios;
     }
-    
+
 }
