@@ -100,7 +100,7 @@ public class CtmService : BaseCrudService<CtmModel>
     /// <param name="idsUsuariosSelecionados"></param>
     /// <returns></returns>
     /// <exception cref="KeyNotFoundException"></exception>
-    public async Task<bool> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo,
+    public async Task<object?> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo,
         List<long> idsUsuariosSelecionados)
     {
         // busca usuários deste grupo
@@ -128,6 +128,8 @@ public class CtmService : BaseCrudService<CtmModel>
                 idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
 
             foreach (var u in adicionar) ficha.Usuarios.Add(u);
+            await _context.SaveChangesAsync();
+            return ficha;
         }
         else
         {
@@ -147,10 +149,10 @@ public class CtmService : BaseCrudService<CtmModel>
                 idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
 
             foreach (var u in adicionar) ficha.Usuarios.Add(u);
+            await _context.SaveChangesAsync();
+            return ficha;
         }
 
-        await _context.SaveChangesAsync();
-        return true;
     }
 }
 
@@ -237,7 +239,7 @@ public class GpmService : BaseCrudService<GpmModel>
     /// <param name="idsUsuariosSelecionados"></param>
     /// <returns></returns>
     /// <exception cref="KeyNotFoundException"></exception>
-    public async Task<bool> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo,
+    public async Task<object?> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo,
         List<long> idsUsuariosSelecionados)
     {
         // busca usuários deste grupo
@@ -271,6 +273,8 @@ public class GpmService : BaseCrudService<GpmModel>
             {
                 ficha.Usuarios.Add(u);
             }
+            await _context.SaveChangesAsync();
+            return ficha;
         }
         else
         {
@@ -290,9 +294,9 @@ public class GpmService : BaseCrudService<GpmModel>
                 idsUsuariosSelecionados.Contains(u.IdUsuario) && !idsAtuaisNaFicha.Contains(u.IdUsuario)).ToList();
 
             foreach (var u in adicionar) ficha.Usuarios.Add(u);
+            await _context.SaveChangesAsync();
+            return ficha;
         }
 
-        await _context.SaveChangesAsync();
-        return true;
     }
 }
