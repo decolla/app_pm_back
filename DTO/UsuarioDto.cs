@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO;
 
@@ -25,13 +26,18 @@ public class UsuarioDto
     /// CPF do usuario.
     /// </summary>
     [SheetColumn("CPF")]
-    public string? Cpf { get; set; }
+    public string? CPF { get; set; }
 
     /// <summary>
     /// Permissoes (lista serializada ou descricao textual).
     /// </summary>
     [SheetColumn("Permissoes")]
     public string? Permissoes { get; set; }
+
+    /// <summary>
+    /// Nível de permissão do usuário no sistema.
+    /// </summary>
+    public NivelPermissao? NivelPermissao { get; set; } = Models.Domain.NivelPermissao.Usuario;
 
     /// <summary>
     /// Lista de escopos aos quais o usuário tem acesso.
