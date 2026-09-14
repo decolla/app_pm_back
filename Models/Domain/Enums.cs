@@ -202,15 +202,6 @@ public enum Fichas
     Ordens =2
 }
 
-/// <summary>
-/// Tipo de ficha a ser gerada.
-/// </summary>
-public enum NotaOrdem
-{
-    Nota = 0,
-    Ordem = 1
-}
-
 public enum Grupos
 {
     Gpm = 0,

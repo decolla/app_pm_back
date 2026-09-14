@@ -396,7 +396,7 @@ public class ClassificacaoController : ControllerBase
 
 
     /// <summary>
-    /// Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
+    /// Classifica notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
     /// </summary>
     /// <param name="busca">Modelo de busca com campos comparáveis</param>
     /// <param name="tFichas">Tipo de fichas que serão classificadas</param>
@@ -456,16 +456,26 @@ public class ClassificacaoController : ControllerBase
 
                 resultados.Add(ordensClassificadas);
             }
+            
+            var resultadosFlat = new List<object>();
+            foreach (var item in resultados)
+            {
+                if (item is IEnumerable<object> enumerable)
+                    resultadosFlat.AddRange(enumerable);
+                else
+                    resultadosFlat.Add(item);
+            }
 
-            int totalGeral = resultados.Count;
+            int totalGeral = resultadosFlat.Count;
 
             object resultado = new
             {
                 Total = totalGeral,
-                Resultado = resultados
+                //Resultado = resultadosFlat
             };
 
-            return Ok("Fichas classificadas com sucesso!");
+            // return a JSON object with the classified fichas instead of a string representation
+            return Ok(resultado);
         }
         catch (Exception e)
         {

@@ -100,7 +100,7 @@ public class CtmService : BaseCrudService<CtmModel>
     /// <param name="idsUsuariosSelecionados"></param>
     /// <returns></returns>
     /// <exception cref="KeyNotFoundException"></exception>
-    public async Task<object?> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo,
+    public async Task<object?> AtribuirFichas(Fichas tipoFicha, long idFicha, long idGrupo,
         List<long> idsUsuariosSelecionados)
     {
         // busca usuários deste grupo
@@ -110,7 +110,7 @@ public class CtmService : BaseCrudService<CtmModel>
 
         var idsValidosDoGrupo = usuariosValidosDoGrupo.Select(u => u.IdUsuario).ToList();
 
-        if (tipoFicha == NotaOrdem.Ordem)
+        if (tipoFicha == Fichas.Ordens)
         {
             var ficha = await _context.Set<OrdemModel>()
                 .Include(o => o.Usuarios)
@@ -239,7 +239,7 @@ public class GpmService : BaseCrudService<GpmModel>
     /// <param name="idsUsuariosSelecionados"></param>
     /// <returns></returns>
     /// <exception cref="KeyNotFoundException"></exception>
-    public async Task<object?> AtribuirFichas(NotaOrdem tipoFicha, long idFicha, long idGrupo,
+    public async Task<object?> AtribuirFichas(Fichas tipoFicha, long idFicha, long idGrupo,
         List<long> idsUsuariosSelecionados)
     {
         // busca usuários deste grupo
@@ -249,7 +249,7 @@ public class GpmService : BaseCrudService<GpmModel>
 
         var idsValidosDoGrupo = usuariosValidosDoGrupo.Select(u => u.IdUsuario).ToList();
 
-        if (tipoFicha == NotaOrdem.Ordem)
+        if (tipoFicha == Fichas.Ordens)
         {
             var ficha = await _context.Set<OrdemModel>()
                 .Include(o => o.Usuarios)
