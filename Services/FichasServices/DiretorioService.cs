@@ -3,6 +3,8 @@ using app_pm_back.DTO;
 using app_pm_back.DTO.Buscas;
 using app_pm_back.Models.Domain;
 using app_pm_back.Models.Domain.Diretorios;
+using app_pm_back.Services.Extensions;
+using AutoMapper.Internal;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Services;
@@ -432,13 +434,117 @@ public class DiretorioService
         return caminho;
     }
 
-    public async Task<List<NotaModel>> ObterNotasDiretorioAsync(long id)
+    public async Task<object> ObterFichasDiretorioFiltradasAsync(
+        long idDiretorio,
+        int? pagina,
+        int? tamanho,
+        dynamic? busca,
+        Fichas tipo
+    )
     {
-        var diretorio = await ObterDiretorioAsync(id);
-        return diretorio?.NotasVinculadas.Select(dn => dn.Nota).ToList() ?? new List<NotaModel>();
+        if (busca == null)
+        {
+            throw new ArgumentNullException(nameof(busca));
+        }
+
+        var dadosQuery = _context.PM_Diretorios
+            .Include(d => d.Subdiretorios)
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (tipo == Fichas.Notas)
+        {
+            dadosQuery = dadosQuery
+                .Include(d => d.NotasVinculadas)
+                .AsNoTracking()
+                .AsQueryable();
+        }
+        else if (tipo == Fichas.Ordens)
+        {
+            dadosQuery = dadosQuery
+                .Include(d => d.OrdensVinculadas)
+                .AsNoTracking()
+                .AsQueryable();
+        }
+        else
+        {
+            dadosQuery = dadosQuery
+                .Include(d => d.NotasVinculadas)
+                .Include(d => d.OrdensVinculadas)
+                .AsNoTracking()
+                .AsQueryable();
+        }
+
+        // safe check
+        var buscaType = (Type)busca.GetType();
+
+        string? sapName = buscaType.GetProperty("SapName")?.GetValue(busca);
+        if (!string.IsNullOrEmpty(sapName))
+        {
+            dadosQuery = dadosQuery.Where(n =>
+                n.NotasVinculadas.Any(dn => dn.Nota.SapCode != null && dn.Nota.SapCode.Contains(sapName)));
+        }
+
+        string? dnsIot = buscaType.GetProperty("DnsIot")?.GetValue(busca);
+        if (!string.IsNullOrEmpty(dnsIot))
+        {
+            dadosQuery =
+                dadosQuery.Where(n => n.NotasVinculadas.Any(dn => dn.Nota.DnsIot == dnsIot));
+            dadosQuery =
+                dadosQuery.Where(n => n.OrdensVinculadas.Any(dn => dn.Ordem.DnsIot == dnsIot));
+        }
+
+        string? nroFicha = buscaType.GetProperty("NroFicha")?.GetValue(busca);
+        if (!string.IsNullOrEmpty(nroFicha))
+        {
+            dadosQuery =
+                dadosQuery.Where(n => n.NotasVinculadas.Any(dn => dn.Nota.NumeroNota.ToString() == nroFicha));
+            dadosQuery =
+                dadosQuery.Where(n => n.OrdensVinculadas.Any(dn => dn.Ordem.NumeroOrdem.ToString() == nroFicha));
+        }
+
+        ComponentType? componente = buscaType.GetProperty("Componente")?.GetValue(busca) as ComponentType?;
+        if (componente.HasValue)
+        {
+            dadosQuery = dadosQuery.Where(n =>
+                n.NotasVinculadas.Any(dn => dn.Nota.IdsAtivo != null && dn.Nota.IdsAtivo.Contains(componente.Value)));
+            dadosQuery = dadosQuery.Where(n =>
+                n.OrdensVinculadas.Any(dn =>
+                    dn.Ordem.IdsAtivo != null && dn.Ordem.IdsAtivo.Contains(componente.Value)));
+        }
+
+        dadosQuery = dadosQuery.AplicarOrdenacao(_context);
+
+        var notas = await dadosQuery.SelectMany(d => d.NotasVinculadas).Select(dn => dn.Nota).ToListAsync()
+            .ConfigureAwait(false);
+        var ordens = await dadosQuery.SelectMany(d => d.OrdensVinculadas).Select(do_ => do_.Ordem).ToListAsync()
+            .ConfigureAwait(false);
+
+        List<object> listaUnica = new([]);
+
+        listaUnica.AddRange(notas);
+        listaUnica.AddRange(ordens);
+
+        // paginação
+        int totalGeral = listaUnica.Count;
+        int p = pagina ?? 1;
+        int t = tamanho ?? 20;
+        int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
+
+        // pega os n primeiros itens
+        var itensPaginados = listaUnica.Skip((p - 1) * t).Take(t).ToList();
+
+        return new
+        {
+            Total = totalGeral,
+            TotalPaginas = totalPaginas,
+            pagina = p,
+            Tamanho = t,
+            Result = itensPaginados
+        };
     }
-    
-    public async Task<List<OrdemModel>> ObterOrdensDiretorioAsync(long id)
+
+    public async Task<List<OrdemModel>> ObterOrdensDiretorioFiltradasAsync(long id)
     {
         var diretorio = await ObterDiretorioAsync(id);
         return diretorio?.OrdensVinculadas.Select(do_ => do_.Ordem).ToList() ?? new List<OrdemModel>();

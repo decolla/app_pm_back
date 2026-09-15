@@ -227,26 +227,12 @@ public class DiretoriosController : ControllerBase
 
     [HttpGet("fichas")]
     public async Task<IActionResult> ObterFichasDiretorio([FromQuery] long idDiretorio, [FromQuery] Fichas tipo,
-        [FromQuery] int pagina, [FromQuery] int tamanho, [FromQuery] BuscaDiretorioDto? busca)
+        [FromQuery] int? pagina, [FromQuery] int? tamanho, [FromQuery] BuscaDiretorioDto? busca)
     {
         try
         {
-            List<object> fichas = new List<object>();
 
-            if (tipo == Fichas.Notas)
-            {
-                // TODO: melhorar essa parte, obter e filtrar ao mesmo tempo, com paginação já aplicada
-                var notas = await _diretorioService.ObterNotasDiretorioAsync(idDiretorio);
-
-            }else if (tipo == Fichas.Ordens)
-            {
-                
-            }
-            else
-            {
-                
-            }
-            
+            var fichas = await _diretorioService.ObterFichasDiretorioFiltradasAsync(idDiretorio, pagina, tamanho, busca, tipo);
             
             return Ok(fichas);
         }
