@@ -164,4 +164,52 @@ public class ClassificationServiceTests
         result.Count.Should().Be(1);
         result.Should().Contain(n => n.IdNota == 1);
     }
+
+    [Fact]
+    public async Task WordsClassification_ShouldPersistDetachedNotes_WhenKeywordMatches()
+    {
+        // Arrange
+        var dbName = Guid.NewGuid().ToString();
+        using var context = CreateDbContext(dbName);
+        var configService =
+            new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory()));
+        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        var catboostProvider = new CatboostModelProviderService(memoryCache, null);
+        var service = new ClassificationService<NotaModel>(context, configService, catboostProvider);
+
+        context.Set<RegraClassificacaoModel>().Add(new RegraClassificacaoModel
+        {
+            IdRegra = 1,
+            PalavraChave = "corretiva",
+            ClassificacaoAplicada = Classificacao.CORRETIVA,
+            Permitida = true,
+            OrdemPrioridade = 1
+        });
+
+        context.PM_Notas.Add(new NotaModel
+        {
+            IdNota = 1001,
+            NumeroNota = 1001,
+            Classificacao = Classificacao.NAOCLASSIFICADA,
+            MetodoClassificacao = MetodoClassificacao.NAOCLASSIFICADA,
+            DescricaoBreve = "MANUTENÇÃO CORRETIVA - VALE"
+        });
+        await context.SaveChangesAsync();
+
+        var detachedNotas = await context.PM_Notas.AsNoTracking().ToListAsync();
+
+        // Act
+        var result = await service.WordsClassification(detachedNotas);
+
+        // Assert
+        result.Should().ContainSingle();
+        result[0].Classificacao.Should().Be(Classificacao.CORRETIVA);
+        result[0].MetodoClassificacao.Should().Be(MetodoClassificacao.ALGORITMO);
+
+        using var verifyContext = CreateDbContext(dbName);
+        var dbNota = await verifyContext.PM_Notas.FindAsync(1001L);
+        dbNota.Should().NotBeNull();
+        dbNota!.Classificacao.Should().Be(Classificacao.CORRETIVA);
+        dbNota.MetodoClassificacao.Should().Be(MetodoClassificacao.ALGORITMO);
+    }
 }

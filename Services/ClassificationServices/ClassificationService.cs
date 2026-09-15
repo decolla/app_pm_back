@@ -114,7 +114,7 @@ public class ClassificationService<T> where T : class, IClassifiable
 
         // busco todas as notas/ordems sem classificação
         // remover comentário caso deve reavaliar regras já avaladas
-        DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(10000);
+        // DateTimeOffset dataOffset = DateTimeOffset.FromUnixTimeMilliseconds(10000);
 
         // le o campo alvo da regra e busca a palavra chave 
         List<RegraClassificacaoModel> regras = await _classificationModel.OrderBy(r => r.OrdemPrioridade).ToListAsync();
@@ -129,12 +129,12 @@ public class ClassificationService<T> where T : class, IClassifiable
             camposAlvos =
             [
                 "TipoNota", "Finalidade", "EquipamentoDisponivel", "AnomaliaObservada", "ObservacoesComplementares",
-                "DescricaoBreve"
+                "DescricaoBreve", "DescricaoLonga"
             ];
         else if (typeof(T) == typeof(OrdemModel))
             camposAlvos =
             [
-                "TipoOrdem", "DescricaoBreve", "Criticidade"
+                "TipoOrdem", "DescricaoBreve", "NaturezaCausa", "DescricaoLonga"
             ];
         else throw new Exception("Tipo de modelo não para classificação de palavras");
 
@@ -156,6 +156,9 @@ public class ClassificationService<T> where T : class, IClassifiable
             {
                 if (classificada) break;
 
+                if (string.IsNullOrWhiteSpace(regra.PalavraChave))
+                    continue;
+
                 // procura para campo alvo
                 foreach (var campoAlvo in camposAlvos)
                 {
@@ -163,12 +166,10 @@ public class ClassificationService<T> where T : class, IClassifiable
                     if (!cache.TryGetValue(campoAlvo, out var propriedadeAlvo))
                         continue;
 
-                    string palavraChave = regra.PalavraChave;
-
                     string? valorAlvo = propriedadeAlvo.GetValue(nota)?.ToString();
 
                     // verifica se a palavra chave existe no valor alvo
-                    if (valorAlvo != null && valorAlvo.Contains(palavraChave, StringComparison.OrdinalIgnoreCase))
+                    if (ContainsNormalized(valorAlvo, regra.PalavraChave))
                     {
                         // caso a regra for proibida 
                         if (!regra.Permitida)
@@ -189,6 +190,11 @@ public class ClassificationService<T> where T : class, IClassifiable
                     }
                 }
             }
+        }
+
+        foreach (var ficha in fichas)
+        {
+            await PersistIfExistsAsync(ficha);
         }
 
         await _context.SaveChangesAsync();
@@ -353,10 +359,10 @@ public class ClassificationService<T> where T : class, IClassifiable
     {
         if (string.IsNullOrEmpty(s))
         {
-            return ((string[])["Txt.grp.cod.pr.", "Txt.code prob.", "Texto grp.causa", "Txt.code causa"])
+            return new[] { "Txt.grp.cod.pr.", "Txt.code prob.", "Texto grp.causa", "Txt.code causa" }
                 .Contains(columnName)
-                    ? "nan"
-                    : "missing";
+                ? "nan"
+                : "missing";
         }
 
         s = s.Normalize(NormalizationForm.FormD);
@@ -365,5 +371,42 @@ public class ClassificationService<T> where T : class, IClassifiable
             sb.Append(t);
 
         return sb.ToString().ToLower();
+    }
+
+    private static bool ContainsNormalized(string? source, string? keyword)
+    {
+        if (string.IsNullOrWhiteSpace(source) || string.IsNullOrWhiteSpace(keyword))
+            return false;
+
+        return NormalizeAsciiLower(source, string.Empty)
+            .Contains(NormalizeAsciiLower(keyword, string.Empty), StringComparison.Ordinal);
+    }
+
+    private async Task PersistIfExistsAsync(T ficha)
+    {
+        var entry = _context.Entry(ficha);
+        var key = entry.Metadata.FindPrimaryKey();
+        if (key == null)
+            return;
+
+        var keyValues = key.Properties
+            .Select(property => entry.Property(property.Name).CurrentValue)
+            .ToArray();
+
+        if (keyValues.Any(value => value == null))
+            return;
+
+        var existente = await _dbSet.FindAsync(keyValues);
+        if (existente == null)
+            return;
+
+        if (!ReferenceEquals(existente, ficha))
+        {
+            existente.Classificacao = ficha.Classificacao;
+            existente.MetodoClassificacao = ficha.MetodoClassificacao;
+            existente.ClassificadoPor = ficha.ClassificadoPor;
+            existente.DataClassificacao = ficha.DataClassificacao;
+        }
+
     }
 }

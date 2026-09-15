@@ -390,3 +390,6 @@
 /home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.pdb
 /home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/app_pm_back.Tests.genruntimeconfig.cache
 /home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.Tests/obj/Debug/net8.0/ref/app_pm_back.Tests.dll
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/Microsoft.Extensions.Configuration.FileExtensions.dll
+/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/bin/Debug/net8.0/Microsoft.Extensions.Configuration.Json.dll

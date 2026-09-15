@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj": {}
+    "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj": {}
   },
   "projects": {
-    "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj": {
+    "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj",
+        "projectUniqueName": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj",
         "projectName": "app_pm_back.Tests",
-        "projectPath": "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj",
+        "projectPath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj",
         "packagesPath": "/home/decolla/.nuget/packages/",
-        "outputPath": "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.Tests/obj/",
+        "outputPath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/decolla/.nuget/NuGet/NuGet.Config"
@@ -24,11 +24,10 @@
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.csproj": {
-                "projectPath": "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.csproj"
+              "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj": {
+                "projectPath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj"
               }
             }
           }
@@ -41,7 +40,6 @@
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "FluentAssertions": {
@@ -96,18 +94,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.130/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.131/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.csproj": {
+    "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.csproj",
+        "projectUniqueName": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj",
         "projectName": "app_pm_back",
-        "projectPath": "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.csproj",
+        "projectPath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj",
         "packagesPath": "/home/decolla/.nuget/packages/",
-        "outputPath": "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/obj/",
+        "outputPath": "/home/decolla/Documentos/Códigos/app_pm_back/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/decolla/.nuget/NuGet/NuGet.Config"
@@ -120,7 +118,6 @@
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -133,7 +130,6 @@
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
@@ -226,7 +222,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.130/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.131/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
