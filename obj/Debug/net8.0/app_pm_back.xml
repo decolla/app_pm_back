@@ -32,6 +32,21 @@
             </summary>
             <param name="nomeDaColuna"></param>
         </member>
+        <member name="T:app_pm_back.Auth.SchemaAccessAuthorizationHandler">
+            <summary>
+            Validador que verifica se o usuário autenticado possui acesso ao schema configurado no claim 'organization' do JWT.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Auth.SchemaAccessAuthorizationHandler.#ctor(app_pm_back.Interfaces.IApplicationSchemaProvider)">
+            <summary>
+            Validador que verifica se o usuário autenticado possui acesso ao schema configurado no claim 'organization' do JWT.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Auth.SchemaAccessRequirement">
+            <summary>
+            Requisito de autorização que exige que o usuário pertença ao schema configurado da aplicação.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Config.RouteConfig">
             <summary>
             Configura a rota base para os endpoints da API, incluindo a versão e o nome do cliente.
@@ -226,6 +241,15 @@
             <summary>
             Obtém a configuração global do sistema (linha única).
             </summary>
+            <returns>O objeto de configuração global cadastrado.</returns>
+            <response code="200">Sucesso ao obter a configuração global.</response>
+            <response code="400">Erro ao processar a requisição.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.ConfiguracaoGlobalController.GetNaturezaCausa(System.Boolean)">
+            <summary>
+            Obtém as palavras de natureza de causa
+            </summary>
+            <param name="corretiva">Indica se a natureza de causa é corretiva. False para causa alheia</param>
             <returns>O objeto de configuração global cadastrado.</returns>
             <response code="200">Sucesso ao obter a configuração global.</response>
             <response code="400">Erro ao processar a requisição.</response>
@@ -463,7 +487,7 @@
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.ClassificaNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Nullable{app_pm_back.Models.Domain.Fichas},app_pm_back.Models.Domain.FiltroClassificacao)">
             <summary>
-            Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
+            Classifica notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
             </summary>
             <param name="busca">Modelo de busca com campos comparáveis</param>
             <param name="tFichas">Tipo de fichas que serão classificadas</param>
@@ -815,6 +839,34 @@
             <response code="400">ID fornecido inválido.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.ListaUsuarios(System.Int64)">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.AdicionarUsuarios(System.Int64,System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Atualiza os usuários de um centro de trabalho
+            </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="idsUsuarios">Ids dos usuários a serem adicionados.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.AtribuirUsuariosFicha(app_pm_back.Models.Domain.Fichas,System.Int64,System.Int64,System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Atribui usuários de um centro de trabalho a uma ficha específica
+            </summary>
+            <param name="tipoFicha">Nota ou ordem</param>
+            <param name="idFicha">Id da nota/ordem a ser atribuída</param>
+            <param name="idGrupo">Id do grupo nos quais os usuários são pertencentes</param>
+            <param name="idsUsuarios">Lista de usuários</param>
+            <returns></returns>
+        </member>
         <member name="M:app_pm_back.Controllers.CentrosTrabalhoController.Contar">
             <summary>
             Obtém o total de registros cadastrados.
@@ -879,6 +931,35 @@
             <response code="200">Sucesso ao obter o registro.</response>
             <response code="400">ID fornecido inválido.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.ListaUsuarios(System.Int64)">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <param name="id">O ID do grupo de planejamento.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.AdicionarUsuarios(System.Int64,System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Atualiza os usuários de um grupo de planejamento
+            </summary>
+            <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+            <param name="idsUsuarios">Ids dos usuários a serem adicionados.</param>
+            <returns>Mensagem de confirmação da atualização.</returns>
+            <response code="200">Sucesso ao atualizar o registro.</response>
+            <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.AtribuirUsuariosFicha(app_pm_back.Models.Domain.Fichas,System.Int64,System.Int64,System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Atribui usuários de um grupo de planejamento a uma ficha específica
+            </summary>
+            <param name="tipoFicha">Nota ou ordem</param>
+            <param name="idFicha">Id da nota/ordem a ser atribuída</param>
+            <param name="idGrupo">Id do grupo nos quais os usuários são pertencentes</param>
+            <param name="idsUsuarios">Lista de usuários</param>
+            <returns></returns>
         </member>
         <member name="M:app_pm_back.Controllers.GruposPlanejamentoController.Contar">
             <summary>
@@ -2208,7 +2289,7 @@
             Nome do usuario.
             </summary>
         </member>
-        <member name="P:app_pm_back.DTO.UsuarioDto.Cpf">
+        <member name="P:app_pm_back.DTO.UsuarioDto.CPF">
             <summary>
             CPF do usuario.
             </summary>
@@ -2216,6 +2297,11 @@
         <member name="P:app_pm_back.DTO.UsuarioDto.Permissoes">
             <summary>
             Permissoes (lista serializada ou descricao textual).
+            </summary>
+        </member>
+        <member name="P:app_pm_back.DTO.UsuarioDto.NivelPermissao">
+            <summary>
+            Nível de permissão do usuário no sistema.
             </summary>
         </member>
         <member name="P:app_pm_back.DTO.UsuarioDto.Escopos">
@@ -2323,6 +2409,16 @@
         <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.CriarFichasPreventivas">
             <summary>
             Critérios para definir se a ficha deve ser criada automaticamente periodicamente
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.PalavrasNaturezaCausaCorretiva">
+            <summary>
+            Lista de palavras de cadastro de natureza de causa corretiva. 
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.PalavrasNaturezaCausaAlheia">
+            <summary>
+            Lista de palavras de cadastro de natureza de causa de alheia.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.ConfiguracaoGlobalModel.DataModificacao">
@@ -3107,6 +3203,11 @@
             </summary>
             <example>"Corrigir vazamento de óleo", "Inspeção preventiva trimestral"</example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.TipoLi">
+            <summary>
+            Tipo do Local de instalação
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.Prioridade">
             <summary>
             Nível de prioridade da nota para gestão de recursos e agendamento.
@@ -3173,6 +3274,12 @@
             Campo livre para documentação de detalhes relevantes não cobertos por outros campos.
             </summary>
             <example>"Verificar histórico de manutenções anteriores. Possível relação com troca de óleo realizada na semana passada."</example>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.NaturezaCausa">
+            <summary>
+            Natureza da Causa da classificação
+            </summary>
+            <example>Inundação, vandalismo, sujeira, etc</example>
         </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.Classificacao">
             <summary>
@@ -3242,7 +3349,7 @@
             </summary>
             <example>42</example>
         </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.IdAtivo">
+        <member name="P:app_pm_back.Models.Domain.NotaModel.IdsAtivo">
             <summary>
             Chave estrangeira para o ativo associado à nota.
             Identifica qual equipamento ou item está relacionado à ocorrência.
@@ -3326,6 +3433,11 @@
         <member name="P:app_pm_back.Models.Domain.NotaModel.DiretoriosVinculados">
             <summary>
             Diretórios vinculados a esta nota.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Usuarios">
+            <summary>
+            Usuários atribuídos ao acompanhamento ou resolução desta nota.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.VariavelNotaModel">
@@ -3540,6 +3652,12 @@
             </summary>
             <example>Baixa, Média, Alta, Crítica, Emergencial</example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.NaturezaCausa">
+            <summary>
+            Natureza da Causa da classificação
+            </summary>
+            <example>Inundação, vandalismo, sujeira, etc</example>
+        </member>
         <!-- Badly formed XML comment ignored for member "P:app_pm_back.Models.Domain.OrdemModel.Classificacao" -->
         <member name="P:app_pm_back.Models.Domain.OrdemModel.MetodoClassificacao">
             <summary>
@@ -3642,7 +3760,7 @@
             O escopo da nota/pordem
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdAtivo">
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.IdsAtivo">
             <summary>
             Identificador do ativo relacionado à ordem (referência externa).
             Vincula a ordem ao equipamento ou ativo que será objeto da intervenção.
@@ -3654,6 +3772,11 @@
             <summary>
             Chave estrangeira para a localização de instalação do ativo.
             Permite vincular a nota a um local específico de instalação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.TipoLi">
+            <summary>
+            Tipo do local de instalação
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.OrdemModel.DnsIot">
@@ -3729,6 +3852,11 @@
         <member name="P:app_pm_back.Models.Domain.OrdemModel.DiretoriosVinculados">
             <summary>
             Diretórios vincluados a essa ordem
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.Usuarios">
+            <summary>
+            Usuários atribuídos à execução ou acompanhamento desta ordem.
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.AlmoxarifadoModel">
@@ -4214,6 +4342,21 @@
             <param name="value">Parâmetro do método.</param>
             <param name="options">Parâmetro do método.</param>
         </member>
+        <member name="T:app_pm_back.Extensions.KeycloakExtensions">
+            <summary>
+            Métodos de extensão para configuração de autenticação e autorização via Keycloak.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Interfaces.IApplicationSchemaProvider">
+            <summary>
+            Provedor centralizado do schema da aplicação.
+            </summary>
+        </member>
+        <member name="P:app_pm_back.Interfaces.IApplicationSchemaProvider.Schema">
+            <summary>
+            Nome do schema configurado para esta instância da aplicação.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Interfaces.IAuditable">
             <summary>
             Qualquer Model que herdar desta interface será monitorizado pelo Audit Trail.
@@ -4297,6 +4440,11 @@
         <member name="M:app_pm_back.Services.AnnexService.UpdateAnexo(System.Int64,System.String,System.Nullable{app_pm_back.Models.Domain.CategoriaAnexo})">
             <summary>
             Atualiza um anexo pelo seu identificador.
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Services.ApplicationSchemaProvider">
+            <summary>
+            Centraliza o schema da aplicação para que o código nunca confie em schemas enviados nas requisições
             </summary>
         </member>
         <member name="T:app_pm_back.Services.MensagemAuditoria">
@@ -4449,7 +4597,7 @@
             <param name="ehNota">Sinalizador lógico indicando o tipo de entidade (true se for Nota, false se for Ordem)</param>
             <returns>A quantidade total de registros criados ou modificados e persistidos no banco de dados</returns>
         </member>
-        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ProcessarPorConfiabilidadeAsync(System.Nullable{app_pm_back.Models.Domain.ConfiabilidadeRestaurada},System.Nullable{app_pm_back.Models.Domain.ComponentType},System.Nullable{System.Int64},System.Nullable{System.Int64},System.DateTime,app_pm_back.Models.Domain.OrigemUR,System.String,app_pm_back.Models.Domain.Classificacao)">
+        <member name="M:app_pm_back.Services.FichasServices.DadosRenovacaoService.ProcessarPorConfiabilidadeAsync(System.Nullable{app_pm_back.Models.Domain.ConfiabilidadeRestaurada},System.Collections.Generic.List{app_pm_back.Models.Domain.ComponentType},System.Nullable{System.Int64},System.Nullable{System.Int64},System.DateTime,app_pm_back.Models.Domain.OrigemUR,System.String,app_pm_back.Models.Domain.Classificacao)">
             <summary>
             Processa a atualização de registros com base no tipo de confiabilidade restaurada (RestauraAtivo ou RestauraLI).
             </summary>
@@ -4605,6 +4753,12 @@
         <member name="M:app_pm_back.Services.FichasServices.ImportSheetService.VincularOrdensNotasAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.OrdemModel},System.Threading.CancellationToken)">
             <summary>
             Resolve e prepara os vínculos de chaves estrangeiras entre Ordens e Notas antes da inserção no banco de dados.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.FichasServices.ImportSheetService.PropagarClassificacaoParaOrdensAsync(System.Collections.Generic.List{app_pm_back.Models.Domain.NotaModel},System.Threading.CancellationToken)">
+            <summary>
+            Ao importar Notas, propaga a classificação/NaturezaCausa para todas as Ordens já existentes
+            vinculadas a cada Nota (via IdNota).
             </summary>
         </member>
         <member name="M:app_pm_back.Services.ClassificationServices.RegraClassificacaoService.ObterRegrasDivididasAsync">
@@ -4859,6 +5013,33 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.CtmService"/>.
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.Manutencao.CtmService.GetUsuariosCtmAsync(System.Int64)">
+            <summary>
+            Obtém os usuários associados a um centro de trabalho.
+            </summary>
+            <param name="ctmId">O ID do centro de trabalho.</param>
+            <returns>A lista de usuários associados ao centro de trabalho.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.CtmService.AdicionarUsuariosCtmAsync(System.Int64,System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Adiciona usuários a um centro de trabalho.
+            </summary>
+            <param name="ctmId">Id do ctm</param>
+            <param name="idsUsuarios">Lista contendo id dos usuários a serem adicionados</param>
+            <returns>Lista de usuários associados ao ctm</returns>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">O id passado do grupo não existe</exception>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.CtmService.AtribuirFichas(app_pm_back.Models.Domain.Fichas,System.Int64,System.Int64,System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Atribui fichas a um grupo de usuários
+            </summary>
+            <param name="tipoFicha"></param>
+            <param name="idFicha"></param>
+            <param name="idGrupo"></param>
+            <param name="idsUsuariosSelecionados"></param>
+            <returns></returns>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException"></exception>
+        </member>
         <member name="T:app_pm_back.Services.Manutencao.GpmService">
             <summary>
             Classe GpmService.
@@ -4868,6 +5049,33 @@
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.GpmService"/>.
             </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.GpmService.AdicionarUsuariosGpmAsync(System.Int64,System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Adiciona usuários a um centro de trabalho.
+            </summary>
+            <param name="ctmId">Id do ctm</param>
+            <param name="idsUsuarios">Lista contendo id dos usuários a serem adicionados</param>
+            <returns>Lista de usuários associados ao ctm</returns>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException">O id passado do grupo não existe</exception>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.GpmService.GetUsuariosGpmAsync(System.Int64)">
+            <summary>
+            Obtém os usuários associados a um grupo de planejamento.
+            </summary>
+            <param name="gpmId">O ID do grupo de planejamento.</param>
+            <returns>A lista de usuários associados ao grupo de planejamento.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.GpmService.AtribuirFichas(app_pm_back.Models.Domain.Fichas,System.Int64,System.Int64,System.Collections.Generic.List{System.Int64})">
+            <summary>
+            Atribui fichas a um grupo de usuários
+            </summary>
+            <param name="tipoFicha"></param>
+            <param name="idFicha"></param>
+            <param name="idGrupo"></param>
+            <param name="idsUsuariosSelecionados"></param>
+            <returns></returns>
+            <exception cref="T:System.Collections.Generic.KeyNotFoundException"></exception>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.ImobilizadoService">
             <summary>
@@ -5199,6 +5407,16 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.UsuarioService"/>.
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.Manutencao.UsuarioService.GetPagedAsync(System.Int32,System.Int32)">
+            <summary>
+            Retorna os usuários paginados
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.UsuarioService.AplicarIncludes(System.Linq.IQueryable{app_pm_back.Models.Domain.UsuarioModel})">
+            <summary>
+            Aplica includes na consulta
+            </summary>
+        </member>
         <member name="M:app_pm_back.Services.Manutencao.UsuarioService.AtribuirPermissao(System.String,System.Nullable{System.Int64})">
             <summary>
             Atribui a reponsabilidade de uma ordem para um usuário
@@ -5279,6 +5497,15 @@
             <param name="busca">Parâmetro do método.</param>
             <param name="p">Página de exibição.</param>
             <param name="t">Tamanho da página.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.QueryNotaOrdemAsync(System.Object,System.Linq.IQueryable{app_pm_back.Models.Domain.NotaModel},System.Linq.IQueryable{app_pm_back.Models.Domain.OrdemModel})">
+            <summary>
+            Realiza a consulta de notas e ordens com base em critérios de filtragem.
+            </summary>
+            <param name="busca">Objeto de busca.</param>
+            <param name="notasQuery">Consulta de notas.</param>
+            <param name="ordensQuery">Consulta de ordens.</param>
             <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.BuscarPropriedade(System.Type,System.String)">
@@ -5493,6 +5720,23 @@
             </summary>
             <param name="spreadSheet">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.SpreadsheetService.DeterminarClassificacao(System.Boolean,System.String)">
+            <summary>
+            Aplica a regra de negócio de classificação com base no indicador "Corretiva?" e na "Natureza Causa".
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.UserContextService.GetUsuarioIdAtual">
+            <summary>
+            Captura o Id usuário por meio do contexto HTTP e autenticação
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Services.UserContextService.GetUsuarioIdentificador">
+            <summary>
+            Identifica o usuário por Keycloak
+            </summary>
+            <returns></returns>
         </member>
         <member name="T:teste_catboost_cs.Cbm">
             <summary>

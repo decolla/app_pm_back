@@ -5290,11 +5290,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.csproj",
+      "projectUniqueName": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj",
       "projectName": "app_pm_back",
-      "projectPath": "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/app_pm_back.csproj",
+      "projectPath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj",
       "packagesPath": "/home/decolla/.nuget/packages/",
-      "outputPath": "/home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/obj/",
+      "outputPath": "/home/decolla/Documentos/Códigos/app_pm_back/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/decolla/.nuget/NuGet/NuGet.Config"
@@ -5413,7 +5413,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.130/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.131/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -362,3 +362,6 @@
 /home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/obj/Debug/net8.0/app_pm_back.pdb
 /home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/obj/Debug/net8.0/app_pm_back.genruntimeconfig.cache
 /home/decolla/Documentos/Codigos/app_pm_back/app_pm_back/obj/Debug/net8.0/ref/app_pm_back.dll
+/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/Microsoft.Extensions.Configuration.FileExtensions.dll
+/home/decolla/Documentos/Códigos/app_pm_back/bin/Debug/net8.0/Microsoft.Extensions.Configuration.Json.dll
