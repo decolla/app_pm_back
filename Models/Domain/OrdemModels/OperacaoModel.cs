@@ -40,6 +40,11 @@ public class OperacaoModel : IAuditable
     /// Quantidade de profissionais necessários para a tarefa.
     /// </summary>
     public int? NdeProfissionais { get; set; }
+    
+    /// <summary>
+    /// Custo da tarefa da manutenção
+    /// </summary>
+    public float? CustosAdicionais { get; set; }
 
     /// <summary>
     /// Data e hora prevista para o início.

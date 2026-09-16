@@ -57,14 +57,14 @@ public class FerramentaController : ControllerBase
     /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
     /// <response code="200">Sucesso ao listar registros.</response>
     /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
-    [HttpGet]
+    [HttpGet($"{{tipoManutencaoId:long?}}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Listar([FromQuery] long? tipoManutencaoId)
+    public async Task<IActionResult> Listar([FromRoute] long? tipoManutencaoId, [FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         if (tipoManutencaoId.HasValue)
         {
-            var filtrado = await _service.BuscarPorTipoManutencaoAsync(tipoManutencaoId.Value);
+            var filtrado = await _service.BuscarPorTipoManutencaoAsync(tipoManutencaoId.Value, pagina, tamanho);
             return Ok(filtrado);
         }
 

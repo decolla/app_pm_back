@@ -60,9 +60,9 @@ public class TarefaController : ControllerBase
     [HttpGet()]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Listar()
+    public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
-        var operacoesSemOrdem = await _service.ObterOperacoesSemOrdemAsync();
+        var operacoesSemOrdem = await _service.ObterOperacoesSemOrdemAsync(pagina, tamanho);
     
         return Ok(operacoesSemOrdem);
     }

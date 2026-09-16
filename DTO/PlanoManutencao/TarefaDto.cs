@@ -18,6 +18,8 @@ public class TarefaDto
     [SheetColumn("Duração")] public double Duracao { get; set; }
 
     [SheetColumn("Nº profissionais")] public int NdeProfissionais { get; set; }
+    
+    [SheetColumn("Custos Adicionais")] public float? CustosAdicionais { get; set; }
 
     [SheetColumn("Id CTM")] public long? IdCTM { get; set; }
 

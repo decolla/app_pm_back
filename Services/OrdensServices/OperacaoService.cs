@@ -77,10 +77,15 @@ public class OperacaoService : BaseCrudService<OperacaoModel>
         await _context.SaveChangesAsync(cancellationToken);
     }
     
-    public async Task<IEnumerable<OperacaoModel>> ObterOperacoesSemOrdemAsync()
+    public async Task<IEnumerable<OperacaoModel>> ObterOperacoesSemOrdemAsync(int? pagina, int? tamanho)
     {
+        int p = pagina ?? 1;
+        int t = tamanho ?? 20;
+        
         return await _context.PM_Operacoes 
             .Where(o => o.IdOrdem == null)
+            .OrderBy(o => o.IdOperacao)
+            .Skip((p - 1) * t).Take(t)
             .ToListAsync();
     }
 }
