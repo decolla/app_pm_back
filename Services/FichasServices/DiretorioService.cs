@@ -459,31 +459,10 @@ public class DiretorioService
 
         var dadosQuery = _context.PM_Diretorios
             .Include(d => d.Subdiretorios)
+            .Include(d => d.NotasVinculadas)
+            .Include(d => d.OrdensVinculadas)
             .AsNoTracking()
             .AsQueryable();
-
-        if (tipo == Fichas.Notas)
-        {
-            dadosQuery = dadosQuery
-                .Include(d => d.NotasVinculadas)
-                .AsNoTracking()
-                .AsQueryable();
-        }
-        else if (tipo == Fichas.Ordens)
-        {
-            dadosQuery = dadosQuery
-                .Include(d => d.OrdensVinculadas)
-                .AsNoTracking()
-                .AsQueryable();
-        }
-        else
-        {
-            dadosQuery = dadosQuery
-                .Include(d => d.NotasVinculadas)
-                .Include(d => d.OrdensVinculadas)
-                .AsNoTracking()
-                .AsQueryable();
-        }
 
         // safe check
         var buscaType = (Type)busca.GetType();
@@ -504,13 +483,13 @@ public class DiretorioService
                 dadosQuery.Where(n => n.OrdensVinculadas.Any(dn => dn.Ordem.DnsIot == dnsIot));
         }
 
-        string? nroFicha = buscaType.GetProperty("NroFicha")?.GetValue(busca);
-        if (!string.IsNullOrEmpty(nroFicha))
+        long? nroFicha = buscaType.GetProperty("NroFicha")?.GetValue(busca);
+        if (nroFicha.HasValue)
         {
             dadosQuery =
-                dadosQuery.Where(n => n.NotasVinculadas.Any(dn => dn.Nota.NumeroNota.ToString() == nroFicha));
+                dadosQuery.Where(n => n.NotasVinculadas.Any(dn => dn.Nota.NumeroNota == nroFicha));
             dadosQuery =
-                dadosQuery.Where(n => n.OrdensVinculadas.Any(dn => dn.Ordem.NumeroOrdem.ToString() == nroFicha));
+                dadosQuery.Where(n => n.OrdensVinculadas.Any(dn => dn.Ordem.NumeroOrdem == nroFicha));
         }
 
         ComponentType? componente = buscaType.GetProperty("Componente")?.GetValue(busca) as ComponentType?;
@@ -524,17 +503,31 @@ public class DiretorioService
         }
 
         dadosQuery = dadosQuery.AplicarOrdenacao(_context);
-
-        var notas = await dadosQuery.SelectMany(d => d.NotasVinculadas).Select(dn => dn.Nota).ToListAsync()
-            .ConfigureAwait(false);
-        var ordens = await dadosQuery.SelectMany(d => d.OrdensVinculadas).Select(do_ => do_.Ordem).ToListAsync()
-            .ConfigureAwait(false);
-
         List<object> listaUnica = new([]);
 
-        listaUnica.AddRange(notas);
-        listaUnica.AddRange(ordens);
+        if (tipo == Fichas.Notas)
+        {
+            var notas = await dadosQuery.SelectMany(d => d.NotasVinculadas).Select(dn => dn.Nota).ToListAsync()
+                .ConfigureAwait(false);
+            listaUnica.AddRange(notas);
+        }
+        else if (tipo == Fichas.Ordens)
+        {
+            var ordens = await dadosQuery.SelectMany(d => d.OrdensVinculadas).Select(do_ => do_.Ordem).ToListAsync()
+                .ConfigureAwait(false);
+            listaUnica.AddRange(ordens);
+        }
+        else
+        {
+            var notas = await dadosQuery.SelectMany(d => d.NotasVinculadas).Select(dn => dn.Nota).ToListAsync()
+                .ConfigureAwait(false);
+            var ordens = await dadosQuery.SelectMany(d => d.OrdensVinculadas).Select(do_ => do_.Ordem).ToListAsync()
+                .ConfigureAwait(false);
 
+            listaUnica.AddRange(notas);
+            listaUnica.AddRange(ordens);
+        }
+        
         // paginação
         int totalGeral = listaUnica.Count;
         int p = pagina ?? 1;
