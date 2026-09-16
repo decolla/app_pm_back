@@ -449,101 +449,86 @@ public class DiretorioService
         int? pagina,
         int? tamanho,
         dynamic? busca,
-        Fichas tipo
-    )
+        Fichas tipo)
     {
-        if (busca == null)
-        {
-            throw new ArgumentNullException(nameof(busca));
-        }
+        if (busca == null) throw new ArgumentNullException(nameof(busca));
 
-        var dadosQuery = _context.PM_Diretorios
-            .Include(d => d.Subdiretorios)
-            .Include(d => d.NotasVinculadas)
-            .Include(d => d.OrdensVinculadas)
-            .AsNoTracking()
-            .AsQueryable();
-
-        // safe check
         var buscaType = (Type)busca.GetType();
-
-        string? sapName = buscaType.GetProperty("SapName")?.GetValue(busca);
-        if (!string.IsNullOrEmpty(sapName))
-        {
-            dadosQuery = dadosQuery.Where(n =>
-                n.NotasVinculadas.Any(dn => dn.Nota.SapCode != null && dn.Nota.SapCode.Contains(sapName)));
-        }
-
-        string? dnsIot = buscaType.GetProperty("DnsIot")?.GetValue(busca);
-        if (!string.IsNullOrEmpty(dnsIot))
-        {
-            dadosQuery =
-                dadosQuery.Where(n => n.NotasVinculadas.Any(dn => dn.Nota.DnsIot == dnsIot));
-            dadosQuery =
-                dadosQuery.Where(n => n.OrdensVinculadas.Any(dn => dn.Ordem.DnsIot == dnsIot));
-        }
-
-        long? nroFicha = buscaType.GetProperty("NroFicha")?.GetValue(busca);
-        if (nroFicha.HasValue)
-        {
-            dadosQuery =
-                dadosQuery.Where(n => n.NotasVinculadas.Any(dn => dn.Nota.NumeroNota == nroFicha));
-            dadosQuery =
-                dadosQuery.Where(n => n.OrdensVinculadas.Any(dn => dn.Ordem.NumeroOrdem == nroFicha));
-        }
-
+        string? sapName = buscaType.GetProperty("SapName")?.GetValue(busca) as string;
+        string? dnsIot = buscaType.GetProperty("DnsIot")?.GetValue(busca) as string;
+        long? nroFicha = buscaType.GetProperty("NroFicha")?.GetValue(busca) as long?;
         ComponentType? componente = buscaType.GetProperty("Componente")?.GetValue(busca) as ComponentType?;
-        if (componente.HasValue)
-        {
-            dadosQuery = dadosQuery.Where(n =>
-                n.NotasVinculadas.Any(dn => dn.Nota.IdsAtivo != null && dn.Nota.IdsAtivo.Contains(componente.Value)));
-            dadosQuery = dadosQuery.Where(n =>
-                n.OrdensVinculadas.Any(dn =>
-                    dn.Ordem.IdsAtivo != null && dn.Ordem.IdsAtivo.Contains(componente.Value)));
-        }
 
-        dadosQuery = dadosQuery.AplicarOrdenacao(_context);
-        List<object> listaUnica = new([]);
-
-        if (tipo == Fichas.Notas)
-        {
-            var notas = await dadosQuery.SelectMany(d => d.NotasVinculadas).Select(dn => dn.Nota).ToListAsync()
-                .ConfigureAwait(false);
-            listaUnica.AddRange(notas);
-        }
-        else if (tipo == Fichas.Ordens)
-        {
-            var ordens = await dadosQuery.SelectMany(d => d.OrdensVinculadas).Select(do_ => do_.Ordem).ToListAsync()
-                .ConfigureAwait(false);
-            listaUnica.AddRange(ordens);
-        }
-        else
-        {
-            var notas = await dadosQuery.SelectMany(d => d.NotasVinculadas).Select(dn => dn.Nota).ToListAsync()
-                .ConfigureAwait(false);
-            var ordens = await dadosQuery.SelectMany(d => d.OrdensVinculadas).Select(do_ => do_.Ordem).ToListAsync()
-                .ConfigureAwait(false);
-
-            listaUnica.AddRange(notas);
-            listaUnica.AddRange(ordens);
-        }
-        
-        // paginação
-        int totalGeral = listaUnica.Count;
         int p = pagina ?? 1;
         int t = tamanho ?? 20;
-        int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
 
-        // pega os n primeiros itens
-        var itensPaginados = listaUnica.Skip((p - 1) * t).Take(t).ToList();
+        List<object> itensPaginados = new();
+        int totalGeral = 0;
 
+        if (tipo == Fichas.Ambas || tipo == Fichas.Notas)
+        {
+            var queryNotas = _context.PM_Notas
+                .AsNoTracking()
+                .Where(n => n.DiretoriosVinculados.Any(d => d.IdDiretorio == idDiretorio));
+            
+            if (!string.IsNullOrEmpty(sapName))
+                queryNotas = queryNotas.Where(n => n.SapCode != null && n.SapCode.Contains(sapName));
+            if (!string.IsNullOrEmpty(dnsIot))
+                queryNotas = queryNotas.Where(n => n.DnsIot == dnsIot);
+            if (nroFicha.HasValue)
+                queryNotas = queryNotas.Where(n => n.NumeroNota == nroFicha);
+            if (componente.HasValue)
+                queryNotas = queryNotas.Where(n => n.IdsAtivo != null && n.IdsAtivo.Contains(componente.Value));
+
+            if (tipo == Fichas.Notas)
+            {
+                totalGeral = await queryNotas.CountAsync();
+                itensPaginados.AddRange(await queryNotas.Skip((p - 1) * t).Take(t).ToListAsync());
+                return GerarObjetoPaginacao(totalGeral, p, t, itensPaginados);
+            }
+            
+            itensPaginados.AddRange(await queryNotas.ToListAsync()); 
+        }
+        
+        if (tipo == Fichas.Ambas || tipo == Fichas.Ordens)
+        {
+            var queryOrdens = _context.PM_Ordens
+                .AsNoTracking()
+                .Where(o => o.DiretoriosVinculados.Any(d => d.IdDiretorio == idDiretorio));
+
+            if (!string.IsNullOrEmpty(dnsIot))
+                queryOrdens = queryOrdens.Where(o => o.DnsIot == dnsIot);
+            if (nroFicha.HasValue)
+                queryOrdens = queryOrdens.Where(o => o.NumeroOrdem == nroFicha);
+            if (componente.HasValue)
+                queryOrdens = queryOrdens.Where(o => o.IdsAtivo != null && o.IdsAtivo.Contains(componente.Value));
+
+            if (tipo == Fichas.Ordens)
+            {
+                totalGeral = await queryOrdens.CountAsync();
+                itensPaginados.AddRange(await queryOrdens.Skip((p - 1) * t).Take(t).ToListAsync());
+                return GerarObjetoPaginacao(totalGeral, p, t, itensPaginados);
+            }
+
+            itensPaginados.AddRange(await queryOrdens.ToListAsync());
+        }
+        
+        totalGeral = itensPaginados.Count;
+        var paginadosAmbas = itensPaginados.Skip((p - 1) * t).Take(t).ToList();
+        
+        return GerarObjetoPaginacao(totalGeral, p, t, paginadosAmbas);
+    }
+
+    // método auxiliar para não repetir a criação do objeto anônimo
+    private object GerarObjetoPaginacao(int total, int p, int t, List<object> itens)
+    {
         return new
         {
-            Total = totalGeral,
-            TotalPaginas = totalPaginas,
-            pagina = p,
+            Total = total,
+            TotalPaginas = (int)Math.Ceiling((double)total / t),
+            Pagina = p,
             Tamanho = t,
-            Result = itensPaginados
+            Result = itens
         };
     }
 
