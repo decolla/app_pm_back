@@ -871,6 +871,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     Descricao = table.Column<string>(type: "nvarchar(max)", maxLength: 7000, nullable: true),
                     Duracao = table.Column<double>(type: "float", nullable: true),
                     NdeProfissionais = table.Column<int>(type: "int", nullable: true),
+                    CustosAdicionais = table.Column<float>(type: "real", nullable: true),
                     InicioEsperado = table.Column<DateTime>(type: "datetime2", nullable: true),
                     FimEsperado = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IdCTM = table.Column<long>(type: "bigint", nullable: true),
@@ -1019,7 +1020,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 10, 16, 52, 48, 612, DateTimeKind.Utc).AddTicks(9050), 2, null, null, "[]", "[]" });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 16, 14, 19, 24, 396, DateTimeKind.Utc).AddTicks(9145), 2, null, null, "[]", "[]" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

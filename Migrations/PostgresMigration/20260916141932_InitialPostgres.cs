@@ -803,6 +803,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     Descricao = table.Column<string>(type: "character varying(7000)", maxLength: 7000, nullable: true),
                     Duracao = table.Column<double>(type: "double precision", nullable: true),
                     NdeProfissionais = table.Column<int>(type: "integer", nullable: true),
+                    CustosAdicionais = table.Column<float>(type: "real", nullable: true),
                     InicioEsperado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     FimEsperado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     IdCTM = table.Column<long>(type: "bigint", nullable: true),
@@ -934,7 +935,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 10, 16, 52, 55, 666, DateTimeKind.Utc).AddTicks(4945), 2, null, null, new List<string>(), new List<string>() });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 16, 14, 19, 31, 808, DateTimeKind.Utc).AddTicks(2337), 2, null, null, new List<string>(), new List<string>() });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
