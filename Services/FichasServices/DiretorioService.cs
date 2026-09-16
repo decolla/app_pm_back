@@ -434,6 +434,16 @@ public class DiretorioService
         return caminho;
     }
 
+    /// <summary>
+    /// Filtra as notas e ordens de um diretório folha com base nos filtros passados
+    /// </summary>
+    /// <param name="idDiretorio">Id do diretório folha</param>
+    /// <param name="pagina">Pagina a ser exibida</param>
+    /// <param name="tamanho">Tamanho da página</param>
+    /// <param name="busca"></param>
+    /// <param name="tipo"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
     public async Task<object> ObterFichasDiretorioFiltradasAsync(
         long idDiretorio,
         int? pagina,

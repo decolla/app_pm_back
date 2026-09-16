@@ -225,6 +225,15 @@ public class DiretoriosController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém as fichas vinculadas a um diretório com base nos filtros passados
+    /// </summary>
+    /// <param name="idDiretorio">Id do diretório a ser buscado</param>
+    /// <param name="tipo">Nota ou ordem</param>
+    /// <param name="pagina">Pagina de exibição da lista de notas e ordens</param>
+    /// <param name="tamanho">Tamanho da página de exibição</param>
+    /// <param name="busca">Filtro de busca</param>
+    /// <returns></returns>
     [HttpGet("fichas")]
     public async Task<IActionResult> ObterFichasDiretorio([FromQuery] long idDiretorio, [FromQuery] Fichas tipo,
         [FromQuery] int? pagina, [FromQuery] int? tamanho, [FromQuery] BuscaDiretorioDto? busca)
