@@ -49,6 +49,30 @@ public class FerramentaController : ControllerBase
         return CreatedAtAction(nameof(BuscarPorId), new { id = criado.IdFerramenta }, criado);
     }
 
+    /// <summary>
+    /// / Lista os registros cadastrados com paginação.
+    /// </summary>
+    /// <param name="pagina">Pagina a ser exibida (começa em 1).</param>
+    /// <param name="tamanho">Quantidade de itens por página.</param>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<IActionResult> ListarPaginado([FromQuery] int pagina = 1, [FromQuery] int tamanho = 10)
+    {
+        try
+        {
+            if (pagina <= 0 || tamanho <= 0)
+                return BadRequest("Parâmetros de paginação inválidos.");
+            
+            var resultado = await _service.GetPagedAsync(pagina, tamanho);
+            return Ok(resultado);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Erro ao buscar:" + e.Message);
+            throw;
+        }
+    }
+
         /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
