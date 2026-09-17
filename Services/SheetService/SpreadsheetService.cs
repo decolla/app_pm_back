@@ -389,7 +389,7 @@ public class SpreadsheetService
                         Type tipo = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
                         object? valorConvertido = null;
 
-                        if (tipo == typeof(ComponentType) && (string.Equals(property.Name, "IdAtivo",
+                        if (tipo == typeof(List<ComponentType>) && (string.Equals(property.Name, "IdsAtivo",
                                 StringComparison.OrdinalIgnoreCase) || string.Equals(property.Name, "Componente",
                                 StringComparison.OrdinalIgnoreCase)))
                         {
@@ -512,19 +512,21 @@ public class SpreadsheetService
     }
 
 
-    private static ComponentType? TryTranslateComponentType(string rawValue)
+    private static List<ComponentType>? TryTranslateComponentType(string rawValue)
     {
         var normalized = NormalizeText(rawValue);
         if (string.IsNullOrEmpty(normalized))
             return null;
 
+        List<ComponentType> ids = new List<ComponentType>();
+
         foreach (var (type, terms) in ComponentTypeMatchers)
         {
             if (terms.Any(term => normalized.Contains(term)))
-                return type;
+                ids.Add(type);
         }
 
-        return null;
+        return ids.Count > 0 ? ids : null;
     }
     
     private static TiposLI? TryTranslateTipoSLi(string? rawValue)
