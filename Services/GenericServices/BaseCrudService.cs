@@ -101,7 +101,9 @@ public abstract class BaseCrudService<T> where T : class
             .Take(size) 
             .ToListAsync(); 
         
-        return new { Total = count, Result = result }; 
+        
+        
+        return new { Total = count, TotalPaginas = (int)Math.Ceiling((double)count / size), Page = page, Size = size, Result = result }; 
     }
     /// <summary>
     /// hook de extensão: por padrão não adiciona nenhum Include (comportamento genérico e leve).
