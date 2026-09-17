@@ -56,7 +56,7 @@ public class FerramentaController : ControllerBase
     /// <param name="tamanho">Quantidade de itens por página.</param>
     /// <returns></returns>
     [HttpGet]
-    public async Task<IActionResult> ListarPaginado([FromQuery] int pagina = 1, [FromQuery] int tamanho = 10)
+    public async Task<IActionResult> ListarPaginado([FromQuery] int pagina, [FromQuery] int tamanho)
     {
         try
         {
