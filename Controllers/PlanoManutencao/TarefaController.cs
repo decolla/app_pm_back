@@ -48,6 +48,37 @@ public class TarefaController : ControllerBase
         var criado = await _service.CreateAsync(model);
         return CreatedAtAction(nameof(BuscarPorId), new { id = criado.IdOperacao }, criado);
     }
+    
+    /// <summary>
+    /// Lista os registros cadastrados com paginação.
+    /// </summary>
+    /// <param name="pagina">Número da página (1-based) para paginação.</param>
+    /// <param name="tamanho">Quantidade de itens por página.</param>
+    /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+    /// <response code="200">Sucesso ao listar registros.</response>
+    /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+    [HttpGet("disponiveis")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Listar([FromQuery] int pagina, [FromQuery] int tamanho)
+    {
+        try
+        {
+            if (pagina <= 0 || tamanho <= 0)
+            {
+                return BadRequest("Parâmetros de paginação inválidos (menores ou iguais a zero).");
+            }
+            var operacoesSemOrdem = await _service.GetPagedAsync(pagina, tamanho);
+    
+            return Ok(operacoesSemOrdem);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, "Erro interno do servidor.");
+        }
+
+    }
 
     /// <summary>
     /// Lista os registros cadastrados com paginação.
@@ -57,10 +88,10 @@ public class TarefaController : ControllerBase
     /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
     /// <response code="200">Sucesso ao listar registros.</response>
     /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
-    [HttpGet()]
+    [HttpGet("disponiveis")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Listar([FromQuery] int? pagina, [FromQuery] int? tamanho)
+    public async Task<IActionResult> ListarDisponiveis([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         var operacoesSemOrdem = await _service.ObterOperacoesSemOrdemAsync(pagina, tamanho);
     
