@@ -12,10 +12,10 @@ public abstract class BaseCrudService<T> where T : class
 {
     protected readonly AppDbContext _context;
     protected readonly DbSet<T> _dbSet;
+
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="BaseCrudService{T}"/>.
     /// </summary>
-
     public BaseCrudService(AppDbContext context)
     {
         _context = context;
@@ -28,7 +28,8 @@ public abstract class BaseCrudService<T> where T : class
         var primaryKey = entityType?.FindPrimaryKey();
 
         if (primaryKey == null || primaryKey.Properties.Count != 1)
-            throw new InvalidOperationException($"A entidade {typeof(T).Name} deve possuir chave primária simples para operações por id.");
+            throw new InvalidOperationException(
+                $"A entidade {typeof(T).Name} deve possuir chave primária simples para operações por id.");
 
         var keyType = primaryKey.Properties[0].ClrType;
         return Convert.ChangeType(id, keyType);
@@ -93,25 +94,32 @@ public abstract class BaseCrudService<T> where T : class
 
         var keyName = primaryKey.Properties[0].Name;
 
-        int count = await _dbSet.CountAsync(); 
-        
-        var result = await _dbSet 
-            .OrderBy(e => EF.Property<object>(e, keyName)) 
-            .Skip((page - 1) * size) 
-            .Take(size) 
-            .ToListAsync(); 
-        
-        
-        
-        return new { Total = count, TotalPaginas = (int)Math.Ceiling((double)count / size), Page = page, Size = size, Result = result }; 
+        int count = await _dbSet.CountAsync();
+
+        var result = await _dbSet
+            .OrderBy(e => EF.Property<object>(e, keyName))
+            .Skip((page - 1) * size)
+            .Take(size)
+            .ToListAsync();
+
+
+        return new
+        {
+            Total = count, 
+            TotalPaginas = (int)Math.Ceiling((double)count / size), 
+            Page = page, 
+            Size = size,
+            Result = result
+        };
     }
+
     /// <summary>
     /// hook de extensão: por padrão não adiciona nenhum Include (comportamento genérico e leve).
     /// Services que precisam trazer coleções relacionadas (ex: NotaService) sobrescrevem este método
     /// para declarar quais navegações incluir, sem precisar reescrever o GetByIdAsync inteiro.
     /// <summary>
     protected virtual IQueryable<T> AplicarIncludes(IQueryable<T> query) => query;
-    
+
     /// <summary>
     /// Busca uma entidade pelo ID. O query é necessário em casos de Include para buscar uma lista de objetos
     /// </summary>
@@ -188,7 +196,7 @@ public abstract class BaseCrudService<T> where T : class
     {
         return await GetPagedAsync(pagina, tamanho);
     }
-    
+
 
     /// <summary>
     /// Deleta uma nota pelo ID
@@ -200,7 +208,7 @@ public abstract class BaseCrudService<T> where T : class
     {
         return await DeleteAsync(id);
     }
-    
+
     /// <summary>
     /// Verifica se o usuário tem acesso a uma tabela específica
     /// </summary>
@@ -212,7 +220,7 @@ public abstract class BaseCrudService<T> where T : class
         // se for ADM, tem passe livre em tudo
         if (usuario.NivelPermissao == NivelPermissao.Adm)
             return true;
-        
+
         return usuario.Permissoes.HasValue && (usuario.Permissoes.Value & tabelaRequerida) == tabelaRequerida;
     }
 }

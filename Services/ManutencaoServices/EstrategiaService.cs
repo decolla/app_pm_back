@@ -1,3 +1,4 @@
+using System.Diagnostics.Eventing.Reader;
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -184,5 +185,38 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
         await _context.SaveChangesAsync();
 
         return estrategiaBanco;
+    }
+
+    public async Task<List<PlanoModel>> GeneratePlanosAsync(long idEstrategia, List<string> sapNames)
+    {
+        if (sapNames == null || sapNames.Count == 0)
+        {
+            throw new ArgumentException("A lista de nomes SAP não pode ser nula ou vazia.", nameof(sapNames));
+        }
+        if(GetByIdAsync(idEstrategia).Result == null)
+        {
+            throw new ArgumentException("A estratégia não foi encontrada.", nameof(idEstrategia));
+        }
+        var planos = new List<PlanoModel>();
+
+        foreach (var sap in sapNames)
+        {
+            var plano = new PlanoModel
+            {
+                Nome = "Plano de Manutenção gerado: " + sap,
+                Prioridade = 0,
+                DataInicios = DateTime.Now,
+                GerarAutomaticamente = GerarAutomaticamente.Ordem,
+                Antecedencia = 5,
+                DataConclusao = DateTime.Now.AddMonths(6),
+                IdEstrategia = idEstrategia,
+                IdLi = sap
+            };
+            planos.Add(plano);
+            
+            await _context.PM_Planos.AddAsync(plano);
+        }
+        await _context.SaveChangesAsync();
+        return planos;
     }
 }

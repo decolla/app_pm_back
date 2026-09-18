@@ -264,6 +264,32 @@ public class EstrategiaController : ControllerBase
     }
     
     /// <summary>
+    /// Cria um tipo estratégia e uma estratégia para cada tipo sap name passados
+    /// </summary>
+    /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+    /// <returns>O objeto correspondente cadastrado.</returns>
+    /// <response code="200">Sucesso ao obter o registro.</response>
+    /// <response code="400">ID fornecido inválido.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
+    [HttpPost("{idEstrategia:long}/base-LI")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CriaTemplate([FromRoute] long idEstrategia,[FromQuery] List<string> sapNames)
+    {
+        try
+        {
+
+            var obj = await _estrategiaService.GeneratePlanosAsync(idEstrategia, sapNames);
+
+            return Ok(obj);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao procurar {_operador}: {e.Message}" });
+        }
+    }
+    
+    /// <summary>
     /// Cria um tipo estratégia e uma estratégia para cada tipo de LI
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
