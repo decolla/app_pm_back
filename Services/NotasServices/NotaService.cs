@@ -86,19 +86,26 @@ public class NotaService : BaseCrudService<NotaModel>
                     foreach (var property in entry.Properties)
                     {
                         var propInfo = typeof(NotaModel).GetProperty(property.Metadata.Name);
-                        
+
+                        if (property.Metadata.Name == "IdNota" || 
+                            property.Metadata.Name == "Classificacao" ||
+                            property.Metadata.Name == "MetodoClassificacao" ||
+                            property.Metadata.Name == "UltimaClassificacao" ||
+                            property.Metadata.Name == "DataClassificacao")
+                            continue; // não sobrescreve a PK
+
                         if (propInfo != null && propInfo.CanRead)
                         {
                             // Pega qual valor veio da planilha para essa coluna
                             var novoValor = propInfo.GetValue(nota);
-                            
+
                             // Só atualiza se o valor NÃO for nulo e NÃO for uma string vazia
                             if (novoValor != null && !(novoValor is string str && string.IsNullOrWhiteSpace(str)))
                             {
                                 //Se for um DateTime, não apagar a data original.
-                                if (novoValor is DateTime dt && dt == DateTime.MinValue) 
+                                if (novoValor is DateTime dt && dt == DateTime.MinValue)
                                     continue;
-                                
+
                                 property.CurrentValue = novoValor;
                             }
                         }
@@ -267,11 +274,11 @@ public class NotaService : BaseCrudService<NotaModel>
             .FirstOrDefaultAsync(n => n.IdNota == idnota);
 
         if (nota == null) return null;
-        
+
         // obter o diretório da nota
         var diretorio = await ObterDiretoriosDaNotaAsync(idnota);
         long? idDiretorio = diretorio.FirstOrDefault()?.Id;
-        
+
         // obtém o caminho em string do diretório
         var caminhoDiretorio = await _diretorioService.GetCaminhoAsync(idDiretorio ?? 0);
 
