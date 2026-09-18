@@ -198,9 +198,14 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
             throw new ArgumentException("A estratégia não foi encontrada.", nameof(idEstrategia));
         }
         var planos = new List<PlanoModel>();
+        var planosExistentes = await _context.PM_Planos
+            .Where(p => p.IdEstrategia == idEstrategia && sapNames.Contains(p.IdLi))
+            .Select(p => p.IdLi)
+            .ToListAsync();
 
         foreach (var sap in sapNames)
         {
+            // cria um plano para cada nome SAP, se não existir
             var plano = new PlanoModel
             {
                 Nome = "Plano de Manutenção gerado: " + sap,
@@ -212,6 +217,12 @@ public class EstrategiaService : BaseCrudService<EstrategiaModel>
                 IdEstrategia = idEstrategia,
                 IdLi = sap
             };
+            
+            if(planosExistentes.Contains(sap))
+            {
+                continue; // pula a criação do plano se já existir
+            }
+            
             planos.Add(plano);
             
             await _context.PM_Planos.AddAsync(plano);
