@@ -113,17 +113,17 @@ public class FerramentaModel
     /// <summary>
     /// Identificador do Local de Instalação (LI).
     /// </summary>
-    public string IdLI { get; set; } = string.Empty;
+    public string? IdLI { get; set; } = string.Empty;
 
     /// <summary>
     /// Identificador do Escopo associado.
     /// </summary>
-    public long IdEscopo { get; set; }
+    public long? IdEscopo { get; set; }
 
     /// <summary>
     /// Identificador do Almoxarifado onde a ferramenta está alocada.
     /// </summary>
-    public long IdAlmoxarifado { get; set; }
+    public long? IdAlmoxarifado { get; set; }
 
     /// <summary>
     /// Propriedade de navegação para o Almoxarifado.

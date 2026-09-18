@@ -21,7 +21,7 @@ public class FerramentaTipoDto
 
     [SheetColumn("Quantidade")] public int Quantidade { get; set; }
 
-    [SheetColumn("Loc.instalacao")] public string IdLI { get; set; } = string.Empty;
+    [SheetColumn("Loc.instalacao")] public string? IdLI { get; set; } = string.Empty;
 
     [SheetColumn("Fabricante")] public string? Fabricante { get; set; }
 
@@ -46,9 +46,9 @@ public class FerramentaTipoDto
     [SheetColumn("Data aquisição")] public DateTime? DataAquisicao { get; set; }
 
     // Escopo externo (apenas o ID).
-    [SheetColumn("Id Escopo")] public long IdEscopo { get; set; }
+    [SheetColumn("Id Escopo")] public long? IdEscopo { get; set; }
 
-    [SheetColumn("Id Almoxarifado")] public long IdAlmoxarifado { get; set; }
+    [SheetColumn("Id Almoxarifado")] public long? IdAlmoxarifado { get; set; }
 }
 
 #pragma warning restore CS1591
