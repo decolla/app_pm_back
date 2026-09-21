@@ -322,7 +322,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 21, 12, 21, 11, 628, DateTimeKind.Utc).AddTicks(7993),
+                            DataModificacao = new DateTime(2026, 9, 21, 12, 39, 47, 126, DateTimeKind.Utc).AddTicks(2278),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = "[]",
                             PalavrasNaturezaCausaCorretiva = "[]"
@@ -565,8 +565,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<long?>("IdEscopo")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("IdLI")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("IdLI")
+                        .HasColumnType("int");
 
                     b.Property<string>("Moeda")
                         .HasColumnType("nvarchar(max)");

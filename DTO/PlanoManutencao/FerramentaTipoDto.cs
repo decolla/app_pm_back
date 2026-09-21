@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO;
 
@@ -19,7 +20,7 @@ public class FerramentaTipoDto
 
     [SheetColumn("Quantidade")] public int?  Quantidade { get; set; }
 
-    [SheetColumn("Loc.instalacao")] public string? IdLI { get; set; } = string.Empty;
+    [SheetColumn("Loc.instalacao")] public TiposLI? IdLI { get; set; }  
 
     [SheetColumn("Fabricante")] public string? Fabricante { get; set; }
 

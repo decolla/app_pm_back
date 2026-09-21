@@ -88,14 +88,14 @@ public class FerramentaController : ControllerBase
     /// <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
     /// <response code="200">Sucesso ao listar registros.</response>
     /// <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
-    [HttpGet($"{{tipoManutencaoId:long?}}")]
+    [HttpGet("tipo-manutencao/{id:long}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Listar([FromRoute] long? tipoManutencaoId, [FromQuery] int? pagina, [FromQuery] int? tamanho)
+    public async Task<IActionResult> Listar([FromRoute] long? id, [FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
-        if (tipoManutencaoId.HasValue)
+        if (id.HasValue)
         {
-            var filtrado = await _service.BuscarPorTipoManutencaoAsync(tipoManutencaoId.Value, pagina, tamanho);
+            var filtrado = await _service.BuscarPorTipoManutencaoAsync(id.Value, pagina, tamanho);
             return Ok(filtrado);
         }
 
@@ -116,9 +116,17 @@ public class FerramentaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> BuscarPorId([FromRoute] long id)
     {
-        var obj = await _service.GetByIdAsync(id);
-        if (obj == null) return NotFound(new { message = "Ferramenta nao encontrada." });
-        return Ok(obj);
+        try
+        {
+            var obj = await _service.GetByIdAsync(id);
+            if (obj == null) return NotFound(new { message = "Ferramenta nao encontrada." });
+            return Ok(obj);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar ferramenta: {e.Message}" });
+        }
+        
     }
 
         /// <summary>

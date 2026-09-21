@@ -24,6 +24,9 @@ public class OperacaoOrdemDto
     [SheetColumn("Início prog.")] public DateTime? InicioEsperado { get; set; }
 
     [SheetColumn("Fim programado")] public DateTime? FimEsperado { get; set; }
+    
+    [SheetColumn("Ferramentas")]
+    public List<FerramentaTipoDto>? Ferramentas { get; set; } = new List<FerramentaTipoDto>();
 
     public long? IdCTM { get; set; }
 

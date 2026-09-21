@@ -1,4 +1,5 @@
 using app_pm_back.Attributes;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO;
 
@@ -26,6 +27,9 @@ public class TarefaDto
     [SheetColumn("Id Tipo Manutenção")] public long? IdTipoManutencao { get; set; }
 
     [SheetColumn("Id Ordem")] public long? IdOrdem { get; set; }
+
+    [SheetColumn("Ferramentas")]
+    public List<FerramentaTipoDto>? Ferramentas { get; set; } = new List<FerramentaTipoDto>();
 }
 
 #pragma warning restore CS1591

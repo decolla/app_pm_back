@@ -39,7 +39,9 @@ public class AutoMapperProfile : Profile
         CreateMap<TarefaDto, OperacaoModel>()
             .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome))
             .ForMember(dest => dest.Descricao, opt => opt.MapFrom(src => src.Descricao))
-            .ForMember(dest => dest.Duracao, opt => opt.MapFrom(src => src.Duracao));
+            .ForMember(dest => dest.Duracao, opt => opt.MapFrom(src => src.Duracao))
+            .ForMember(dest => dest.Ferramentas, opt => opt.MapFrom(src => src.Ferramentas))
+            .ForMember(dest => dest.IdOperacao, opt => opt.MapFrom(src => src.IdTarefa));
 
         CreateMap<OperacaoOrdemDto, OperacaoModel>()
             .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome))

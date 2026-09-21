@@ -323,7 +323,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 21, 12, 21, 18, 478, DateTimeKind.Utc).AddTicks(5873),
+                            DataModificacao = new DateTime(2026, 9, 21, 12, 39, 55, 673, DateTimeKind.Utc).AddTicks(9081),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = new List<string>(),
                             PalavrasNaturezaCausaCorretiva = new List<string>()
@@ -566,8 +566,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<long?>("IdEscopo")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("IdLI")
-                        .HasColumnType("text");
+                    b.Property<int?>("IdLI")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Moeda")
                         .HasColumnType("text");

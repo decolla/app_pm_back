@@ -48,7 +48,7 @@ public class TarefaController : ControllerBase
         var criado = await _service.CreateAsync(model);
         return CreatedAtAction(nameof(BuscarPorId), new { id = criado.IdOperacao }, criado);
     }
-    
+
     /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
@@ -68,8 +68,9 @@ public class TarefaController : ControllerBase
             {
                 return BadRequest("Parâmetros de paginação inválidos (menores ou iguais a zero).");
             }
+
             var operacoesSemOrdem = await _service.GetPagedAsync(pagina, tamanho);
-    
+
             return Ok(operacoesSemOrdem);
         }
         catch (Exception e)
@@ -77,7 +78,6 @@ public class TarefaController : ControllerBase
             Console.WriteLine(e);
             return StatusCode(500, "Erro interno do servidor.");
         }
-
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public class TarefaController : ControllerBase
     public async Task<IActionResult> ListarDisponiveis([FromQuery] int? pagina, [FromQuery] int? tamanho)
     {
         var operacoesSemOrdem = await _service.ObterOperacoesSemOrdemAsync(pagina, tamanho);
-    
+
         return Ok(operacoesSemOrdem);
     }
 
@@ -112,7 +112,7 @@ public class TarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> BuscarPorId([FromRoute] long id)
     {
-        var obj = await _service.GetByIdAsync(id);
+        var obj = await _service.GetTarefaCompletaAsync(id);
         if (obj == null) return NotFound(new { message = "Tarefa nao encontrada." });
         return Ok(obj);
     }
@@ -131,14 +131,13 @@ public class TarefaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] TarefaDto dto)
     {
-        if (!ModelState.IsValid) return ValidationProblem(ModelState);
         if (id <= 0) return BadRequest(new { message = "Id invalido na rota." });
 
         if (dto.IdTarefa <= 0) dto.IdTarefa = id;
-        if (dto.IdTarefa != id) return BadRequest(new { message = "Id da rota deve ser igual ao Id do corpo." });
+        if (dto.IdTarefa != id) dto.IdTarefa = id;
 
         var model = _mapper.Map<OperacaoModel>(dto);
-        var atualizado = await _service.UpdateNotaAsync(model);
+        var atualizado = await _service.UpdateCompleteAsync(model);
         return Ok(atualizado);
     }
 
@@ -159,5 +158,4 @@ public class TarefaController : ControllerBase
         if (!deleted) return NotFound(new { message = "Tarefa nao encontrada." });
         return Ok(new { message = "Tarefa removida com sucesso." });
     }
-    
 }

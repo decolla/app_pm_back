@@ -1,4 +1,5 @@
 using app_pm_back.Data;
+using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -88,4 +89,69 @@ public class OperacaoService : BaseCrudService<OperacaoModel>
             .Skip((p - 1) * t).Take(t)
             .ToListAsync();
     }
+    
+    public async Task<OperacaoModel?> UpdateCompleteAsync(OperacaoModel operacao)
+    {
+        // limpa o change tracker
+        _context.ChangeTracker.Clear();
+
+        // busca a ordem no banco de dados
+        var operacaoBanco = await _dbSet
+            .Include(n => n.Ferramentas)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(n => n.IdOperacao == operacao.IdOperacao);
+
+        if (operacaoBanco == null)
+            throw new Exception("Tarefa não encontrada.");
+
+        // atualiza o cabeçalho da ordem
+        _context.Entry(operacaoBanco).CurrentValues.SetValues(operacao);
+        _context.Entry(operacaoBanco).State = EntityState.Modified;
+
+        // sincroniza operações
+        if (operacao.Ferramentas != null)
+        {
+            var idOperacoes = operacao.Ferramentas.Select(v => v.IdFerramenta).ToList();
+
+            // deleta
+            if (operacaoBanco.Ferramentas != null)
+                foreach (var opBanco in operacaoBanco.Ferramentas.Where(v =>
+                             !idOperacoes.Contains(v.IdFerramenta)))
+                {
+                    _context.Entry(opBanco).State = EntityState.Deleted;
+                }
+        }
+
+        if (operacao.Ferramentas != null)
+            foreach (var opTela in operacao.Ferramentas)
+            {
+                if (opTela.IdFerramenta == 0)
+                {
+                    _context.Entry(opTela).State = EntityState.Added;
+                }
+                else
+                {
+                    // caso de update
+                    _context.Entry(opTela).State = EntityState.Modified;
+                }
+            }
+
+        // salva bb
+        await _context.SaveChangesAsync();
+
+        return operacaoBanco;
+    }
+    
+    public async Task<OperacaoModel?> GetTarefaCompletaAsync(long idTarefa)
+    {
+        var tarefa = await _dbSet
+            .Include(n => n.Ferramentas)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(n => n.IdOperacao == idTarefa);
+
+        if (tarefa == null) return null;
+
+        return tarefa;
+    }
+    
 }
