@@ -11,15 +11,13 @@ public class FerramentaTipoDto
 {
     [SheetColumn("Id Ferramenta")] public long IdFerramenta { get; set; }
 
-    [SheetColumn("Nome Ferramenta")] public string? Nome { get; set; }
-
-    [SheetColumn("Categoria")] public string? Categoria { get; set; }
+    [SheetColumn("Nome Ferramenta")] public required string Nome { get; set; }
 
     [SheetColumn("Descrição Ferramenta")] public string? Descricao { get; set; }
 
-    [SheetColumn("Tipo ferramenta")] public string? TipoFerramenta { get; set; }
+    [SheetColumn("Tipo ferramenta")] public required string TipoFerramenta { get; set; }
 
-    [SheetColumn("Quantidade")] public int Quantidade { get; set; }
+    [SheetColumn("Quantidade")] public int?  Quantidade { get; set; }
 
     [SheetColumn("Loc.instalacao")] public string? IdLI { get; set; } = string.Empty;
 

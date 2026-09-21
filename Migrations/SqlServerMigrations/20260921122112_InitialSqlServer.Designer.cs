@@ -12,7 +12,7 @@ using app_pm_back.Data;
 namespace app_pm_back.Migrations.SqlServerMigrations
 {
     [DbContext(typeof(SqlServerDbContext))]
-    [Migration("20260921120706_InitialSqlServer")]
+    [Migration("20260921122112_InitialSqlServer")]
     partial class InitialSqlServer
     {
         /// <inheritdoc />
@@ -325,7 +325,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 21, 12, 7, 5, 681, DateTimeKind.Utc).AddTicks(3316),
+                            DataModificacao = new DateTime(2026, 9, 21, 12, 21, 11, 628, DateTimeKind.Utc).AddTicks(7993),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = "[]",
                             PalavrasNaturezaCausaCorretiva = "[]"
@@ -546,11 +546,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdFerramenta"));
-
-                    b.Property<string>("Categoria")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("DataAquisicao")
                         .HasColumnType("datetime2");

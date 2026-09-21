@@ -14,7 +14,7 @@ using app_pm_back.Models.Domain;
 namespace app_pm_back.Migrations.PostgresMigration
 {
     [DbContext(typeof(PostgresDbContext))]
-    [Migration("20260921120712_InitialPostgres")]
+    [Migration("20260921122118_InitialPostgres")]
     partial class InitialPostgres
     {
         /// <inheritdoc />
@@ -326,7 +326,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 21, 12, 7, 12, 496, DateTimeKind.Utc).AddTicks(7635),
+                            DataModificacao = new DateTime(2026, 9, 21, 12, 21, 18, 478, DateTimeKind.Utc).AddTicks(5873),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = new List<string>(),
                             PalavrasNaturezaCausaCorretiva = new List<string>()
@@ -547,11 +547,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdFerramenta"));
-
-                    b.Property<string>("Categoria")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime?>("DataAquisicao")
                         .HasColumnType("timestamp without time zone");

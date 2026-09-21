@@ -14,12 +14,12 @@ public class FerramentaModel
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdFerramenta { get; set; }
-
+    
     /// <summary>
-    /// Categoria da ferramenta (ex: Elétrica, Manual).
+    /// Tipo específico da ferramenta.
     /// </summary>
     [MaxLength(100)]
-    public required string Categoria { get; set; }
+    public required string? TipoFerramenta { get; set; }
 
     /// <summary>
     /// Nome descritivo da ferramenta.
@@ -31,12 +31,6 @@ public class FerramentaModel
     /// Quantidade disponível em estoque.
     /// </summary>
     public int? Quantidade { get; set; }
-
-    /// <summary>
-    /// Tipo específico da ferramenta.
-    /// </summary>
-    [MaxLength(100)]
-    public string? TipoFerramenta { get; set; }
 
     /// <summary>
     /// Peso bruto da ferramenta.
