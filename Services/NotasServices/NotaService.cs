@@ -102,7 +102,7 @@ public class NotaService : BaseCrudService<NotaModel>
                             // Só atualiza se o valor NÃO for nulo e NÃO for uma string vazia
                             if (novoValor != null && !(novoValor is string str && string.IsNullOrWhiteSpace(str)))
                             {
-                                //Se for um DateTime, não apagar a data original.
+                                // se for um DateTime, não apagar a data original.
                                 if (novoValor is DateTime dt && dt == DateTime.MinValue)
                                     continue;
 

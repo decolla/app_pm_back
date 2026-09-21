@@ -271,7 +271,7 @@ public class EstrategiaController : ControllerBase
     /// <response code="200">Sucesso ao obter o registro.</response>
     /// <response code="400">ID fornecido inválido.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
-    [HttpPost("{idEstrategia:long}/base-LI")]
+    [HttpPost("{idEstrategia:long}/base-li")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CriaTemplate([FromRoute] long idEstrategia,[FromQuery] List<string> sapNames)
