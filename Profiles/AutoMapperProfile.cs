@@ -96,7 +96,9 @@ public class AutoMapperProfile : Profile
 
         CreateMap<AlmoxarifadoDto, AlmoxarifadoModel>();
 
+        // When creating a new Ferramenta we must not map the IdFerramenta so EF can generate it.
         CreateMap<FerramentaTipoDto, FerramentaModel>()
+            .ForMember(dest => dest.IdFerramenta, opt => opt.Ignore())
             .ForMember(dest => dest.ValorCompra, opt => opt.MapFrom(src => src.ValorCompra ?? 0))
             .ForMember(dest => dest.DataAquisicao, opt => opt.MapFrom(src => src.DataAquisicao ?? DateTime.MinValue));
 
