@@ -283,24 +283,24 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Categoria = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Quantidade = table.Column<int>(type: "int", nullable: false),
-                    TipoFerramenta = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PesoBruto = table.Column<double>(type: "float", nullable: false),
-                    PesoLiquido = table.Column<double>(type: "float", nullable: false),
+                    Quantidade = table.Column<int>(type: "int", nullable: true),
+                    TipoFerramenta = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    PesoBruto = table.Column<double>(type: "float", nullable: true),
+                    PesoLiquido = table.Column<double>(type: "float", nullable: true),
                     UmPesoBruto = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     UmPesoLiquido = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    Volume = table.Column<double>(type: "float", nullable: false),
+                    Volume = table.Column<double>(type: "float", nullable: true),
                     UmVolume = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Dimensao = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UmDimensao = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Fabricante = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
-                    ValorCompra = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ValorCompra = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Moeda = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DataAquisicao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DataAquisicao = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Descricao = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
-                    IdLI = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IdEscopo = table.Column<long>(type: "bigint", nullable: false),
-                    IdAlmoxarifado = table.Column<long>(type: "bigint", nullable: false)
+                    IdLI = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdEscopo = table.Column<long>(type: "bigint", nullable: true),
+                    IdAlmoxarifado = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -310,8 +310,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         column: x => x.IdAlmoxarifado,
                         principalSchema: "dbo",
                         principalTable: "PM_Almoxarifados",
-                        principalColumn: "IdAlmoxarifado",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdAlmoxarifado");
                 });
 
             migrationBuilder.CreateTable(
@@ -1020,7 +1019,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 16, 14, 19, 24, 396, DateTimeKind.Utc).AddTicks(9145), 2, null, null, "[]", "[]" });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 21, 12, 7, 5, 681, DateTimeKind.Utc).AddTicks(3316), 2, null, null, "[]", "[]" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

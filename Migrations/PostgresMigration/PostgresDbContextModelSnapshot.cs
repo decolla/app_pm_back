@@ -323,7 +323,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 16, 14, 19, 31, 808, DateTimeKind.Utc).AddTicks(2337),
+                            DataModificacao = new DateTime(2026, 9, 21, 12, 7, 12, 496, DateTimeKind.Utc).AddTicks(7635),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = new List<string>(),
                             PalavrasNaturezaCausaCorretiva = new List<string>()
@@ -550,7 +550,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<DateTime>("DataAquisicao")
+                    b.Property<DateTime?>("DataAquisicao")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Descricao")
@@ -565,14 +565,13 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<long>("IdAlmoxarifado")
+                    b.Property<long?>("IdAlmoxarifado")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("IdEscopo")
+                    b.Property<long?>("IdEscopo")
                         .HasColumnType("bigint");
 
                     b.Property<string>("IdLI")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Moeda")
@@ -583,17 +582,16 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<double>("PesoBruto")
+                    b.Property<double?>("PesoBruto")
                         .HasColumnType("double precision");
 
-                    b.Property<double>("PesoLiquido")
+                    b.Property<double?>("PesoLiquido")
                         .HasColumnType("double precision");
 
-                    b.Property<int>("Quantidade")
+                    b.Property<int?>("Quantidade")
                         .HasColumnType("integer");
 
                     b.Property<string>("TipoFerramenta")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -613,10 +611,10 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<decimal>("ValorCompra")
+                    b.Property<decimal?>("ValorCompra")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("Volume")
+                    b.Property<double?>("Volume")
                         .HasColumnType("double precision");
 
                     b.HasKey("IdFerramenta");
@@ -1581,9 +1579,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                 {
                     b.HasOne("app_pm_back.Models.Domain.AlmoxarifadoModel", "Almoxarifado")
                         .WithMany("Ferramentas")
-                        .HasForeignKey("IdAlmoxarifado")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdAlmoxarifado");
 
                     b.Navigation("Almoxarifado");
                 });

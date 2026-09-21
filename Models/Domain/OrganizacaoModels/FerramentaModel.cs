@@ -30,23 +30,23 @@ public class FerramentaModel
     /// <summary>
     /// Quantidade disponível em estoque.
     /// </summary>
-    public int Quantidade { get; set; }
+    public int? Quantidade { get; set; }
 
     /// <summary>
     /// Tipo específico da ferramenta.
     /// </summary>
     [MaxLength(100)]
-    public required string TipoFerramenta { get; set; }
+    public string? TipoFerramenta { get; set; }
 
     /// <summary>
     /// Peso bruto da ferramenta.
     /// </summary>
-    public double PesoBruto { get; set; }
+    public double? PesoBruto { get; set; }
 
     /// <summary>
     /// Peso líquido da ferramenta.
     /// </summary>
-    public double PesoLiquido { get; set; }
+    public double? PesoLiquido { get; set; }
 
     /// <summary>
     /// Unidade de medida do peso bruto (ex: kg, g).
@@ -63,7 +63,7 @@ public class FerramentaModel
     /// <summary>
     /// Volume ocupado pela ferramenta.
     /// </summary>
-    public double Volume { get; set; }
+    public double? Volume { get; set; }
 
     /// <summary>
     /// Unidade de medida do volume (ex: m³, cm³).
@@ -92,7 +92,7 @@ public class FerramentaModel
     /// <summary>
     /// Valor de custo na aquisição.
     /// </summary>
-    public decimal ValorCompra { get; set; }
+    public decimal? ValorCompra { get; set; }
     
     /// <summary>
     /// Moeda do valor de compra (ex: BRL, USD).
@@ -102,7 +102,7 @@ public class FerramentaModel
     /// <summary>
     /// Data em que a ferramenta foi adquirida.
     /// </summary>
-    public DateTime DataAquisicao { get; set; }
+    public DateTime? DataAquisicao { get; set; }
 
     /// <summary>
     /// Descrição detalhada ou observações sobre a ferramenta.
@@ -134,5 +134,5 @@ public class FerramentaModel
     /// <summary>
     /// Lista de operações associadas a esta ferramenta.
     /// </summary>
-    public virtual ICollection<OperacaoModel> Operacoes { get; set; } = new List<OperacaoModel>();
+    public virtual ICollection<OperacaoModel>? Operacoes { get; set; } = new List<OperacaoModel>();
 }

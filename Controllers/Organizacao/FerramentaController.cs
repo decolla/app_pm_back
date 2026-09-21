@@ -42,11 +42,18 @@ public class FerramentaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Criar([FromBody] FerramentaTipoDto dto)
     {
-        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+        try
+        {
+            var model = _mapper.Map<FerramentaModel>(dto);
+            var criado = await _service.CreateAsync(model);
+            return CreatedAtAction(nameof(BuscarPorId), new { id = criado.IdFerramenta }, criado);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
 
-        var model = _mapper.Map<FerramentaModel>(dto);
-        var criado = await _service.CreateAsync(model);
-        return CreatedAtAction(nameof(BuscarPorId), new { id = criado.IdFerramenta }, criado);
     }
 
     /// <summary>

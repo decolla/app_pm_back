@@ -267,24 +267,24 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Categoria = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    Quantidade = table.Column<int>(type: "integer", nullable: false),
-                    TipoFerramenta = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    PesoBruto = table.Column<double>(type: "double precision", nullable: false),
-                    PesoLiquido = table.Column<double>(type: "double precision", nullable: false),
+                    Quantidade = table.Column<int>(type: "integer", nullable: true),
+                    TipoFerramenta = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    PesoBruto = table.Column<double>(type: "double precision", nullable: true),
+                    PesoLiquido = table.Column<double>(type: "double precision", nullable: true),
                     UmPesoBruto = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     UmPesoLiquido = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    Volume = table.Column<double>(type: "double precision", nullable: false),
+                    Volume = table.Column<double>(type: "double precision", nullable: true),
                     UmVolume = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     Dimensao = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     UmDimensao = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     Fabricante = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    ValorCompra = table.Column<decimal>(type: "numeric", nullable: false),
+                    ValorCompra = table.Column<decimal>(type: "numeric", nullable: true),
                     Moeda = table.Column<string>(type: "text", nullable: true),
-                    DataAquisicao = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DataAquisicao = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
-                    IdLI = table.Column<string>(type: "text", nullable: false),
-                    IdEscopo = table.Column<long>(type: "bigint", nullable: false),
-                    IdAlmoxarifado = table.Column<long>(type: "bigint", nullable: false)
+                    IdLI = table.Column<string>(type: "text", nullable: true),
+                    IdEscopo = table.Column<long>(type: "bigint", nullable: true),
+                    IdAlmoxarifado = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -293,8 +293,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         name: "FK_PM_Ferramentas_PM_Almoxarifados_IdAlmoxarifado",
                         column: x => x.IdAlmoxarifado,
                         principalTable: "PM_Almoxarifados",
-                        principalColumn: "IdAlmoxarifado",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IdAlmoxarifado");
                 });
 
             migrationBuilder.CreateTable(
@@ -935,7 +934,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 16, 14, 19, 31, 808, DateTimeKind.Utc).AddTicks(2337), 2, null, null, new List<string>(), new List<string>() });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 21, 12, 7, 12, 496, DateTimeKind.Utc).AddTicks(7635), 2, null, null, new List<string>(), new List<string>() });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

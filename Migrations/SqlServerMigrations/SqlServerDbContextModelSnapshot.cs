@@ -322,7 +322,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 16, 14, 19, 24, 396, DateTimeKind.Utc).AddTicks(9145),
+                            DataModificacao = new DateTime(2026, 9, 21, 12, 7, 5, 681, DateTimeKind.Utc).AddTicks(3316),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = "[]",
                             PalavrasNaturezaCausaCorretiva = "[]"
@@ -549,7 +549,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime>("DataAquisicao")
+                    b.Property<DateTime?>("DataAquisicao")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Descricao")
@@ -564,14 +564,13 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<long>("IdAlmoxarifado")
+                    b.Property<long?>("IdAlmoxarifado")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("IdEscopo")
+                    b.Property<long?>("IdEscopo")
                         .HasColumnType("bigint");
 
                     b.Property<string>("IdLI")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Moeda")
@@ -582,17 +581,16 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<double>("PesoBruto")
+                    b.Property<double?>("PesoBruto")
                         .HasColumnType("float");
 
-                    b.Property<double>("PesoLiquido")
+                    b.Property<double?>("PesoLiquido")
                         .HasColumnType("float");
 
-                    b.Property<int>("Quantidade")
+                    b.Property<int?>("Quantidade")
                         .HasColumnType("int");
 
                     b.Property<string>("TipoFerramenta")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -612,10 +610,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<decimal>("ValorCompra")
+                    b.Property<decimal?>("ValorCompra")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<double>("Volume")
+                    b.Property<double?>("Volume")
                         .HasColumnType("float");
 
                     b.HasKey("IdFerramenta");
@@ -1580,9 +1578,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 {
                     b.HasOne("app_pm_back.Models.Domain.AlmoxarifadoModel", "Almoxarifado")
                         .WithMany("Ferramentas")
-                        .HasForeignKey("IdAlmoxarifado")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdAlmoxarifado");
 
                     b.Navigation("Almoxarifado");
                 });
