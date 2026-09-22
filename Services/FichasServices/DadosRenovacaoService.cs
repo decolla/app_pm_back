@@ -116,7 +116,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                     nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraLI;
                     _logger.LogDebug("Nota {IdNota} marcada como RestauraLI por texto (renovação)", nota.IdNota);
                 }
-                else if (temTroca && nota.IdsAtivo.Any())
+                else if (temTroca && (nota.IdsAtivo?.Any() ?? false))
                 {
                     nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
                     _logger.LogDebug("Nota {IdNota} marcada como RestauraAtivo por texto (troca)", nota.IdNota);
@@ -124,7 +124,7 @@ public class DadosRenovacaoService : BaseCrudService<DadosRenovacaoModel>
                 else if (notasComItensRenovacao.Contains(nota.IdNota))
                 {
                     // Se as regras de texto não pegaram, cai na regra de item (fallback)
-                    if (nota.IdsAtivo.Any())
+                    if ((nota.IdsAtivo?.Any() ?? false))
                     {
                         nota.ConfiabilidadeRestaurada = ConfiabilidadeRestaurada.RestauraAtivo;
                         _logger.LogDebug("Nota {IdNota} marcada como RestauraAtivo pelo Item (IdAtivo={IdAtivo})",
