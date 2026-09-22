@@ -211,6 +211,17 @@ public class OrdemService : BaseCrudService<OrdemModel>
         if (ordemDoBanco == null)
             throw new Exception("Ordem não encontrada.");
 
+        if (ordemTela.StatusOrdem == StatusFichas.Concluida)
+        {
+            var notaAssociada = await _context.PM_Notas.FindAsync(ordemTela.IdNota);
+        if (notaAssociada != null && notaAssociada.StatusNota != StatusFichas.Concluida 
+                                  && notaAssociada.Ordens.Any(o => o.IdOrdem != ordemTela.IdOrdem))
+            {
+                notaAssociada.StatusNota = StatusFichas.Concluida;
+                _context.Entry(notaAssociada).State = EntityState.Modified;
+            }
+        }
+        
         // atualiza o cabeçalho da ordem
         _context.Entry(ordemDoBanco).CurrentValues.SetValues(ordemTela);
         _context.Entry(ordemDoBanco).State = EntityState.Modified;

@@ -1,4 +1,6 @@
+using System.ComponentModel.DataAnnotations;
 using app_pm_back.Attributes;
+using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO;
 
@@ -17,7 +19,8 @@ public class AlmoxarifadoDto
     [SheetColumn("Organizacao")] public required string Organizacao { get; set; }
 
     // StatusFichas e descricao (opcionais)
-    [SheetColumn("StatusFichas")] public string? Status { get; set; }
+    [EnumDataType(typeof(StatusAlmoxarifado))]
+    [SheetColumn("StatusFichas")] public StatusAlmoxarifado? Status { get; set; }
 
     [SheetColumn("DescricaoBreve")] public string? Descricao { get; set; }
 

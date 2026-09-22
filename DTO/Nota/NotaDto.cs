@@ -50,6 +50,8 @@ public class NotaDto
     [SheetColumn("Criado por")] public string? CriadaPorUsuario { get; set; }
 
     [SheetColumn("Modificado por")] public string? ModificadaPorUsuario { get; set; }
+    
+    [SheetColumn("Notificar")] public bool Notificar { get; set; }
 
     [SheetColumn("Data modificacao")] public DateTime? DataModificacao { get; set; }
 

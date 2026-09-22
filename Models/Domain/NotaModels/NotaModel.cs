@@ -112,6 +112,11 @@ public class NotaModel : IClassifiable, IAuditable
     /// </summary>
     /// <example>2024-01-20T18:00:00</example>
     public DateTime? FimDesejado { get; set; }
+    
+    /// <summary>
+    /// Indica se a nota deve ser notificada aos envolvidos.
+    /// </summary>
+    public bool Notificar { get; set; } = false;
 
     #endregion
 
