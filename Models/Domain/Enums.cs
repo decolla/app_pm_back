@@ -151,6 +151,17 @@ public enum TiposLI
 }
 
 /// <summary>
+/// Define os status operacionais de um Almoxarifado.
+/// </summary>
+public enum StatusAlmoxarifado
+{
+    Ativo = 1,
+    Inativo = 2,
+    EmReforma = 3,
+    CapacidadeMaximaAtingida = 4
+}
+
+/// <summary>
 /// Usado para requisições no APM específica para ativos/LI
 /// </summary>
 public enum OriginType

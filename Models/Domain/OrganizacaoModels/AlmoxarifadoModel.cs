@@ -28,10 +28,9 @@ public class AlmoxarifadoModel
     public required string Organizacao { get; set; }
 
     /// <summary>
-    /// StatusFichas atual do almoxarifado (ex: Ativo, Inativo).
+    /// Status atual do almoxarifado (ex: Ativo, Inativo).
     /// </summary>
-    [MaxLength(50)]
-    public string? Status { get; set; }
+    public StatusAlmoxarifado? Status { get; set; }
 
     /// <summary>
     /// Descrição detalhada sobre o almoxarifado.
