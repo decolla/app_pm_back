@@ -48,6 +48,7 @@ public class ImportSheetService
         IFormFile file, 
         bool sobrescrever, 
         bool adicionarNovas, 
+        TipoUpload tipoUpload,
         CancellationToken cancellationToken = default)
     {
         var dbSchema = Config.RouteConfig.GetDatabaseSchema();
@@ -69,6 +70,7 @@ public class ImportSheetService
         var resultadoPlanilha = await _spreadsheetService.ReadNotasSpreadSheetAsync(
             memoryStream, 
             file.FileName, 
+            tipoUpload,
             cancellationToken
         );
         

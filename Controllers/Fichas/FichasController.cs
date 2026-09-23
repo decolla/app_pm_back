@@ -90,6 +90,7 @@ public class FichasController : ControllerBase
         IFormFile file,
         [FromQuery] bool sobrescrever,
         [FromQuery] bool adicionarNovas,
+        [FromQuery] TipoUpload tipoUpload,
         CancellationToken cancellationToken)
     {
         try
@@ -103,7 +104,7 @@ public class FichasController : ControllerBase
                 return BadRequest(new { message = "Arquivo inválido ou vazio." });
 
             var inseridas = await _spreadsheetOrchestrator
-                .ProcessarPlanilhaAsync(file, sobrescrever, adicionarNovas, cancellationToken);
+                .ProcessarPlanilhaAsync(file, sobrescrever, adicionarNovas, tipoUpload, cancellationToken);
 
             if (inseridas > 0)
             {

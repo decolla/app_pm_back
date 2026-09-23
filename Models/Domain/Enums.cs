@@ -171,6 +171,16 @@ public enum OriginType
 }
 
 /// <summary>
+/// Identifica o tipo de upload de dados que está sendo realizado (Nota, Ordem ou Item).
+/// </summary>
+public enum TipoUpload
+{
+    Nota = 0,
+    Ordem = 1,
+    Item = 2
+}
+
+/// <summary>
 /// Usado para classificar os tipos de fichas em dados renovação
 /// </summary>
 public enum Classificacao

@@ -191,7 +191,9 @@ public class SpreadsheetService
     public virtual async Task<ResultadoPlanilha> ReadNotasSpreadSheetAsync(
         Stream fileStream,
         string fileName,
+        TipoUpload tipoUpload,
         CancellationToken cancellationToken = default)
+    
     {
         var resultado = new ResultadoPlanilha();
 
@@ -283,22 +285,15 @@ public class SpreadsheetService
 
         if (columns.Count == 0) return resultado;
 
-        bool isNota = (columns.ContainsKey("Nota") && columns.ContainsKey("Tipo de nota")) ||
-                      (columns.ContainsKey("Nota") && columns.ContainsKey("status_nota"));
-        bool isOrdem = columns.ContainsKey("Ordem") && columns.ContainsKey("Texto breve") ||
-                       (columns.ContainsKey("numero_ordem") && columns.ContainsKey("status_ordem"));
-        bool isItem = columns.ContainsKey("Item") && columns.ContainsKey("Causa") &&
-                      columns.ContainsKey("Texto da causa");
-
-        if (isOrdem)
+        if (tipoUpload == TipoUpload.Ordem)
         {
             resultado.TipoIdentificado = "ORDEM";
         }
-        else if (isItem)
+        else if (tipoUpload == TipoUpload.Item)
         {
             resultado.TipoIdentificado = "ITEM";
         }
-        else if (isNota)
+        else if (tipoUpload == TipoUpload.Nota)
         {
             resultado.TipoIdentificado = "NOTA";
         }
