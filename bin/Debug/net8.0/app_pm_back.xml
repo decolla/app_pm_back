@@ -331,6 +331,16 @@
             <response code="400">ID fornecido inválido.</response>
             <response code="404">Registro não encontrado no banco de dados.</response>
         </member>
+        <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.CriaTemplate(System.Int64,System.Collections.Generic.List{System.String})">
+            <summary>
+            Cria um tipo estratégia e uma estratégia para cada tipo sap name passados
+            </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
         <member name="M:app_pm_back.Controllers.Estrategia.EstrategiaController.CriaTemplate">
             <summary>
             Cria um tipo estratégia e uma estratégia para cada tipo de LI
@@ -636,6 +646,17 @@
             Obtém todas as folhas (notas e ordens) vinculadas a um diretório específico
             </summary>
             <param name="idDiretorio">ID do diretório de busca</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.ObterFichasDiretorio(System.Int64,app_pm_back.Models.Domain.Fichas,System.Nullable{System.Int32},System.Nullable{System.Int32},app_pm_back.DTO.Buscas.BuscaDiretorioDto)">
+            <summary>
+            Obtém as fichas vinculadas a um diretório com base nos filtros passados
+            </summary>
+            <param name="idDiretorio">Id do diretório a ser buscado</param>
+            <param name="tipo">Nota ou ordem</param>
+            <param name="pagina">Pagina de exibição da lista de notas e ordens</param>
+            <param name="tamanho">Tamanho da página de exibição</param>
+            <param name="busca">Filtro de busca</param>
             <returns></returns>
         </member>
         <member name="M:app_pm_back.Controllers.FichasControllers.DiretoriosController.ObterTodosDiretorios">
@@ -1515,7 +1536,15 @@
             <response code="201">Registro criado com sucesso.</response>
             <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Listar(System.Nullable{System.Int64})">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.ListarPaginado(System.Int32,System.Int32)">
+            <summary>
+            / Lista os registros cadastrados com paginação.
+            </summary>
+            <param name="pagina">Pagina a ser exibida (começa em 1).</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns></returns>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.FerramentaController.Listar(System.Nullable{System.Int64},System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
@@ -1651,7 +1680,17 @@
             <response code="201">Registro criado com sucesso.</response>
             <response code="400">Erros na validação do modelo ou dados fornecidos inválidos.</response>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Listar">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.Listar(System.Int32,System.Int32)">
+            <summary>
+            Lista os registros cadastrados com paginação.
+            </summary>
+            <param name="pagina">Número da página (1-based) para paginação.</param>
+            <param name="tamanho">Quantidade de itens por página.</param>
+            <returns>Uma lista de registros cadastrados ou um objeto paginado contendo total e resultados.</returns>
+            <response code="200">Sucesso ao listar registros.</response>
+            <response code="400">Parâmetros de paginação inválidos (menores ou iguais a zero).</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.TarefaController.ListarDisponiveis(System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Lista os registros cadastrados com paginação.
             </summary>
@@ -3561,6 +3600,11 @@
             Quantidade de profissionais necessários para a tarefa.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.CustosAdicionais">
+            <summary>
+            Custo da tarefa da manutenção
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.OperacaoModel.InicioEsperado">
             <summary>
             Data e hora prevista para o início.
@@ -3904,9 +3948,9 @@
             Identificador único da ferramenta.
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.FerramentaModel.Categoria">
+        <member name="P:app_pm_back.Models.Domain.FerramentaModel.TipoFerramenta">
             <summary>
-            Categoria da ferramenta (ex: Elétrica, Manual).
+            Tipo específico da ferramenta.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.FerramentaModel.Nome">
@@ -3917,11 +3961,6 @@
         <member name="P:app_pm_back.Models.Domain.FerramentaModel.Quantidade">
             <summary>
             Quantidade disponível em estoque.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.FerramentaModel.TipoFerramenta">
-            <summary>
-            Tipo específico da ferramenta.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.FerramentaModel.PesoBruto">
@@ -4892,6 +4931,18 @@
             <param name="idDiretorio">Id do diretório que será gerado o caminho</param>
             <returns></returns>
         </member>
+        <member name="M:app_pm_back.Services.DiretorioService.ObterFichasDiretorioFiltradasAsync(System.Int64,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Object,app_pm_back.Models.Domain.Fichas)">
+            <summary>
+            Filtra as notas e ordens de um diretório folha com base nos filtros passados
+            </summary>
+            <param name="idDiretorio">Id do diretório folha</param>
+            <param name="pagina">Pagina a ser exibida</param>
+            <param name="tamanho">Tamanho da página</param>
+            <param name="busca"></param>
+            <param name="tipo"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
         <member name="T:app_pm_back.Services.BaseCrudService`1">
             <summary>
             Classe BaseCrudService.
@@ -5380,7 +5431,7 @@
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.FerramentaService"/>.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.BuscarPorTipoManutencaoAsync(System.Int64)">
+        <member name="M:app_pm_back.Services.Manutencao.FerramentaService.BuscarPorTipoManutencaoAsync(System.Int64,System.Nullable{System.Int32},System.Nullable{System.Int32})">
             <summary>
             Obtém um registro específico.
             </summary>

@@ -116,7 +116,7 @@ public class NotaModel : IClassifiable, IAuditable
     /// <summary>
     /// Indica se a nota deve ser notificada aos envolvidos.
     /// </summary>
-    public bool Notificar { get; set; } = false;
+    public bool Notificar { get; set; }
 
     #endregion
 
