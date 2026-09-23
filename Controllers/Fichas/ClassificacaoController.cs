@@ -204,7 +204,7 @@ public class ClassificacaoController : ControllerBase
                 return BadRequest(new
                     { message = "Regra invalido na rota. Envie id maior que zero." });
             }
-            
+
 
             var regra = _mapper.Map<RegraClassificacaoModel>(dto);
             var result = await _regraClassificacaoService.UpdateAsync(regra);
@@ -346,13 +346,13 @@ public class ClassificacaoController : ControllerBase
             {
                 modelos = ["catboost_model.cbm", "model_meta.json"];
             }
-            
+
             object result = new
             {
                 modelos = modelos,
                 modeloPadrao = config.ModeloCatboostPadrao
             };
-            
+
             return Ok(result);
         }
         catch (Exception e)
@@ -370,19 +370,19 @@ public class ClassificacaoController : ControllerBase
     public async Task<IActionResult> AtualizarModeloPadrao([FromQuery] string modelo)
     {
         try
-        {   
+        {
             var modelos = _catboostModelProviderService.ListarModelosDisponiveis();
 
             if (!modelos.Any())
             {
                 modelos = ["catboost_model.cbm", "model_meta.json"];
             }
-            
-            if(!modelos.Contains(modelo))
+
+            if (!modelos.Contains(modelo))
             {
                 return BadRequest(new { message = $"Modelo {modelo} não encontrado entre os modelos disponíveis." });
             }
-            
+
             await _configuracaoGlobalService.SalvarModeloCatboost(modelo);
 
             return Ok(new { message = "Modelo padrão atualizado com sucesso" });
@@ -417,7 +417,7 @@ public class ClassificacaoController : ControllerBase
             {
                 tFichas = Fichas.Ambas;
             }
-            
+
 
             var resultadoBusca = await _searchService.FiltraNotaOrdemAsync(busca);
 
@@ -456,7 +456,7 @@ public class ClassificacaoController : ControllerBase
 
                 resultados.Add(ordensClassificadas);
             }
-            
+
             var resultadosFlat = new List<object>();
             foreach (var item in resultados)
             {
@@ -480,6 +480,26 @@ public class ClassificacaoController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao buscar nota/ordem: {e.Message}." });
+        }
+    }
+
+    /// <summary>
+    /// Reverte a classificação por algoritmo, tornando todas as notas classificadas por algoritmo como não classificadas.
+    /// </summary>
+    /// <returns></returns>
+    [HttpPatch("reverter")]
+    public async Task<IActionResult> ReverterClassificacaoAlgoritmo()
+    {
+        try
+        {
+            var notasAfetadas = await _notaService.RevertAlgorithmClassification();
+            var ordensAfetadas = await _ordemService.RevertAlgorithmClassification();
+
+            return Ok(new { message = $"Classificação revertida com sucesso: {notasAfetadas + ordensAfetadas} registros alterados." });
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao reverter classificação: {e.Message}." });
         }
     }
 }

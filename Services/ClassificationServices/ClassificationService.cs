@@ -231,7 +231,8 @@ public class ClassificationService<T> where T : class, IClassifiable
             if (string.IsNullOrWhiteSpace(nomeModelo))
             {
                 // se houver o modelo padrão no disco, usa-o
-                var directModelPath = Path.Combine(AppContext.BaseDirectory, "CatBoost", "Modelos", "catboost_model.cbm");
+                var directModelPath =
+                    Path.Combine(AppContext.BaseDirectory, "CatBoost", "Modelos", "catboost_model.cbm");
                 if (File.Exists(directModelPath))
                 {
                     nomeModelo = "catboost_model.cbm";
@@ -351,6 +352,19 @@ public class ClassificationService<T> where T : class, IClassifiable
     }
 
     /// <summary>
+    /// Reverte a classificação realizada pelo algoritmo.
+    /// </summary>
+    /// <returns>O número de linhas afetadas.</returns>
+    public async Task<int> RevertAlgorithmClassification()
+    {
+        int linhasAfetadas = await _dbSet
+            .Where(n => n.MetodoClassificacao == MetodoClassificacao.ALGORITMO)
+            .ExecuteUpdateAsync(s => s.SetProperty(n => n.MetodoClassificacao, MetodoClassificacao.NAOCLASSIFICADA));
+
+        return linhasAfetadas;
+    }
+
+    /// <summary>
     /// Executa a ação correspondente.
     /// </summary>
     /// <param name="columnName">Parâmetro do método.</param>
@@ -407,6 +421,5 @@ public class ClassificationService<T> where T : class, IClassifiable
             existente.ClassificadoPor = ficha.ClassificadoPor;
             existente.DataClassificacao = ficha.DataClassificacao;
         }
-
     }
 }
