@@ -12,7 +12,7 @@ namespace app_pm_back.Services.Manutencao;
 public class OrdemService : BaseCrudService<OrdemModel>
 {
     DiretorioService _diretorioService;
-    
+
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="OrdemService"/>.
     /// </summary>
@@ -31,10 +31,10 @@ public class OrdemService : BaseCrudService<OrdemModel>
         if (ordens == null || !ordens.Any()) return;
 
         //var notaIds = ordens
-           // .Where(o => o.IdNota.HasValue)
-           // .Select(o => o.IdNota!.Value)
-           // .Distinct()
-          //  .ToList();
+        // .Where(o => o.IdNota.HasValue)
+        // .Select(o => o.IdNota!.Value)
+        // .Distinct()
+        //  .ToList();
 
         //await ImportGhostHelper.EnsureNotasAsync(_context, notaIds.Select(id => (long?)id));
 
@@ -82,8 +82,8 @@ public class OrdemService : BaseCrudService<OrdemModel>
             {
                 if (sobrescrever)
                 {
-                    ordem.IdOrdem = existente.IdOrdem; 
-                    
+                    ordem.IdOrdem = existente.IdOrdem;
+
                     // Pega o rastreador da entidade existente no banco
                     var entry = _context.Entry(existente);
 
@@ -91,19 +91,19 @@ public class OrdemService : BaseCrudService<OrdemModel>
                     foreach (var property in entry.Properties)
                     {
                         var propInfo = typeof(OrdemModel).GetProperty(property.Metadata.Name);
-                        
+
                         if (propInfo != null && propInfo.CanRead)
                         {
                             // Pega qual valor veio da planilha para essa coluna
                             var novoValor = propInfo.GetValue(ordem);
-                            
+
                             // Só atualiza se o valor NÃO for nulo e NÃO for uma string vazia
                             if (novoValor != null && !(novoValor is string str && string.IsNullOrWhiteSpace(str)))
                             {
                                 //Se for um DateTime, não apagar a data original.
-                                if (novoValor is DateTime dt && dt == DateTime.MinValue) 
+                                if (novoValor is DateTime dt && dt == DateTime.MinValue)
                                     continue;
-                                
+
                                 property.CurrentValue = novoValor;
                             }
                         }
@@ -214,14 +214,14 @@ public class OrdemService : BaseCrudService<OrdemModel>
         if (ordemTela.StatusOrdem == StatusFichas.Concluida)
         {
             var notaAssociada = await _context.PM_Notas.FindAsync(ordemTela.IdNota);
-        if (notaAssociada != null && notaAssociada.StatusNota != StatusFichas.Concluida 
-                                  && notaAssociada.Ordens.Any(o => o.IdOrdem != ordemTela.IdOrdem))
+            if (notaAssociada != null && notaAssociada.StatusNota != StatusFichas.Concluida
+                                      && notaAssociada.Ordens.Any(o => o.StatusOrdem != StatusFichas.Concluida))
             {
                 notaAssociada.StatusNota = StatusFichas.Concluida;
                 _context.Entry(notaAssociada).State = EntityState.Modified;
             }
         }
-        
+
         // atualiza o cabeçalho da ordem
         _context.Entry(ordemDoBanco).CurrentValues.SetValues(ordemTela);
         _context.Entry(ordemDoBanco).State = EntityState.Modified;
@@ -287,7 +287,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
 
         return ordem;
     }
-    
+
     /// <summary>
     /// Retorna todas as pastas onde uma Ordem específica está guardada
     /// </summary>
@@ -317,11 +317,11 @@ public class OrdemService : BaseCrudService<OrdemModel>
             .FirstOrDefaultAsync(n => n.IdOrdem == idOrdem);
 
         if (ordem == null) return null;
-        
+
         // obter o diretório da ordem
         var diretorio = await ObterDiretoriosDaOrdemAsync(idOrdem);
         long? idDiretorio = diretorio.FirstOrDefault()?.Id;
-        
+
         // obtém o caminho em string do diretório
         var caminhoDiretorio = await _diretorioService.GetCaminhoAsync(idDiretorio ?? 0);
 

@@ -141,16 +141,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
-                    b.Property<long>("IdEscopo")
+                    b.Property<long?>("IdEscopo")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
                     b.Property<string>("Organizacao")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
@@ -322,7 +320,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 24, 14, 54, 23, 972, DateTimeKind.Utc).AddTicks(5729),
+                            DataModificacao = new DateTime(2026, 9, 24, 16, 48, 20, 919, DateTimeKind.Utc).AddTicks(9025),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = new List<string>(),
                             PalavrasNaturezaCausaCorretiva = new List<string>()

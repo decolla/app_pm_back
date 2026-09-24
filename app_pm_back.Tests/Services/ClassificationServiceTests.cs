@@ -52,7 +52,7 @@ public class ClassificationServiceTests
         var configService =
             new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory()));
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        var catboostProvider = new CatboostModelProviderService(memoryCache, null);
+        var catboostProvider = new CatboostModelProviderService(memoryCache, null!);
         var service = new ClassificationService<NotaModel>(context, configService, catboostProvider);
 
         var nota = new NotaModel
@@ -94,7 +94,7 @@ public class ClassificationServiceTests
         var configService =
             new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory()));
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        var catboostProvider = new CatboostModelProviderService(memoryCache, null);
+        var catboostProvider = new CatboostModelProviderService(memoryCache, null!);
         var service = new ClassificationService<NotaModel>(context, configService, catboostProvider);
 
         // Act
@@ -113,7 +113,7 @@ public class ClassificationServiceTests
         var configService =
             new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory()));
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        var catboostProvider = new CatboostModelProviderService(memoryCache, null);
+        var catboostProvider = new CatboostModelProviderService(memoryCache, null!);
         var service = new ClassificationService<NotaModel>(context, configService, catboostProvider);
 
         var config = await configService.ObterConfiguracaoAsync();
@@ -143,7 +143,7 @@ public class ClassificationServiceTests
         var configService =
             new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory()));
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        var catboostProvider = new CatboostModelProviderService(memoryCache, null);
+        var catboostProvider = new CatboostModelProviderService(memoryCache, null!);
         var service = new ClassificationService<NotaModel>(context, configService, catboostProvider);
 
         var config = await configService.ObterConfiguracaoAsync();
@@ -174,7 +174,7 @@ public class ClassificationServiceTests
         var configService =
             new ConfiguracaoGlobalService(context, new Logger<ConfiguracaoGlobalService>(new LoggerFactory()));
         var memoryCache = new MemoryCache(new MemoryCacheOptions());
-        var catboostProvider = new CatboostModelProviderService(memoryCache, null);
+        var catboostProvider = new CatboostModelProviderService(memoryCache, null!);
         var service = new ClassificationService<NotaModel>(context, configService, catboostProvider);
 
         context.Set<RegraClassificacaoModel>().Add(new RegraClassificacaoModel

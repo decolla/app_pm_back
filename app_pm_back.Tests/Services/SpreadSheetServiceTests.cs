@@ -50,7 +50,7 @@ public class SpreadSheetServiceTests
         using var context = CreateDbContext(dbName);
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
-        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
+        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
@@ -76,7 +76,7 @@ public class SpreadSheetServiceTests
         var fileMock = new Mock<IFormFile>();
 
         // Act
-        var act = () => service.ProcessarPlanilhaAsync(fileMock.Object, false, true);
+        var act = () => service.ProcessarPlanilhaAsync(fileMock.Object, false, true, TipoUpload.Nota);
 
         // Assert
         await act.Should().ThrowAsync<ArgumentException>()
@@ -96,14 +96,14 @@ public class SpreadSheetServiceTests
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
         mockSpreadsheetService.Setup(s =>
-                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<TipoUpload>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "NOTA",
                 Notas = new List<NotaModel>()
             });
 
-        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
+        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
@@ -129,7 +129,7 @@ public class SpreadSheetServiceTests
         var fileMock = new Mock<IFormFile>();
 
         // Act
-        var act = () => service.ProcessarPlanilhaAsync(fileMock.Object, false, true);
+        var act = () => service.ProcessarPlanilhaAsync(fileMock.Object, false, true, TipoUpload.Nota);
 
         // Assert
         await act.Should().ThrowAsync<ArgumentException>()
@@ -155,14 +155,14 @@ public class SpreadSheetServiceTests
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
         mockSpreadsheetService.Setup(s =>
-                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<TipoUpload>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "NOTA",
                 Notas = notas
             });
 
-        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
+        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
         mockNotaService.Setup(s => s.ImportarNotasEmLoteSeguroAsync(It.IsAny<List<NotaModel>>(), It.IsAny<bool>(),
                 It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
@@ -192,7 +192,7 @@ public class SpreadSheetServiceTests
         var fileMock = new Mock<IFormFile>();
 
         // Act
-        var result = await service.ProcessarPlanilhaAsync(fileMock.Object, true, false);
+        var result = await service.ProcessarPlanilhaAsync(fileMock.Object, true, false, TipoUpload.Nota);
 
         // Assert
         result.Should().Be(2); // Deduplicated count
@@ -217,14 +217,14 @@ public class SpreadSheetServiceTests
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
         mockSpreadsheetService.Setup(s =>
-                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<TipoUpload>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ORDEM",
                 Ordens = new List<OrdemModel>()
             });
 
-        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
+        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
@@ -250,7 +250,7 @@ public class SpreadSheetServiceTests
         var fileMock = new Mock<IFormFile>();
 
         // Act
-        var act = () => service.ProcessarPlanilhaAsync(fileMock.Object, false, true);
+        var act = () => service.ProcessarPlanilhaAsync(fileMock.Object, false, true, TipoUpload.Ordem);
 
         // Assert
         await act.Should().ThrowAsync<ArgumentException>()
@@ -277,14 +277,14 @@ public class SpreadSheetServiceTests
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
         mockSpreadsheetService.Setup(s =>
-                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<TipoUpload>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ORDEM",
                 Ordens = ordens
             });
 
-        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
+        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         mockOrdemService.Setup(s => s.ImportarOrdensEmLoteSeguroAsync(It.IsAny<List<OrdemModel>>(), It.IsAny<bool>(),
                 It.IsAny<bool>(), It.IsAny<CancellationToken>()))
@@ -320,7 +320,7 @@ public class SpreadSheetServiceTests
         var fileMock = new Mock<IFormFile>();
 
         // Act
-        var result = await service.ProcessarPlanilhaAsync(fileMock.Object, true, false);
+        var result = await service.ProcessarPlanilhaAsync(fileMock.Object, true, false, TipoUpload.Ordem);
 
         // Assert
         result.Should().Be(2); // Deduplicated count
@@ -348,14 +348,14 @@ public class SpreadSheetServiceTests
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
         mockSpreadsheetService.Setup(s =>
-                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<TipoUpload>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ITEM",
                 Itens = new List<ItemNotaModel>()
             });
 
-        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
+        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
@@ -381,7 +381,7 @@ public class SpreadSheetServiceTests
         var fileMock = new Mock<IFormFile>();
 
         // Act
-        var act = () => service.ProcessarPlanilhaAsync(fileMock.Object, false, true);
+        var act = () => service.ProcessarPlanilhaAsync(fileMock.Object, false, true, TipoUpload.Item);
 
         // Assert
         await act.Should().ThrowAsync<ArgumentException>()
@@ -410,14 +410,14 @@ public class SpreadSheetServiceTests
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
         mockSpreadsheetService.Setup(s =>
-                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<TipoUpload>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "ITEM",
                 Itens = itens
             });
 
-        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
+        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
 
         var mockItemNotaService = new Mock<ItemNotaService>(context);
@@ -447,7 +447,7 @@ public class SpreadSheetServiceTests
         var fileMock = new Mock<IFormFile>();
 
         // Act
-        var result = await service.ProcessarPlanilhaAsync(fileMock.Object, false, true);
+        var result = await service.ProcessarPlanilhaAsync(fileMock.Object, false, true, TipoUpload.Item);
 
         // Assert
         result.Should().Be(1);
@@ -472,13 +472,13 @@ public class SpreadSheetServiceTests
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
         mockSpreadsheetService.Setup(s =>
-                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                s.ReadNotasSpreadSheetAsync(It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<TipoUpload>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SpreadsheetService.ResultadoPlanilha
             {
                 TipoIdentificado = "DESCONHECIDO"
             });
 
-        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context));
+        var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
         var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
@@ -504,7 +504,7 @@ public class SpreadSheetServiceTests
         var fileMock = new Mock<IFormFile>();
 
         // Act
-        var act = () => service.ProcessarPlanilhaAsync(fileMock.Object, false, true);
+        var act = () => service.ProcessarPlanilhaAsync(fileMock.Object, false, true, TipoUpload.Nota);
 
         // Assert
         await act.Should().ThrowAsync<ArgumentException>()

@@ -43,16 +43,7 @@ public class AlmoxarifadosController : ControllerBase
     {
         try
         {
-            if (!ModelState.IsValid)
-            {
-                return ValidationProblem(ModelState);
-            }
-
             var almoxarifado = _mapper.Map<AlmoxarifadoModel>(dto);
-            if (almoxarifado.IdAlmoxarifado <= 0)
-            {
-                return BadRequest(new { message = "IdAlmoxarifado invalido. Envie IdAlmoxarifado maior que zero." });
-            }
 
             var criado = await _service.CreateAsync(almoxarifado);
             return CreatedAtAction(nameof(ObterPorId), new { id = criado.IdAlmoxarifado }, criado);

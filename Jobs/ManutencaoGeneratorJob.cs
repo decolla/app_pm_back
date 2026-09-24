@@ -146,8 +146,8 @@ public class ManutencaoGeneratorJob
             var notasParaNotificar = await _context.PM_Notas
                 .Include(n => n.Usuarios)
                 .Where(n => n.Notificar == true 
-                            && n.DataFim.HasValue 
-                            && n.DataFim.Value.Date == dataAtual)
+                            && n.StatusNota == StatusFichas.Concluida
+                            && n.DataFim <= dataAtual)
                 .ToListAsync();
             
             foreach (var nota in notasParaNotificar)

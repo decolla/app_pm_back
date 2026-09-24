@@ -19,13 +19,13 @@ public class AlmoxarifadoModel
     /// Nome do Almoxarifado.
     /// </summary>
     [MaxLength(150)]
-    public required string Nome { get; set; }
+    public string? Nome { get; set; }
 
     /// <summary>
     /// Nome da Organização à qual o almoxarifado pertence.
     /// </summary>
     [MaxLength(100)]
-    public required string Organizacao { get; set; }
+    public string? Organizacao { get; set; }
 
     /// <summary>
     /// Status atual do almoxarifado (ex: Ativo, Inativo).
@@ -41,8 +41,8 @@ public class AlmoxarifadoModel
     /// <summary>
     /// Identificador do Escopo associado.
     /// </summary>
-    public long IdEscopo { get; set; } 
+    public long? IdEscopo { get; set; } 
 
-    public virtual ICollection<FerramentaModel> Ferramentas { get; set; } = new List<FerramentaModel>();
-    public virtual ICollection<UsuarioModel> Usuarios { get; set; } = new List<UsuarioModel>();
+    public virtual ICollection<FerramentaModel>? Ferramentas { get; set; } = new List<FerramentaModel>();
+    public virtual ICollection<UsuarioModel>? Usuarios { get; set; } = new List<UsuarioModel>();
 }

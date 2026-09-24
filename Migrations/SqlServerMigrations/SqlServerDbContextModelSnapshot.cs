@@ -140,16 +140,14 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<long>("IdEscopo")
+                    b.Property<long?>("IdEscopo")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Nome")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Organizacao")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -321,7 +319,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 24, 14, 54, 16, 860, DateTimeKind.Utc).AddTicks(3523),
+                            DataModificacao = new DateTime(2026, 9, 24, 16, 48, 6, 871, DateTimeKind.Utc).AddTicks(9596),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = "[]",
                             PalavrasNaturezaCausaCorretiva = "[]"
