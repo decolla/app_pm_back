@@ -31,6 +31,11 @@ public class UsuarioModel
     public string? CPF { get; set; }
 
     /// <summary>
+    /// Telefone de contato do usuário.
+    /// </summary>
+    public string? Telefone { get; set; } = "+55 17 99247-3869";
+
+    /// <summary>
     /// Lista de permissões serializada ou descrição de acessos.
     /// Exemplo: 7 -> NOTAS | ORDENS | ITENS.
     /// </summary>

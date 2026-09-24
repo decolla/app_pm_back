@@ -27,6 +27,9 @@ public class UsuarioDto
     /// </summary>
     [SheetColumn("CPF")]
     public string? CPF { get; set; }
+    
+    [SheetColumn("Telefone")]
+    public string? Telefone { get; set; }
 
     /// <summary>
     /// Permissoes (lista serializada ou descricao textual).

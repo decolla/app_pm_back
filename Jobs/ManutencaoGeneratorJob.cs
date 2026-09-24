@@ -1,7 +1,10 @@
+using System.Text.Json;
 using app_pm_back.Data;
+using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.GenericServices;
+using Confluent.Kafka;
 using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Jobs;
@@ -11,13 +14,15 @@ public class ManutencaoGeneratorJob
     private readonly AppDbContext _context;
     private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
     private readonly ILogger<ManutencaoGeneratorJob> _logger;
+    private readonly KafkaProducerService _kafkaProducerService;
 
     public ManutencaoGeneratorJob(AppDbContext context, ILogger<ManutencaoGeneratorJob> logger,
-        ConfiguracaoGlobalService configuracaoGlobalService)
+        ConfiguracaoGlobalService configuracaoGlobalService, KafkaProducerService kafkaProducerService)
     {
         _context = context;
         _logger = logger;
         _configuracaoGlobalService = configuracaoGlobalService;
+        _kafkaProducerService = kafkaProducerService;
     }
 
     public async Task RunDailyRoutine()
@@ -29,7 +34,17 @@ public class ManutencaoGeneratorJob
                 "Criar fichas preventivas desativada nas configurações globais, interrompendo processo...");
             return;
         }
+        else
+        {
+            _logger.LogInformation("Iniciando rotina diária de geração de fichas preventivas...");
+            await ManutencaoGeneratorJobAsync();
+        }
 
+        await NotifyNotasEnd();
+    }
+
+    private async Task ManutencaoGeneratorJobAsync()
+    {
         _logger.LogInformation("Iniciando varredura de planos de manutenção vencidos...");
 
         try
@@ -110,21 +125,67 @@ public class ManutencaoGeneratorJob
                     }
                 }
             }
-
-            // salvar tudo num único lote transacionado
             if (novasOrdens > 0 || novasNotas > 0)
             {
                 await _context.SaveChangesAsync();
-                _logger.LogInformation($"Varredura concluída: {novasOrdens} ordens e {novasNotas} notas criadas.");
-            }
-            else
-            {
-                _logger.LogInformation("Varredura concluída: Nenhuma nova ordem ou nota precisou ser criada.");
+                _logger.LogInformation($"Geração concluída. Novas Ordens: {novasOrdens} | Novas Notas: {novasNotas}");
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erro durante a varredura de planos de manutenção vencidos.");
+        }
+    }
+    
+    private async Task NotifyNotasEnd()
+    {
+        try
+        {
+            var dataAtual = DateTime.UtcNow.Date;
+
+            var notasParaNotificar = await _context.PM_Notas
+                .Include(n => n.Usuarios)
+                .Where(n => n.Notificar == true 
+                            && n.DataFim.HasValue 
+                            && n.DataFim.Value.Date == dataAtual)
+                .ToListAsync();
+            
+            foreach (var nota in notasParaNotificar)
+            {
+                foreach (var usuario in nota.Usuarios)
+                {
+                    if (string.IsNullOrWhiteSpace(usuario.Telefone))
+                    {
+                        _logger.LogWarning($"Usuário {usuario.Nome} (ID: {usuario.IdUsuario}) ignorado por falta de telefone.");
+                        continue;
+                    }
+                    
+                    // gera a mensagem a ser enviada
+                    var payload = new WhatsappMessagePayload
+                    {
+                        telefone = usuario.Telefone,
+                        nome = usuario.Nome ?? string.Empty,
+                        mensagem = $"Olá, a nota {nota.NumeroNota} atingiu a data de conclusão.",
+                        tipoTemplateAvisoWhatsApp = "1" 
+                    };
+                    
+                    var message = new Message<string?, string>
+                    {
+                        Key = payload.telefone,
+                        Value = JsonSerializer.Serialize(payload)
+                    };
+
+                    // envia para o kafka produzir a mensagem
+                    await _kafkaProducerService.ProduceAsync("message.wpp.created", message);
+                }
+                // como a nota já foi notificada, atualiza o campo Notificar para false
+                nota.Notificar = false;
+            }
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro durante a notificação de fim de notas.");
         }
     }
 }
