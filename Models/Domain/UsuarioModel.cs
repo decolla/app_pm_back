@@ -33,7 +33,7 @@ public class UsuarioModel
     /// <summary>
     /// Telefone de contato do usuário.
     /// </summary>
-    public string? Telefone { get; set; } = "+55 17 99247-3869";
+    public string? Telefone { get; set; }
 
     /// <summary>
     /// Lista de permissões serializada ou descrição de acessos.

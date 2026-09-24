@@ -12,13 +12,15 @@ namespace app_pm_back.Services.Manutencao;
 public class NotaService : BaseCrudService<NotaModel>
 {
     private readonly DiretorioService _diretorioService;
+    private readonly KafkaProducerService _kafkaProducerService;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="NotaService"/>.
     /// </summary>
-    public NotaService(AppDbContext context, DiretorioService diretorioService) : base(context)
+    public NotaService(AppDbContext context, DiretorioService diretorioService, KafkaProducerService kafkaProducerService) : base(context)
     {
         _diretorioService = diretorioService;
+        _kafkaProducerService = kafkaProducerService;
     }
 
     /// <summary>
@@ -87,7 +89,7 @@ public class NotaService : BaseCrudService<NotaModel>
                     {
                         var propInfo = typeof(NotaModel).GetProperty(property.Metadata.Name);
 
-                        if (property.Metadata.Name == "IdNota" || 
+                        if (property.Metadata.Name == "IdNota" ||
                             property.Metadata.Name == "Classificacao" ||
                             property.Metadata.Name == "MetodoClassificacao" ||
                             property.Metadata.Name == "UltimaClassificacao" ||
@@ -175,6 +177,11 @@ public class NotaService : BaseCrudService<NotaModel>
 
         if (notaDoBanco == null)
             throw new Exception("Nota não encontrada.");
+        
+        if(notaTela.Notificar && !notaDoBanco.Notificar)
+        {
+            await NotificarNotaAsync(notaDoBanco.IdNota);
+        }
 
         // atualiza o cabeçalho da nota
         _context.Entry(notaDoBanco).CurrentValues.SetValues(notaTela);
@@ -288,5 +295,31 @@ public class NotaService : BaseCrudService<NotaModel>
             Diretorio = diretorio,
             CaminhoDiretorio = caminhoDiretorio
         };
+    }
+
+    public async Task NotificarNotaAsync(long idNota)
+    {
+        UsuarioModel? usuario = await _dbSet
+            .Where(n => n.IdNota == idNota)
+            .Select(n => n.Usuario)
+            .FirstOrDefaultAsync();
+
+        var mensagem = new WhatsappMessagePayload
+        {
+            TOKEN_MSG = Guid.NewGuid().ToString(),
+            telefone = usuario?.Telefone,
+            nome = usuario?.Nome ?? "",
+            mensagem = $"A nota {idNota} foi alterada e está habilitada para notificações.",
+            tipoTemplateAvisoWhatsApp = "1"
+        };
+        
+        Confluent.Kafka.Message<string? ,string> message = new Confluent.Kafka.Message<string?, string>
+        {
+            Key = null,
+            Value = System.Text.Json.JsonSerializer.Serialize(mensagem)
+        };
+            
+        await _kafkaProducerService.ProduceAsync("message.wpp.created", message);
+        
     }
 }

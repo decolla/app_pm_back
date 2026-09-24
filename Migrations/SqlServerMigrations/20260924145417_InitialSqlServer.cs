@@ -43,7 +43,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Organizacao = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true),
                     Descricao = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     IdEscopo = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -237,6 +237,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     CPF = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Telefone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Permissoes = table.Column<int>(type: "int", nullable: true),
                     NivelPermissao = table.Column<int>(type: "int", nullable: true),
                     Escopos = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -522,6 +523,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     TipoLi = table.Column<int>(type: "int", nullable: true),
                     Prioridade = table.Column<int>(type: "int", nullable: true),
                     FimDesejado = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Notificar = table.Column<bool>(type: "bit", nullable: false),
                     DataAvaria = table.Column<DateTime>(type: "datetime2", nullable: true),
                     StatusNota = table.Column<int>(type: "int", nullable: true),
                     EquipamentoDisponivel = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
@@ -1018,7 +1020,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 21, 12, 39, 47, 126, DateTimeKind.Utc).AddTicks(2278), 2, null, null, "[]", "[]" });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 24, 14, 54, 16, 860, DateTimeKind.Utc).AddTicks(3523), 2, null, null, "[]", "[]" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

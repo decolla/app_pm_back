@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "2OhW19F+ncqj9XslaLJR4C84U7V4xmR98s55NAxJ3linGO3+0Rs49Yfxo7xrc608GuXI9pIw3sTqN/mG80yJ4g==",
+  "dgSpecHash": "lLs5fFuROygLALMwtpw0RAEvzcWnpaIxXhkND9JC8QJjJysvl+W0lZ0GuMmaPfQa36VM5Oj1x4YByRT/vS3jzA==",
   "success": true,
   "projectFilePath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.Tests/app_pm_back.Tests.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,7 @@
     "/home/decolla/.nuget/packages/azure.core/1.38.0/azure.core.1.38.0.nupkg.sha512",
     "/home/decolla/.nuget/packages/azure.identity/1.11.4/azure.identity.1.11.4.nupkg.sha512",
     "/home/decolla/.nuget/packages/castle.core/5.1.1/castle.core.5.1.1.nupkg.sha512",
+    "/home/decolla/.nuget/packages/confluent.kafka/2.15.1/confluent.kafka.2.15.1.nupkg.sha512",
     "/home/decolla/.nuget/packages/coverlet.collector/6.0.0/coverlet.collector.6.0.0.nupkg.sha512",
     "/home/decolla/.nuget/packages/csvhelper/33.1.0/csvhelper.33.1.0.nupkg.sha512",
     "/home/decolla/.nuget/packages/dapper/2.0.123/dapper.2.0.123.nupkg.sha512",
@@ -20,6 +21,7 @@
     "/home/decolla/.nuget/packages/hangfire.netcore/1.8.23/hangfire.netcore.1.8.23.nupkg.sha512",
     "/home/decolla/.nuget/packages/hangfire.postgresql/1.21.1/hangfire.postgresql.1.21.1.nupkg.sha512",
     "/home/decolla/.nuget/packages/hangfire.sqlserver/1.8.23/hangfire.sqlserver.1.8.23.nupkg.sha512",
+    "/home/decolla/.nuget/packages/librdkafka.redist/2.15.1/librdkafka.redist.2.15.1.nupkg.sha512",
     "/home/decolla/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/8.0.6/microsoft.aspnetcore.authentication.jwtbearer.8.0.6.nupkg.sha512",
     "/home/decolla/.nuget/packages/microsoft.aspnetcore.openapi/8.0.23/microsoft.aspnetcore.openapi.8.0.23.nupkg.sha512",
     "/home/decolla/.nuget/packages/microsoft.bcl.asyncinterfaces/1.1.1/microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",

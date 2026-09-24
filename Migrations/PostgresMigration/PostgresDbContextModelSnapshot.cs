@@ -154,9 +154,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("Status")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<int?>("Status")
+                        .HasColumnType("integer");
 
                     b.HasKey("IdAlmoxarifado");
 
@@ -323,7 +322,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 21, 12, 39, 55, 673, DateTimeKind.Utc).AddTicks(9081),
+                            DataModificacao = new DateTime(2026, 9, 24, 14, 54, 23, 972, DateTimeKind.Utc).AddTicks(5729),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = new List<string>(),
                             PalavrasNaturezaCausaCorretiva = new List<string>()
@@ -835,6 +834,9 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<bool>("Notificar")
+                        .HasColumnType("boolean");
+
                     b.Property<long>("NumeroNota")
                         .HasColumnType("bigint");
 
@@ -1323,6 +1325,9 @@ namespace app_pm_back.Migrations.PostgresMigration
 
                     b.Property<int?>("Permissoes")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Telefone")
+                        .HasColumnType("text");
 
                     b.HasKey("IdUsuario");
 

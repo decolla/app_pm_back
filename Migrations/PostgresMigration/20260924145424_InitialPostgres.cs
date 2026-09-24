@@ -41,7 +41,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     Organizacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: true),
                     Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
                     IdEscopo = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -224,6 +224,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     CPF = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Telefone = table.Column<string>(type: "text", nullable: true),
                     Permissoes = table.Column<int>(type: "integer", nullable: true),
                     NivelPermissao = table.Column<int>(type: "integer", nullable: true),
                     Escopos = table.Column<List<long>>(type: "bigint[]", nullable: false)
@@ -484,6 +485,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     TipoLi = table.Column<int>(type: "integer", nullable: true),
                     Prioridade = table.Column<int>(type: "integer", nullable: true),
                     FimDesejado = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Notificar = table.Column<bool>(type: "boolean", nullable: false),
                     DataAvaria = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     StatusNota = table.Column<int>(type: "integer", nullable: true),
                     EquipamentoDisponivel = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -933,7 +935,7 @@ namespace app_pm_back.Migrations.PostgresMigration
             migrationBuilder.InsertData(
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 21, 12, 39, 55, 673, DateTimeKind.Utc).AddTicks(9081), 2, null, null, new List<string>(), new List<string>() });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 24, 14, 54, 23, 972, DateTimeKind.Utc).AddTicks(5729), 2, null, null, new List<string>(), new List<string>() });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

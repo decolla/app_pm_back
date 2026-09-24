@@ -138,6 +138,10 @@
               "target": "Package",
               "version": "[12.0.1, )"
             },
+            "Confluent.Kafka": {
+              "target": "Package",
+              "version": "[2.15.1, )"
+            },
             "CsvHelper": {
               "target": "Package",
               "version": "[33.1.0, )"

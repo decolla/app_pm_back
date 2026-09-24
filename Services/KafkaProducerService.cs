@@ -4,7 +4,7 @@ namespace app_pm_back.Services;
 
 public class KafkaProducerService : IDisposable
 {
-    public readonly IProducer<string, string> _producer;
+    public readonly IProducer<string?, string> _producer;
     
     public KafkaProducerService(IConfiguration configuration)
     {
@@ -14,10 +14,10 @@ public class KafkaProducerService : IDisposable
             Acks = Acks.All // garante que a mensagem foi persistida no Kafka
         };
 
-        _producer = new ProducerBuilder<string, string>(config).Build();
+        _producer = new ProducerBuilder<string?, string>(config).Build();
     }
     
-    public async Task ProduceAsync(string topic, Message<string, string> message)
+    public async Task ProduceAsync(string topic, Message<string?, string> message)
     {
         await _producer.ProduceAsync(topic, message);
     }

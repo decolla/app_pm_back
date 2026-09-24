@@ -12,7 +12,7 @@ using app_pm_back.Data;
 namespace app_pm_back.Migrations.SqlServerMigrations
 {
     [DbContext(typeof(SqlServerDbContext))]
-    [Migration("20260921123947_InitialSqlServer")]
+    [Migration("20260924145417_InitialSqlServer")]
     partial class InitialSqlServer
     {
         /// <inheritdoc />
@@ -156,9 +156,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Status")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("IdAlmoxarifado");
 
@@ -325,7 +324,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 21, 12, 39, 47, 126, DateTimeKind.Utc).AddTicks(2278),
+                            DataModificacao = new DateTime(2026, 9, 24, 14, 54, 16, 860, DateTimeKind.Utc).AddTicks(3523),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = "[]",
                             PalavrasNaturezaCausaCorretiva = "[]"
@@ -837,6 +836,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<bool>("Notificar")
+                        .HasColumnType("bit");
+
                     b.Property<long>("NumeroNota")
                         .HasColumnType("bigint");
 
@@ -1325,6 +1327,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     b.Property<int?>("Permissoes")
                         .HasColumnType("int");
+
+                    b.Property<string>("Telefone")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdUsuario");
 
