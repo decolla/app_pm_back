@@ -507,6 +507,12 @@
             <param name="tamanho">Número de elementos presente na página</param>
             <returns>Lista de Nota e Ordens com base nos filtros</returns>
         </member>
+        <member name="M:app_pm_back.Controllers.FichasControllers.ClassificacaoController.ReverterClassificacaoAlgoritmo">
+            <summary>
+            Reverte a classificação por algoritmo, tornando todas as notas classificadas por algoritmo como não classificadas.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:app_pm_back.Controllers.FichasControllers.DadosRenovacaoController">
             <summary>
             Endpoints de dado renovação
@@ -671,7 +677,7 @@
             Sincroniza as fichas do PM com os ativos do APM
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.UploadPlanilha(Microsoft.AspNetCore.Http.IFormFile,System.Boolean,System.Boolean,System.Threading.CancellationToken)">
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.UploadPlanilha(Microsoft.AspNetCore.Http.IFormFile,System.Boolean,System.Boolean,app_pm_back.Models.Domain.TipoUpload,System.Threading.CancellationToken)">
             <summary>
             Faz o upload e processamento de planilhas de Notas, Ordens ou Itens
             </summary>
@@ -2535,9 +2541,19 @@
             Tipos possiveis de LI
             </summary>
         </member>
+        <member name="T:app_pm_back.Models.Domain.StatusAlmoxarifado">
+            <summary>
+            Define os status operacionais de um Almoxarifado.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Models.Domain.OriginType">
             <summary>
             Usado para requisições no APM específica para ativos/LI
+            </summary>
+        </member>
+        <member name="T:app_pm_back.Models.Domain.TipoUpload">
+            <summary>
+            Identifica o tipo de upload de dados que está sendo realizado (Nota, Ordem ou Item).
             </summary>
         </member>
         <member name="T:app_pm_back.Models.Domain.Classificacao">
@@ -3261,6 +3277,11 @@
             </summary>
             <example>2024-01-20T18:00:00</example>
         </member>
+        <member name="P:app_pm_back.Models.Domain.NotaModel.Notificar">
+            <summary>
+            Indica se a nota deve ser notificada aos envolvidos.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.NotaModel.DataAvaria">
             <summary>
             Data em que a avaria ou problema foi identificado.
@@ -3925,7 +3946,7 @@
         </member>
         <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Status">
             <summary>
-            StatusFichas atual do almoxarifado (ex: Ativo, Inativo).
+            Status atual do almoxarifado (ex: Ativo, Inativo).
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.AlmoxarifadoModel.Descricao">
@@ -4275,6 +4296,11 @@
             Exemplo: "123.456.789-00".
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.Telefone">
+            <summary>
+            Telefone de contato do usuário.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.UsuarioModel.Permissoes">
             <summary>
             Lista de permissões serializada ou descrição de acessos.
@@ -4593,6 +4619,12 @@
             Classificação de notas/ordens com base no modelo Catboost.
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.RevertAlgorithmClassification">
+            <summary>
+            Reverte a classificação realizada pelo algoritmo.
+            </summary>
+            <returns>O número de linhas afetadas.</returns>
+        </member>
         <member name="M:app_pm_back.Services.FichasServices.ClassificationService`1.NormalizeAsciiLower(System.String,System.String)">
             <summary>
             Executa a ação correspondente.
@@ -4779,7 +4811,7 @@
             Obtém notas e ordens para uma LI específica
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.FichasServices.ImportSheetService.ProcessarPlanilhaAsync(Microsoft.AspNetCore.Http.IFormFile,System.Boolean,System.Boolean,System.Threading.CancellationToken)">
+        <member name="M:app_pm_back.Services.FichasServices.ImportSheetService.ProcessarPlanilhaAsync(Microsoft.AspNetCore.Http.IFormFile,System.Boolean,System.Boolean,app_pm_back.Models.Domain.TipoUpload,System.Threading.CancellationToken)">
             <summary>
             Processa dados da planilha do excel para verificar se precisa cadastrar nota, ordem ou item
             </summary>
@@ -5310,7 +5342,7 @@
             Classe NotaService.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.DiretorioService)">
+        <member name="M:app_pm_back.Services.Manutencao.NotaService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.DiretorioService,app_pm_back.Services.KafkaProducerService)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.NotaService"/>.
             </summary>
@@ -5765,7 +5797,7 @@
             Obtém ou define o valor de Itens.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.SpreadsheetService.ReadNotasSpreadSheetAsync(System.IO.Stream,System.String,System.Threading.CancellationToken)">
+        <member name="M:app_pm_back.Services.SpreadsheetService.ReadNotasSpreadSheetAsync(System.IO.Stream,System.String,app_pm_back.Models.Domain.TipoUpload,System.Threading.CancellationToken)">
             <summary>
             Executa a ação correspondente.
             </summary>
