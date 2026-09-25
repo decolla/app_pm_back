@@ -58,6 +58,8 @@ public class OrdemDto
     
     [SheetColumn("Loc.instalação")] public TiposLI? TipoLi { get; set; }
 
+    [SheetColumn("IdNota")] public long? IdNota { get; set; }
+
     [SheetColumn("Nota")] public long? NumeroNota { get; set; }
     
     [SheetColumn("IdGpm")] public long? IdGpm { get; set; }
