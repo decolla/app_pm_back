@@ -37,6 +37,11 @@ public class TipoManutencaoModel
     /// Define a qual tipo de ativo esta manutenção se aplica. Campo obrigatório.
     /// </summary>
     public TiposLI TipoLI { get; set; }
+    
+    /// <summary>
+    /// Define a qual tipo de ativo esta manutenção se aplica
+    /// </summary>
+    public ComponentType? TipoAtivo { get; set; }
 
     /// <summary>
     /// Índice de confiabilidade esperado.

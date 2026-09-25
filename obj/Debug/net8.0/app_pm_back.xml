@@ -2971,6 +2971,11 @@
             Define a qual tipo de ativo esta manutenção se aplica. Campo obrigatório.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.TipoAtivo">
+            <summary>
+            Define a qual tipo de ativo esta manutenção se aplica
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.TipoManutencaoModel.Confiabilidade">
             <summary>
             Índice de confiabilidade esperado.

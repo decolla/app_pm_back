@@ -220,6 +220,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     Categoria = table.Column<int>(type: "int", maxLength: 100, nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     TipoLI = table.Column<int>(type: "int", nullable: false),
+                    TipoAtivo = table.Column<int>(type: "int", nullable: true),
                     Confiabilidade = table.Column<double>(type: "float", nullable: true),
                     Habilitada = table.Column<bool>(type: "bit", nullable: true)
                 },
@@ -1020,7 +1021,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 24, 16, 48, 6, 871, DateTimeKind.Utc).AddTicks(9596), 2, null, null, "[]", "[]" });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 9, 25, 16, 0, 35, 4, DateTimeKind.Utc).AddTicks(4178), 2, null, null, "[]", "[]" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

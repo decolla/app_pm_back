@@ -319,7 +319,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 24, 16, 48, 6, 871, DateTimeKind.Utc).AddTicks(9596),
+                            DataModificacao = new DateTime(2026, 9, 25, 16, 0, 35, 4, DateTimeKind.Utc).AddTicks(4178),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = "[]",
                             PalavrasNaturezaCausaCorretiva = "[]"
@@ -1227,6 +1227,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<int?>("TipoAtivo")
+                        .HasColumnType("int");
 
                     b.Property<int>("TipoLI")
                         .HasColumnType("int");

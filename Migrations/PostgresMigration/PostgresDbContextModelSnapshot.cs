@@ -320,7 +320,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 24, 16, 48, 20, 919, DateTimeKind.Utc).AddTicks(9025),
+                            DataModificacao = new DateTime(2026, 9, 25, 16, 0, 41, 954, DateTimeKind.Utc).AddTicks(6478),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = new List<string>(),
                             PalavrasNaturezaCausaCorretiva = new List<string>()
@@ -1228,6 +1228,9 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
+
+                    b.Property<int?>("TipoAtivo")
+                        .HasColumnType("integer");
 
                     b.Property<int>("TipoLI")
                         .HasColumnType("integer");
