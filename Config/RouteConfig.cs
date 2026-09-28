@@ -80,27 +80,15 @@ public static class RouteConfig
     /// </summary>
     public static string GetApmBaseUrl(IConfiguration configuration)
     {
-        var isHml = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Homologation";
+        var isProd = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
+        var serverIp = Environment.GetEnvironmentVariable("SERVER_IP") ?? "10.3.192.200";
+        var schema = GetDatabaseSchema() ?? "comgas";
 
-        if (isHml)
+        if (isProd)
         {
-            var schema = GetDatabaseSchema() ?? "lri";
-            return $"http://10.3.192.200/{schema}/apm/api";
+            return $"https://physisiot.com.br/{schema}/apm/api";
         }
-        else
-        {
-            var serviceName = GetServiceName();
-            var schema = GetDatabaseSchema() ?? "comgas";
-
-            // o serviço especificado na env var for reliability_back, usa a URL de reliability
-            if (serviceName != null && serviceName.Contains("reliability"))
-            {
-                return configuration["APIs:Reliability"] ?? $"http://10.3.192.200/{schema}/reliability/api";
-            }
-
-            // caso contrário, ou por padrão se for apm_back, usamos a do APM
-            return configuration["APIs:APM"] ?? $"http://10.3.192.200/{schema}/apm/api";
-        }
+        return configuration["APIs:APM"] ?? $"http://{serverIp}/{schema}/apm/api";
     }
 
     /// <summary>
@@ -108,18 +96,15 @@ public static class RouteConfig
     /// </summary>
     public static string GetTwinsBaseUrl(IConfiguration configuration)
     {
+        var isProd = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
+        var serverIp = Environment.GetEnvironmentVariable("SERVER_IP") ?? "10.3.192.200";
         var schema = GetDatabaseSchema() ?? "comgas";
-        
-        var isHml = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Homologation";
-        if (isHml)
+
+        if (isProd)
         {
-            return $"http://10.3.192.202/{schema}/tw/api";
+            return $"https://physisiot.com.br/{schema}/tw/api";
         }
-        else
-        {
-            var url = configuration["APIs:Twins"] ?? $"http://10.3.192.200/{schema}/tw/api";
-            return url;
-        }
+        return configuration["APIs:Twins"] ?? $"http://{serverIp}/{schema}/tw/api";
     }
 
     /// <summary>
@@ -127,25 +112,14 @@ public static class RouteConfig
     /// </summary>
     public static string GetReliabilityBaseUrl(IConfiguration configuration)
     {
+        var isProd = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
+        var serverIp = Environment.GetEnvironmentVariable("SERVER_IP") ?? "10.3.192.200";
         var schema = GetDatabaseSchema() ?? "comgas";
-        
-        var isHml = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Homologation";
-        if (isHml)
-        {
-            return $"http://10.3.192.202/{schema}/reliability/api";
-        }
-        else
-        {
-            var serviceName = GetServiceName();
 
-            // o serviço especificado na env var for apm_back, usamos a URL do APM
-            if (serviceName != null && serviceName.Contains("apm"))
-            {
-                return configuration["APIs:APM"] ?? $"http://10.3.192.200/{schema}/apm/api";
-            }
-
-            // caso contrário, ou por padrão se for reliability_back
-            return configuration["APIs:Reliability"] ?? $"http://10.3.192.200/{schema}/reliability/api";
+        if (isProd)
+        {
+            return $"https://physisiot.com.br/{schema}/reliability/api";
         }
+        return configuration["APIs:Reliability"] ?? $"http://{serverIp}/{schema}/reliability/api";
     }
 }

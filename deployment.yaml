@@ -28,6 +28,8 @@ spec:
               value: "60135"
             - name: ASPNETCORE_ENVIRONMENT
               value: "Development"
+            - name: SERVER_IP
+              value: "10.3.192.200"
             - name: DATABASE_SCHEMA
               value: "comgas"
             - name: DATABASE_CONNECTION
