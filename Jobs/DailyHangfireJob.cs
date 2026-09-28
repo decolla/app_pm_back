@@ -141,14 +141,14 @@ public class DailyHangfireJob
     {
         try
         {
-            var dataAtual = DateTime.UtcNow.Date;
+            var dataAtual = DateTime.UtcNow;
 
             var notasParaNotificar = await _context.PM_Notas
                 .Include(n => n.Usuarios)
                 .Include(notaModel => notaModel.Ordens)
                 .Where(n => n.Notificar == true 
                             && n.StatusNota == StatusFichas.Concluida
-                            && n.Ordens.FirstOrDefault()!.FimPlanejado <= dataAtual)
+                            && n.Ordens.Any(o => o.FimPlanejado <= dataAtual))
                 .ToListAsync();
             
             foreach (var nota in notasParaNotificar)

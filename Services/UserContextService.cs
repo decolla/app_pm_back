@@ -66,7 +66,10 @@ public class UserContextService : IUserContext
     public string? GetUsuarioIdentificador()
     {
         var user = _httpContextAccessor.HttpContext?.User;
-        if (user == null || !user.Identity!.IsAuthenticated) return null;
+        
+        // retorna um identificador padrão caso não haja usuário autenticado (ex: Hangfire)
+        if (user == null || user.Identity?.IsAuthenticated != true) 
+            return "Sistema-Hangfire";
 
         // no Keycloak, o identificador único é o sub e o nome de usuário é "preferred_username"
         return user.FindFirst("preferred_username")?.Value
