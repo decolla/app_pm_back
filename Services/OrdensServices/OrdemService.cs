@@ -12,13 +12,16 @@ namespace app_pm_back.Services.Manutencao;
 public class OrdemService : BaseCrudService<OrdemModel>
 {
     DiretorioService _diretorioService;
+    NotaService _notaService;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="OrdemService"/>.
     /// </summary>
-    public OrdemService(AppDbContext context, DiretorioService diretorioService) : base(context)
+    public OrdemService(AppDbContext context, DiretorioService diretorioService, NotaService notaService) :
+        base(context)
     {
         _diretorioService = diretorioService;
+        _notaService = notaService;
     }
 
     /// <summary>
@@ -219,6 +222,9 @@ public class OrdemService : BaseCrudService<OrdemModel>
             {
                 notaAssociada.StatusNota = StatusFichas.Concluida;
                 _context.Entry(notaAssociada).State = EntityState.Modified;
+                if (notaAssociada.Notificar)
+                    await _notaService.NotificarNotaAsync(notaAssociada.IdNota,
+                        $"A nota {notaAssociada.IdNota} foi marcada como concluída.");
             }
         }
 

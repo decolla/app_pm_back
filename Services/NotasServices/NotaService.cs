@@ -12,15 +12,15 @@ namespace app_pm_back.Services.Manutencao;
 public class NotaService : BaseCrudService<NotaModel>
 {
     private readonly DiretorioService _diretorioService;
-    private readonly KafkaProducerService _kafkaProducerService;
+    private readonly NotificationService _notificationService;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="NotaService"/>.
     /// </summary>
-    public NotaService(AppDbContext context, DiretorioService diretorioService, KafkaProducerService kafkaProducerService) : base(context)
+    public NotaService(AppDbContext context, DiretorioService diretorioService, NotificationService notificationService) : base(context)    
     {
         _diretorioService = diretorioService;
-        _kafkaProducerService = kafkaProducerService;
+        _notificationService = notificationService;
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public class NotaService : BaseCrudService<NotaModel>
     /// </summary>
     /// <param name="notaTela">Nota completa</param>
     /// <returns>Nota atualizada</returns>
-    public async Task<NotaModel> AtualizarNotaCompletaAsync(NotaModel notaTela, long idnota)
+    public async Task<NotaModel> AtualizarNotaCompletaAsync(NotaModel notaTela, long idNota)
     {
         // evita NullReferenceException caso o frontend não mande as listas
         notaTela.Itens ??= new List<ItemNotaModel>();
@@ -173,21 +173,26 @@ public class NotaService : BaseCrudService<NotaModel>
             .Include(n => n.Itens)
             .Include(n => n.Variaveis)
             .AsNoTracking()
-            .FirstOrDefaultAsync(n => n.IdNota == idnota);
+            .FirstOrDefaultAsync(n => n.IdNota == idNota);
 
         if (notaDoBanco == null)
             throw new Exception("Nota não encontrada.");
         
         if(notaTela.Notificar && !notaDoBanco.Notificar)
         {
-            await NotificarNotaAsync(notaDoBanco.IdNota);
+            await NotificarNotaAsync(idNota, $"A nota {idNota} foi atualizada e marcada para notificação.");
+        }
+        
+        if(notaTela.Notificar && (notaDoBanco.StatusNota != StatusFichas.Concluida && notaTela.StatusNota == StatusFichas.Concluida))
+        {
+            await NotificarNotaAsync(idNota, $"A nota {idNota} foi marcada como concluída.");
         }
 
         // atualiza o cabeçalho da nota
         _context.Entry(notaDoBanco).CurrentValues.SetValues(notaTela);
 
         // garante que a PK não foi sobrescrita com um valor errado vindo do frontend
-        notaDoBanco.IdNota = idnota;
+        notaDoBanco.IdNota = idNota;
 
         _context.Entry(notaDoBanco).State = EntityState.Modified;
 
@@ -241,8 +246,7 @@ public class NotaService : BaseCrudService<NotaModel>
                 _context.Entry(varTela).State = EntityState.Modified;
             }
         }
-
-
+        
         // salva db
         await _context.SaveChangesAsync();
 
@@ -297,29 +301,22 @@ public class NotaService : BaseCrudService<NotaModel>
         };
     }
 
-    public async Task NotificarNotaAsync(long idNota)
+    /// <summary>
+    /// Envia uma notificação para o usuário responsável pela nota.
+    /// </summary>
+    public async Task NotificarNotaAsync(long idNota, string mensagem)
     {
         UsuarioModel? usuario = await _dbSet
             .Where(n => n.IdNota == idNota)
             .Select(n => n.Usuario)
             .FirstOrDefaultAsync();
-
-        var mensagem = new WhatsappMessagePayload
-        {
-            TOKEN_MSG = Guid.NewGuid().ToString(),
-            telefone = usuario?.Telefone,
-            nome = usuario?.Nome ?? "",
-            mensagem = $"A nota {idNota} foi alterada e está habilitada para notificações.",
-            tipoTemplateAvisoWhatsApp = "1"
-        };
-        
-        Confluent.Kafka.Message<string? ,string> message = new Confluent.Kafka.Message<string?, string>
-        {
-            Key = null,
-            Value = System.Text.Json.JsonSerializer.Serialize(mensagem)
-        };
             
-        await _kafkaProducerService.ProduceAsync("message.wpp.created", message);
-        
+        if(usuario == null)
+            throw new Exception("Usuário não encontrado para notificação. Especifique um usuário válido para a nota.");
+            
+        if(usuario.Telefone == null)
+            throw new Exception("Telefone do usuário não encontrado para notificação. Especifique um telefone válido para a nota.");
+            
+        await _notificationService.SendNotification(mensagem, usuario.Nome, usuario.Telefone);
     }
 }
