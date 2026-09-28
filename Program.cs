@@ -167,7 +167,7 @@ else
 
 builder.Services.AddHangfireServer();
 
-builder.Services.AddTransient<app_pm_back.Jobs.ManutencaoGeneratorJob>();
+builder.Services.AddTransient<app_pm_back.Jobs.DailyHangfireJob>();
 
 builder.Services.AddScoped<ConvertService>();
 builder.Services.AddScoped<SpreadsheetService>();
@@ -310,7 +310,7 @@ using (var scope = app.Services.CreateScope())
 app.UseHangfireDashboard();
 
 // rotina de verificação nos planos de manutenção
-RecurringJob.AddOrUpdate<app_pm_back.Jobs.ManutencaoGeneratorJob>(
+RecurringJob.AddOrUpdate<app_pm_back.Jobs.DailyHangfireJob>(
     "gerador-fichas",
     service => service.RunDailyRoutine(),
     Cron.Daily(2, 0));

@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Jobs;
 
-public class ManutencaoGeneratorJob
+public class DailyHangfireJob
 {
     private readonly AppDbContext _context;
     private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
-    private readonly ILogger<ManutencaoGeneratorJob> _logger;
+    private readonly ILogger<DailyHangfireJob> _logger;
     private readonly KafkaProducerService _kafkaProducerService;
 
-    public ManutencaoGeneratorJob(AppDbContext context, ILogger<ManutencaoGeneratorJob> logger,
+    public DailyHangfireJob(AppDbContext context, ILogger<DailyHangfireJob> logger,
         ConfiguracaoGlobalService configuracaoGlobalService, KafkaProducerService kafkaProducerService)
     {
         _context = context;
@@ -145,9 +145,10 @@ public class ManutencaoGeneratorJob
 
             var notasParaNotificar = await _context.PM_Notas
                 .Include(n => n.Usuarios)
+                .Include(notaModel => notaModel.Ordens)
                 .Where(n => n.Notificar == true 
                             && n.StatusNota == StatusFichas.Concluida
-                            && n.DataFim <= dataAtual)
+                            && n.Ordens.FirstOrDefault()!.FimPlanejado <= dataAtual)
                 .ToListAsync();
             
             foreach (var nota in notasParaNotificar)
@@ -161,11 +162,11 @@ public class ManutencaoGeneratorJob
                     }
                     
                     // gera a mensagem a ser enviada
-                    var payload = new WhatsappMessagePayload
+                    var payload = new WhatsappMessagePayload()
                     {
                         telefone = usuario.Telefone,
                         nome = usuario.Nome ?? string.Empty,
-                        mensagem = $"Olá, a nota {nota.NumeroNota} atingiu a data de conclusão.",
+                        mensagem = $"Olá, a nota {nota.NumeroNota} atingiu a data de conclusão planejada na ordem {nota.Ordens.FirstOrDefault()?.NumeroOrdem}.",
                         tipoTemplateAvisoWhatsApp = "1" 
                     };
                     
