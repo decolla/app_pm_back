@@ -97,9 +97,11 @@ public class AutoMapperProfile : Profile
         CreateMap<AlmoxarifadoDto, AlmoxarifadoModel>();
 
         CreateMap<FerramentaTipoDto, FerramentaModel>()
-            .ForMember(dest => dest.IdFerramenta, opt => opt.Ignore())
+            .ForMember(dest => dest.IdFerramenta, opt => opt.MapFrom(src => src.IdFerramenta))
             .ForMember(dest => dest.ValorCompra, opt => opt.MapFrom(src => src.ValorCompra ?? 0))
-            .ForMember(dest => dest.DataAquisicao, opt => opt.MapFrom(src => src.DataAquisicao ?? DateTime.MinValue));
+            .ForMember(dest => dest.DataAquisicao, opt => opt.MapFrom(src => src.DataAquisicao ?? DateTime.MinValue))
+            .ForMember(dest => dest.Operacoes, opt => opt.Ignore())
+            .ForMember(dest => dest.Almoxarifado, opt => opt.Ignore());
 
         CreateMap<DadosRenovacaoDto, DadosRenovacaoModel>();
 

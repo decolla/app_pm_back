@@ -29,7 +29,7 @@ public class FerramentaController : ControllerBase
         _mapper = mapper;
     }
 
-        /// <summary>
+    /// <summary>
     /// Cria um novo registro.
     /// </summary>
     /// <param name="dto">DTO contendo os dados da requisição.</param>
@@ -53,7 +53,6 @@ public class FerramentaController : ControllerBase
             Console.WriteLine(e);
             throw;
         }
-
     }
 
     /// <summary>
@@ -69,7 +68,7 @@ public class FerramentaController : ControllerBase
         {
             if (pagina <= 0 || tamanho <= 0)
                 return BadRequest("Parâmetros de paginação inválidos.");
-            
+
             var resultado = await _service.GetPagedAsync(pagina, tamanho);
             return Ok(resultado);
         }
@@ -80,7 +79,7 @@ public class FerramentaController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
     /// <param name="pagina">Número da página (1-based) para paginação.</param>
@@ -102,7 +101,7 @@ public class FerramentaController : ControllerBase
         return Ok(await _service.GetAllNotasAsync());
     }
 
-        /// <summary>
+    /// <summary>
     /// Obtém um registro específico.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
@@ -126,10 +125,9 @@ public class FerramentaController : ControllerBase
         {
             return BadRequest(new { message = $"Erro ao buscar ferramenta: {e.Message}" });
         }
-        
     }
 
-        /// <summary>
+    /// <summary>
     /// Atualiza um registro existente.
     /// </summary>
     /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
@@ -143,18 +141,16 @@ public class FerramentaController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Atualizar([FromRoute] long id, [FromBody] FerramentaTipoDto dto)
     {
-        if (!ModelState.IsValid) return ValidationProblem(ModelState);
         if (id <= 0) return BadRequest(new { message = "Id invalido na rota." });
 
-        if (dto.IdFerramenta <= 0) dto.IdFerramenta = id;
         if (dto.IdFerramenta != id) return BadRequest(new { message = "Id da rota deve ser igual ao Id do corpo." });
 
         var model = _mapper.Map<FerramentaModel>(dto);
-        var atualizado = await _service.UpdateNotaAsync(model);
+        var atualizado = await _service.UpdateAsync(model);
         return Ok(atualizado);
     }
 
-        /// <summary>
+    /// <summary>
     /// Exclui um registro pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>

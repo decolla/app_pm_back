@@ -250,9 +250,7 @@ public class DashboardService
 
         // chama a função para cada nota e ordem
         foreach (var nota in notas) ProcessarOcorrencia(nota.IdLi, true);
-        foreach (var nota in notas) ProcessarOcorrencia(nota.IdsAtivo?.ToString(), true);
         foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdLi, false);
-        foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdsAtivo?.ToString(), false);
 
         _logger.LogInformation("Top (7) ocorrências de locais de insalação gerados com sucesso.");
         
