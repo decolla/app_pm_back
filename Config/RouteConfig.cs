@@ -76,50 +76,45 @@ public static class RouteConfig
     }
 
     /// <summary>
+    /// Monta a URL base de um serviço. Prioridade: variáveis de ambiente (SERVER_IP e SCHEMA);
+    /// </summary>
+    /// <param name="configuration">Configuração da aplicação (appsettings).</param>
+    /// <param name="configKey">Chave no appsettings, ex: "APIs:Twins".</param>
+    /// <param name="servicePath">Caminho do serviço na URL, ex: "tw/api".</param>
+    private static string BuildServiceUrl(IConfiguration configuration, string configKey, string servicePath)
+    {
+        var isProd = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
+        var serverIp = Environment.GetEnvironmentVariable("SERVER_IP");
+        var schema = GetDatabaseSchema();
+
+        // Em produção sempre usa o domínio público
+        if (isProd)
+        {
+            var prodSchema = schema ?? configuration["SCHEMA"] ?? "comgas";
+            return $"https://physisiot.com.br/{prodSchema}/{servicePath}";
+        }
+
+        // Se SERVER_IP e SCHEMA foram definidos no ambiente, eles montam a URL
+        if (!string.IsNullOrWhiteSpace(serverIp) && !string.IsNullOrWhiteSpace(schema))
+        {
+            return $"http://{serverIp}/{schema}/{servicePath}";
+        }
+
+        // Caso contrário, usa o valor do appsettings
+        return configuration[configKey]
+            ?? throw new InvalidOperationException(
+                $"Configuração '{configKey}' não encontrada e SERVER_IP/SCHEMA não definidos.");
+    }
+
+    /// <summary>
     /// Retorna a URL do serviço APM com base na variável de ambiente.
     /// </summary>
     public static string GetApmBaseUrl(IConfiguration configuration)
-    {
-        var isProd = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
-        var serverIp = Environment.GetEnvironmentVariable("SERVER_IP") ?? "10.3.192.200";
-        var schema = GetDatabaseSchema() ?? "comgas";
+        => BuildServiceUrl(configuration, "APIs:APM", "apm/api");
 
-        if (isProd)
-        {
-            return $"https://physisiot.com.br/{schema}/apm/api";
-        }
-        return configuration["APIs:APM"] ?? $"http://{serverIp}/{schema}/apm/api";
-    }
-
-    /// <summary>
-    /// Retorna a URL do serviço com base na variável de ambiente.
-    /// </summary>
     public static string GetTwinsBaseUrl(IConfiguration configuration)
-    {
-        var isProd = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
-        var serverIp = Environment.GetEnvironmentVariable("SERVER_IP") ?? "10.3.192.200";
-        var schema = GetDatabaseSchema() ?? "comgas";
+        => BuildServiceUrl(configuration, "APIs:Twins", "tw/api");
 
-        if (isProd)
-        {
-            return $"https://physisiot.com.br/{schema}/tw/api";
-        }
-        return configuration["APIs:Twins"] ?? $"http://{serverIp}/{schema}/tw/api";
-    }
-
-    /// <summary>
-    /// Retorna a URL do serviço Reliability com base na variável de ambiente.
-    /// </summary>
     public static string GetReliabilityBaseUrl(IConfiguration configuration)
-    {
-        var isProd = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production";
-        var serverIp = Environment.GetEnvironmentVariable("SERVER_IP") ?? "10.3.192.200";
-        var schema = GetDatabaseSchema() ?? "comgas";
-
-        if (isProd)
-        {
-            return $"https://physisiot.com.br/{schema}/reliability/api";
-        }
-        return configuration["APIs:Reliability"] ?? $"http://{serverIp}/{schema}/reliability/api";
-    }
+        => BuildServiceUrl(configuration, "APIs:Reliability", "reliability/api");
 }
