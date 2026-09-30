@@ -210,7 +210,8 @@ public enum StatusFichas
     Reprovada = 0,
     Aberta = 1,
     EmAndamento = 2,
-    Concluida = 3
+    ServicoRealizado = 3, 
+    Concluida = 4
 }
 
 /// <summary>

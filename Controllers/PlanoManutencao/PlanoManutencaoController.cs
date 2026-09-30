@@ -18,16 +18,19 @@ public class PlanoManutencaoController : ControllerBase
     private readonly string _operador = "plano de mantuenção";
     private readonly PlanoManutencaoService _planoManutencaoService;
     private readonly IMapper _mapper;
+    private readonly CustoAcumuladoService _custoAcumuladoService;
 
     /// <summary>
     /// Construtor.
     /// </summary>
     /// <param name="planoManutencaoService"></param>
     /// <param name="mapper"></param>
-    public PlanoManutencaoController(PlanoManutencaoService planoManutencaoService, IMapper mapper)
+    /// <param name="custoAcumuladoService"></param>
+    public PlanoManutencaoController(PlanoManutencaoService planoManutencaoService, IMapper mapper, CustoAcumuladoService custoAcumuladoService)
     {
         _planoManutencaoService = planoManutencaoService;
         _mapper = mapper;
+        _custoAcumuladoService = custoAcumuladoService;
     }
 
     /// <summary>
@@ -266,6 +269,24 @@ public class PlanoManutencaoController : ControllerBase
         catch (Exception e)
         {
             return BadRequest(new { message = $"Erro ao criar {_operador}: {e.Message}." });
+        }
+    }
+    
+    /// <summary>
+    /// Calcula o custo acumulado de um plano de manutenção.
+    /// </summary>
+    [HttpGet("custo-acumulado")]
+    [Authorize(Policy = "View")]
+    public async Task<IActionResult> CalcularCustoAcumulado([FromQuery] string idLi, [FromQuery] DateTime dataInicio, [FromQuery] DateTime dataFim)
+    {
+        try
+        {
+            var custo = await _custoAcumuladoService.CalcularCustoAcumulado(idLi, dataInicio, dataFim);
+            return Ok(custo);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao calcular o custo acumulado: {e.Message}." });
         }
     }
 

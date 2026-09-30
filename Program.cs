@@ -210,6 +210,7 @@ builder.Services.AddScoped<CatboostModelProviderService>();
 builder.Services.AddScoped<DashboardService>();
 builder.Services.AddSingleton<KafkaProducerService>();
 builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<CustoAcumuladoService>();
 
 // configuração de clientes http
 builder.Services.AddHttpClient<ExternIntegrationService>(client =>
