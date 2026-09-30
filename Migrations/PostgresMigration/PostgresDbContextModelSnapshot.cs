@@ -320,7 +320,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 25, 16, 0, 41, 954, DateTimeKind.Utc).AddTicks(6478),
+                            DataModificacao = new DateTime(2026, 9, 30, 17, 19, 51, 977, DateTimeKind.Utc).AddTicks(3038),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = new List<string>(),
                             PalavrasNaturezaCausaCorretiva = new List<string>()
@@ -764,6 +764,9 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<int?>("CriticidadeManutencao")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("DataAvaria")
                         .HasColumnType("timestamp without time zone");
 
@@ -842,9 +845,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
 
-                    b.Property<int?>("Prioridade")
-                        .HasColumnType("integer");
-
                     b.Property<string>("ReferenciaLocalizacaoAtivo")
                         .HasColumnType("text");
 
@@ -879,6 +879,9 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("IdOperacao"));
+
+                    b.Property<bool>("Concluida")
+                        .HasColumnType("boolean");
 
                     b.Property<float?>("CustosAdicionais")
                         .HasColumnType("real");
@@ -945,7 +948,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<int?>("Criticidade")
+                    b.Property<int?>("CriticidadeManutencao")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("DataClassificacao")

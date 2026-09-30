@@ -300,16 +300,16 @@ public class GenericSearchService
         Prioridade? prioridadeInicio = prioridadeInicioVal as Prioridade?;
         if (prioridadeInicio.HasValue)
         {
-            notasQuery = notasQuery.Where(n => n.Prioridade >= prioridadeInicio.Value);
-            ordensQuery = ordensQuery.Where(o => o.Criticidade >= prioridadeInicio.Value);
+            notasQuery = notasQuery.Where(n => n.CriticidadeManutencao >= prioridadeInicio.Value);
+            ordensQuery = ordensQuery.Where(o => o.CriticidadeManutencao >= prioridadeInicio.Value);
         }
 
         var prioridadeFimVal = buscaType.GetProperty("PrioridadeFim")?.GetValue(busca);
         Prioridade? prioridadeFim = prioridadeFimVal as Prioridade?;
         if (prioridadeFim.HasValue)
         {
-            notasQuery = notasQuery.Where(n => n.Prioridade <= prioridadeFim.Value);
-            ordensQuery = ordensQuery.Where(o => o.Criticidade <= prioridadeFim.Value);
+            notasQuery = notasQuery.Where(n => n.CriticidadeManutencao <= prioridadeFim.Value);
+            ordensQuery = ordensQuery.Where(o => o.CriticidadeManutencao <= prioridadeFim.Value);
         }
 
         var classificacaoVal = buscaType.GetProperty("Classificacao")?.GetValue(busca);

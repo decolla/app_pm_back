@@ -57,7 +57,7 @@ public class OrdemModel : IClassifiable, IAuditable
     /// Define a urgência e impacto da ordem no contexto operacional.
     /// </summary>
     /// <example>Baixa, Média, Alta, Crítica, Emergencial</example>
-    public Prioridade? Criticidade { get; set; }
+    public Prioridade? CriticidadeManutencao { get; set; }
 
     /// <summary>
     /// Natureza da Causa da classificação

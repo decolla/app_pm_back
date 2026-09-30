@@ -221,7 +221,7 @@ public enum Fichas
 {
     Ambas = 0,
     Notas = 1,
-    Ordens =2
+    Ordens = 2
 }
 
 public enum Grupos

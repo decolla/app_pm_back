@@ -29,6 +29,11 @@ public class OperacaoModel : IAuditable
     /// </summary>
     [MaxLength(7000)]
     public string? Descricao { get; set; }
+    
+    /// <summary>
+    /// Indica se a operação foi concluída.
+    /// </summary>
+    public bool Concluida { get; set; }
 
     /// <summary>
     /// Duração estimada para a conclusão em horas.

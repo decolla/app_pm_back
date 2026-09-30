@@ -30,7 +30,7 @@ public class OrdemDto
 
     [SheetColumn("status_ordem")] public StatusFichas? StatusOrdem { get; set; }
 
-    [SheetColumn("Criticidade")] public Prioridade? Criticidade { get; set; }
+    [SheetColumn("Criticidade")] public Prioridade? CriticidadeManutencao { get; set; }
 
     [SheetColumn("Data de entrada")] public DateTime DataCriacao { get; set; } = DateTime.Now;
 

@@ -104,7 +104,7 @@ public class NotaModel : IClassifiable, IAuditable
     /// Valores menores indicam maior prioridade (ex: 1 = Crítica, 2 = Alta, 3 = Média, 4 = Baixa).
     /// </summary>
     /// <example>1</example>
-    public Prioridade? Prioridade { get; set; }
+    public Prioridade? CriticidadeManutencao { get; set; }
 
     /// <summary>
     /// Data e hora desejada para conclusão da intervenção.

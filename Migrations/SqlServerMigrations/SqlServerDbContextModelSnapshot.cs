@@ -319,7 +319,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 25, 16, 0, 35, 4, DateTimeKind.Utc).AddTicks(4178),
+                            DataModificacao = new DateTime(2026, 9, 30, 17, 19, 44, 657, DateTimeKind.Utc).AddTicks(1477),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = "[]",
                             PalavrasNaturezaCausaCorretiva = "[]"
@@ -763,6 +763,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<int?>("CriticidadeManutencao")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("DataAvaria")
                         .HasColumnType("datetime2");
 
@@ -841,9 +844,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
-                    b.Property<int?>("Prioridade")
-                        .HasColumnType("int");
-
                     b.Property<string>("ReferenciaLocalizacaoAtivo")
                         .HasColumnType("nvarchar(max)");
 
@@ -878,6 +878,9 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("IdOperacao"));
+
+                    b.Property<bool>("Concluida")
+                        .HasColumnType("bit");
 
                     b.Property<float?>("CustosAdicionais")
                         .HasColumnType("real");
@@ -944,7 +947,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<int?>("Criticidade")
+                    b.Property<int?>("CriticidadeManutencao")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DataClassificacao")

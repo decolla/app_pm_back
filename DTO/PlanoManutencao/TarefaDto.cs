@@ -15,6 +15,8 @@ public class TarefaDto
     [SheetColumn("Nome Tarefa")] public string? Nome { get; set; }
 
     [SheetColumn("Descrição Tarefa")] public string? Descricao { get; set; }
+    
+    [SheetColumn("Concluída")] public bool Concluida { get; set; }
 
     [SheetColumn("Duração")] public double Duracao { get; set; }
 
