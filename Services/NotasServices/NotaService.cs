@@ -188,7 +188,7 @@ public class NotaService : BaseCrudService<NotaModel>
         {
             if (notaDoBanco.IdGpm != notaTela.IdGpm)
             {
-                throw new UnauthorizedAccessException("Você não tem permissão para alterar o GPM desta nota.");
+                notaTela.IdGpm = notaDoBanco.IdGpm; // mantém o GPM original
             }
         }
         
@@ -296,6 +296,47 @@ public class NotaService : BaseCrudService<NotaModel>
             .Include(n => n.Ordens.Take(1))
             .Include(n => n.Usuarios)
             .AsNoTracking()
+            .FirstOrDefaultAsync(n => n.IdNota == idnota);
+
+        if (nota == null) return null;
+
+        // obter o diretório da nota
+        var diretorio = await ObterDiretoriosDaNotaAsync(idnota);
+        long? idDiretorio = diretorio.FirstOrDefault()?.Id;
+
+        // obtém o caminho em string do diretório
+        var caminhoDiretorio = await _diretorioService.GetCaminhoAsync(idDiretorio ?? 0);
+
+        return new
+        {
+            Nota = nota,
+            Diretorio = diretorio,
+            CaminhoDiretorio = caminhoDiretorio
+        };
+    }
+    
+    /// <summary>
+    /// Retorna os dados parciais de uma Nota específica.
+    /// </summary>
+    public async Task<object?> GetNotaParcialAsync(long idnota)
+    {
+        var nota = await _dbSet
+            .Include(n => n.Itens)
+            .Include(n => n.Variaveis)
+            .Include(n => n.Ordens.Take(1))
+            .Include(n => n.Usuarios)
+            .AsNoTracking()
+            .Select(n => new
+            {
+                n.IdNota,
+                n.TipoLi,
+                n.IdsAtivo,
+                n.ConfiabilidadeRestaurada,
+                n.DescricaoLonga,
+                n.DescricaoBreve,
+                n.Variaveis,
+                n.Anexos,
+            })
             .FirstOrDefaultAsync(n => n.IdNota == idnota);
 
         if (nota == null) return null;

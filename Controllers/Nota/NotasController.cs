@@ -164,6 +164,41 @@ public class NotasController : ControllerBase
             return BadRequest(new { message = $"Erro ao buscar nota: {e.Message}." });
         }
     }
+    
+    /// <summary>
+    /// Obtém um payload de registro pelo seu identificador.
+    /// </summary>
+    /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+    /// <returns>O objeto correspondente cadastrado.</returns>
+    /// <response code="200">Sucesso ao obter o registro.</response>
+    /// <response code="400">ID fornecido inválido.</response>
+    /// <response code="404">Registro não encontrado no banco de dados.</response>
+    [HttpGet("{id:long}/parcial")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ObterPayloadPorId([FromRoute] long id)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "Id invalido. Envie id maior que zero." });
+            }
+
+            var item = await _notaService.GetNotaParcialAsync(id);
+            if (item == null)
+            {
+                return NotFound(new { message = "Nota nao encontrada." });
+            }
+
+            return Ok(item);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar nota: {e.Message}." });
+        }
+    }
 
     /// <summary>
     /// Conta o número total de notas salvas no banco
