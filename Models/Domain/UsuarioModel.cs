@@ -15,6 +15,12 @@ public class UsuarioModel
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long IdUsuario { get; set; }
+    
+    /// <summary>
+    /// Armazena o UUID do Keycloak/Portal para integração de autenticação.
+    /// </summary>
+    [MaxLength(50)]
+    public string? PortalId { get; set; }
 
     /// <summary>
     /// Nome completo do usuário.

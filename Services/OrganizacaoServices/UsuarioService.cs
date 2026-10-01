@@ -1,4 +1,5 @@
 using app_pm_back.Data;
+using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -97,4 +98,69 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
         return usuarios;
     }
 
+    public async Task<List<UsuarioModel>> SincronizarUsuariosPortalAsync(List<SyncUsuarioDto> usuariosSync)
+    {
+        var result = new List<UsuarioModel>();
+        
+        foreach (var dto in usuariosSync)
+        {
+            // processa cada usuário do portal, buscando pelo PortalId ou Nome
+            var usuarioDb = await _context.Set<UsuarioModel>()
+                .Include(u => u.Gpms)
+                .Include(u => u.Ctms)
+                .FirstOrDefaultAsync(u => u.PortalId == dto.Id || u.Nome == dto.Name);
+
+            if (usuarioDb == null)
+            {
+                // cria um novo usuário caso não exista
+                usuarioDb = new UsuarioModel()
+                {
+                    PortalId = dto.Id,
+                    Nome = dto.Name,
+                    CPF = dto.Cpf,
+                    Telefone = dto.Telefone,
+                    NivelPermissao = dto.NivelPermissao ?? NivelPermissao.Usuario,
+                    Permissoes = dto.Permissoes ?? PermissoesTabela.Nenhuma,
+                    Escopos = dto.Escopos
+                };
+                _context.Set<UsuarioModel>().Add(usuarioDb);
+            }
+            else
+            {
+                // atualiza os campos do usuário existente
+                usuarioDb.PortalId = dto.Id; // salva UUID
+                usuarioDb.Nome = dto.Name;
+                if (!string.IsNullOrEmpty(dto.Cpf)) usuarioDb.CPF = dto.Cpf;
+                if (!string.IsNullOrEmpty(dto.Telefone)) usuarioDb.Telefone = dto.Telefone;
+                if (dto.NivelPermissao.HasValue) usuarioDb.NivelPermissao = dto.NivelPermissao;
+                if (dto.Permissoes.HasValue) usuarioDb.Permissoes = dto.Permissoes;
+                if (dto.Escopos.Any()) usuarioDb.Escopos = dto.Escopos;
+            }
+
+            // atualiza as relações com GPMs e CTMs
+            if (dto.GpmIds.Any())
+            {
+                usuarioDb.Gpms.Clear();
+                var gpms  = await _context.Set<GpmModel>().Where(g => dto.GpmIds.Contains(g.IdGPM)).ToListAsync();
+                foreach (var gpm in gpms)
+                {
+                    usuarioDb.Gpms.Add(gpm);
+                }
+            }
+            
+            if (dto.CtmIds.Any())
+            {
+                usuarioDb.Ctms.Clear();
+                var ctms = await _context.Set<CtmModel>().Where(c => dto.CtmIds.Contains(c.IdCTM)).ToListAsync();
+                foreach (var ctm in ctms)
+                {
+                    usuarioDb.Ctms.Add(ctm);
+                }
+            }
+            
+            result.Add(usuarioDb);
+        }
+        await _context.SaveChangesAsync();
+        return result;
+    }
 }

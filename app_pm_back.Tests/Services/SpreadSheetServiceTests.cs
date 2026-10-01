@@ -36,6 +36,7 @@ public class SpreadSheetServiceTests
     {
         var mockConfig = new Mock<IConfiguration>();
         mockConfig.Setup(c => c["APIs:APM"]).Returns("http://fake-apm");
+        mockConfig.Setup(c => c["APIs:Twins"]).Returns("http://fake-twins");
         var mockLogger = new Mock<ILogger<DadosRenovacaoService>>();
         var httpClient = new HttpClient();
         return (mockConfig, mockLogger, httpClient);
@@ -51,7 +52,7 @@ public class SpreadSheetServiceTests
 
         var mockSpreadsheetService = new Mock<SpreadsheetService>(null!, null!);
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
-        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
+        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context), new NotaService(context, new DiretorioService(context), null!));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
 
@@ -104,7 +105,7 @@ public class SpreadSheetServiceTests
             });
 
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
-        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
+        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context), new NotaService(context, new DiretorioService(context), null!));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
 
@@ -167,7 +168,7 @@ public class SpreadSheetServiceTests
                 It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
+        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context), new NotaService(context, new DiretorioService(context), null!));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
 
@@ -225,7 +226,7 @@ public class SpreadSheetServiceTests
             });
 
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
-        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
+        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context), new NotaService(context, new DiretorioService(context), null!));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
 
@@ -285,7 +286,7 @@ public class SpreadSheetServiceTests
             });
 
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
-        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
+        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context), new NotaService(context, new DiretorioService(context), null!));
         mockOrdemService.Setup(s => s.ImportarOrdensEmLoteSeguroAsync(It.IsAny<List<OrdemModel>>(), It.IsAny<bool>(),
                 It.IsAny<bool>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
@@ -356,7 +357,7 @@ public class SpreadSheetServiceTests
             });
 
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
-        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
+        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context), new NotaService(context, new DiretorioService(context), null!));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
 
@@ -418,7 +419,7 @@ public class SpreadSheetServiceTests
             });
 
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
-        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
+        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context), new NotaService(context, new DiretorioService(context), null!));
 
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         mockItemNotaService.Setup(s =>
@@ -479,7 +480,7 @@ public class SpreadSheetServiceTests
             });
 
         var mockNotaService = new Mock<NotaService>(context, new DiretorioService(context), null!);
-        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context));
+        var mockOrdemService = new Mock<OrdemService>(context, new DiretorioService(context), new NotaService(context, new DiretorioService(context), null!));
         var mockItemNotaService = new Mock<ItemNotaService>(context);
         var mockOperacaoService = new Mock<OperacaoService>(context);
 

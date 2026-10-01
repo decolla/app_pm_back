@@ -25,7 +25,7 @@ public class AlmoxarifadoDto
     [SheetColumn("DescricaoBreve")] public string? Descricao { get; set; }
 
     // Escopo externo (armazenar apenas o ID)
-    [SheetColumn("Id Escopo")] public long? IdEscopo { get; set; }
+    [SheetColumn("Id Escopo")] public string? IdEscopo { get; set; }
 }
 
 #pragma warning restore CS1591

@@ -67,19 +67,17 @@
             Obtém o nome do serviço a partir da variável de ambiente
             </summary>
         </member>
+        <member name="M:app_pm_back.Config.RouteConfig.BuildServiceUrl(Microsoft.Extensions.Configuration.IConfiguration,System.String,System.String)">
+            <summary>
+            Monta a URL base de um serviço. Prioridade: variáveis de ambiente (SERVER_IP e SCHEMA);
+            </summary>
+            <param name="configuration">Configuração da aplicação (appsettings).</param>
+            <param name="configKey">Chave no appsettings, ex: "APIs:Twins".</param>
+            <param name="servicePath">Caminho do serviço na URL, ex: "tw/api".</param>
+        </member>
         <member name="M:app_pm_back.Config.RouteConfig.GetApmBaseUrl(Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Retorna a URL do serviço APM com base na variável de ambiente.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Config.RouteConfig.GetTwinsBaseUrl(Microsoft.Extensions.Configuration.IConfiguration)">
-            <summary>
-            Retorna a URL do serviço com base na variável de ambiente.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Config.RouteConfig.GetReliabilityBaseUrl(Microsoft.Extensions.Configuration.IConfiguration)">
-            <summary>
-            Retorna a URL do serviço Reliability com base na variável de ambiente.
             </summary>
         </member>
         <member name="T:app_pm_back.Controllers.AnexosController">
@@ -1594,12 +1592,13 @@
             Endpoints de plano de manutencao .
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.#ctor(app_pm_back.Services.Manutencao.PlanoManutencaoService,AutoMapper.IMapper)">
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.#ctor(app_pm_back.Services.Manutencao.PlanoManutencaoService,AutoMapper.IMapper,app_pm_back.Services.Manutencao.CustoAcumuladoService)">
             <summary>
             Construtor.
             </summary>
             <param name="planoManutencaoService"></param>
             <param name="mapper"></param>
+            <param name="custoAcumuladoService"></param>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.Criar(app_pm_back.DTO.PlanoManutencaoDto)">
             <summary>
@@ -1660,6 +1659,11 @@
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.CriarSimplifcado(System.String)">
             <summary>
             Cria plano para todos os ativos a partir de uma estratégia
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.CalcularCustoAcumulado(System.String,System.DateTime,System.DateTime)">
+            <summary>
+            Calcula o custo acumulado de um plano de manutenção.
             </summary>
         </member>
         <member name="M:app_pm_back.Controllers.PlanoManutencao.PlanoManutencaoController.TemPaginacaoInvalida(System.Nullable{System.Int32},System.Nullable{System.Int32})">
@@ -1940,6 +1944,13 @@
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Controllers.UsuariosController"/>.
             </summary>
+        </member>
+        <member name="M:app_pm_back.Controllers.UsuariosController.SincronizarPortal(System.Collections.Generic.List{app_pm_back.DTO.SyncUsuarioDto})">
+            <summary>
+            Sincroniza os usuários do portal com o sistema, apenas usuários com role Admin no Keycloak podem chamar.
+            </summary>
+            <param name="payload">Lista de usuários do portal a serem sincronizados.</param>
+            <returns></returns>
         </member>
         <member name="M:app_pm_back.Controllers.UsuariosController.Criar(app_pm_back.DTO.UsuarioDto)">
             <summary>
@@ -3268,7 +3279,7 @@
             Tipo do Local de instalação
             </summary>
         </member>
-        <member name="P:app_pm_back.Models.Domain.NotaModel.Prioridade">
+        <member name="P:app_pm_back.Models.Domain.NotaModel.CriticidadeManutencao">
             <summary>
             Nível de prioridade da nota para gestão de recursos e agendamento.
             Valores menores indicam maior prioridade (ex: 1 = Crítica, 2 = Alta, 3 = Média, 4 = Baixa).
@@ -3615,6 +3626,11 @@
             Detalhamento técnico do que deve ser executado.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.OperacaoModel.Concluida">
+            <summary>
+            Indica se a operação foi concluída.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.OperacaoModel.Duracao">
             <summary>
             Duração estimada para a conclusão em horas.
@@ -3715,7 +3731,7 @@
             </summary>
             <example>Aberta, Em Andamento, Aguardando Peças, Concluída, Cancelada</example>
         </member>
-        <member name="P:app_pm_back.Models.Domain.OrdemModel.Criticidade">
+        <member name="P:app_pm_back.Models.Domain.OrdemModel.CriticidadeManutencao">
             <summary>
             Nível de criticidade da ordem para priorização de execução.
             Define a urgência e impacto da ordem no contexto operacional.
@@ -4289,6 +4305,11 @@
             Identificador único do usuário.
             </summary>
         </member>
+        <member name="P:app_pm_back.Models.Domain.UsuarioModel.PortalId">
+            <summary>
+            Armazena o UUID do Keycloak/Portal para integração de autenticação.
+            </summary>
+        </member>
         <member name="P:app_pm_back.Models.Domain.UsuarioModel.Nome">
             <summary>
             Nome completo do usuário.
@@ -4482,35 +4503,6 @@
         </member>
         <member name="M:app_pm_back.Migrations.SqlServerMigrations.InitialSqlServer.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
-        </member>
-        <member name="T:app_pm_back.Services.AnnexService">
-            <summary>
-            Classe AnnexService.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.AnnexService.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.AnnexService"/>.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.AnnexService.UploadAnexo(Microsoft.AspNetCore.Http.IFormFile,System.Nullable{System.Int64},System.Nullable{System.Int64},System.String,app_pm_back.Models.Domain.CategoriaAnexo)">
-            <summary>
-            Executa a ação correspondente.
-            </summary>
-            <param name="file">Arquivo a ser armazen.</param>
-            <param name="tipoReferencia">Parâmetro do método.</param>
-            <param name="categoria">Parâmetro do método.</param>
-            <returns>Resultado da operação.</returns>
-        </member>
-        <member name="M:app_pm_back.Services.AnnexService.DeleteAnexo(System.Int64)">
-            <summary>
-            Deleta um anexo pelo seu identificador.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.AnnexService.UpdateAnexo(System.Int64,System.String,System.Nullable{app_pm_back.Models.Domain.CategoriaAnexo})">
-            <summary>
-            Atualiza um anexo pelo seu identificador.
-            </summary>
         </member>
         <member name="T:app_pm_back.Services.ApplicationSchemaProvider">
             <summary>
@@ -4896,6 +4888,35 @@
             Sincroniza os dados de APM (Asset Performance Management) com as notas e ordens de serviço do sistema.
             </summary>
             <returns> Bool se a operação ocorreu corretamente</returns>
+        </member>
+        <member name="T:app_pm_back.Services.AnnexService">
+            <summary>
+            Classe AnnexService.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.AnnexService.#ctor(app_pm_back.Data.AppDbContext)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.AnnexService"/>.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.AnnexService.UploadAnexo(Microsoft.AspNetCore.Http.IFormFile,System.Nullable{System.Int64},System.Nullable{System.Int64},System.String,app_pm_back.Models.Domain.CategoriaAnexo)">
+            <summary>
+            Executa a ação correspondente.
+            </summary>
+            <param name="file">Arquivo a ser armazen.</param>
+            <param name="tipoReferencia">Parâmetro do método.</param>
+            <param name="categoria">Parâmetro do método.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.AnnexService.DeleteAnexo(System.Int64)">
+            <summary>
+            Deleta um anexo pelo seu identificador.
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.AnnexService.UpdateAnexo(System.Int64,System.String,System.Nullable{app_pm_back.Models.Domain.CategoriaAnexo})">
+            <summary>
+            Atualiza um anexo pelo seu identificador.
+            </summary>
         </member>
         <member name="M:app_pm_back.Services.DiretorioService.ObterArvoreAsync">
             <summary>
@@ -5347,7 +5368,7 @@
             Classe NotaService.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.NotaService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.DiretorioService,app_pm_back.Services.KafkaProducerService)">
+        <member name="M:app_pm_back.Services.Manutencao.NotaService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.DiretorioService,app_pm_back.Services.NotificationService,app_pm_back.Services.UserContextService)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.NotaService"/>.
             </summary>
@@ -5374,6 +5395,11 @@
         <member name="M:app_pm_back.Services.Manutencao.NotaService.ObterDiretoriosDaNotaAsync(System.Int64)">
             <summary>
             Retorna todas as pastas onde uma Nota específica está guardada
+            </summary>
+        </member>
+        <member name="M:app_pm_back.Services.Manutencao.NotaService.NotificarNotaAsync(System.Int64,System.String)">
+            <summary>
+            Envia uma notificação para o usuário responsável pela nota.
             </summary>
         </member>
         <member name="T:app_pm_back.Services.Manutencao.VariavelNotaService">
@@ -5413,7 +5439,7 @@
             Classe OrdemService.
             </summary>
         </member>
-        <member name="M:app_pm_back.Services.Manutencao.OrdemService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.DiretorioService)">
+        <member name="M:app_pm_back.Services.Manutencao.OrdemService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.DiretorioService,app_pm_back.Services.Manutencao.NotaService)">
             <summary>
             Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.Manutencao.OrdemService"/>.
             </summary>
@@ -5515,6 +5541,11 @@
             Classe para busca genérica entre as tabelas do banco de dados 
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.#ctor(app_pm_back.Data.AppDbContext,app_pm_back.Services.UserContextService)">
+            <summary>
+            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.GenericServices.GenericSearchService"/>.
+            </summary>
+        </member>
         <member name="T:app_pm_back.Services.GenericServices.GenericSearchService.NotaOrdemSearchResult">
             <summary>
             Executa a ação correspondente.
@@ -5545,11 +5576,6 @@
         <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.TimelineItem.#ctor(System.Int64,app_pm_back.Models.Domain.Classificacao,System.String,System.Nullable{System.DateTime})">
             <summary>
             Representa um item na linha do tempo.
-            </summary>
-        </member>
-        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.#ctor(app_pm_back.Data.AppDbContext)">
-            <summary>
-            Inicializa uma nova instância da classe <see cref="T:app_pm_back.Services.GenericServices.GenericSearchService"/>.
             </summary>
         </member>
         <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.ListarTabelasCampos">
@@ -5627,6 +5653,14 @@
             <param name="Tfichas"></param>
             <returns>Dados Renovação filtrados</returns>
             <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:app_pm_back.Services.NotificationService.SendNotification(System.String,System.String,System.String)">
+            <summary>
+            Envia uma notificação via WhatsApp.
+            </summary>
+            <param name="mensagem">Mensagem a ser enviada.</param>
+            <param name="nome">Nome do usuário.</param>
+            <param name="telefone">Telefone do usuário.</param>
         </member>
         <member name="M:app_pm_back.Services.IReportService.CriticalException(app_pm_back.Models.Status)">
             <summary>

@@ -141,8 +141,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
-                    b.Property<long?>("IdEscopo")
-                        .HasColumnType("bigint");
+                    b.Property<string>("IdEscopo")
+                        .HasColumnType("text");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(150)
@@ -320,7 +320,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 30, 17, 19, 51, 977, DateTimeKind.Utc).AddTicks(3038),
+                            DataModificacao = new DateTime(2026, 10, 1, 17, 20, 27, 358, DateTimeKind.Utc).AddTicks(2073),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = new List<string>(),
                             PalavrasNaturezaCausaCorretiva = new List<string>()
@@ -339,8 +339,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
-                    b.Property<long>("IdEscopo")
-                        .HasColumnType("bigint");
+                    b.Property<string>("IdEscopo")
+                        .HasColumnType("text");
 
                     b.Property<string>("NomeCentro")
                         .IsRequired()
@@ -515,8 +515,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<bool>("Habilitada")
                         .HasColumnType("boolean");
 
-                    b.Property<long?>("IdEscopo")
-                        .HasColumnType("bigint");
+                    b.Property<string>("IdEscopo")
+                        .HasColumnType("text");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -560,8 +560,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<long?>("IdAlmoxarifado")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("IdEscopo")
-                        .HasColumnType("bigint");
+                    b.Property<string>("IdEscopo")
+                        .HasColumnType("text");
 
                     b.Property<int?>("IdLI")
                         .HasColumnType("integer");
@@ -1329,6 +1329,10 @@ namespace app_pm_back.Migrations.PostgresMigration
 
                     b.Property<int?>("Permissoes")
                         .HasColumnType("integer");
+
+                    b.Property<string>("PortalId")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Telefone")
                         .HasColumnType("text");

@@ -19,7 +19,21 @@ public class GenericSearchService
     private readonly DbSet<OrdemModel> _ordemModels;
     private readonly DbSet<PlanoModel> _planoModels;
     private readonly DbSet<DadosRenovacaoModel> _dadosRenovacaoModels;
+    private readonly UserContextService _userContext;
     private static readonly Dictionary<string, Type> Tabelas = BuildTabelas();
+
+    /// <summary>
+    /// Inicializa uma nova instância da classe <see cref="GenericSearchService"/>.
+    /// </summary>
+    public GenericSearchService(AppDbContext context, UserContextService userContext)
+    {
+        _context = context;
+        _userContext = userContext;
+        _notaModels = context.PM_Notas;
+        _ordemModels = context.PM_Ordens;
+        _planoModels = context.PM_Planos;
+        _dadosRenovacaoModels = context.PM_DadosRenovacao;
+    }
 
     /// <summary>
     /// Executa a ação correspondente.
@@ -39,18 +53,6 @@ public class GenericSearchService
         Classificacao Classificacao,
         string? Descricao,
         DateTime? DataCriacao);
-
-    /// <summary>
-    /// Inicializa uma nova instância da classe <see cref="GenericSearchService"/>.
-    /// </summary>
-    public GenericSearchService(AppDbContext context)
-    {
-        _context = context;
-        _notaModels = context.PM_Notas;
-        _ordemModels = context.PM_Ordens;
-        _planoModels = context.PM_Planos;
-        _dadosRenovacaoModels = context.PM_DadosRenovacao;
-    }
 
     /// <summary>
     /// Lista as tabelas e seus campos armazenados do banco de dados.
@@ -196,6 +198,18 @@ public class GenericSearchService
             .AsQueryable();
 
         return await QueryNotaOrdemAsync(busca, notasQuery, ordensQuery);
+    }
+
+    public async Task<object> FitrarFichasNaoAtribuidasAsync()
+    {
+        var escoposUsuario = _userContext.GetEscoposDoUsuario();
+    
+        if (!escoposUsuario.Any())
+        {
+            throw new UnauthorizedAccessException("Usuário não possui grupo/escopo vinculado.");
+        }
+
+        throw new NotImplementedException("FitrarFichasNaoAtribuidasAsync não implementado ainda.");
     }
 
     /// <summary>

@@ -246,7 +246,7 @@ public enum FiltroClassificacao
 public enum NivelPermissao
 {
     Usuario = 0, 
-    Adm = 1
+    Admin = 1
 }
 
 /// <summary>

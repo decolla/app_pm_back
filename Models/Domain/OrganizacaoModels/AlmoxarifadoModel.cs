@@ -41,7 +41,7 @@ public class AlmoxarifadoModel
     /// <summary>
     /// Identificador do Escopo associado.
     /// </summary>
-    public long? IdEscopo { get; set; } 
+    public string? IdEscopo { get; set; } 
 
     public virtual ICollection<FerramentaModel>? Ferramentas { get; set; } = new List<FerramentaModel>();
     public virtual ICollection<UsuarioModel>? Usuarios { get; set; } = new List<UsuarioModel>();

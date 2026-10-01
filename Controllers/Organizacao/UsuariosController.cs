@@ -27,8 +27,24 @@ public class UsuariosController : ControllerBase
         _service = service;
         _mapper = mapper;
     }
+    
+    /// <summary>
+    /// Sincroniza os usuários do portal com o sistema, apenas usuários com role Admin no Keycloak podem chamar.
+    /// </summary>
+    /// <param name="payload">Lista de usuários do portal a serem sincronizados.</param>
+    /// <returns></returns>
+    [HttpPost("sincronizar-portal")]
+    [Authorize(Policy = "Admin")] 
+    public async Task<IActionResult> SincronizarPortal([FromBody] List<SyncUsuarioDto> payload)
+    {
+        if (payload == null || !payload.Any())
+            return BadRequest("O payload não pode estar vazio.");
 
-        /// <summary>
+        var result = await _service.SincronizarUsuariosPortalAsync(payload);
+        return Ok(result);
+    }
+
+    /// <summary>
     /// Cria um novo registro.
     /// </summary>
     /// <param name="dto">DTO contendo os dados da requisição.</param>

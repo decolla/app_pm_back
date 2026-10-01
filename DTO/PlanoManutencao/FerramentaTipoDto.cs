@@ -45,7 +45,7 @@ public class FerramentaTipoDto
     [SheetColumn("Data aquisição")] public DateTime? DataAquisicao { get; set; }
 
     // Escopo externo (apenas o ID).
-    [SheetColumn("Id Escopo")] public long? IdEscopo { get; set; }
+    [SheetColumn("Id Escopo")] public string? IdEscopo { get; set; }
 
     [SheetColumn("Id Almoxarifado")] public long? IdAlmoxarifado { get; set; }
 }

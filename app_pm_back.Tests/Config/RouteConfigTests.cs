@@ -87,7 +87,7 @@ public class RouteConfigTests : IDisposable
     }
 
     [Fact]
-    public void GetApmBaseUrl_ShouldUseReliabilityConfig_WhenEnvSpecifiesReliability()
+    public void GetApmBaseUrl_ShouldUseApmConfig_WhenEnvSpecifiesReliability()
     {
         // Arrange
         Environment.SetEnvironmentVariable("DATABASE_SCHEMA", "cg/reliability_back");
@@ -103,11 +103,11 @@ public class RouteConfigTests : IDisposable
         var result = RouteConfig.GetApmBaseUrl(configuration);
 
         // Assert
-        result.Should().Be("http://fake-reliability");
+        result.Should().Be("http://fake-apm");
     }
 
     [Fact]
-    public void GetReliabilityBaseUrl_ShouldUseApmConfig_WhenEnvSpecifiesApm()
+    public void GetReliabilityBaseUrl_ShouldUseReliabilityConfig_WhenEnvSpecifiesApm()
     {
         // Arrange
         Environment.SetEnvironmentVariable("DATABASE_SCHEMA", "cg/apm_back");
@@ -123,7 +123,7 @@ public class RouteConfigTests : IDisposable
         var result = RouteConfig.GetReliabilityBaseUrl(configuration);
 
         // Assert
-        result.Should().Be("http://fake-apm");
+        result.Should().Be("http://fake-reliability");
     }
 
     [Theory]

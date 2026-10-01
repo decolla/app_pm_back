@@ -140,8 +140,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<long?>("IdEscopo")
-                        .HasColumnType("bigint");
+                    b.Property<string>("IdEscopo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
                         .HasMaxLength(150)
@@ -319,7 +319,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 9, 30, 17, 19, 44, 657, DateTimeKind.Utc).AddTicks(1477),
+                            DataModificacao = new DateTime(2026, 10, 1, 17, 20, 18, 703, DateTimeKind.Utc).AddTicks(5959),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = "[]",
                             PalavrasNaturezaCausaCorretiva = "[]"
@@ -338,8 +338,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<long>("IdEscopo")
-                        .HasColumnType("bigint");
+                    b.Property<string>("IdEscopo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NomeCentro")
                         .IsRequired()
@@ -514,8 +514,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<bool>("Habilitada")
                         .HasColumnType("bit");
 
-                    b.Property<long?>("IdEscopo")
-                        .HasColumnType("bigint");
+                    b.Property<string>("IdEscopo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -559,8 +559,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<long?>("IdAlmoxarifado")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("IdEscopo")
-                        .HasColumnType("bigint");
+                    b.Property<string>("IdEscopo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("IdLI")
                         .HasColumnType("int");
@@ -1328,6 +1328,10 @@ namespace app_pm_back.Migrations.SqlServerMigrations
 
                     b.Property<int?>("Permissoes")
                         .HasColumnType("int");
+
+                    b.Property<string>("PortalId")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Telefone")
                         .HasColumnType("nvarchar(max)");

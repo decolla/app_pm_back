@@ -36,7 +36,7 @@ public class CpmModel
     /// <summary>
     /// Identificador do escopo associado (armazena apenas o ID).
     /// </summary>
-    public long IdEscopo { get; set; } // Stores Escopo ID only
+    public string? IdEscopo { get; set; }
 
     public virtual ICollection<GpmModel> Gpms { get; set; } = new List<GpmModel>();
     public virtual ICollection<CtmModel> Ctms { get; set; } = new List<CtmModel>();

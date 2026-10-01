@@ -112,7 +112,7 @@ public class FerramentaModel
     /// <summary>
     /// Identificador do Escopo associado.
     /// </summary>
-    public long? IdEscopo { get; set; }
+    public string? IdEscopo { get; set; }
 
     /// <summary>
     /// Identificador do Almoxarifado onde a ferramenta está alocada.

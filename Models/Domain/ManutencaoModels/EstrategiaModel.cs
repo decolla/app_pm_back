@@ -64,7 +64,7 @@ public class EstrategiaModel
     /// <summary>
     /// Chave estrangeira para o Escopo de manutenção relacionado.
     /// </summary>
-    public long? IdEscopo { get; set; }
+    public string? IdEscopo { get; set; }
 
     /// <summary>
     /// Relacionamento com os tipos específicos de estratégia (ex: Mecânica, Elétrica).

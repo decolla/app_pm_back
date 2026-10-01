@@ -12,15 +12,17 @@ namespace app_pm_back.Services.Manutencao;
 public class NotaService : BaseCrudService<NotaModel>
 {
     private readonly DiretorioService _diretorioService;
+    private readonly UserContextService _userContext;
     private readonly NotificationService _notificationService;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="NotaService"/>.
     /// </summary>
-    public NotaService(AppDbContext context, DiretorioService diretorioService, NotificationService notificationService) : base(context)    
+    public NotaService(AppDbContext context, DiretorioService diretorioService, NotificationService notificationService , UserContextService userContext) : base(context)    
     {
         _diretorioService = diretorioService;
         _notificationService = notificationService;
+        _userContext = userContext;
     }
 
     /// <summary>
@@ -177,6 +179,18 @@ public class NotaService : BaseCrudService<NotaModel>
 
         if (notaDoBanco == null)
             throw new Exception("Nota não encontrada.");
+        
+        var userId = _userContext.GetUsuarioIdAtual();
+        var usuarioLogado = await _context.Set<UsuarioModel>().FindAsync(Convert.ToInt64(userId));
+
+        //se o usuário não for adm, ele não pode alterar o GPM
+        if (usuarioLogado?.NivelPermissao != NivelPermissao.Admin)
+        {
+            if (notaDoBanco.IdGpm != notaTela.IdGpm)
+            {
+                throw new UnauthorizedAccessException("Você não tem permissão para alterar o GPM desta nota.");
+            }
+        }
         
         if(notaTela.Notificar && !notaDoBanco.Notificar)
         {

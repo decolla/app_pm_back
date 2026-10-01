@@ -1,6 +1,8 @@
 using Xunit;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using Moq;
 using app_pm_back.Data;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
@@ -22,6 +24,13 @@ public class GenericSearchServiceTests
         return new AppDbContext(options);
     }
 
+    private UserContextService CreateUserContext()
+    {
+        var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+        mockHttpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext?)null);
+        return new UserContextService(mockHttpContextAccessor.Object);
+    }
+
     [Fact]
     public async Task BuscarPorCampoAsync_NonStringField_ShouldReturnCorrectResults()
     {
@@ -35,7 +44,7 @@ public class GenericSearchServiceTests
         context.PM_Notas.AddRange(nota1, nota2);
         await context.SaveChangesAsync();
 
-        var service = new GenericSearchService(context);
+        var service = new GenericSearchService(context, CreateUserContext());
 
         // Act
         var result = await service.BuscarPorCampoAsync("PM_Notas", "IdNota", "12", parcial: true, pagina: 1, tamanho: 1);
@@ -80,7 +89,7 @@ public class GenericSearchServiceTests
         context.PM_Notas.AddRange(nota1, nota2);
         await context.SaveChangesAsync();
 
-        var service = new GenericSearchService(context);
+        var service = new GenericSearchService(context, CreateUserContext());
 
         // Act - Exact match (parcial: false) which avoids Npgsql ILike in memory
         var result = await service.BuscarPorCampoAsync("PM_Notas", "DescricaoBreve", "TestNota1", parcial: false, pagina: 1, tamanho: 10);
@@ -114,7 +123,7 @@ public class GenericSearchServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var service = new GenericSearchService(context);
+        var service = new GenericSearchService(context, CreateUserContext());
 
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => 
@@ -128,7 +137,7 @@ public class GenericSearchServiceTests
         // Arrange
         var dbName = Guid.NewGuid().ToString();
         using var context = CreateDbContext(dbName);
-        var service = new GenericSearchService(context);
+        var service = new GenericSearchService(context, CreateUserContext());
 
         // Act & Assert
         await Assert.ThrowsAsync<ArgumentException>(() => 

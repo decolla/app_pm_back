@@ -22,7 +22,7 @@ public class EstrategiaManutencaoDto
 
     [SheetColumn("Tipo ativo aplicável")] public TiposLI? TipoLi { get; set; }
 
-    [SheetColumn("Id Escopo")] public long? IdEscopo { get; set; }
+    [SheetColumn("Id Escopo")] public string? IdEscopo { get; set; }
     
     public virtual List<TipoEstrategiaDto>? TiposEstrategia { get; set; } = new List<TipoEstrategiaDto>();
 }
