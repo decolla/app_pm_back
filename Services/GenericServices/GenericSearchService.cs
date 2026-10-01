@@ -121,16 +121,32 @@ public class GenericSearchService
         dynamic busca,
         int pagina,
         int tamanho,
-        Fichas? tFichas)
+        Fichas? tFichas,
+        bool grupoUsuario)
     {
-        // realiza a filtragem dos dados
-        (List<NotaModel>, List<OrdemModel>) filtragem = await FiltraNotaOrdemAsync(busca);
         
+        (List<NotaModel>, List<OrdemModel>) filtragem = new ([], []);
+        
+        // realiza a filtragem dos dados
+        if (grupoUsuario)
+        {
+            filtragem = await FiltrarFichasNaoAtribuidasAsync(busca); 
+        }
+        else
+        {
+            filtragem = await FiltraNotaOrdemAsync(busca);   
+        }
+        
+        if(filtragem.Item1 == null || filtragem.Item2 == null)
+        {
+            throw new InvalidOperationException("Erro ao filtrar notas e ordens.");
+        }
+
         var notasDb = filtragem.Item1;
         var ordensDb = filtragem.Item2;
-        
+
         List<object> lista = new List<object>();
-        
+
         // adiciona na lista final com base na condicional informada
         if (tFichas == Fichas.Ambas || tFichas == Fichas.Notas)
         {
@@ -144,8 +160,8 @@ public class GenericSearchService
 
         // calculos de paginação
         int totalGeral = lista.Count;
-        int p = pagina ;
-        int t = tamanho ;
+        int p = pagina;
+        int t = tamanho;
         int totalPaginas = (int)Math.Ceiling((double)totalGeral / t);
 
         // pega os n primeiros itens
@@ -167,6 +183,8 @@ public class GenericSearchService
             Result = result
         };
     }
+    
+    
 
     /// <summary>
     /// Obtém um registro específico.
@@ -200,16 +218,48 @@ public class GenericSearchService
         return await QueryNotaOrdemAsync(busca, notasQuery, ordensQuery);
     }
 
-    public async Task<object> FitrarFichasNaoAtribuidasAsync()
+    /// <summary>
+    /// Filtra fichas que não foram atribuídas a nenhum usuário.
+    /// </summary>
+    /// <param name="busca">Parâmetro do método.</param>
+    /// <returns>Resultado da operação.</returns>
+    public async Task<(List<NotaModel>, List<OrdemModel>)> FiltrarFichasNaoAtribuidasAsync(dynamic busca)
     {
-        var escoposUsuario = _userContext.GetEscoposDoUsuario();
-    
-        if (!escoposUsuario.Any())
+        var idUsuario = _userContext.GetUsuarioIdAtual();
+        var usuarioLogado = await _context.Set<UsuarioModel>()
+            .FindAsync(idUsuario);
+
+        if (usuarioLogado == null)
         {
-            throw new UnauthorizedAccessException("Usuário não possui grupo/escopo vinculado.");
+            throw new UnauthorizedAccessException("Usuário não encontrado.");
+        }
+        
+        if (busca == null)
+        {
+            throw new ArgumentNullException(nameof(busca));
         }
 
-        throw new NotImplementedException("FitrarFichasNaoAtribuidasAsync não implementado ainda.");
+        // filtragens para gpm e ctm do usuário logado
+        var notasQuery = _notaModels
+            .Where(n => n.GPM != null && usuarioLogado.Gpms.Contains(n.GPM))
+            .Include(n => n.Ordens)
+            .Include(n => n.Plano)
+            .ThenInclude(pl => pl!.Estrategia)
+            .OrderBy(n => n.Usuarios.Count == 0)
+            .AsNoTracking()
+            .AsQueryable();
+
+        var ordensQuery = _ordemModels
+            .Where(o => o.GPM != null && 
+                        (usuarioLogado.Gpms.Contains(o.GPM) || o.CTM != null && usuarioLogado.Ctms.Contains(o.CTM) ))
+            .Include(n => n.Nota)
+            .Include(o => o.Plano)
+            .ThenInclude(pl => pl!.Estrategia)
+            .OrderBy(o => o.Usuarios.Count == 0)
+            .AsNoTracking()
+            .AsQueryable();
+        
+        return await QueryNotaOrdemAsync(busca, notasQuery, ordensQuery);
     }
 
     /// <summary>
@@ -219,13 +269,14 @@ public class GenericSearchService
     /// <param name="notasQuery">Consulta de notas.</param>
     /// <param name="ordensQuery">Consulta de ordens.</param>
     /// <returns>Resultado da operação.</returns>
-    public async Task<(List<NotaModel>, List<OrdemModel>)> QueryNotaOrdemAsync(dynamic busca, IQueryable<NotaModel> notasQuery, IQueryable<OrdemModel> ordensQuery)
+    public async Task<(List<NotaModel>, List<OrdemModel>)> QueryNotaOrdemAsync(dynamic busca,
+        IQueryable<NotaModel> notasQuery, IQueryable<OrdemModel> ordensQuery)
     {
         // safe check
         var buscaType = (Type)busca.GetType();
 
         // =============================== Condicionais de filtragem ===================================
-        
+
         StatusFichas? statusNota = buscaType.GetProperty("StatusNota")?.GetValue(busca);
         if (statusNota.HasValue)
         {
@@ -384,26 +435,26 @@ public class GenericSearchService
             notasQuery = notasQuery.Where(n => n.StatusNota == status);
             ordensQuery = ordensQuery.Where(o => o.StatusOrdem == status);
         }
-        
+
         if (buscaType.GetProperty("JaAtribuida")?.GetValue(busca) is bool jaAtribuida)
         {
             notasQuery = notasQuery.Where(n => n.Usuarios.Any() == jaAtribuida);
             ordensQuery = ordensQuery.Where(o => o.Usuarios.Any() == jaAtribuida);
         }
-        
+
         // =============================== Fim Condicionais de filtragem ===================================
 
-        (List<NotaModel>, List<OrdemModel>) listaUnica = new([],[]);
+        (List<NotaModel>, List<OrdemModel>) listaUnica = new([], []);
 
         // realiza ordenação das query e agrupamento na formatação de (notas, ordens)
         notasQuery = notasQuery.AplicarOrdenacao(_context);
         var todasNotas = await notasQuery.ToListAsync().ConfigureAwait(false);
         listaUnica.Item1?.AddRange(todasNotas);
-        
+
         ordensQuery = ordensQuery.AplicarOrdenacao(_context);
         var todasOrdens = await ordensQuery.ToListAsync().ConfigureAwait(false);
         listaUnica.Item2?.AddRange(todasOrdens);
-        
+
         return listaUnica;
     }
 
@@ -550,7 +601,7 @@ public class GenericSearchService
             .FirstOrDefaultAsync();
 
         NotaModel? ultimaNota = await _notaModels
-            .Where(o => o.IdsAtivo.Contains(ativo)) 
+            .Where(o => o.IdsAtivo.Contains(ativo))
             .OrderByDescending(o => o.DataAvaria)
             .FirstOrDefaultAsync();
 
@@ -593,7 +644,7 @@ public class GenericSearchService
                 .Where(p => p.IdPlano == codigoPlanoParaBuscar.Value)
                 .FirstOrDefaultAsync();
         }
-        
+
         // retornar tipos c do plano, invés das estratégias
         // ultima data puxar da tabela do lucas
         return new

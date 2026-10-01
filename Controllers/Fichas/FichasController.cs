@@ -143,6 +143,7 @@ public class FichasController : ControllerBase
         [FromBody] BuscaOrdemNotaDto busca,
         [FromQuery] int pagina,
         [FromQuery] int tamanho,
+        [FromQuery] bool apenasNaoAtribuidas,
         [FromQuery] Fichas? tFichas = Fichas.Ambas)
     {
         try
@@ -156,7 +157,8 @@ public class FichasController : ControllerBase
                 busca,
                 pagina,
                 tamanho,
-                tFichas);
+                tFichas,
+                apenasNaoAtribuidas);
 
             return Ok(resultados);
         }
