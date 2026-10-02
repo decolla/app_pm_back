@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Npgsql;
+using Scalar.AspNetCore;
 
 
 // apagar depois essa gambiarra aqui
@@ -67,10 +68,10 @@ builder.Services.AddCors(option => option.AddPolicy("AllowAll", policy =>
 }));
 
 // aumenta o limite de ficheiros multipart para 200 MB
-builder.Services.Configure<FormOptions>(options => 
-{ 
+builder.Services.Configure<FormOptions>(options =>
+{
     options.MultipartBodyLengthLimit = 209715200; // 200 MB de limite de tamanho
-    options.MemoryBufferThreshold = 209715200;    // Mantém arquivos de até 200MB 100% na Memória RAM
+    options.MemoryBufferThreshold = 209715200; // Mantém arquivos de até 200MB 100% na Memória RAM
 });
 
 // aumenta o limite do servidor para 200 MB
@@ -115,7 +116,8 @@ if (databaseSchema == "cg")
 
     // ef core para sql server
     builder.Services.AddDbContext<AppDbContext, SqlServerDbContext>(options =>
-        options.UseSqlServer(connectionString));
+        options.UseSqlServer(connectionString)
+               .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
 
     // config hangfire para sql server
     builder.Services.AddHangfire(config => config
@@ -147,6 +149,7 @@ else
     {
         options.UseNpgsql(dataSource,
                 npgsqlOptions => { npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", targetSchema); })
+            .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning))
             .AddInterceptors(
                 new DatabaseExceptionInterceptor(),
                 new AuditInterceptor(sp.GetRequiredService<IUserContext>()));
@@ -262,6 +265,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserContext, UserContextService>();
 
 var app = builder.Build();
+
 var schema = Environment.GetEnvironmentVariable("SCHEMA") ?? "(not set)";
 
 app.Logger.LogInformation("SCHEMA={Schema}", schema);
@@ -286,7 +290,7 @@ using (var scope = app.Services.CreateScope())
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
             //schema = "public"; // força o schema para public, para não apagar o schema correto
             //dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA {schema} CASCADE; CREATE SCHEMA {schema};");
-            dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA comgas CASCADE; CREATE SCHEMA comgas;");
+            //dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA comgas CASCADE; CREATE SCHEMA comgas;");
 
             // Garante que a conexão é aberta com o search_path configurado antes do Migrate()
             var conn = dbContext.Database.GetDbConnection();
@@ -349,5 +353,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Documentação interativa moderna (Scalar) com temas - disponível em /scalar/v1
+app.MapScalarApiReference(options =>
+{
+    options
+        .WithTitle("PM Back API")
+        .WithTheme(ScalarTheme.DeepSpace)
+        .WithOpenApiRoutePattern("/swagger/v1/swagger.json");
+});
 
 app.Run();

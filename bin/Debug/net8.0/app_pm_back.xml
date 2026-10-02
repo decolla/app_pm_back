@@ -680,7 +680,7 @@
             Faz o upload e processamento de planilhas de Notas, Ordens ou Itens
             </summary>
         </member>
-        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Int32,System.Int32,System.Nullable{app_pm_back.Models.Domain.Fichas})">
+        <member name="M:app_pm_back.Controllers.FichasControllers.FichasController.BuscarNotaOrdem(app_pm_back.Models.BuscaOrdemNotaDto,System.Int32,System.Int32,System.Nullable{System.Boolean},System.Nullable{app_pm_back.Models.Domain.Fichas})">
             <summary>
             Busca notas ou ordens de manutenção com filtros no body, retorna uma lista de objetos com os dados relevantes
             </summary>
@@ -1174,6 +1174,16 @@
         <member name="M:app_pm_back.Controllers.NotasController.ObterPorId(System.Int64)">
             <summary>
             Obtém um registro pelo seu identificador.
+            </summary>
+            <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
+            <returns>O objeto correspondente cadastrado.</returns>
+            <response code="200">Sucesso ao obter o registro.</response>
+            <response code="400">ID fornecido inválido.</response>
+            <response code="404">Registro não encontrado no banco de dados.</response>
+        </member>
+        <member name="M:app_pm_back.Controllers.NotasController.ObterPayloadPorId(System.Int64)">
+            <summary>
+            Obtém um payload de registro pelo seu identificador.
             </summary>
             <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
             <returns>O objeto correspondente cadastrado.</returns>
@@ -2804,11 +2814,6 @@
         <member name="P:app_pm_back.Models.Domain.PlanoModel.DataConclusao">
             <summary>
             Data em que o plano foi ou deve ser concluído.
-            </summary>
-        </member>
-        <member name="P:app_pm_back.Models.Domain.PlanoModel.IdAtivo">
-            <summary>
-            Identificador do Ativo vinculado.
             </summary>
         </member>
         <member name="P:app_pm_back.Models.Domain.PlanoModel.IdLi">
@@ -5397,6 +5402,11 @@
             Retorna todas as pastas onde uma Nota específica está guardada
             </summary>
         </member>
+        <member name="M:app_pm_back.Services.Manutencao.NotaService.GetNotaParcialAsync(System.Int64)">
+            <summary>
+            Retorna os dados parciais de uma Nota específica.
+            </summary>
+        </member>
         <member name="M:app_pm_back.Services.Manutencao.NotaService.NotificarNotaAsync(System.Int64,System.String)">
             <summary>
             Envia uma notificação para o usuário responsável pela nota.
@@ -5594,7 +5604,7 @@
             <param name="parcial"></param>
             <returns>Resultado da operação.</returns>
         </member>
-        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.BuscarNotaOrdemAsync(System.Object,System.Int32,System.Int32,System.Nullable{app_pm_back.Models.Domain.Fichas})">
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.BuscarNotaOrdemAsync(System.Object,System.Int32,System.Int32,System.Nullable{app_pm_back.Models.Domain.Fichas},System.Boolean)">
             <summary>
             Busca por notas e ordens com base em uma filtragem aplicada.
             </summary>
@@ -5611,6 +5621,13 @@
             <param name="busca">Parâmetro do método.</param>
             <param name="p">Página de exibição.</param>
             <param name="t">Tamanho da página.</param>
+            <returns>Resultado da operação.</returns>
+        </member>
+        <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.FiltrarFichasNaoAtribuidasAsync(System.Object)">
+            <summary>
+            Filtra fichas que não foram atribuídas a nenhum usuário.
+            </summary>
+            <param name="busca">Parâmetro do método.</param>
             <returns>Resultado da operação.</returns>
         </member>
         <member name="M:app_pm_back.Services.GenericServices.GenericSearchService.QueryNotaOrdemAsync(System.Object,System.Linq.IQueryable{app_pm_back.Models.Domain.NotaModel},System.Linq.IQueryable{app_pm_back.Models.Domain.OrdemModel})">
