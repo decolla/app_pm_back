@@ -26,9 +26,6 @@ public class PlanoManutencaoDto
 
     [SheetColumn("Id Estratégia")] public int? IdEstrategia { get; set; }
 
-    // Ativo externo (apenas o ID).
-    [SheetColumn("Id Ativo")] public ComponentType? IdAtivo { get; set; }
-
     // Local de instalação (LI) vinculado ao ativo.
     [SheetColumn("Id Li")] public string? IdLi { get; set; }
 }

@@ -47,11 +47,6 @@ public class PlanoModel
     /// Data em que o plano foi ou deve ser concluído.
     /// </summary>
     public DateTime? DataConclusao { get; set; }
-
-    /// <summary>
-    /// Identificador do Ativo vinculado.
-    /// </summary>
-    public ComponentType? IdAtivo { get; set; }
     
     /// <summary>
     /// Chave estrangeira para a localização de instalação do ativo.

@@ -320,7 +320,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 10, 1, 17, 20, 27, 358, DateTimeKind.Utc).AddTicks(2073),
+                            DataModificacao = new DateTime(2026, 10, 2, 12, 14, 41, 426, DateTimeKind.Utc).AddTicks(5902),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = new List<string>(),
                             PalavrasNaturezaCausaCorretiva = new List<string>()
@@ -1062,9 +1062,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("GerarAutomaticamente")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("IdAtivo")
                         .HasColumnType("integer");
 
                     b.Property<long?>("IdEstrategia")

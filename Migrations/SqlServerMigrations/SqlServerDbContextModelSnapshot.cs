@@ -319,7 +319,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                             CriarFichasPreventivas = 0,
                             CriterioConfiabilidadeRenovacao = 2,
                             CriterioDataRenovacao = 3,
-                            DataModificacao = new DateTime(2026, 10, 1, 17, 20, 18, 703, DateTimeKind.Utc).AddTicks(5959),
+                            DataModificacao = new DateTime(2026, 10, 2, 12, 14, 33, 585, DateTimeKind.Utc).AddTicks(8592),
                             FichasConfiabilidade = 2,
                             PalavrasNaturezaCausaAlheia = "[]",
                             PalavrasNaturezaCausaCorretiva = "[]"
@@ -1061,9 +1061,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("GerarAutomaticamente")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IdAtivo")
                         .HasColumnType("int");
 
                     b.Property<long?>("IdEstrategia")
