@@ -30,6 +30,18 @@ builder.WebHost.UseUrls("http://+:60135");
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "PM Back API",
+        Version = "v1.0",
+        Description = "### API PM Back\n\n" +
+                      "> **Nova Documentação Disponível:** **[Scalar Docs](/scalar/v1)**\n\n" +
+                      "Backend para gerenciamento de Notas, Ordens, Planos de Manutenção, Fichas e Integrações.\n\n" +
+                      "- **Autenticação:** JWT Bearer\n" +
+                      "- **Plataforma:** .NET 10\n" +
+                      "- **Rotas Interativas:** Teste e documentação unificada"
+    });
+
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,
         $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
     c.CustomSchemaIds(type => type.FullName ?? type.Name);
@@ -341,7 +353,55 @@ app.UseSwagger(c =>
         }
     });
 });
-app.UseSwaggerUI();
+
+app.UseSwaggerUI(c =>
+{
+    // Tema no Swagger UI
+    c.InjectStylesheet("https://cdn.jsdelivr.net/npm/swagger-ui-themes@3.0.1/themes/3.x/theme-muted.css");
+
+    // Barra de aviso no topo do Swagger direcionando para o Scalar
+    c.HeadContent = @"
+        <style>
+            .scalar-top-bar {
+                background: linear-gradient(90deg, #1e1b4b 0%, #312e81 100%);
+                color: #e0e7ff;
+                padding: 10px 24px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                position: sticky;
+                top: 0;
+                z-index: 10000;
+            }
+            .scalar-top-bar a.btn-scalar {
+                background: #6366f1;
+                color: #ffffff !important;
+                padding: 6px 16px;
+                border-radius: 6px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 13px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                transition: background 0.2s, transform 0.1s;
+            }
+            .scalar-top-bar a.btn-scalar:hover {
+                background: #4f46e5;
+                transform: translateY(-1px);
+            }
+        </style>
+        <script>
+            window.addEventListener('DOMContentLoaded', function () {
+                var bar = document.createElement('div');
+                bar.className = 'scalar-top-bar';
+                bar.innerHTML = '<span><strong>Nova Documentação:</strong> Interface <strong>Scalar</strong> com melhor documentação e recursos aprimorados</span>' +
+                                '<a href=""/scalar/v1"" class=""btn-scalar"">Acessar Scalar Docs</a>';
+                document.body.prepend(bar);
+            });
+        </script>";
+});
 
 // permite que o angular realize 
 app.UseCors("AllowAll");
@@ -353,12 +413,26 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Documentação interativa moderna (Scalar) com temas - disponível em /scalar/v1
+// Documentação interativa moderna (Scalar) com temas e recursos aprimorados - disponível em /scalar/v1
 app.MapScalarApiReference(options =>
 {
     options
-        .WithTitle("PM Back API")
+        .WithTitle("PM Back API - Documentação Interativa")
         .WithTheme(ScalarTheme.DeepSpace)
+        .WithLayout(ScalarLayout.Modern)
+        .WithSidebar(true)
+        .WithModels(true)
+        .WithSearchHotKey("k")
+        .WithDarkModeToggle(true)
+        .WithDefaultOpenAllTags(false)
+        .WithOrderRequiredPropertiesFirst(true)
+        .WithPreferredScheme("Bearer")
+        .WithPersistentAuthentication(true)
+        .WithHttpBearerAuthentication(bearer =>
+        {
+            bearer.Token = "";
+        })
+        .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
         .WithOpenApiRoutePattern("/swagger/v1/swagger.json");
 });
 
