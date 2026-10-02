@@ -397,7 +397,7 @@ app.UseSwaggerUI(c =>
                 var bar = document.createElement('div');
                 bar.className = 'scalar-top-bar';
                 bar.innerHTML = '<span><strong>Nova Documentação:</strong> Interface <strong>Scalar</strong> com melhor documentação e recursos aprimorados</span>' +
-                                '<a href=""/scalar/v1"" class=""btn-scalar"">Acessar Scalar Docs</a>';
+                                '<a href=""/comgas/pm/api/scalar/"" class=""btn-scalar"">Acessar Scalar Docs</a>';
                 document.body.prepend(bar);
             });
         </script>";
