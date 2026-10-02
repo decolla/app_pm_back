@@ -24,6 +24,7 @@ public class SqlServerDbContextFactory : IDesignTimeDbContextFactory<SqlServerDb
     {
         var optionsBuilder = new DbContextOptionsBuilder<SqlServerDbContext>();
         optionsBuilder.UseSqlServer("Server=localhost;Database=pm_dummy;User Id=sa;Password=senha;TrustServerCertificate=True;");
+        optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
         
         // passa o contexto falso para o terminal
         return new SqlServerDbContext(optionsBuilder.Options, new DesignTimeUserContext()); 
@@ -42,6 +43,7 @@ public class PostgresDbContextFactory : IDesignTimeDbContextFactory<PostgresDbCo
 
         var optionsBuilder = new DbContextOptionsBuilder<PostgresDbContext>();
         optionsBuilder.UseNpgsql(connectionString);
+        optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
 
         // passa o contexto falso para o terminal
         return new PostgresDbContext(optionsBuilder.Options, new DesignTimeUserContext());

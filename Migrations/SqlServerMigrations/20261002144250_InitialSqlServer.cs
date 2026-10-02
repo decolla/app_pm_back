@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -242,7 +242,8 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     Telefone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Permissoes = table.Column<int>(type: "int", nullable: true),
                     NivelPermissao = table.Column<int>(type: "int", nullable: true),
-                    Escopos = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Escopos = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Favoritos = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1022,7 +1023,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                 schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 10, 2, 12, 14, 33, 585, DateTimeKind.Utc).AddTicks(8592), 2, null, null, "[]", "[]" });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, null, null, "[]", "[]" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",

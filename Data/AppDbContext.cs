@@ -24,6 +24,12 @@ public class AppDbContext : DbContext
         _userContext = userContext;
     }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        optionsBuilder.ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -172,7 +178,8 @@ public class AppDbContext : DbContext
             FichasConfiabilidade = OrigemFichasConfiabilidade.ConsiderarTambemAlgoritmo,
             ClassificacaoAutomatica = ModoClassificacaoAutomatica.NaoClassificar,
             CriterioDataRenovacao = CriterioDataRenovacao.ConsiderarTodasClassificacoes,
-            CriterioConfiabilidadeRenovacao = CriterioConfiabilidadeRenovacao.ConsiderarTambemAlgoritmo
+            CriterioConfiabilidadeRenovacao = CriterioConfiabilidadeRenovacao.ConsiderarTambemAlgoritmo,
+            DataModificacao = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         });
 
         // FILTROS DE ESCOPO

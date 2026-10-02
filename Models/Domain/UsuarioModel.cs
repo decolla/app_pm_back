@@ -56,6 +56,8 @@ public class UsuarioModel
     /// Lista de escopos aos quais o usuário tem acesso.
     /// </summary>
     public List<long> Escopos { get; set; } = new List<long>();
+    
+    public List<string> Favoritos { get; set; } = new List<string>();
 
     /// <summary>
     /// Coleção de notas associadas ao usuário.

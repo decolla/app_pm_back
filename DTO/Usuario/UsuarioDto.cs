@@ -47,6 +47,12 @@ public class UsuarioDto
     /// </summary>
     [SheetColumn("Id Escopo")]
     public List<long> Escopos { get; set; } = new List<long>();
+    
+    /// <summary>
+    /// Lista de favoritos do usuário.
+    /// </summary>
+    [SheetColumn("Favoritos")]
+    public List<string> Favoritos { get; set; } = new List<string>();
 }
 
 #pragma warning restore CS1591
