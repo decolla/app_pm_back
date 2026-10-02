@@ -2,7 +2,7 @@ using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO.Buscas;
 
-public class FiltroDashboardDTO
+public class FiltroDashboardDto
 {
     public ComponentType? Ativo { get; set; }
     

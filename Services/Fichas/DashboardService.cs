@@ -25,7 +25,7 @@ public class DashboardService
     /// </summary>
     /// <param name="filtro">Filtro para notas e ordens</param>
     /// <returns></returns>
-    public async Task<object> GetDashboardDataAsync(FiltroDashboardDTO filtro)
+    public async Task<object> GetDashboardDataAsync(FiltroDashboardDto filtro)
     {
         // aplica a filtragem em notas e ordens
         List<NotaModel> notas = await GetNotasAsync(filtro);
@@ -57,7 +57,7 @@ public class DashboardService
     /// </summary>
     /// <param name="filtro">Filtro estabelecido</param>
     /// <returns>Notas filtradas</returns>
-    private async Task<List<NotaModel>> GetNotasAsync(FiltroDashboardDTO filtro)
+    private async Task<List<NotaModel>> GetNotasAsync(FiltroDashboardDto filtro)
     {
         try
         {
@@ -112,7 +112,7 @@ public class DashboardService
     /// </summary>
     /// <param name="filtro">Filtro a ser aplicado</param>
     /// <returns>Ordens filtradas</returns>
-    private async Task<List<OrdemModel>> GetOrdensAsync(FiltroDashboardDTO filtro)
+    private async Task<List<OrdemModel>> GetOrdensAsync(FiltroDashboardDto filtro)
     {
 
         try
