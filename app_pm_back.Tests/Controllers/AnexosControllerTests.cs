@@ -202,7 +202,11 @@ public class AnexosControllerTests
     {
         // Arrange
         var mockAnnexService = new Mock<AnnexService>(null!);
-        var list = new List<(long, string)> { (1L, "file1.txt"), (2L, "file2.txt") };
+        var list = new List<AnexoDto>
+        {
+            new() { IdAnexo = 1L, Nome = "file1.txt" },
+            new() { IdAnexo = 2L, Nome = "file2.txt" }
+        };
         mockAnnexService.Setup(s => s.BuscarAnexo(It.IsAny<long?>(), It.IsAny<long?>(), It.IsAny<string>()))
             .ReturnsAsync(list);
 

@@ -1,8 +1,10 @@
 using System.Runtime.InteropServices.JavaScript;
 using app_pm_back.Data;
 using app_pm_back.DTO.Buscas;
+using app_pm_back.Dto.Fichas;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace app_pm_back.Services.FichasServices;
 
@@ -13,11 +15,13 @@ public class DashboardService
 {
     private readonly AppDbContext _context;
     private readonly ILogger<DashboardService> _logger;
+    private readonly IMemoryCache _cache;
 
-    public DashboardService(AppDbContext context, ILogger<DashboardService> logger)
+    public DashboardService(AppDbContext context, ILogger<DashboardService> logger, IMemoryCache cache)
     {
         _logger = logger;
         _context = context;
+        _cache = cache;
     }
 
     /// <summary>
@@ -25,31 +29,49 @@ public class DashboardService
     /// </summary>
     /// <param name="filtro">Filtro para notas e ordens</param>
     /// <returns></returns>
-    public async Task<object> GetDashboardDataAsync(FiltroDashboardDto filtro)
+    public async Task<DashboardDto> GetDashboardDataAsync()
     {
-        // aplica a filtragem em notas e ordens
-        List<NotaModel> notas = await GetNotasAsync(filtro);
-        List<OrdemModel> ordens = await GetOrdensAsync(filtro);
+        var cacheKey = "dashboard_data";
 
-        var statusSemana = RelacaoStatusOrdensSemana(notas, filtro.UnidadeTempo);
-        
-        // retorna objeto com todas as informações do Dashboard
-        return new
+        // busca no cache, se não estiver lá, gera os dados
+        if (!_cache.TryGetValue(cacheKey, out DashboardDto? dashboardDto))
         {
-            RelacaoStatusOrdens = RelacaoStatusOrdens(notas, notas.Count),
-            NotasAbertasRelacaoPrazo = NotasAbertasRelacaoPrazo(notas),
-            TopLiOcorrencias = TopLiOcorrencias(notas, ordens)
-                .ToDictionary(x => x.Key, x => new { Notas = x.Value.notas, Ordens = x.Value.ordens }),
-            RelacaoStatusOrdensSemana = statusSemana.Item1,
-            NotasAbertasRelacaoPrazoSemana = statusSemana.Item2,
-            RankingTempoVida = RankingTempoVida(notas, ordens)
-                .Select(x => new
-                {
-                    Nota = new { IdNota = x.Item1.Item1, VidaNota = x.Item1.Item2 },
-                    Ordem = new { IdOrdem = x.Item2.Item1, VidaOrdem = x.Item2.Item2 }
-                })
-                .ToList()
-        };
+            _logger.LogInformation("Dados não encontrados no cache. Gerando dados do dashboard...");
+            
+            // aplica a filtragem em notas e ordens
+            List<NotaModel> notas = await GetNotasAsync();
+            List<OrdemModel> ordens = await GetOrdensAsync();
+
+            var statusSemana = RelacaoStatusOrdensSemana(notas, UnidadeTempo.Meses);
+
+            if(dashboardDto == null)
+                dashboardDto = new DashboardDto();
+            
+            dashboardDto.RelacaoStatusOrdens = RelacaoStatusOrdens(notas, notas.Count);
+            dashboardDto.NotasAbertasRelacaoPrazo = NotasAbertasRelacaoPrazo(notas);
+            dashboardDto.TopLiOcorrencias = TopLiOcorrencias(notas, ordens)
+                .ToDictionary(x => x.Key, x => (x.Value.notas, x.Value.ordens));
+            dashboardDto.RelacaoStatusOrdensSemana = statusSemana.Item1;
+            dashboardDto.NotasAbertasRelacaoPrazoSemana = statusSemana.Item2;
+            dashboardDto.RankingTempoVida = RankingTempoVida(notas, ordens)
+                .Select(x =>
+                (
+                    (x.Item1.Item1, x.Item1.Item2),
+                    (x.Item2.Item1, x.Item2.Item2)
+                ))
+                .ToList();
+
+            _cache.Set(cacheKey, dashboardDto, TimeSpan.FromMinutes(10));
+            
+            // adiciona ao cache
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetPriority(CacheItemPriority.High);
+
+            _cache.Set(cacheKey, dashboardDto, cacheOptions);
+        }
+
+        if (dashboardDto != null) return dashboardDto;
+        throw new InvalidOperationException("Não foi possível obter os dados do dashboard.");
     }
 
     /// <summary>
@@ -57,7 +79,7 @@ public class DashboardService
     /// </summary>
     /// <param name="filtro">Filtro estabelecido</param>
     /// <returns>Notas filtradas</returns>
-    private async Task<List<NotaModel>> GetNotasAsync(FiltroDashboardDto filtro)
+    private async Task<List<NotaModel>> GetNotasAsync()
     {
         try
         {
@@ -66,45 +88,13 @@ public class DashboardService
                 .AsNoTracking()
                 .AsQueryable();
 
-            if (filtro.Ativo.HasValue)
-            {
-                query = query.Where(n => n.IdsAtivo.Contains(filtro.Ativo.Value));
-            }
-
-            if (filtro.Ultimos.HasValue && filtro.Ultimos.Value > 0)
-            {
-                DateTime dataLimite;
-                if (filtro.UnidadeTempo == UnidadeTempo.Meses)
-                    dataLimite = DateTime.Now.AddMonths(-filtro.Ultimos.Value);
-                else if (filtro.UnidadeTempo == UnidadeTempo.Anos)
-                    dataLimite = DateTime.Now.AddYears(-filtro.Ultimos.Value);
-                else
-                    dataLimite = DateTime.Now.AddDays(-filtro.Ultimos.Value);
-
-                query = query.Where(n => n.DataNota >= dataLimite);
-            }
-
-            // if (filtro.NumeroRegistro.HasValue)
-            // {
-            //     query = query.Where(n => n.IdNota == filtro.NumeroRegistro.Value);
-            // }
-
-            if (!string.IsNullOrEmpty(filtro.IdLi))
-            {
-                query = query.Where(n => n.IdLi == filtro.IdLi);
-            }
-
-            _logger.LogInformation("Filtro aplicado com sucesso em Notas: {filtro}", filtro);
-
             // retorna notas filtradas
             return await query.ToListAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao filtrar notas: {filtro}", filtro);
-            throw new ArgumentException("Erro ao filtrar notas: {filtro}", ex);
+            throw new ArgumentException("Erro ao obter notas:", ex);
         }
-        
     }
 
     /// <summary>
@@ -112,9 +102,8 @@ public class DashboardService
     /// </summary>
     /// <param name="filtro">Filtro a ser aplicado</param>
     /// <returns>Ordens filtradas</returns>
-    private async Task<List<OrdemModel>> GetOrdensAsync(FiltroDashboardDto filtro)
+    private async Task<List<OrdemModel>> GetOrdensAsync()
     {
-
         try
         {
             var query = _context.PM_Ordens
@@ -122,42 +111,11 @@ public class DashboardService
                 .ThenInclude(n => n.Ordens)
                 .AsQueryable();
 
-            if (filtro.Ativo.HasValue)
-            {
-                query = query.Where(n => n.IdsAtivo.Contains(filtro.Ativo.Value));
-            }
-
-            if (filtro.Ultimos.HasValue && filtro.Ultimos.Value > 0)
-            {
-                DateTime dataLimite;
-                if (filtro.UnidadeTempo == UnidadeTempo.Meses)
-                    dataLimite = DateTime.Now.AddMonths(-filtro.Ultimos.Value);
-                else if (filtro.UnidadeTempo == UnidadeTempo.Anos)
-                    dataLimite = DateTime.Now.AddYears(-filtro.Ultimos.Value);
-                else
-                    dataLimite = DateTime.Now.AddDays(-filtro.Ultimos.Value);
-
-                query = query.Where(n => n.DataCriacao >= dataLimite);
-            }
-
-            // if (filtro.NumeroRegistro.HasValue)
-            // {
-            //     query = query.Where(n => n.IdOrdem == filtro.NumeroRegistro.Value);
-            // }
-
-            if (!string.IsNullOrEmpty(filtro.IdLi))
-            {
-                query = query.Where(n => n.IdLi == filtro.IdLi);
-            }
-
-            _logger.LogInformation("Filtro aplicado com sucesso em Ordens: {filtro}", filtro);
-
             return await query.ToListAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao filtrar ordens: {filtro}", filtro);
-            throw new ArgumentException("Erro ao filtrar ordens: {filtro}", ex);
+            throw new ArgumentException("Erro ao obter ordens:", ex);
         }
     }
 
@@ -209,7 +167,7 @@ public class DashboardService
             .Count(o => o.Any(oo => oo.FimReal > DateTime.Now));
 
         _logger.LogInformation("Notas abertas com realção ao prazo geradas com suceeso.");
-        
+
         return new
         {
             NotasComOrdemNoPrazo = notasComOrdemNoPrazo,
@@ -253,7 +211,7 @@ public class DashboardService
         foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdLi, false);
 
         _logger.LogInformation("Top (7) ocorrências de locais de insalação gerados com sucesso.");
-        
+
         // ordena as notas
         return liOcorrencias
             .OrderByDescending(x => x.Value)
@@ -279,10 +237,10 @@ public class DashboardService
         DateTime dataInicial = notasOrdenadas.First().DataNota!.Value;
 
         int valorTemporal = 1;
-        
-        if(unidadeTempo == UnidadeTempo.Meses)
+
+        if (unidadeTempo == UnidadeTempo.Meses)
             valorTemporal = 30;
-        else if(unidadeTempo == UnidadeTempo.Anos)
+        else if (unidadeTempo == UnidadeTempo.Anos)
             valorTemporal = 365;
 
         // agrupa as notas por semana
@@ -332,7 +290,7 @@ public class DashboardService
                 NotasComOrdemAtrasadas = notasComOrdemAtrasadas
             });
         }
-        
+
         _logger.LogInformation("Relação semanal de status e prazos gerados com sucesso.");
 
         return (relacaoStatus, relacaoPrazo);
@@ -392,7 +350,7 @@ public class DashboardService
             .OrderByDescending(r => r.Item1.Item2 ?? r.Item2.Item2 ?? TimeSpan.MaxValue)
             .Take(7)
             .ToList();
-        
+
         _logger.LogInformation("Ranking de top (7) tempos de vida gerado com sucesso.");
 
         return top;

@@ -206,15 +206,13 @@ public class FichasController : ControllerBase
     /// <summary>
     /// Extrai os dados necessários para o Dashboard
     /// </summary>
-    /// <param name="filtro">Filtro a ser aplicado nas fichas</param>
     /// <returns>Estatísticas do dashboard</returns>
     [HttpGet("dashboard")]
-    public async Task<IActionResult> GetDashboard(
-        [FromQuery] FiltroDashboardDto filtro)
+    public async Task<IActionResult> GetDashboard()
     {
         try
         {
-            var resultados = await _dashboardService.GetDashboardDataAsync(filtro);
+            var resultados = await _dashboardService.GetDashboardDataAsync();
 
             return Ok(resultados);
         }

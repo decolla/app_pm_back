@@ -258,8 +258,8 @@ public class AnnexServiceTests
         // Assert
         result.Should().NotBeNull();
         result.Count.Should().Be(2);
-        result.Should().Contain((10L, "file1.txt"));
-        result.Should().Contain((11L, "file2.txt"));
+        result.Should().ContainSingle(a => a.IdAnexo == 10L && a.Nome == "file1.txt");
+        result.Should().ContainSingle(a => a.IdAnexo == 11L && a.Nome == "file2.txt");
     }
 
     [Fact]
@@ -283,7 +283,7 @@ public class AnnexServiceTests
         // Assert
         result.Should().NotBeNull();
         result.Count.Should().Be(2);
-        result.Should().Contain((30L, "file1.txt"));
-        result.Should().Contain((31L, "file2.txt"));
+        result.Should().ContainSingle(a => a.IdAnexo == 30L && a.Nome == "file1.txt");
+        result.Should().ContainSingle(a => a.IdAnexo == 31L && a.Nome == "file2.txt");
     }
 }
