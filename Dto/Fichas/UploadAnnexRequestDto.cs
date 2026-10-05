@@ -22,16 +22,6 @@ public class UploadAnnexRequestDto
     /// Id da ordem associada.
     /// </summary>
     public long? OrdemId { get; set; }
-
-    /// <summary>
-    /// Id da entidade referenciada (legado).
-    /// </summary>
-    public long? ReferenciaId { get; set; }
-
-    /// <summary>
-    /// Tipo da entidade referenciada.
-    /// </summary>
-    public string TipoReferencia { get; set; } = string.Empty;
     
     /// <summary>
     /// Categoria do anexo.

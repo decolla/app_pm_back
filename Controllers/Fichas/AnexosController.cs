@@ -42,7 +42,7 @@ public class AnexosController : ControllerBase
             return BadRequest(new { message = error });
         }
 
-        dynamic result = await _annexService.UploadAnexo(request.Arquivo, notaId, ordemId, request.TipoReferencia,
+        dynamic result = await _annexService.UploadAnexo(request.Arquivo, notaId, ordemId,
             request.Categoria);
         return Ok(new { message = $"Arquivo enviado com sucesso {result.IdAnexo}" });
     }
@@ -74,26 +74,21 @@ public class AnexosController : ControllerBase
     /// <response code="200">Sucesso ao obter o registro.</response>
     /// <response code="400">ID fornecido inválido.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
-    [HttpGet("referencia/{referenciaId:long}/{tipoReferencia}")]
+    [HttpGet("referencia/{referenciaId:long}/{categoria}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> BuscarArquivo([FromRoute] long referenciaId, [FromRoute] string tipoReferencia)
+    public async Task<IActionResult> BuscarArquivo([FromRoute] long referenciaId, [FromRoute] CategoriaAnexo categoria)
     {
         if (referenciaId <= 0)
         {
             return BadRequest(new { message = "ReferenciaId e obrigatorio." });
         }
 
-        if (!Enum.TryParse<TipoReferencia>(tipoReferencia, true, out var tipo))
-        {
-            return BadRequest(new { message = "TipoReferencia invalido." });
-        }
+        long? notaId = categoria == CategoriaAnexo.Nota ? referenciaId : null;
+        long? ordemId = categoria == CategoriaAnexo.Ordem ? referenciaId : null;
 
-        long? notaId = tipo == TipoReferencia.Nota ? referenciaId : null;
-        long? ordemId = tipo == TipoReferencia.Ordem ? referenciaId : null;
-
-        var list = await _annexService.BuscarAnexo(notaId, ordemId, tipoReferencia);
+        var list = await _annexService.BuscarAnexo(notaId, ordemId, categoria);
         return Ok(list);
     }
 
@@ -187,25 +182,6 @@ public class AnexosController : ControllerBase
         if (notaId.HasValue || ordemId.HasValue)
         {
             return true;
-        }
-
-        if (request.ReferenciaId.HasValue && request.ReferenciaId > 0 &&
-            !string.IsNullOrWhiteSpace(request.TipoReferencia))
-        {
-            if (Enum.TryParse<TipoReferencia>(request.TipoReferencia, true, out var tipo))
-            {
-                if (tipo == TipoReferencia.Nota)
-                {
-                    notaId = request.ReferenciaId.Value;
-                    return true;
-                }
-
-                if (tipo == TipoReferencia.Ordem)
-                {
-                    ordemId = request.ReferenciaId.Value;
-                    return true;
-                }
-            }
         }
 
         error = "Informe NotaId, OrdemId ou um par de ReferenciaId/TipoReferencia valido.";
