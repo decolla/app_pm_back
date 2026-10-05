@@ -42,8 +42,7 @@ public class AnexosController : ControllerBase
             return BadRequest(new { message = error });
         }
 
-        dynamic result = await _annexService.UploadAnexo(request.Arquivo, notaId, ordemId,
-            request.Categoria);
+        dynamic result = await _annexService.UploadAnexo(request.Arquivo, notaId, ordemId);
         return Ok(new { message = $"Arquivo enviado com sucesso {result.IdAnexo}" });
     }
 
@@ -74,19 +73,19 @@ public class AnexosController : ControllerBase
     /// <response code="200">Sucesso ao obter o registro.</response>
     /// <response code="400">ID fornecido inválido.</response>
     /// <response code="404">Registro não encontrado no banco de dados.</response>
-    [HttpGet("referencia/{referenciaId:long}/{categoria}")]
+    [HttpGet("referencia/{id:long}/{categoria}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> BuscarArquivo([FromRoute] long referenciaId, [FromRoute] CategoriaAnexo categoria)
+    public async Task<IActionResult> BuscarArquivo([FromRoute] long id, [FromRoute] CategoriaAnexo categoria)
     {
-        if (referenciaId <= 0)
+        if (id <= 0)
         {
             return BadRequest(new { message = "ReferenciaId e obrigatorio." });
         }
 
-        long? notaId = categoria == CategoriaAnexo.Nota ? referenciaId : null;
-        long? ordemId = categoria == CategoriaAnexo.Ordem ? referenciaId : null;
+        long? notaId = categoria == CategoriaAnexo.Nota ? id : null;
+        long? ordemId = categoria == CategoriaAnexo.Ordem ? id : null;
 
         var list = await _annexService.BuscarAnexo(notaId, ordemId, categoria);
         return Ok(list);
@@ -187,10 +186,5 @@ public class AnexosController : ControllerBase
         error = "Informe NotaId, OrdemId ou um par de ReferenciaId/TipoReferencia valido.";
         return false;
     }
-
-    public enum TipoReferencia
-    {
-        Nota,
-        Ordem
-    }
+    
 }

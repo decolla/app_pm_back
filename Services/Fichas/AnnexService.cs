@@ -1,4 +1,5 @@
 using app_pm_back.Data;
+using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,8 +27,7 @@ public class AnnexService
     /// <param name="tipoReferencia">Parâmetro do método.</param>
     /// <param name="categoria">Parâmetro do método.</param>
     /// <returns>Resultado da operação.</returns>
-    public virtual async Task<object> UploadAnexo(IFormFile file, long? notaId, long? ordemId,
-        CategoriaAnexo categoria)
+    public virtual async Task<object> UploadAnexo(IFormFile file, long? notaId, long? ordemId)
     {
         ValidateAssociacao(notaId, ordemId);
 
@@ -55,7 +55,7 @@ public class AnnexService
                 TipoArquivo = file.ContentType,
                 Dados = stream.ToArray(),
                 IdOrdem = ordemId!.Value,
-                TipoAnexo = categoria.ToString()
+                TipoAnexo = file.ContentDisposition
             };
             _context.PM_AnexosOrdem.Add(anexo);
             await _context.SaveChangesAsync();
@@ -80,24 +80,48 @@ public class AnnexService
         return null;
     }
 
-    public virtual async Task<List<(long, string)>> BuscarAnexo(long? notaId, long? ordemId, CategoriaAnexo categoria)
+    /// <summary>
+    /// Busca anexos por critérios específicos.
+    /// </summary>
+    /// <param name="notaId">ID da nota associada.</param>
+    /// <param name="ordemId">ID da ordem associada.</param>
+    /// <param name="categoria">Categoria do anexo.</param>
+    /// <returns>Lista de anexos encontrados.</returns>
+    public virtual async Task<List<AnexoDto>> BuscarAnexo(long? notaId, long? ordemId, CategoriaAnexo categoria)
     {
         ValidateAssociacao(notaId, ordemId);
 
-        if (notaId.HasValue)
+        if (categoria == CategoriaAnexo.Nota)
         {
-            return await _context.PM_AnexosNota
-                .Where(a => a.IdNota == notaId.Value)
-                .Select(a => new ValueTuple<long, string>((long)a.IdAnexoNota, a.Nome))
-                .ToListAsync();
+            if (notaId.HasValue)
+            {
+                return await _context.PM_AnexosNota
+                    .Where(a => a.IdNota == notaId.Value)
+                    .Select(a => new AnexoDto
+                    {
+                        IdAnexo = a.IdAnexoNota,
+                        Nome = a.Nome
+                    })
+                    .ToListAsync();
+            }
+            throw new ArgumentException("O ID da nota é obrigatório para o tipo de anexo Nota.");
         }
-        else
+        else if(categoria == CategoriaAnexo.Ordem)
         {
-            return await _context.PM_AnexosOrdem
-                .Where(a => a.IdOrdem == ordemId!.Value)
-                .Select(a => new ValueTuple<long, string>((long)a.IdAnexoOrdem, a.Nome))
-                .ToListAsync();
+            if (ordemId.HasValue)
+            {
+                return await _context.PM_AnexosOrdem
+                    .Where(a => a.IdOrdem == ordemId.Value)
+                    .Select(a => new AnexoDto
+                    {
+                        IdAnexo = a.IdAnexoOrdem,
+                        Nome = a.Nome
+                    })
+                    .ToListAsync();
+            }
+            throw new ArgumentException("O ID da ordem é obrigatório para o tipo de anexo Ordem.");
         }
+        throw new ArgumentException("Categoria de anexo inválida.");
     }
 
     private static void ValidateAssociacao(long? notaId, long? ordemId)

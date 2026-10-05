@@ -23,8 +23,4 @@ public class UploadAnnexRequestDto
     /// </summary>
     public long? OrdemId { get; set; }
     
-    /// <summary>
-    /// Categoria do anexo.
-    /// </summary>
-    public CategoriaAnexo Categoria { get; set; } = CategoriaAnexo.Outros;
 }
