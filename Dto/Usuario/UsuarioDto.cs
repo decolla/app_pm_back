@@ -3,8 +3,6 @@ using app_pm_back.Models.Domain;
 
 namespace app_pm_back.DTO;
 
-#pragma warning disable CS1591
-
 /// <summary>
 /// DTO de importacao para usuarios SAP .
 /// </summary>
@@ -54,5 +52,3 @@ public class UsuarioDto
     [SheetColumn("Favoritos")]
     public List<string> Favoritos { get; set; } = new List<string>();
 }
-
-#pragma warning restore CS1591

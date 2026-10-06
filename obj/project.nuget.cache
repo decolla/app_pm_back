@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ShQ8R38KiLM=",
+  "dgSpecHash": "+UdmjmgD4xU=",
   "success": true,
   "projectFilePath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj",
   "expectedPackageFiles": [
@@ -87,7 +87,7 @@
     {
       "code": "NU1510",
       "level": "Warning",
-      "message": "PackageReference Microsoft.Extensions.Configuration.Json will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "message": "PackageReference Microsoft.Extensions.Configuration.Json não será podado. Considere remover este pacote das dependências, pois\u00A0ele provavelmente é desnecessário.",
       "projectPath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj",
       "warningLevel": 1,
       "filePath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj",
@@ -99,7 +99,7 @@
     {
       "code": "NU1903",
       "level": "Warning",
-      "message": "Package 'AutoMapper' 12.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x",
+      "message": "O pacote 'AutoMapper' 12.0.1 tem uma alta vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-rvv3-g6hj-g44x",
       "projectPath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj",
       "warningLevel": 1,
       "filePath": "/home/decolla/Documentos/Códigos/app_pm_back/app_pm_back.csproj",

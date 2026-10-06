@@ -69,7 +69,7 @@ public class DashboardService
             dashboardDto.NotasUsuario = await NotasUsuario();
             
             
-            // adiciona ao cache
+            // adiciona ao cache o dashboard gerado, com prioridade alta e expiração de 24 horas
             var cacheOptions = new MemoryCacheEntryOptions()
                 .SetPriority(CacheItemPriority.High)
                 .SetAbsoluteExpiration(TimeSpan.FromHours(24))
@@ -364,8 +364,13 @@ public class DashboardService
         return top;
     }
     
+    /// <summary>
+    /// Estatísticas de notas do usuário atual
+    /// </summary>
+    /// <returns></returns>
     public async Task<Dictionary<StatusFichas, int>> NotasUsuario()
     {
+        // busca o usuário 
         var usuario = _userContext.GetUsuarioIdAtual();
         if (usuario == null)
             _logger.LogError("Não foi possível obter o ID do usuário atual.");
@@ -383,6 +388,7 @@ public class DashboardService
         
         Dictionary<StatusFichas, int> pedidos = new Dictionary<StatusFichas, int>();
 
+        // incrementa o contador para cada status de nota
         foreach (var nota in notas)
         {
             StatusFichas? status = nota.StatusNota;

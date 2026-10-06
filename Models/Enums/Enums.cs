@@ -245,8 +245,10 @@ public enum FiltroClassificacao
 /// </summary>
 public enum NivelPermissao
 {
-    Usuario = 0, 
-    Admin = 1
+    Usuario = 0,
+    Ctm = 1,
+    Gpm = 2,
+    Admin = 3,
 }
 
 /// <summary>

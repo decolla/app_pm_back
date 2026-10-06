@@ -28,20 +28,52 @@ public class UsuariosController : ControllerBase
         _mapper = mapper;
     }
     
+    // /// <summary>
+    // /// Sincroniza os usuários do portal com o sistema, apenas usuários com role Admin no Keycloak podem chamar.
+    // /// </summary>
+    // /// <param name="payload">Lista de usuários do portal a serem sincronizados.</param>
+    // /// <returns></returns>
+    // [HttpPost("sincronizar-portal")]
+    // [Authorize(Policy = "Admin")] 
+    // public async Task<IActionResult> SincronizarPortal([FromBody] List<SyncUsuarioDto> payload)
+    // {
+    //     if (payload == null || !payload.Any())
+    //         return BadRequest("O payload não pode estar vazio.");
+    //
+    //     var result = await _service.SincronizarUsuariosPortalAsync(payload);
+    //     return Ok(result);
+    // }
+    
     /// <summary>
-    /// Sincroniza os usuários do portal com o sistema, apenas usuários com role Admin no Keycloak podem chamar.
+    /// Aciona a sincronização buscando os usuários ativamente na API do Portal.
+    /// Apenas usuários com role Admin no Keycloak podem chamar.
     /// </summary>
-    /// <param name="payload">Lista de usuários do portal a serem sincronizados.</param>
-    /// <returns></returns>
     [HttpPost("sincronizar-portal")]
     [Authorize(Policy = "Admin")] 
-    public async Task<IActionResult> SincronizarPortal([FromBody] List<SyncUsuarioDto> payload)
+    public async Task<IActionResult> SincronizarPortal()
     {
-        if (payload == null || !payload.Any())
-            return BadRequest("O payload não pode estar vazio.");
-
-        var result = await _service.SincronizarUsuariosPortalAsync(payload);
+        var result = await _service.SincronizarUsuariosPortalAsync();
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Retorna os usuários de nível intermediário que não estão vinculados a nenhum GPM ou CTM.
+    /// </summary>
+    [HttpGet("intermediarios-sem-vinculo")]
+    [Authorize(Policy = "Manage")] 
+    public async Task<IActionResult> ObterIntermediariosSemVinculo()
+    {
+        try
+        {
+            var usuarios = await _service.ObterIntermediariosSemVinculoAsync();
+
+            var result = _mapper.Map<List<UsuarioDto>>(usuarios);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(new { message = $"Erro ao buscar usuários intermediários: {e.Message}" });
+        }
     }
 
     /// <summary>

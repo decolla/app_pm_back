@@ -1,31 +1,33 @@
-using System;
-using System.Collections.Generic;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace app_pm_back.Migrations.PostgresMigration
+namespace app_pm_back.Migrations.SqlServerMigrations
 {
     /// <inheritdoc />
-    public partial class InitialPostgres : Migration
+    public partial class InitialSqlServer : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "dbo");
+
             migrationBuilder.CreateTable(
                 name: "Estrategias",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdEstrategia = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    Ciclos = table.Column<int>(type: "integer", nullable: true),
-                    Habilitada = table.Column<bool>(type: "boolean", nullable: false),
-                    TipoLi = table.Column<int>(type: "integer", nullable: true),
-                    NumeroCiclos = table.Column<int>(type: "integer", nullable: true),
-                    CicloContinuo = table.Column<bool>(type: "boolean", nullable: true),
-                    IdEscopo = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Ciclos = table.Column<int>(type: "int", nullable: true),
+                    Habilitada = table.Column<bool>(type: "bit", nullable: false),
+                    TipoLi = table.Column<int>(type: "int", nullable: true),
+                    NumeroCiclos = table.Column<int>(type: "int", nullable: true),
+                    CicloContinuo = table.Column<bool>(type: "bit", nullable: true),
+                    IdEscopo = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -34,15 +36,16 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Almoxarifados",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdAlmoxarifado = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    Organizacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Status = table.Column<int>(type: "integer", nullable: true),
-                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
-                    IdEscopo = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    Organizacao = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true),
+                    Descricao = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    IdEscopo = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -51,17 +54,18 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Auditorias",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdAuditoria = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    IdUsuario = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    NomeTabela = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    Acao = table.Column<int>(type: "integer", maxLength: 30, nullable: false),
-                    ChavePrimaria = table.Column<string>(type: "text", nullable: false),
-                    ValoresAntigos = table.Column<string>(type: "text", nullable: true),
-                    ValoresNovos = table.Column<string>(type: "text", nullable: true),
-                    DataAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdUsuario = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    NomeTabela = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Acao = table.Column<int>(type: "int", maxLength: 30, nullable: false),
+                    ChavePrimaria = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ValoresAntigos = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ValoresNovos = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DataAlteracao = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,20 +74,21 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_ConfiguracoesGlobais",
+                schema: "dbo",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ModeloCatboostPadrao = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    FichasConfiabilidade = table.Column<int>(type: "integer", nullable: false),
-                    ClassificacaoAutomatica = table.Column<int>(type: "integer", nullable: false),
-                    CriterioDataRenovacao = table.Column<int>(type: "integer", nullable: false),
-                    CriterioConfiabilidadeRenovacao = table.Column<int>(type: "integer", nullable: false),
-                    CriarFichasPreventivas = table.Column<int>(type: "integer", nullable: false),
-                    PalavrasNaturezaCausaCorretiva = table.Column<List<string>>(type: "text[]", nullable: false),
-                    PalavrasNaturezaCausaAlheia = table.Column<List<string>>(type: "text[]", nullable: false),
-                    DataModificacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModificadoPorUsuario = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ModeloCatboostPadrao = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    FichasConfiabilidade = table.Column<int>(type: "int", nullable: false),
+                    ClassificacaoAutomatica = table.Column<int>(type: "int", nullable: false),
+                    CriterioDataRenovacao = table.Column<int>(type: "int", nullable: false),
+                    CriterioConfiabilidadeRenovacao = table.Column<int>(type: "int", nullable: false),
+                    CriarFichasPreventivas = table.Column<int>(type: "int", nullable: false),
+                    PalavrasNaturezaCausaCorretiva = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PalavrasNaturezaCausaAlheia = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataModificacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModificadoPorUsuario = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,14 +97,15 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Cpms",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdCPM = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    NomeCentro = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    Organizacao = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
-                    IdEscopo = table.Column<string>(type: "text", nullable: true)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NomeCentro = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Organizacao = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    IdEscopo = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -108,11 +114,12 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Diretorios",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdDiretorio = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IdDiretorioPai = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
@@ -121,6 +128,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_Diretorios_PM_Diretorios_IdDiretorioPai",
                         column: x => x.IdDiretorioPai,
+                        principalSchema: "dbo",
                         principalTable: "PM_Diretorios",
                         principalColumn: "IdDiretorio",
                         onDelete: ReferentialAction.Restrict);
@@ -128,23 +136,24 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Imobilizados",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdImobilizado = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    Denominacao = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    Nserie = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Quantidade = table.Column<int>(type: "integer", nullable: true),
-                    DataAquisicao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    DataIncorporacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ValorCompra = table.Column<decimal>(type: "numeric(18,2)", nullable: true),
-                    Moeda = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    Depreciacao = table.Column<decimal>(type: "numeric(18,2)", nullable: true),
-                    ValorAtual = table.Column<decimal>(type: "numeric(18,2)", nullable: true),
-                    InfoAdicionais = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
-                    IdAtivo = table.Column<int>(type: "integer", nullable: true),
-                    IdLi = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Denominacao = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Nserie = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Quantidade = table.Column<int>(type: "int", nullable: true),
+                    DataAquisicao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DataIncorporacao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ValorCompra = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Moeda = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Depreciacao = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ValorAtual = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    InfoAdicionais = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    IdAtivo = table.Column<int>(type: "int", nullable: true),
+                    IdLi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -153,11 +162,12 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Reliability",
+                schema: "dbo",
                 columns: table => new
                 {
-                    IdLi = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    IdsNotas = table.Column<List<long>>(type: "bigint[]", nullable: true),
-                    IdsOrdens = table.Column<List<long>>(type: "bigint[]", nullable: true)
+                    IdLi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    IdsNotas = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdsOrdens = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -166,14 +176,15 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_RuleClassification",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdRegra = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PalavraChave = table.Column<string>(type: "text", nullable: false),
-                    ClassificacaoAplicada = table.Column<int>(type: "integer", nullable: false),
-                    Permitida = table.Column<bool>(type: "boolean", nullable: false),
-                    OrdemPrioridade = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PalavraChave = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClassificacaoAplicada = table.Column<int>(type: "int", nullable: false),
+                    Permitida = table.Column<bool>(type: "bit", nullable: false),
+                    OrdemPrioridade = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -182,15 +193,16 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_TiposCep",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdTipoCep = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TipoAtivo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Confiabilidade = table.Column<double>(type: "double precision", nullable: true),
-                    Habilitada = table.Column<bool>(type: "boolean", nullable: true),
-                    CampoIndefinido = table.Column<string>(type: "text", nullable: true),
-                    AcoesFalha = table.Column<string>(type: "jsonb", nullable: true)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TipoAtivo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Confiabilidade = table.Column<double>(type: "float", nullable: true),
+                    Habilitada = table.Column<bool>(type: "bit", nullable: true),
+                    CampoIndefinido = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AcoesFalha = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -199,17 +211,18 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_TiposManutencao",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdTipoManutencao = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Cor = table.Column<string>(type: "text", nullable: false),
-                    Categoria = table.Column<int>(type: "integer", maxLength: 100, nullable: false),
-                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    TipoLI = table.Column<int>(type: "integer", nullable: false),
-                    TipoAtivo = table.Column<int>(type: "integer", nullable: true),
-                    Confiabilidade = table.Column<double>(type: "double precision", nullable: true),
-                    Habilitada = table.Column<bool>(type: "boolean", nullable: true)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Cor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Categoria = table.Column<int>(type: "int", maxLength: 100, nullable: false),
+                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    TipoLI = table.Column<int>(type: "int", nullable: false),
+                    TipoAtivo = table.Column<int>(type: "int", nullable: true),
+                    Confiabilidade = table.Column<double>(type: "float", nullable: true),
+                    Habilitada = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -218,18 +231,19 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Usuarios",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdUsuario = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PortalId = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    CPF = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    Telefone = table.Column<string>(type: "text", nullable: true),
-                    Permissoes = table.Column<int>(type: "integer", nullable: true),
-                    NivelPermissao = table.Column<int>(type: "integer", nullable: true),
-                    Escopos = table.Column<List<long>>(type: "bigint[]", nullable: false),
-                    Favoritos = table.Column<List<string>>(type: "text[]", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PortalId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    CPF = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Telefone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Permissoes = table.Column<int>(type: "int", nullable: true),
+                    NivelPermissao = table.Column<int>(type: "int", nullable: true),
+                    Escopos = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Favoritos = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -238,17 +252,18 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Planos",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdPlano = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    Prioridade = table.Column<int>(type: "integer", nullable: true),
-                    DataInicios = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    GerarAutomaticamente = table.Column<int>(type: "integer", nullable: true),
-                    Antecedencia = table.Column<int>(type: "integer", nullable: true),
-                    DataConclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IdLi = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Prioridade = table.Column<int>(type: "int", nullable: true),
+                    DataInicios = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    GerarAutomaticamente = table.Column<int>(type: "int", nullable: true),
+                    Antecedencia = table.Column<int>(type: "int", nullable: true),
+                    DataConclusao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IdLi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IdEstrategia = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
@@ -257,34 +272,36 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_Planos_Estrategias_IdEstrategia",
                         column: x => x.IdEstrategia,
+                        principalSchema: "dbo",
                         principalTable: "Estrategias",
                         principalColumn: "IdEstrategia");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_Ferramentas",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdFerramenta = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    TipoFerramenta = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    Quantidade = table.Column<int>(type: "integer", nullable: true),
-                    PesoBruto = table.Column<double>(type: "double precision", nullable: true),
-                    PesoLiquido = table.Column<double>(type: "double precision", nullable: true),
-                    UmPesoBruto = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    UmPesoLiquido = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    Volume = table.Column<double>(type: "double precision", nullable: true),
-                    UmVolume = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    Dimensao = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    UmDimensao = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    Fabricante = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    ValorCompra = table.Column<decimal>(type: "numeric", nullable: true),
-                    Moeda = table.Column<string>(type: "text", nullable: true),
-                    DataAquisicao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
-                    IdLI = table.Column<int>(type: "integer", nullable: true),
-                    IdEscopo = table.Column<string>(type: "text", nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TipoFerramenta = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Quantidade = table.Column<int>(type: "int", nullable: true),
+                    PesoBruto = table.Column<double>(type: "float", nullable: true),
+                    PesoLiquido = table.Column<double>(type: "float", nullable: true),
+                    UmPesoBruto = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    UmPesoLiquido = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Volume = table.Column<double>(type: "float", nullable: true),
+                    UmVolume = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Dimensao = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    UmDimensao = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Fabricante = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    ValorCompra = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Moeda = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DataAquisicao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Descricao = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    IdLI = table.Column<int>(type: "int", nullable: true),
+                    IdEscopo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdAlmoxarifado = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
@@ -293,19 +310,21 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_Ferramentas_PM_Almoxarifados_IdAlmoxarifado",
                         column: x => x.IdAlmoxarifado,
+                        principalSchema: "dbo",
                         principalTable: "PM_Almoxarifados",
                         principalColumn: "IdAlmoxarifado");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_Ctms",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdCTM = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    AreaCTM = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    AreaCTM = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Descricao = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     IdCPM = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -314,6 +333,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_Ctms_PM_Cpms_IdCPM",
                         column: x => x.IdCPM,
+                        principalSchema: "dbo",
                         principalTable: "PM_Cpms",
                         principalColumn: "IdCPM",
                         onDelete: ReferentialAction.Cascade);
@@ -321,12 +341,13 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Gpms",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdGPM = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    Descricao = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    Descricao = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     IdCPM = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
@@ -335,21 +356,23 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_Gpms_PM_Cpms_IdCPM",
                         column: x => x.IdCPM,
+                        principalSchema: "dbo",
                         principalTable: "PM_Cpms",
                         principalColumn: "IdCPM");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_TiposEstrategia",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdTipoEstrategia = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Dias = table.Column<int>(type: "integer", nullable: true),
-                    ToleranciaPositiva = table.Column<double>(type: "double precision", nullable: true),
-                    ToleranciaNegativa = table.Column<double>(type: "double precision", nullable: true),
-                    Continua = table.Column<bool>(type: "boolean", nullable: true),
-                    Categoria = table.Column<int>(type: "integer", nullable: false),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Dias = table.Column<int>(type: "int", nullable: true),
+                    ToleranciaPositiva = table.Column<double>(type: "float", nullable: true),
+                    ToleranciaNegativa = table.Column<double>(type: "float", nullable: true),
+                    Continua = table.Column<bool>(type: "bit", nullable: true),
+                    Categoria = table.Column<int>(type: "int", nullable: false),
                     IdEstrategia = table.Column<long>(type: "bigint", nullable: true),
                     IdTipoManutencao = table.Column<long>(type: "bigint", nullable: true),
                     IdTipoCep = table.Column<long>(type: "bigint", nullable: true)
@@ -360,22 +383,26 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_TiposEstrategia_Estrategias_IdEstrategia",
                         column: x => x.IdEstrategia,
+                        principalSchema: "dbo",
                         principalTable: "Estrategias",
                         principalColumn: "IdEstrategia");
                     table.ForeignKey(
                         name: "FK_PM_TiposEstrategia_PM_TiposCep_IdTipoCep",
                         column: x => x.IdTipoCep,
+                        principalSchema: "dbo",
                         principalTable: "PM_TiposCep",
                         principalColumn: "IdTipoCep");
                     table.ForeignKey(
                         name: "FK_PM_TiposEstrategia_PM_TiposManutencao_IdTipoManutencao",
                         column: x => x.IdTipoManutencao,
+                        principalSchema: "dbo",
                         principalTable: "PM_TiposManutencao",
                         principalColumn: "IdTipoManutencao");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_AlmoxarifadoUsuario",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdAlmoxarifado = table.Column<long>(type: "bigint", nullable: false),
@@ -387,12 +414,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_AlmoxarifadoUsuario_PM_Almoxarifados_IdAlmoxarifado",
                         column: x => x.IdAlmoxarifado,
+                        principalSchema: "dbo",
                         principalTable: "PM_Almoxarifados",
                         principalColumn: "IdAlmoxarifado",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_AlmoxarifadoUsuario_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
+                        principalSchema: "dbo",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
@@ -400,6 +429,7 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_CtmUsuario",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdCTM = table.Column<long>(type: "bigint", nullable: false),
@@ -411,12 +441,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_CtmUsuario_PM_Ctms_IdCTM",
                         column: x => x.IdCTM,
+                        principalSchema: "dbo",
                         principalTable: "PM_Ctms",
                         principalColumn: "IdCTM",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_CtmUsuario_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
+                        principalSchema: "dbo",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
@@ -424,6 +456,7 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_GpmLi",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdGPM = table.Column<long>(type: "bigint", nullable: false),
@@ -435,12 +468,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_GpmLi_PM_Gpms_IdGPM",
                         column: x => x.IdGPM,
+                        principalSchema: "dbo",
                         principalTable: "PM_Gpms",
                         principalColumn: "IdGPM",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_GpmLi_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
+                        principalSchema: "dbo",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
@@ -448,6 +483,7 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_GpmUsuario",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdGPM = table.Column<long>(type: "bigint", nullable: false),
@@ -459,12 +495,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_GpmUsuario_PM_Gpms_IdGPM",
                         column: x => x.IdGPM,
+                        principalSchema: "dbo",
                         principalTable: "PM_Gpms",
                         principalColumn: "IdGPM",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_GpmUsuario_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
+                        principalSchema: "dbo",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
@@ -472,44 +510,45 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Notas",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdNota = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SapCode = table.Column<string>(type: "text", nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SapCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NumeroNota = table.Column<long>(type: "bigint", nullable: false),
-                    DataNota = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    DataFim = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    TipoNota = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    ReferenciaLocalizacaoAtivo = table.Column<string>(type: "text", nullable: true),
-                    Finalidade = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: true),
-                    TipoLi = table.Column<int>(type: "integer", nullable: true),
-                    CriticidadeManutencao = table.Column<int>(type: "integer", nullable: true),
-                    FimDesejado = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Notificar = table.Column<bool>(type: "boolean", nullable: false),
-                    DataAvaria = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    StatusNota = table.Column<int>(type: "integer", nullable: true),
-                    EquipamentoDisponivel = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    ConfiabilidadeRestaurada = table.Column<int>(type: "integer", nullable: true),
-                    DescricaoBreve = table.Column<string>(type: "text", nullable: true),
-                    DescricaoLonga = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: true),
-                    AnomaliaObservada = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
-                    ObservacoesComplementares = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
-                    NaturezaCausa = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Classificacao = table.Column<int>(type: "integer", nullable: false),
-                    MetodoClassificacao = table.Column<int>(type: "integer", maxLength: 100, nullable: false),
-                    ClassificadoPor = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    DataClassificacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    CriadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    ModificadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    DataModificacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DataNota = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DataFim = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TipoNota = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    ReferenciaLocalizacaoAtivo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Finalidade = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: true),
+                    TipoLi = table.Column<int>(type: "int", nullable: true),
+                    CriticidadeManutencao = table.Column<int>(type: "int", nullable: true),
+                    FimDesejado = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Notificar = table.Column<bool>(type: "bit", nullable: false),
+                    DataAvaria = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StatusNota = table.Column<int>(type: "int", nullable: true),
+                    EquipamentoDisponivel = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    ConfiabilidadeRestaurada = table.Column<int>(type: "int", nullable: true),
+                    DescricaoBreve = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DescricaoLonga = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: true),
+                    AnomaliaObservada = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    ObservacoesComplementares = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    NaturezaCausa = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Classificacao = table.Column<int>(type: "int", nullable: false),
+                    MetodoClassificacao = table.Column<int>(type: "int", maxLength: 100, nullable: false),
+                    ClassificadoPor = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    DataClassificacao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CriadaPorUsuario = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    ModificadaPorUsuario = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    DataModificacao = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Escopo = table.Column<long>(type: "bigint", nullable: true),
                     IdPlano = table.Column<long>(type: "bigint", nullable: true),
                     IdUsuario = table.Column<long>(type: "bigint", nullable: true),
-                    IdsAtivo = table.Column<int[]>(type: "integer[]", nullable: true),
-                    IdLi = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    IdsAtivo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdLi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IdGpm = table.Column<long>(type: "bigint", nullable: true),
-                    DnsIot = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                    DnsIot = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -517,16 +556,19 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_Notas_PM_Gpms_IdGpm",
                         column: x => x.IdGpm,
+                        principalSchema: "dbo",
                         principalTable: "PM_Gpms",
                         principalColumn: "IdGPM");
                     table.ForeignKey(
                         name: "FK_PM_Notas_PM_Planos_IdPlano",
                         column: x => x.IdPlano,
+                        principalSchema: "dbo",
                         principalTable: "PM_Planos",
                         principalColumn: "IdPlano");
                     table.ForeignKey(
                         name: "FK_PM_Notas_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
+                        principalSchema: "dbo",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.SetNull);
@@ -534,6 +576,7 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "DiretorioNotaModel",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdDiretorio = table.Column<long>(type: "bigint", nullable: false),
@@ -545,12 +588,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_DiretorioNotaModel_PM_Diretorios_IdDiretorio",
                         column: x => x.IdDiretorio,
+                        principalSchema: "dbo",
                         principalTable: "PM_Diretorios",
                         principalColumn: "IdDiretorio",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_DiretorioNotaModel_PM_Notas_IdNota",
                         column: x => x.IdNota,
+                        principalSchema: "dbo",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
@@ -558,13 +603,14 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_AnexosNota",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdAnexoNota = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    TipoArquivo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Dados = table.Column<byte[]>(type: "bytea", nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    TipoArquivo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Dados = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     IdNota = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -573,6 +619,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_AnexosNota_PM_Notas_IdNota",
                         column: x => x.IdNota,
+                        principalSchema: "dbo",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
@@ -580,14 +627,15 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_ItensNota",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdItemNota = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Componente = table.Column<int>(type: "integer", maxLength: 150, nullable: true),
-                    Sintoma = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    Causa = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    Descricao = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Componente = table.Column<int>(type: "int", maxLength: 150, nullable: true),
+                    Sintoma = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    Causa = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    Descricao = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     IdNota = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -596,6 +644,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_ItensNota_PM_Notas_IdNota",
                         column: x => x.IdNota,
+                        principalSchema: "dbo",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
@@ -603,6 +652,7 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_NotaUsuario",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdNota = table.Column<long>(type: "bigint", nullable: false),
@@ -614,12 +664,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_NotaUsuario_PM_Notas_IdNota",
                         column: x => x.IdNota,
+                        principalSchema: "dbo",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_NotaUsuario_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
+                        principalSchema: "dbo",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
@@ -627,35 +679,36 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Ordens",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdOrdem = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     NumeroOrdem = table.Column<long>(type: "bigint", nullable: true),
-                    DataCriacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    StatusOrdem = table.Column<int>(type: "integer", nullable: true),
-                    CriticidadeManutencao = table.Column<int>(type: "integer", nullable: true),
-                    NaturezaCausa = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Classificacao = table.Column<int>(type: "integer", nullable: false),
-                    MetodoClassificacao = table.Column<int>(type: "integer", maxLength: 100, nullable: false),
-                    ClassificadoPor = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    DataClassificacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    TipoOrdem = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    ConfiabilidadeRestaurada = table.Column<int>(type: "integer", nullable: true),
-                    InicioPlanejado = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    FimPlanejado = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    InicioReal = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    FimReal = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    DescricaoBreve = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    DescricaoLonga = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: true),
-                    CriadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    ModificadaPorUsuario = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    DataModificacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DataCriacao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    StatusOrdem = table.Column<int>(type: "int", nullable: true),
+                    CriticidadeManutencao = table.Column<int>(type: "int", nullable: true),
+                    NaturezaCausa = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Classificacao = table.Column<int>(type: "int", nullable: false),
+                    MetodoClassificacao = table.Column<int>(type: "int", maxLength: 100, nullable: false),
+                    ClassificadoPor = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    DataClassificacao = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TipoOrdem = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    ConfiabilidadeRestaurada = table.Column<int>(type: "int", nullable: true),
+                    InicioPlanejado = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FimPlanejado = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    InicioReal = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FimReal = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DescricaoBreve = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    DescricaoLonga = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: true),
+                    CriadaPorUsuario = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    ModificadaPorUsuario = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    DataModificacao = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Escopo = table.Column<long>(type: "bigint", nullable: true),
-                    IdsAtivo = table.Column<int[]>(type: "integer[]", nullable: true),
-                    IdLi = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    TipoLi = table.Column<int>(type: "integer", nullable: true),
-                    DnsIot = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    IdsAtivo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdLi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    TipoLi = table.Column<int>(type: "int", nullable: true),
+                    DnsIot = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     IdNota = table.Column<long>(type: "bigint", nullable: true),
                     IdGpm = table.Column<long>(type: "bigint", nullable: true),
                     IdCtm = table.Column<long>(type: "bigint", nullable: true),
@@ -667,36 +720,41 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_Ordens_PM_Ctms_IdCtm",
                         column: x => x.IdCtm,
+                        principalSchema: "dbo",
                         principalTable: "PM_Ctms",
                         principalColumn: "IdCTM");
                     table.ForeignKey(
                         name: "FK_PM_Ordens_PM_Gpms_IdGpm",
                         column: x => x.IdGpm,
+                        principalSchema: "dbo",
                         principalTable: "PM_Gpms",
                         principalColumn: "IdGPM");
                     table.ForeignKey(
                         name: "FK_PM_Ordens_PM_Notas_IdNota",
                         column: x => x.IdNota,
+                        principalSchema: "dbo",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_Ordens_PM_Planos_IdPlano",
                         column: x => x.IdPlano,
+                        principalSchema: "dbo",
                         principalTable: "PM_Planos",
                         principalColumn: "IdPlano");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_VariaveisNota",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdVariavel = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    NomeVariavel = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    ValorNumerico = table.Column<double>(type: "double precision", nullable: true),
-                    UnidadeMedida = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    Comentarios = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NomeVariavel = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ValorNumerico = table.Column<double>(type: "float", nullable: true),
+                    UnidadeMedida = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    Comentarios = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     IdNota = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
@@ -705,22 +763,24 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_VariaveisNota_PM_Notas_IdNota",
                         column: x => x.IdNota,
+                        principalSchema: "dbo",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota");
                 });
 
             migrationBuilder.CreateTable(
                 name: "DadosRenovacao",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdDados = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UltimaRenovacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    OrigemUR = table.Column<int>(type: "integer", nullable: false),
-                    TipoDados = table.Column<int>(type: "integer", nullable: false),
-                    Confiabilidade = table.Column<double>(type: "double precision", nullable: true),
-                    IdAtivo = table.Column<int>(type: "integer", nullable: true),
-                    IdLi = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UltimaRenovacao = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OrigemUR = table.Column<int>(type: "int", nullable: false),
+                    TipoDados = table.Column<int>(type: "int", nullable: false),
+                    Confiabilidade = table.Column<double>(type: "float", nullable: true),
+                    IdAtivo = table.Column<int>(type: "int", nullable: true),
+                    IdLi = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IdNota = table.Column<long>(type: "bigint", nullable: true),
                     IdOrdem = table.Column<long>(type: "bigint", nullable: true),
                     IdUsuario = table.Column<long>(type: "bigint", nullable: true)
@@ -731,22 +791,26 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_DadosRenovacao_PM_Notas_IdNota",
                         column: x => x.IdNota,
+                        principalSchema: "dbo",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota");
                     table.ForeignKey(
                         name: "FK_DadosRenovacao_PM_Ordens_IdOrdem",
                         column: x => x.IdOrdem,
+                        principalSchema: "dbo",
                         principalTable: "PM_Ordens",
                         principalColumn: "IdOrdem");
                     table.ForeignKey(
                         name: "FK_DadosRenovacao_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
+                        principalSchema: "dbo",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario");
                 });
 
             migrationBuilder.CreateTable(
                 name: "DiretorioOrdemModel",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdDiretorio = table.Column<long>(type: "bigint", nullable: false),
@@ -760,12 +824,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_DiretorioOrdemModel_PM_Diretorios_DiretorioIdDiretorio",
                         column: x => x.DiretorioIdDiretorio,
+                        principalSchema: "dbo",
                         principalTable: "PM_Diretorios",
                         principalColumn: "IdDiretorio",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_DiretorioOrdemModel_PM_Ordens_OrdemIdOrdem",
                         column: x => x.OrdemIdOrdem,
+                        principalSchema: "dbo",
                         principalTable: "PM_Ordens",
                         principalColumn: "IdOrdem",
                         onDelete: ReferentialAction.Cascade);
@@ -773,14 +839,15 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_AnexosOrdem",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdAnexoOrdem = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    TipoArquivo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    TipoAnexo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Dados = table.Column<byte[]>(type: "bytea", nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    TipoArquivo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    TipoAnexo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Dados = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     IdOrdem = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -789,6 +856,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_AnexosOrdem_PM_Ordens_IdOrdem",
                         column: x => x.IdOrdem,
+                        principalSchema: "dbo",
                         principalTable: "PM_Ordens",
                         principalColumn: "IdOrdem",
                         onDelete: ReferentialAction.Cascade);
@@ -796,18 +864,19 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_Operacoes",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdOperacao = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    Descricao = table.Column<string>(type: "character varying(7000)", maxLength: 7000, nullable: true),
-                    Concluida = table.Column<bool>(type: "boolean", nullable: false),
-                    Duracao = table.Column<double>(type: "double precision", nullable: true),
-                    NdeProfissionais = table.Column<int>(type: "integer", nullable: true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    Descricao = table.Column<string>(type: "nvarchar(max)", maxLength: 7000, nullable: true),
+                    Concluida = table.Column<bool>(type: "bit", nullable: false),
+                    Duracao = table.Column<double>(type: "float", nullable: true),
+                    NdeProfissionais = table.Column<int>(type: "int", nullable: true),
                     CustosAdicionais = table.Column<float>(type: "real", nullable: true),
-                    InicioEsperado = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    FimEsperado = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    InicioEsperado = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FimEsperado = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IdCTM = table.Column<long>(type: "bigint", nullable: true),
                     IdTipoManutencao = table.Column<long>(type: "bigint", nullable: true),
                     IdOrdem = table.Column<long>(type: "bigint", nullable: true)
@@ -818,22 +887,26 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_Operacoes_PM_Ctms_IdCTM",
                         column: x => x.IdCTM,
+                        principalSchema: "dbo",
                         principalTable: "PM_Ctms",
                         principalColumn: "IdCTM");
                     table.ForeignKey(
                         name: "FK_PM_Operacoes_PM_Ordens_IdOrdem",
                         column: x => x.IdOrdem,
+                        principalSchema: "dbo",
                         principalTable: "PM_Ordens",
                         principalColumn: "IdOrdem");
                     table.ForeignKey(
                         name: "FK_PM_Operacoes_PM_TiposManutencao_IdTipoManutencao",
                         column: x => x.IdTipoManutencao,
+                        principalSchema: "dbo",
                         principalTable: "PM_TiposManutencao",
                         principalColumn: "IdTipoManutencao");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_OrdemUsuario",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdOrdem = table.Column<long>(type: "bigint", nullable: false),
@@ -845,12 +918,14 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_OrdemUsuario_PM_Ordens_IdOrdem",
                         column: x => x.IdOrdem,
+                        principalSchema: "dbo",
                         principalTable: "PM_Ordens",
                         principalColumn: "IdOrdem",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_OrdemUsuario_PM_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
+                        principalSchema: "dbo",
                         principalTable: "PM_Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
@@ -858,16 +933,17 @@ namespace app_pm_back.Migrations.PostgresMigration
 
             migrationBuilder.CreateTable(
                 name: "PM_TiposPlano",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdTipoPlano = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Visivel = table.Column<bool>(type: "boolean", nullable: true),
-                    Dias = table.Column<int>(type: "integer", nullable: true),
-                    ToleranciaPositiva = table.Column<double>(type: "double precision", nullable: true),
-                    ToleranciaNegativa = table.Column<double>(type: "double precision", nullable: true),
-                    Continua = table.Column<bool>(type: "boolean", nullable: true),
-                    Categoria = table.Column<int>(type: "integer", nullable: false),
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Visivel = table.Column<bool>(type: "bit", nullable: true),
+                    Dias = table.Column<int>(type: "int", nullable: true),
+                    ToleranciaPositiva = table.Column<double>(type: "float", nullable: true),
+                    ToleranciaNegativa = table.Column<double>(type: "float", nullable: true),
+                    Continua = table.Column<bool>(type: "bit", nullable: true),
+                    Categoria = table.Column<int>(type: "int", nullable: false),
                     IdTipoEstrategia = table.Column<long>(type: "bigint", nullable: true),
                     IdPlano = table.Column<long>(type: "bigint", nullable: true),
                     IdTipoManutencao = table.Column<long>(type: "bigint", nullable: true),
@@ -881,37 +957,44 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_Notas_IdNota",
                         column: x => x.IdNota,
+                        principalSchema: "dbo",
                         principalTable: "PM_Notas",
                         principalColumn: "IdNota");
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_Ordens_IdOrdem",
                         column: x => x.IdOrdem,
+                        principalSchema: "dbo",
                         principalTable: "PM_Ordens",
                         principalColumn: "IdOrdem");
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_Planos_IdPlano",
                         column: x => x.IdPlano,
+                        principalSchema: "dbo",
                         principalTable: "PM_Planos",
                         principalColumn: "IdPlano");
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_TiposCep_IdTipoCep",
                         column: x => x.IdTipoCep,
+                        principalSchema: "dbo",
                         principalTable: "PM_TiposCep",
                         principalColumn: "IdTipoCep");
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_TiposEstrategia_IdTipoEstrategia",
                         column: x => x.IdTipoEstrategia,
+                        principalSchema: "dbo",
                         principalTable: "PM_TiposEstrategia",
                         principalColumn: "IdTipoEstrategia");
                     table.ForeignKey(
                         name: "FK_PM_TiposPlano_PM_TiposManutencao_IdTipoManutencao",
                         column: x => x.IdTipoManutencao,
+                        principalSchema: "dbo",
                         principalTable: "PM_TiposManutencao",
                         principalColumn: "IdTipoManutencao");
                 });
 
             migrationBuilder.CreateTable(
                 name: "PM_FerramentasOperacoes",
+                schema: "dbo",
                 columns: table => new
                 {
                     IdFerramenta = table.Column<long>(type: "bigint", nullable: false),
@@ -923,224 +1006,268 @@ namespace app_pm_back.Migrations.PostgresMigration
                     table.ForeignKey(
                         name: "FK_PM_FerramentasOperacoes_PM_Ferramentas_IdFerramenta",
                         column: x => x.IdFerramenta,
+                        principalSchema: "dbo",
                         principalTable: "PM_Ferramentas",
                         principalColumn: "IdFerramenta",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PM_FerramentasOperacoes_PM_Operacoes_IdOperacao",
                         column: x => x.IdOperacao,
+                        principalSchema: "dbo",
                         principalTable: "PM_Operacoes",
                         principalColumn: "IdOperacao",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
+                schema: "dbo",
                 table: "PM_ConfiguracoesGlobais",
                 columns: new[] { "Id", "ClassificacaoAutomatica", "CriarFichasPreventivas", "CriterioConfiabilidadeRenovacao", "CriterioDataRenovacao", "DataModificacao", "FichasConfiabilidade", "ModeloCatboostPadrao", "ModificadoPorUsuario", "PalavrasNaturezaCausaAlheia", "PalavrasNaturezaCausaCorretiva" },
-                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, null, null, new List<string>(), new List<string>() });
+                values: new object[] { 1, 0, 0, 2, 3, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), 2, null, null, "[]", "[]" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdNota",
+                schema: "dbo",
                 table: "DadosRenovacao",
                 column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdOrdem",
+                schema: "dbo",
                 table: "DadosRenovacao",
                 column: "IdOrdem");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DadosRenovacao_IdUsuario",
+                schema: "dbo",
                 table: "DadosRenovacao",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DiretorioNotaModel_IdNota",
+                schema: "dbo",
                 table: "DiretorioNotaModel",
                 column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DiretorioOrdemModel_DiretorioIdDiretorio",
+                schema: "dbo",
                 table: "DiretorioOrdemModel",
                 column: "DiretorioIdDiretorio");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DiretorioOrdemModel_OrdemIdOrdem",
+                schema: "dbo",
                 table: "DiretorioOrdemModel",
                 column: "OrdemIdOrdem");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_AlmoxarifadoUsuario_IdUsuario",
+                schema: "dbo",
                 table: "PM_AlmoxarifadoUsuario",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_AnexosNota_IdNota",
+                schema: "dbo",
                 table: "PM_AnexosNota",
                 column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_AnexosOrdem_IdOrdem",
+                schema: "dbo",
                 table: "PM_AnexosOrdem",
                 column: "IdOrdem");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ctms_IdCPM",
+                schema: "dbo",
                 table: "PM_Ctms",
                 column: "IdCPM");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_CtmUsuario_IdUsuario",
+                schema: "dbo",
                 table: "PM_CtmUsuario",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Diretorios_IdDiretorioPai",
+                schema: "dbo",
                 table: "PM_Diretorios",
                 column: "IdDiretorioPai");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ferramentas_IdAlmoxarifado",
+                schema: "dbo",
                 table: "PM_Ferramentas",
                 column: "IdAlmoxarifado");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_FerramentasOperacoes_IdOperacao",
+                schema: "dbo",
                 table: "PM_FerramentasOperacoes",
                 column: "IdOperacao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_GpmLi_IdUsuario",
+                schema: "dbo",
                 table: "PM_GpmLi",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Gpms_IdCPM",
+                schema: "dbo",
                 table: "PM_Gpms",
                 column: "IdCPM");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_GpmUsuario_IdUsuario",
+                schema: "dbo",
                 table: "PM_GpmUsuario",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_ItensNota_IdNota",
+                schema: "dbo",
                 table: "PM_ItensNota",
                 column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Notas_IdGpm",
+                schema: "dbo",
                 table: "PM_Notas",
                 column: "IdGpm");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Notas_IdPlano",
+                schema: "dbo",
                 table: "PM_Notas",
                 column: "IdPlano");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Notas_IdUsuario",
+                schema: "dbo",
                 table: "PM_Notas",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_NotaUsuario_IdUsuario",
+                schema: "dbo",
                 table: "PM_NotaUsuario",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Operacoes_IdCTM",
+                schema: "dbo",
                 table: "PM_Operacoes",
                 column: "IdCTM");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Operacoes_IdOrdem",
+                schema: "dbo",
                 table: "PM_Operacoes",
                 column: "IdOrdem");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Operacoes_IdTipoManutencao",
+                schema: "dbo",
                 table: "PM_Operacoes",
                 column: "IdTipoManutencao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_OrdemUsuario_IdUsuario",
+                schema: "dbo",
                 table: "PM_OrdemUsuario",
                 column: "IdUsuario");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ordens_IdCtm",
+                schema: "dbo",
                 table: "PM_Ordens",
                 column: "IdCtm");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ordens_IdGpm",
+                schema: "dbo",
                 table: "PM_Ordens",
                 column: "IdGpm");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ordens_IdNota",
+                schema: "dbo",
                 table: "PM_Ordens",
                 column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Ordens_IdPlano",
+                schema: "dbo",
                 table: "PM_Ordens",
                 column: "IdPlano");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_Planos_IdEstrategia",
+                schema: "dbo",
                 table: "PM_Planos",
                 column: "IdEstrategia");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposEstrategia_IdEstrategia",
+                schema: "dbo",
                 table: "PM_TiposEstrategia",
                 column: "IdEstrategia");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposEstrategia_IdTipoCep",
+                schema: "dbo",
                 table: "PM_TiposEstrategia",
                 column: "IdTipoCep");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposEstrategia_IdTipoManutencao",
+                schema: "dbo",
                 table: "PM_TiposEstrategia",
                 column: "IdTipoManutencao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdNota",
+                schema: "dbo",
                 table: "PM_TiposPlano",
                 column: "IdNota");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdOrdem",
+                schema: "dbo",
                 table: "PM_TiposPlano",
                 column: "IdOrdem");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdPlano",
+                schema: "dbo",
                 table: "PM_TiposPlano",
                 column: "IdPlano");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdTipoCep",
+                schema: "dbo",
                 table: "PM_TiposPlano",
                 column: "IdTipoCep");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdTipoEstrategia",
+                schema: "dbo",
                 table: "PM_TiposPlano",
                 column: "IdTipoEstrategia");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_TiposPlano_IdTipoManutencao",
+                schema: "dbo",
                 table: "PM_TiposPlano",
                 column: "IdTipoManutencao");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PM_VariaveisNota_IdNota",
+                schema: "dbo",
                 table: "PM_VariaveisNota",
                 column: "IdNota");
         }
@@ -1149,109 +1276,144 @@ namespace app_pm_back.Migrations.PostgresMigration
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DadosRenovacao");
+                name: "DadosRenovacao",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "DiretorioNotaModel");
+                name: "DiretorioNotaModel",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "DiretorioOrdemModel");
+                name: "DiretorioOrdemModel",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_AlmoxarifadoUsuario");
+                name: "PM_AlmoxarifadoUsuario",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_AnexosNota");
+                name: "PM_AnexosNota",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_AnexosOrdem");
+                name: "PM_AnexosOrdem",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Auditorias");
+                name: "PM_Auditorias",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_ConfiguracoesGlobais");
+                name: "PM_ConfiguracoesGlobais",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_CtmUsuario");
+                name: "PM_CtmUsuario",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_FerramentasOperacoes");
+                name: "PM_FerramentasOperacoes",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_GpmLi");
+                name: "PM_GpmLi",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_GpmUsuario");
+                name: "PM_GpmUsuario",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Imobilizados");
+                name: "PM_Imobilizados",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_ItensNota");
+                name: "PM_ItensNota",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_NotaUsuario");
+                name: "PM_NotaUsuario",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_OrdemUsuario");
+                name: "PM_OrdemUsuario",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Reliability");
+                name: "PM_Reliability",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_RuleClassification");
+                name: "PM_RuleClassification",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_TiposPlano");
+                name: "PM_TiposPlano",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_VariaveisNota");
+                name: "PM_VariaveisNota",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Diretorios");
+                name: "PM_Diretorios",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Ferramentas");
+                name: "PM_Ferramentas",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Operacoes");
+                name: "PM_Operacoes",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_TiposEstrategia");
+                name: "PM_TiposEstrategia",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Almoxarifados");
+                name: "PM_Almoxarifados",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Ordens");
+                name: "PM_Ordens",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_TiposCep");
+                name: "PM_TiposCep",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_TiposManutencao");
+                name: "PM_TiposManutencao",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Ctms");
+                name: "PM_Ctms",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Notas");
+                name: "PM_Notas",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Gpms");
+                name: "PM_Gpms",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Planos");
+                name: "PM_Planos",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Usuarios");
+                name: "PM_Usuarios",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "PM_Cpms");
+                name: "PM_Cpms",
+                schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "Estrategias");
+                name: "Estrategias",
+                schema: "dbo");
         }
     }
 }
