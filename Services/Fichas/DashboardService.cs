@@ -2,6 +2,7 @@ using System.Runtime.InteropServices.JavaScript;
 using app_pm_back.Data;
 using app_pm_back.DTO.Buscas;
 using app_pm_back.Dto.Fichas;
+using app_pm_back.Interfaces;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -16,8 +17,9 @@ public class DashboardService
     private readonly AppDbContext _context;
     private readonly ILogger<DashboardService> _logger;
     private readonly IMemoryCache _cache;
+    private readonly IUserContext _userContext;
 
-    public DashboardService(AppDbContext context, ILogger<DashboardService> logger, IMemoryCache cache)
+    public DashboardService(AppDbContext context, ILogger<DashboardService> logger, IMemoryCache cache, IUserContext userContext)
     {
         _logger = logger;
         _context = context;
@@ -31,7 +33,11 @@ public class DashboardService
     /// <returns></returns>
     public async Task<DashboardDto> GetDashboardDataAsync()
     {
+        long? escopoId = _userContext.GetEscoposDoUsuario().FirstOrDefault();
         var cacheKey = "dashboard_data";
+        
+        if(escopoId != null)
+            cacheKey += $"_escopo_{escopoId}";
 
         // busca no cache, se não estiver lá, gera os dados
         if (!_cache.TryGetValue(cacheKey, out DashboardDto? dashboardDto))
@@ -60,12 +66,14 @@ public class DashboardService
                     (x.Item2.Item1, x.Item2.Item2)
                 ))
                 .ToList();
-
-            _cache.Set(cacheKey, dashboardDto, TimeSpan.FromMinutes(10));
+            dashboardDto.NotasUsuario = await NotasUsuario();
+            
             
             // adiciona ao cache
             var cacheOptions = new MemoryCacheEntryOptions()
-                .SetPriority(CacheItemPriority.High);
+                .SetPriority(CacheItemPriority.High)
+                .SetAbsoluteExpiration(TimeSpan.FromHours(24))
+                .SetSlidingExpiration(TimeSpan.FromHours(4));;
 
             _cache.Set(cacheKey, dashboardDto, cacheOptions);
         }
@@ -354,5 +362,41 @@ public class DashboardService
         _logger.LogInformation("Ranking de top (7) tempos de vida gerado com sucesso.");
 
         return top;
+    }
+    
+    public async Task<Dictionary<StatusFichas, int>> NotasUsuario()
+    {
+        var usuario = _userContext.GetUsuarioIdAtual();
+        if (usuario == null)
+            _logger.LogError("Não foi possível obter o ID do usuário atual.");
+        
+        var notas = await _context.PM_Usuarios
+            .Where(u => u.IdUsuario == usuario)
+            .SelectMany(u => u.Notas)
+            .ToListAsync();
+        
+        if (!notas.Any())
+        {
+            _logger.LogError("Não foi possível obter as notas do usuário.");
+            return new Dictionary<StatusFichas, int>();
+        }
+        
+        Dictionary<StatusFichas, int> pedidos = new Dictionary<StatusFichas, int>();
+
+        foreach (var nota in notas)
+        {
+            StatusFichas? status = nota.StatusNota;
+
+            if (status == null)
+            {
+                pedidos[StatusFichas.Aberta]++;
+            }
+            else
+            {
+                pedidos[status.Value]++;
+            }
+        }
+
+        return pedidos;
     }
 }

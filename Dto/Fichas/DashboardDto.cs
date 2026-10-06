@@ -1,3 +1,5 @@
+using app_pm_back.Models.Domain;
+
 namespace app_pm_back.Dto.Fichas;
 
 public class DashboardDto
@@ -13,4 +15,6 @@ public class DashboardDto
     public List<object> NotasAbertasRelacaoPrazoSemana { get; set;}
     
     public List<((long?, TimeSpan?), (long?, TimeSpan?))> RankingTempoVida { get; set; }
+    
+    public Dictionary<StatusFichas, int> NotasUsuario { get; set; }
 }
