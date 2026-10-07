@@ -285,7 +285,7 @@ public class DashboardService
 
             int notasComOrdemPrazo = notasTempo.Count(n => n.Ordens.Any(o => o.FimPlanejado > DateTime.Now));
             int notasSemOrdemPrazo = notasTempo.Count(n =>
-                n.Ordens.Count == 0 && n.DataAvaria.HasValue && n.FimDesejado < DateTime.Now);
+                n.Ordens.Count == 0 && n.DataAvaria.HasValue && n.FimPlanejado < DateTime.Now);
             int notasSemOrdemAtrasadas = notasTempo.Count(n => n.Ordens.Any(o => o.FimReal < DateTime.Now));
             int notasComOrdemAtrasadas = notasTempo.Count(n => n.Ordens.Any(o => o.FimReal > DateTime.Now));
 

@@ -302,7 +302,7 @@ using (var scope = app.Services.CreateScope())
             // REMOVER DEPOIS: APAGA TODAS AS TABELAS
             //schema = "public"; // força o schema para public, para não apagar o schema correto
             //dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA {schema} CASCADE; CREATE SCHEMA {schema};");
-            dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA comgas CASCADE; CREATE SCHEMA comgas;");
+            //dbContext.Database.ExecuteSqlRaw($"DROP SCHEMA comgas CASCADE; CREATE SCHEMA comgas;");
 
             // Garante que a conexão é aberta com o search_path configurado antes do Migrate()
             var conn = dbContext.Database.GetDbConnection();
@@ -354,12 +354,7 @@ app.UseSwagger(c =>
     });
 });
 
-app.UseSwaggerUI(c =>
-{
-    // Tema no Swagger UI
-    c.InjectStylesheet("https://cdn.jsdelivr.net/npm/swagger-ui-themes@3.0.1/themes/3.x/theme-muted.css");
-    
-});
+app.UseSwaggerUI();
 
 // permite que o angular realize 
 app.UseCors("AllowAll");

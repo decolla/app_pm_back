@@ -288,7 +288,7 @@ public class OrdemService : BaseCrudService<OrdemModel>
             ConfiabilidadeRestaurada = nota.ConfiabilidadeRestaurada,
             IdsAtivo = nota.IdsAtivo,
             IdGpm = nota.IdGpm,
-            FimPlanejado = nota.FimDesejado,
+            FimPlanejado = nota.FimPlanejado,
         };
 
         return ordem;

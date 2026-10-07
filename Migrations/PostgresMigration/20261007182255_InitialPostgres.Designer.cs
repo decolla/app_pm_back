@@ -13,7 +13,7 @@ using app_pm_back.Data;
 namespace app_pm_back.Migrations.PostgresMigration
 {
     [DbContext(typeof(PostgresDbContext))]
-    [Migration("20261006183949_InitialPostgres")]
+    [Migration("20261007182255_InitialPostgres")]
     partial class InitialPostgres
     {
         /// <inheritdoc />
@@ -801,7 +801,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<long?>("Escopo")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("FimDesejado")
+                    b.Property<DateTime?>("FimPlanejado")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Finalidade")
@@ -1314,9 +1314,9 @@ namespace app_pm_back.Migrations.PostgresMigration
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.PrimitiveCollection<List<long>>("Escopos")
+                    b.PrimitiveCollection<List<string>>("Escopos")
                         .IsRequired()
-                        .HasColumnType("bigint[]");
+                        .HasColumnType("text[]");
 
                     b.PrimitiveCollection<List<string>>("Favoritos")
                         .IsRequired()
@@ -1328,9 +1328,6 @@ namespace app_pm_back.Migrations.PostgresMigration
                     b.Property<string>("Nome")
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
-
-                    b.Property<int?>("Permissoes")
-                        .HasColumnType("integer");
 
                     b.Property<string>("PortalId")
                         .HasMaxLength(50)

@@ -287,6 +287,11 @@ public class SqlServerDbContext : AppDbContext
             v => JsonSerializer.Deserialize<List<long>>(v, (JsonSerializerOptions?)null) ?? new List<long>()
         );
 
+        var stringListConverter = new ValueConverter<List<string>?, string>(
+            v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+            v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>()
+        );
+
         modelBuilder.Entity<TipoCepModel>()
             .Property(e => e.AcoesFalha)
             .HasConversion(converter)
@@ -304,7 +309,7 @@ public class SqlServerDbContext : AppDbContext
 
         modelBuilder.Entity<UsuarioModel>()
             .Property(e => e.Escopos)
-            .HasConversion(longListConverter)
+            .HasConversion(stringListConverter)
             .HasColumnType("nvarchar(max)");
     }
 }

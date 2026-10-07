@@ -91,16 +91,7 @@ public class UsuariosController : ControllerBase
     {
         try
         {
-            if (!ModelState.IsValid)
-            {
-                return ValidationProblem(ModelState);
-            }
-
             var usuario = _mapper.Map<UsuarioModel>(dto);
-            if (usuario.IdUsuario <= 0)
-            {
-                return BadRequest(new { message = "IdUsuario invalido. Envie IdUsuario maior que zero." });
-            }
 
             var criado = await _service.CreateAsync(usuario);
             return CreatedAtAction(nameof(ObterPorId), new { id = criado.IdUsuario }, criado);
@@ -239,8 +230,35 @@ public class UsuariosController : ControllerBase
             }
 
             var usuario = _mapper.Map<UsuarioModel>(dto);
-            var result = await _service.UpdateNotaAsync(usuario);
+            var result = await _service.UpdateAsync(usuario);
             return Ok(new { message = $"{_operador} atualizado com sucesso: {result.IdUsuario}" });
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = $"Erro ao atualizar {_operador}." });
+        }
+    }
+        
+    /// <summary>
+    /// Atualiza um registro existente.
+    /// </summary>
+    /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
+    /// <param name="dto">DTO contendo os novos dados para atualização.</param>
+    /// <returns>Mensagem de confirmação da atualização.</returns>
+    /// <response code="200">Sucesso ao atualizar o registro.</response>
+    /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
+    [HttpPut("All")]
+    [Authorize(Policy = "Manage")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Atualizar([FromBody] List<UsuarioDto> listUsr)
+    {
+        try
+        {
+            List<UsuarioModel> usuarios = _mapper.Map<List<UsuarioModel>>(listUsr);
+            
+            var result = await _service.AtualizarUsuariosList(usuarios);
+            return Ok(usuarios);
         }
         catch (Exception)
         {
@@ -309,7 +327,7 @@ public class UsuariosController : ControllerBase
     /// <param name="schema">Esquema do usuário</param>
     /// <returns></returns>
     [HttpGet("pesquisar")]
-    public async Task<IActionResult> Pesquisar([FromQuery] string? cpf, [FromQuery] string? nome, [FromQuery] string? funcao, [FromQuery] int? schema)
+    public async Task<IActionResult> Pesquisar([FromQuery] string? cpf, [FromQuery] string? nome, [FromQuery] string? funcao, [FromQuery] string? schema)
     {
         try
         {

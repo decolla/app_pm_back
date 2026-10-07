@@ -798,7 +798,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<long?>("Escopo")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime?>("FimDesejado")
+                    b.Property<DateTime?>("FimPlanejado")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Finalidade")
@@ -1325,9 +1325,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     b.Property<string>("Nome")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
-
-                    b.Property<int?>("Permissoes")
-                        .HasColumnType("int");
 
                     b.Property<string>("PortalId")
                         .HasMaxLength(50)

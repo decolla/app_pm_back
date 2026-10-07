@@ -684,7 +684,7 @@ public class SpreadsheetService
             DataFim = dto.DataFim,
             DataNota = dto.DataNota,
             CriticidadeManutencao = dto.CriticidadeManutencao,
-            FimDesejado = dto.FimDesejado,
+            FimPlanejado = dto.FimPlanejado,
             DataAvaria = dto.DataAvaria,
             EquipamentoDisponivel = dto.EquipamentoDisponivel,
             AnomaliaObservada = dto.AnomaliaObservada,

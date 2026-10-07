@@ -39,6 +39,9 @@ public class PortalUserItemDto
 
     [JsonPropertyName("applicationPermissions")]
     public List<PortalApplicationPermissionDto> ApplicationPermissions { get; set; } = new();
+    
+    [JsonPropertyName("scopes")]
+    public List<string> Scopes { get; set; } = new();
 }
 
 public class PortalApplicationPermissionDto

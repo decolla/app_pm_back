@@ -226,9 +226,8 @@ namespace app_pm_back.Migrations.PostgresMigration
                     Nome = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     CPF = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
                     Telefone = table.Column<string>(type: "text", nullable: true),
-                    Permissoes = table.Column<int>(type: "integer", nullable: true),
                     NivelPermissao = table.Column<int>(type: "integer", nullable: true),
-                    Escopos = table.Column<List<long>>(type: "bigint[]", nullable: false),
+                    Escopos = table.Column<List<string>>(type: "text[]", nullable: false),
                     Favoritos = table.Column<List<string>>(type: "text[]", nullable: false)
                 },
                 constraints: table =>
@@ -485,7 +484,7 @@ namespace app_pm_back.Migrations.PostgresMigration
                     Finalidade = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: true),
                     TipoLi = table.Column<int>(type: "integer", nullable: true),
                     CriticidadeManutencao = table.Column<int>(type: "integer", nullable: true),
-                    FimDesejado = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    FimPlanejado = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Notificar = table.Column<bool>(type: "boolean", nullable: false),
                     DataAvaria = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     StatusNota = table.Column<int>(type: "integer", nullable: true),

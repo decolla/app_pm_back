@@ -240,7 +240,6 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     CPF = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Telefone = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Permissoes = table.Column<int>(type: "int", nullable: true),
                     NivelPermissao = table.Column<int>(type: "int", nullable: true),
                     Escopos = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Favoritos = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -524,7 +523,7 @@ namespace app_pm_back.Migrations.SqlServerMigrations
                     Finalidade = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: true),
                     TipoLi = table.Column<int>(type: "int", nullable: true),
                     CriticidadeManutencao = table.Column<int>(type: "int", nullable: true),
-                    FimDesejado = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FimPlanejado = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Notificar = table.Column<bool>(type: "bit", nullable: false),
                     DataAvaria = table.Column<DateTime>(type: "datetime2", nullable: true),
                     StatusNota = table.Column<int>(type: "int", nullable: true),

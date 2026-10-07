@@ -49,6 +49,29 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
         return new { Total = count, Result = result };
     }
 
+    public async Task<List<UsuarioModel>> AtualizarUsuariosList (List<UsuarioModel> usuarios)
+    {
+        foreach (var usuario in usuarios)
+        {
+            var existingUsuario = await _context.Set<UsuarioModel>().FirstOrDefaultAsync(u => u.IdUsuario == usuario.IdUsuario);
+            if (existingUsuario != null)
+            {
+                existingUsuario.Nome = usuario.Nome;
+                existingUsuario.CPF = usuario.CPF;
+                existingUsuario.Telefone = usuario.Telefone;
+                existingUsuario.Escopos = usuario.Escopos;
+                existingUsuario.NivelPermissao = usuario.NivelPermissao;
+            }
+            else
+            {
+                _context.Set<UsuarioModel>().Add(usuario);
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        return usuarios;
+    }
+    
     /// <summary>
     /// Aplica includes na consulta
     /// </summary>
@@ -89,94 +112,88 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
         }
     }
 
-    public async Task<List<UsuarioModel>> SearchUsuario(string? cpf, string? nome, string? funcao, int? schema)
+    public async Task<List<UsuarioModel>> SearchUsuario(string? cpf, string? nome, string? funcao, string? schema)
     {
         var usuarios = await _context.Set<UsuarioModel>()
             .Where(u => (string.IsNullOrEmpty(cpf) || u.CPF!.Contains(cpf)) &&
                         (string.IsNullOrEmpty(nome) || u.Nome!.Contains(nome)) &&
                         //(string.IsNullOrEmpty(funcao) || u.Funcao.Contains(funcao)) &&
                         // TODO: Adicionar filtro por FUNÇÃO se necessário
-                        (!schema.HasValue || u.Escopos.Contains(schema.Value)))
+                        (string.IsNullOrEmpty(schema) || u.Escopos.Contains(schema)))
             .ToListAsync();
 
         return usuarios;
     }
-
+    
     public async Task<List<UsuarioModel>> SincronizarUsuariosPortalAsync()
     {
-        throw new NotImplementedException();
-        return new List<UsuarioModel>();
-        
+        int offset = 0;
+        int limit = 100;
+        bool hasMoreData = true;
+
         var schema = Config.RouteConfig.GetDatabaseSchema();
         
-        var response = await _httpClient.GetAsync($"https://IP/portal/{schema}/api/usuarios");
-        
-        var usuariosSync = await response.Content.ReadFromJsonAsync<List<PortalPaginatedResponseDto>>();
-        var result = new List<UsuarioModel>();
-        
-        //
-        // foreach (var dto in usuariosSync)
-        // {
-        //     // processa cada usuário do portal, buscando pelo PortalId ou Nome
-        //     var usuarioDb = await _context.Set<UsuarioModel>()
-        //         .Include(u => u.Gpms)
-        //         .Include(u => u.Ctms)
-        //         .FirstOrDefaultAsync(u => u.PortalId == dto.Id || u.Nome == dto.Name);
-        //
-        //     if (usuarioDb == null)
-        //     {
-        //         // cria um novo usuário caso não exista
-        //         usuarioDb = new UsuarioModel()
-        //         {
-        //             PortalId = dto.Id,
-        //             Nome = dto.Name,
-        //             CPF = dto.Cpf,
-        //             Telefone = dto.Telefone,
-        //             NivelPermissao = dto.NivelPermissao ?? NivelPermissao.Usuario,
-        //             Permissoes = dto.Permissoes ?? PermissoesTabela.Nenhuma,
-        //             Escopos = dto.Escopos
-        //         };
-        //         _context.Set<UsuarioModel>().Add(usuarioDb);
-        //     }
-        //     else
-        //     {
-        //         // atualiza os campos do usuário existente
-        //         usuarioDb.PortalId = dto.Id; // salva UUID
-        //         usuarioDb.Nome = dto.Name;
-        //         if (!string.IsNullOrEmpty(dto.Cpf)) usuarioDb.CPF = dto.Cpf;
-        //         if (!string.IsNullOrEmpty(dto.Telefone)) usuarioDb.Telefone = dto.Telefone;
-        //         if (dto.NivelPermissao.HasValue) usuarioDb.NivelPermissao = dto.NivelPermissao;
-        //         if (dto.Permissoes.HasValue) usuarioDb.Permissoes = dto.Permissoes;
-        //         if (dto.Escopos.Any()) usuarioDb.Escopos = dto.Escopos;
-        //     }
-        //
-        //     // atualiza as relações com GPMs e CTMs
-        //     if (dto.GpmIds.Any())
-        //     {
-        //         usuarioDb.Gpms.Clear();
-        //         var gpms  = await _context.Set<GpmModel>().Where(g => dto.GpmIds.Contains(g.IdGPM)).ToListAsync();
-        //         foreach (var gpm in gpms)
-        //         {
-        //             usuarioDb.Gpms.Add(gpm);
-        //         }
-        //     }
-        //     
-        //     if (dto.CtmIds.Any())
-        //     {
-        //         usuarioDb.Ctms.Clear();
-        //         var ctms = await _context.Set<CtmModel>().Where(c => dto.CtmIds.Contains(c.IdCTM)).ToListAsync();
-        //         foreach (var ctm in ctms)
-        //         {
-        //             usuarioDb.Ctms.Add(ctm);
-        //         }
-        //     }
+        while (hasMoreData)
+        {
+            // endpoint do thiagão
+            string url = $"api/{schema}/43000/0/All?offset={offset}&limit={limit}";
             
+            var response = await _httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            
+            var portalData = await response.Content.ReadFromJsonAsync<PortalPaginatedResponseDto>();
+            
+            if (portalData == null || !portalData.Items.Any())
+            {
+                break; // sai do loop se não vier nada
+            }
+
+            foreach (var usuarioPortal in portalData.Items)
+            {
+                // verifica se o usuário já existe no banco local
+                var usuario = await _context.PM_Usuarios.FirstOrDefaultAsync(u => u.PortalId == usuarioPortal.Id);
+
+                if (usuario != null)
+                {
+                    usuario = new UsuarioModel()
+                    {
+                        PortalId = usuarioPortal.Id,
+                    };
+                    _context.PM_Usuarios.Add(usuario);
+                }
+
+                usuario.Nome = usuarioPortal.Name;
+                usuario.CPF = usuarioPortal.Cpf;
+                usuario.Telefone = usuarioPortal.PhoneNumber;
+                usuario.Escopos = usuarioPortal.Scopes;
+                usuario.NivelPermissao = DeterminarNivelPermissao(usuarioPortal.ApplicationPermissions
+                    .FirstOrDefault(ap => ap.ApplicationId == _pmApplicationId)?.ApplicationAccessLevel ?? "VIEW");
+            }
+        }
+        
+        return await _context.SaveChangesAsync() > 0 
+            ? await _context.PM_Usuarios.ToListAsync() 
+            : new List<UsuarioModel>();
+    }
+    
+    /// <summary>
+    /// Mapeia o Access Level que vem do portal para o Enum interno do PM
+    /// </summary>
+    private NivelPermissao DeterminarNivelPermissao(string applicationAccessLevel)
+    {
+        return applicationAccessLevel.ToUpper() switch
+        {
+            "MANAGE" => NivelPermissao.Admin,
+            "EDIT" => NivelPermissao.Pendente, 
+            "VIEW" => NivelPermissao.Usuario,
+            _ => NivelPermissao.Usuario
+        };
     }
     
     public async Task<List<UsuarioModel>> ObterIntermediariosSemVinculoAsync()
     {
         var usuarios = await _context.PM_Usuarios
-            .Where(u => u.NivelPermissao == NivelPermissao.Ctm 
+            .Where(u => u.NivelPermissao == NivelPermissao.Pendente 
                         && !u.Ctms.Any()
                         && !u.Gpms.Any()
                         )

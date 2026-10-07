@@ -37,7 +37,7 @@ spec:
             - name: TWINS_KEY
               value: "Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$Ab2/#C$x8y"
             - name: Keycloak__ClientId
-              value: "comgas§pm"
+              value: "comgas!pm"
             - name: Keycloak__Url
               value: "$(KEYCLOAK__URL)"
             - name: Keycloak__Authority

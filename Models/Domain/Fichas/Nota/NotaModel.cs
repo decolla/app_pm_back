@@ -111,7 +111,7 @@ public class NotaModel : IClassifiable, IAuditable
     /// Define o prazo esperado para resolução da ocorrência.
     /// </summary>
     /// <example>2024-01-20T18:00:00</example>
-    public DateTime? FimDesejado { get; set; }
+    public DateTime? FimPlanejado { get; set; }
     
     /// <summary>
     /// Indica se a nota deve ser notificada aos envolvidos.

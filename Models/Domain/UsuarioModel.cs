@@ -42,12 +42,6 @@ public class UsuarioModel
     public string? Telefone { get; set; }
 
     /// <summary>
-    /// Lista de permissões serializada ou descrição de acessos.
-    /// Exemplo: 7 -> NOTAS | ORDENS | ITENS.
-    /// </summary>
-    public PermissoesTabela? Permissoes { get; set; } = PermissoesTabela.Nenhuma;
-
-    /// <summary>
     /// Nível de permissão do usuário no sistema.
     /// </summary>
     public NivelPermissao? NivelPermissao { get; set; } = Domain.NivelPermissao.Usuario;
@@ -55,8 +49,11 @@ public class UsuarioModel
     /// <summary>
     /// Lista de escopos aos quais o usuário tem acesso.
     /// </summary>
-    public List<long> Escopos { get; set; } = new List<long>();
+    public List<string> Escopos { get; set; } = new List<string>();
     
+    /// <summary>
+    /// Lista de favoritos do usuário, representando telas favoritadas 
+    /// </summary>
     public List<string> Favoritos { get; set; } = new List<string>();
 
     /// <summary>

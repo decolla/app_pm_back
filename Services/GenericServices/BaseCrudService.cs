@@ -208,19 +208,5 @@ public abstract class BaseCrudService<T> where T : class
     {
         return await DeleteAsync(id);
     }
-
-    /// <summary>
-    /// Verifica se o usuário tem acesso a uma tabela específica
-    /// </summary>
-    /// <param name="usuario">Usuário a ser verificado</param>
-    /// <param name="tabelaRequerida">Tabela a ser verificada</param>
-    /// <returns>Boolean de se o usuário tem ou não acesso à tabela</returns>
-    public bool UsuarioTemAcesso(UsuarioModel usuario, PermissoesTabela tabelaRequerida)
-    {
-        // se for ADM, tem passe livre em tudo
-        if (usuario.NivelPermissao == NivelPermissao.Admin)
-            return true;
-
-        return usuario.Permissoes.HasValue && (usuario.Permissoes.Value & tabelaRequerida) == tabelaRequerida;
-    }
+    
 }

@@ -56,7 +56,6 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.IdUsuario, opt => opt.MapFrom(src => src.IdUsuario))
             .ForMember(dest => dest.Nome, opt => opt.MapFrom(src => src.Nome))
             .ForMember(dest => dest.CPF, opt => opt.MapFrom(src => src.CPF))
-            .ForMember(dest => dest.Permissoes, opt => opt.MapFrom(src => src.Permissoes))
             .ForMember(dest => dest.Escopos, opt => opt.MapFrom(src => src.Escopos))
             .ReverseMap();
 

@@ -12,7 +12,7 @@ public class UsuarioDto
     /// Identificador do usuario no SAP interno.
     /// </summary>
     [SheetColumn("ID")]
-    public long IdUsuario { get; set; }
+    public long? IdUsuario { get; set; }
 
     /// <summary>
     /// Nome do usuario.
@@ -30,12 +30,6 @@ public class UsuarioDto
     public string? Telefone { get; set; }
 
     /// <summary>
-    /// Permissoes (lista serializada ou descricao textual).
-    /// </summary>
-    [SheetColumn("Permissoes")]
-    public string? Permissoes { get; set; }
-
-    /// <summary>
     /// Nível de permissão do usuário no sistema.
     /// </summary>
     public NivelPermissao? NivelPermissao { get; set; } = Models.Domain.NivelPermissao.Usuario;
@@ -43,8 +37,8 @@ public class UsuarioDto
     /// <summary>
     /// Lista de escopos aos quais o usuário tem acesso.
     /// </summary>
-    [SheetColumn("Id Escopo")]
-    public List<long> Escopos { get; set; } = new List<long>();
+    [SheetColumn("Escopos")]
+    public List<string> Escopos { get; set; } = new List<string>();
     
     /// <summary>
     /// Lista de favoritos do usuário.
