@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using app_pm_back.Data;
 using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
@@ -12,16 +13,19 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
 {
     private readonly ILogger<UsuarioService> _logger;
     private readonly HttpClient _httpClient;
-    private readonly string _pmApplicationId;
+    private readonly string _clientId;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="UsuarioService"/>.
     /// </summary>
-    public UsuarioService(AppDbContext context, ILogger<UsuarioService> logger , HttpClient httpClient, IConfiguration configuration) : base(context)
+    public UsuarioService(AppDbContext context, ILogger<UsuarioService> logger, HttpClient httpClient,
+        IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : base(context)
     {
-        _logger = logger ;
+        _logger = logger;
         _httpClient = httpClient;
-        _pmApplicationId = configuration["Portal:PmApplicationId"] ?? string.Empty; 
+        _clientId = configuration["Keycloak:ClientId"] ?? "comgas!pm";
+        _httpContextAccessor = httpContextAccessor;
     }
 
 
@@ -54,11 +58,12 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
     /// </summary>
     /// <param name="usuarios">Lista de usuários a serem atualizados.</param>
     /// <returns>Lista de usuários atualizados.</returns>
-    public async Task<List<UsuarioModel>> AtualizarUsuariosList (List<UsuarioModel> usuarios)
+    public async Task<List<UsuarioModel>> AtualizarUsuariosList(List<UsuarioModel> usuarios)
     {
         foreach (var usuario in usuarios)
         {
-            var existingUsuario = await _context.Set<UsuarioModel>().FirstOrDefaultAsync(u => u.IdUsuario == usuario.IdUsuario);
+            var existingUsuario = await _context.Set<UsuarioModel>()
+                .FirstOrDefaultAsync(u => u.IdUsuario == usuario.IdUsuario);
             if (existingUsuario != null)
             {
                 existingUsuario.Nome = usuario.Nome;
@@ -76,7 +81,7 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
         await _context.SaveChangesAsync();
         return usuarios;
     }
-    
+
     /// <summary>
     /// Aplica includes na consulta
     /// </summary>
@@ -129,72 +134,86 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
 
         return usuarios;
     }
-    
+
     public async Task<List<UsuarioModel>> SincronizarUsuariosPortalAsync()
     {
-        int offset = 0;
-        int limit = 100;
-        bool hasMoreData = true;
-
         var schema = Config.RouteConfig.GetDatabaseSchema();
-        
-        while (hasMoreData)
+
+        // transformar o ! em %21 para evitar problemas de URL
+        var encodedClientId = Uri.EscapeDataString(_clientId);
+
+        // URL do thiagão 
+        string url = $"https://10.3.192.200/portal/api/{schema}/43000/0/All/Application/ByClientId/{encodedClientId}";
+
+        _logger.LogInformation("Sincronizando usuários do portal.");
+
+        // repassa o token bearer para o portal
+        var authHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault();
+        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
         {
-            // endpoint do thiagão
-            string url = $"api/{schema}/43000/0/All?offset={offset}&limit={limit}";
-            
-            var response = await _httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
-            
-            var portalData = await response.Content.ReadFromJsonAsync<PortalPaginatedResponseDto>();
-            
-            if (portalData == null || !portalData.Items.Any())
-            {
-                break; // sai do loop se não vier nada
-            }
+            var token = authHeader.Substring("Bearer ".Length).Trim();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
 
-            foreach (var usuarioPortal in portalData.Items)
-            {
-                // verifica se o usuário já existe no banco local
-                var usuario = await _context.PM_Usuarios.FirstOrDefaultAsync(u => u.PortalId == usuarioPortal.Id);
+        var response = await _httpClient.GetAsync(url);
+        response.EnsureSuccessStatusCode();
 
-                if (usuario != null)
+        var usuariosPortal = await response.Content.ReadFromJsonAsync<List<PortalAppUserResponseDto>>();
+
+        if (usuariosPortal == null || !usuariosPortal.Any())
+        {
+            _logger.LogWarning("Nenhum usuário retornado do portal para sincronização.");
+            return new List<UsuarioModel>();
+        }
+
+        _logger.LogInformation("Sincronizando {Count} usuários do portal.", usuariosPortal.Count);
+
+        List<UsuarioModel> usuariosAtualizados = new List<UsuarioModel>();
+
+        foreach (var item in usuariosPortal)
+        {
+            var pUser = item.User;
+
+            var usuario = await _context.Set<UsuarioModel>().FirstOrDefaultAsync(u => u.PortalId == pUser.Id);
+
+            if (usuario == null)
+            {
+                usuario = new UsuarioModel
                 {
-                    usuario = new UsuarioModel()
-                    {
-                        PortalId = usuarioPortal.Id,
-                    };
-                    _context.PM_Usuarios.Add(usuario);
-                }
-
-                usuario.Nome = usuarioPortal.Name;
-                usuario.CPF = usuarioPortal.Cpf;
-                usuario.Telefone = usuarioPortal.PhoneNumber;
-                usuario.Escopos = usuarioPortal.Scopes;
-                usuario.NivelPermissao = DeterminarNivelPermissao(usuarioPortal.ApplicationPermissions
-                    .FirstOrDefault(ap => ap.ApplicationId == _pmApplicationId)?.ApplicationAccessLevel ?? "VIEW");
+                    PortalId = pUser.Id,
+                };
+                _context.Set<UsuarioModel>().Add(usuario);
             }
+            
+            usuario.Nome = pUser.Name;
+            usuario.CPF = pUser.Cpf;
+            usuario.Telefone = pUser.PhoneNumber;
+            usuario.Escopos = pUser.Scopes ?? new List<string>();
+            usuario.NivelPermissao = DeterminarNivelPermissao(item.AccessLevel);
+            
+            usuariosAtualizados.Add(usuario);
         }
         
-        return await _context.SaveChangesAsync() > 0 
-            ? await _context.PM_Usuarios.ToListAsync() 
-            : new List<UsuarioModel>();
+        await _context.SaveChangesAsync();
+        return usuariosAtualizados;
     }
-    
+
     /// <summary>
     /// Mapeia o Access Level que vem do portal para o Enum interno do PM
     /// </summary>
     private NivelPermissao DeterminarNivelPermissao(string applicationAccessLevel)
     {
+        if (string.IsNullOrEmpty(applicationAccessLevel)) return NivelPermissao.Usuario;
+
         return applicationAccessLevel.ToUpper() switch
         {
             "MANAGE" => NivelPermissao.Admin,
-            "EDIT" => NivelPermissao.Pendente, 
+            "EDIT" => NivelPermissao.Pendente,
             "VIEW" => NivelPermissao.Usuario,
             _ => NivelPermissao.Usuario
         };
     }
-    
+
     public async Task<List<UsuarioModel>> ObterIntermediariosSemVinculoAsync()
     {
         var usuarios = await _context.PM_Usuarios

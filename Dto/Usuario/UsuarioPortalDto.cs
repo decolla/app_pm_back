@@ -2,19 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace app_pm_back.DTO;
 
-public class PortalPaginatedResponseDto
+public class PortalAppUserResponseDto
 {
-    [JsonPropertyName("offset")]
-    public int Offset { get; set; }
+    [JsonPropertyName("user")]
+    public PortalUserItemDto User { get; set; } = new();
 
-    [JsonPropertyName("limit")]
-    public int Limit { get; set; }
-
-    [JsonPropertyName("total")]
-    public int Total { get; set; }
-
-    [JsonPropertyName("items")]
-    public List<PortalUserItemDto> Items { get; set; } = new();
+    [JsonPropertyName("accessLevel")]
+    public string AccessLevel { get; set; } = string.Empty;
 }
 
 public class PortalUserItemDto
@@ -37,18 +31,6 @@ public class PortalUserItemDto
     [JsonPropertyName("userRole")]
     public string? UserRole { get; set; }
 
-    [JsonPropertyName("applicationPermissions")]
-    public List<PortalApplicationPermissionDto> ApplicationPermissions { get; set; } = new();
-    
     [JsonPropertyName("scopes")]
     public List<string> Scopes { get; set; } = new();
-}
-
-public class PortalApplicationPermissionDto
-{
-    [JsonPropertyName("applicationId")]
-    public string ApplicationId { get; set; } = string.Empty;
-
-    [JsonPropertyName("applicationAccessLevel")]
-    public string ApplicationAccessLevel { get; set; } = string.Empty;
 }

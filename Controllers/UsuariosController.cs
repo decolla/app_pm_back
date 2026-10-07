@@ -52,8 +52,19 @@ public class UsuariosController : ControllerBase
     [Authorize(Policy = "Admin")] 
     public async Task<IActionResult> SincronizarPortal()
     {
-        var result = await _service.SincronizarUsuariosPortalAsync();
-        return Ok(result);
+        try 
+        {
+            var totalSincronizados = await _service.SincronizarUsuariosPortalAsync();
+            return Ok(new { message = $"Sincronização concluída com sucesso. {totalSincronizados} usuários foram processados." });
+        }
+        catch (HttpRequestException httpEx)
+        {
+            return StatusCode(502, new { message = $"Falha ao se comunicar com o Portal: {httpEx.Message}" });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = $"Erro interno na sincronização: {ex.Message}" });
+        }
     }
 
     /// <summary>
