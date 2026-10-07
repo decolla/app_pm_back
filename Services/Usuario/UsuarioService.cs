@@ -49,6 +49,11 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
         return new { Total = count, Result = result };
     }
 
+    /// <summary>
+    /// Atualiza uma lista de usuários.
+    /// </summary>
+    /// <param name="usuarios">Lista de usuários a serem atualizados.</param>
+    /// <returns>Lista de usuários atualizados.</returns>
     public async Task<List<UsuarioModel>> AtualizarUsuariosList (List<UsuarioModel> usuarios)
     {
         foreach (var usuario in usuarios)
@@ -193,10 +198,7 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
     public async Task<List<UsuarioModel>> ObterIntermediariosSemVinculoAsync()
     {
         var usuarios = await _context.PM_Usuarios
-            .Where(u => u.NivelPermissao == NivelPermissao.Pendente 
-                        && !u.Ctms.Any()
-                        && !u.Gpms.Any()
-                        )
+            .Where(u => u.NivelPermissao == NivelPermissao.Pendente)
             .ToListAsync();
 
         return usuarios;

@@ -247,7 +247,7 @@ public class UsuariosController : ControllerBase
     /// <returns>Mensagem de confirmação da atualização.</returns>
     /// <response code="200">Sucesso ao atualizar o registro.</response>
     /// <response code="400">Erros na validação do modelo ou ID divergente entre a rota e o corpo.</response>
-    [HttpPut("All")]
+    [HttpPut("list")]
     [Authorize(Policy = "Manage")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
