@@ -35,7 +35,7 @@ builder.Services.AddSwaggerGen(c =>
         Title = "PM Back API",
         Version = "v1.0",
         Description = "### API PM Back\n\n" +
-                      "> **Nova Documentação Disponível:** **[Scalar Docs](/scalar/v1)**\n\n" +
+                      "> **Nova Documentação Disponível:** **[Scalar Docs](/comgas/pm/api/scalar/index.html)**\n\n" +
                       "Backend para gerenciamento de Notas, Ordens, Planos de Manutenção, Fichas e Integrações.\n\n" +
                       "- **Autenticação:** JWT Bearer\n" +
                       "- **Plataforma:** .NET 10\n" +
@@ -201,7 +201,6 @@ builder.Services.AddScoped<TipoManutencaoCepService>();
 builder.Services.AddScoped<DadosRenovacaoService>();
 builder.Services.AddScoped<OperacaoService>();
 builder.Services.AddScoped<FerramentaService>();
-builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<UserContextService>();
 builder.Services.AddScoped<CpmService>();
 builder.Services.AddScoped<CtmService>();
@@ -223,9 +222,19 @@ builder.Services.AddScoped<DiretorioService>();
 builder.Services.AddScoped<ExternIntegrationService>();
 builder.Services.AddScoped<CatboostModelProviderService>();
 builder.Services.AddScoped<DashboardService>();
-builder.Services.AddSingleton<KafkaProducerService>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<CustoAcumuladoService>();
+
+builder.Services.AddSingleton<KafkaProducerService>();
+
+builder.Services.AddHttpClient<UsuarioService>()
+    .ConfigurePrimaryHttpMessageHandler(() =>
+    {
+        return new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
+    });
 
 // configuração de clientes http
 builder.Services.AddHttpClient<ExternIntegrationService>(client =>
