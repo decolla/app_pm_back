@@ -15,6 +15,7 @@ using app_pm_back.Services.GenericServices;
 using Hangfire;
 using Hangfire.PostgreSql;
 using app_pm_back.Extensions;
+using app_pm_back.Services.Fichas.Dashboard;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;

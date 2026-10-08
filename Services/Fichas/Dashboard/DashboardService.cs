@@ -1,13 +1,12 @@
-using System.Runtime.InteropServices.JavaScript;
 using app_pm_back.Data;
-using app_pm_back.DTO.Buscas;
 using app_pm_back.Dto.Fichas;
 using app_pm_back.Interfaces;
 using app_pm_back.Models.Domain;
+using app_pm_back.Services.FichasServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace app_pm_back.Services.FichasServices;
+namespace app_pm_back.Services.Fichas.Dashboard;
 
 /// <summary>
 /// Gera as estatísticas do dashboard 
@@ -20,6 +19,7 @@ public class DashboardService
     private readonly IUserContext _userContext;
     private readonly PizzaDashboard _pizzaDashboard;
     private readonly RankingDashboard _rankingDashboard;
+    private readonly HistogramaDashboard _histogramaDashboard;
 
     public DashboardService(AppDbContext context, ILogger<DashboardService> logger, IMemoryCache cache, IUserContext userContext)
     {
@@ -29,6 +29,7 @@ public class DashboardService
         _userContext = userContext;
         _pizzaDashboard = new PizzaDashboard();
         _rankingDashboard = new RankingDashboard(this);
+        _histogramaDashboard = new HistogramaDashboard(this);
     }
 
     /// <summary>
@@ -61,7 +62,7 @@ public class DashboardService
 
             List<OrdemModel> ordens = await GetOrdensAsync();
 
-            var statusSemana = RelacaoStatusOrdensSemana(notas, UnidadeTempo.Meses);
+            var statusSemana = _histogramaDashboard.RelacaoStatusOrdensSemana(notas, UnidadeTempo.Meses);
 
             if(dashboardDto == null)
                 dashboardDto = new DashboardDto();
@@ -79,7 +80,7 @@ public class DashboardService
                     (x.Item2.Item1, x.Item2.Item2)
                 ))
                 .ToList();
-            dashboardDto.NotasUsuario = NotasUsuario(notasUser);
+            dashboardDto.NotasUsuario = _pizzaDashboard.NotasUsuario(notasUser);
             
             
             // adiciona ao cache o dashboard gerado, com prioridade alta e expiração de 24 horas
@@ -138,115 +139,5 @@ public class DashboardService
         {
             throw new ArgumentException("Erro ao obter ordens:", ex);
         }
-    }
-
-    /// <summary>
-    /// Gera a relação de status de ordem e relação de prazo de notas
-    /// </summary>
-    /// <param name="notas"></param>
-    /// <param name="unidadeTempo"></param>
-    /// <returns></returns>
-    private (List<object>, List<object>) RelacaoStatusOrdensSemana(List<NotaModel> notas, UnidadeTempo unidadeTempo)
-    {
-        var notasComData = notas.Where(n => n.DataNota.HasValue).ToList();
-        if (!notasComData.Any()) return (new(), new());
-
-        List<object> relacaoStatus = new();
-        List<object> relacaoPrazo = new();
-
-        var notasOrdenadas = notasComData.OrderBy(n => n.DataNota).ToList();
-        DateTime dataInicial = notasOrdenadas.First().DataNota!.Value;
-
-        int valorTemporal = 1;
-
-        if (unidadeTempo == UnidadeTempo.Meses)
-            valorTemporal = 30;
-        else if (unidadeTempo == UnidadeTempo.Anos)
-            valorTemporal = 365;
-
-        // agrupa as notas por semana
-        var notasPorSemana = notasOrdenadas
-            .GroupBy(n => (int)((n.DataNota!.Value - dataInicial).TotalDays / valorTemporal) + 1)
-            .ToDictionary(g => g.Key, g => g.ToList());
-
-        int totalSemanas = (int)((DateTime.Now - dataInicial).TotalDays / valorTemporal) + 1;
-
-        for (int tempo = 1; tempo <= totalSemanas; tempo++)
-        {
-            if (!notasPorSemana.TryGetValue(tempo, out var notasTempo) || notasTempo.Count == 0)
-            {
-                // // se a série for muito longa
-                // if (totalSemanas > 52)
-                //     continue;
-
-                notasTempo = new List<NotaModel>();
-            }
-
-            int notasComOrdem = notasTempo.Select(n => n.Ordens).Count(o => o.Count != 0);
-            int notasSemOrdem = notasTempo.Count - notasComOrdem;
-            int notasRejeitadas = notasTempo.Count(n => n.StatusNota == StatusFichas.Reprovada);
-            int notasConcluidas = notasTempo.Count(n => n.StatusNota == StatusFichas.Concluida);
-
-            relacaoStatus.Add(new
-            {
-                Indice = tempo,
-                NotasSemOrdem = notasSemOrdem,
-                NotasComOrdem = notasComOrdem,
-                NotasRejeitadas = notasRejeitadas,
-                NotasConcluidas = notasConcluidas
-            });
-
-            int notasComOrdemPrazo = notasTempo.Count(n => n.Ordens.Any(o => o.FimPlanejado > DateTime.Now));
-            int notasSemOrdemPrazo = notasTempo.Count(n =>
-                n.Ordens.Count == 0 && n.DataAvaria.HasValue && n.FimPlanejado < DateTime.Now);
-            int notasSemOrdemAtrasadas = notasTempo.Count(n => n.Ordens.Any(o => o.FimReal < DateTime.Now));
-            int notasComOrdemAtrasadas = notasTempo.Count(n => n.Ordens.Any(o => o.FimReal > DateTime.Now));
-
-            relacaoPrazo.Add(new
-            {
-                Indice = tempo,
-                NotasSemOrdemPrazo = notasSemOrdemPrazo,
-                NotasComOrdemPrazo = notasComOrdemPrazo,
-                NotasSemOrdemAtrasadas = notasSemOrdemAtrasadas,
-                NotasComOrdemAtrasadas = notasComOrdemAtrasadas
-            });
-        }
-
-        _logger.LogInformation("Relação semanal de status e prazos gerados com sucesso.");
-
-        return (relacaoStatus, relacaoPrazo);
-    }
-
-    /// <summary>
-    /// Estatísticas de notas do usuário atual
-    /// </summary>
-    /// <returns></returns>
-    public Dictionary<StatusFichas, int> NotasUsuario(List<NotaModel> notas)
-    {
-        
-        if (!notas.Any())
-        {
-            _logger.LogError("Não foi possível obter as notas do usuário.");
-            return new Dictionary<StatusFichas, int>();
-        }
-        
-        Dictionary<StatusFichas, int> pedidos = new Dictionary<StatusFichas, int>();
-
-        // incrementa o contador para cada status de nota
-        foreach (var nota in notas)
-        {
-            StatusFichas? status = nota.StatusNota;
-
-            if (status == null)
-            {
-                pedidos[StatusFichas.Aberta]++;
-            }
-            else
-            {
-                pedidos[status.Value]++;
-            }
-        }
-
-        return pedidos;
     }
 }

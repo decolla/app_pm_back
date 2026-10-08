@@ -252,7 +252,7 @@ public class ClassificacaoController : ControllerBase
     /// </summary>
     /// <returns>Lista de notas atualizadas</returns>
     [HttpGet("palavras")]
-    public async Task<IActionResult> ClassificacaoPalavrasNotaCongas(Fichas buscaTabela)
+    public async Task<IActionResult> ClassificacaoPalavrasNotaCongas(TipoFichas buscaTabela)
     {
         var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
         if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarPalavrasChave)
@@ -264,13 +264,13 @@ public class ClassificacaoController : ControllerBase
         {
             // passar uma lista vazia por enquanto 
             var message = "";
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Notas)
+            if (buscaTabela == TipoFichas.Ambas || buscaTabela == TipoFichas.Notas)
             {
                 await _notaService.AutoClassifyWords();
                 message = "Notas classificadas com sucesso";
             }
 
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
+            if (buscaTabela == TipoFichas.Ambas || buscaTabela == TipoFichas.Ordens)
             {
                 await _ordemService.AutoClassifyWords();
                 message += "| Ordens classificadas com sucesso";
@@ -294,7 +294,7 @@ public class ClassificacaoController : ControllerBase
     /// Classifica as Ambas, Fichas ou Ordens usando a IA catboost
     /// </summary>
     [HttpGet("catboost")]
-    public async Task<IActionResult> ClassificacaoCatboostNota(Fichas buscaTabela)
+    public async Task<IActionResult> ClassificacaoCatboostNota(TipoFichas buscaTabela)
     {
         var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
         if (config.ClassificacaoAutomatica != ModoClassificacaoAutomatica.ClassificarCatBoost)
@@ -305,13 +305,13 @@ public class ClassificacaoController : ControllerBase
         try
         {
             var message = "";
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Notas)
+            if (buscaTabela == TipoFichas.Ambas || buscaTabela == TipoFichas.Notas)
             {
                 await _notaService.AutoClassifyCatboost();
                 message = "Notas classificadas com sucesso";
             }
 
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
+            if (buscaTabela == TipoFichas.Ambas || buscaTabela == TipoFichas.Ordens)
             {
                 await _ordemService.AutoClassifyCatboost();
                 message += "| Ordens classificadas com sucesso";
@@ -408,14 +408,14 @@ public class ClassificacaoController : ControllerBase
     [HttpPost("filtro")]
     public async Task<IActionResult> ClassificaNotaOrdem(
         [FromBody] BuscaOrdemNotaDto busca,
-        [FromQuery] Fichas? tFichas,
+        [FromQuery] TipoFichas? tFichas,
         [FromQuery] FiltroClassificacao filtroClassificacao)
     {
         try
         {
             if (!tFichas.HasValue)
             {
-                tFichas = Fichas.Ambas;
+                tFichas = TipoFichas.Ambas;
             }
 
 
@@ -423,7 +423,7 @@ public class ClassificacaoController : ControllerBase
 
             List<object> resultados = new List<object>();
 
-            if (tFichas == Fichas.Ambas || tFichas == Fichas.Notas)
+            if (tFichas == TipoFichas.Ambas || tFichas == TipoFichas.Notas)
             {
                 var notas = resultadoBusca.Item1;
                 List<NotaModel> notasClassificadas = new List<NotaModel>();
@@ -440,7 +440,7 @@ public class ClassificacaoController : ControllerBase
                 resultados.Add(notasClassificadas);
             }
 
-            if (tFichas == Fichas.Ambas || tFichas == Fichas.Ordens)
+            if (tFichas == TipoFichas.Ambas || tFichas == TipoFichas.Ordens)
             {
                 var ordens = resultadoBusca.Item2;
                 List<OrdemModel> ordensClassificadas = new List<OrdemModel>();

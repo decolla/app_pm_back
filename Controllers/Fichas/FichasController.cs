@@ -4,6 +4,7 @@ using app_pm_back.Models;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.ExternIntegationsServices;
+using app_pm_back.Services.Fichas.Dashboard;
 using app_pm_back.Services.FichasServices;
 using app_pm_back.Services.GenericServices;
 using Microsoft.AspNetCore.Authorization;
@@ -144,7 +145,7 @@ public class FichasController : ControllerBase
         [FromQuery] int pagina,
         [FromQuery] int tamanho,
         [FromQuery] bool? apenasNaoAtribuidas,
-        [FromQuery] Fichas? tFichas = Fichas.Ambas)
+        [FromQuery] TipoFichas? tFichas = TipoFichas.Ambas)
     {
         try
         {

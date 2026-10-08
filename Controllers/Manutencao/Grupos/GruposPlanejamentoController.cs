@@ -190,18 +190,18 @@ public class GruposPlanejamentoController : ControllerBase
     /// <summary>
     /// Atribui usuários de um grupo de planejamento a uma ficha específica
     /// </summary>
-    /// <param name="tipoFicha">Nota ou ordem</param>
+    /// <param name="tipoTipoFicha">Nota ou ordem</param>
     /// <param name="idFicha">Id da nota/ordem a ser atribuída</param>
     /// <param name="idGrupo">Id do grupo nos quais os usuários são pertencentes</param>
     /// <param name="idsUsuarios">Lista de usuários</param>
     /// <returns></returns>
     [HttpPut("{idGrupo:long}/usuarios/atribuir")]
-    public async Task<IActionResult> AtribuirUsuariosFicha([FromQuery] Fichas tipoFicha, [FromQuery] long idFicha, [FromRoute]long idGrupo,
+    public async Task<IActionResult> AtribuirUsuariosFicha([FromQuery] TipoFichas tipoTipoFicha, [FromQuery] long idFicha, [FromRoute]long idGrupo,
         [FromQuery] List<long> idsUsuarios)
     {
         try
         {
-            var result = await _service.AtribuirFichas(tipoFicha, idFicha, idGrupo, idsUsuarios);
+            var result = await _service.AtribuirFichas(tipoTipoFicha, idFicha, idGrupo, idsUsuarios);
             return Ok(result);
         }
         catch (Exception e)

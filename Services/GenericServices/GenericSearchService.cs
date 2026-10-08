@@ -120,8 +120,7 @@ public class GenericSearchService
     public async Task<object> BuscarNotaOrdemAsync(
         dynamic busca,
         int pagina,
-        int tamanho,
-        Fichas? tFichas,
+        int tamanho, TipoFichas? tFichas,
         bool grupoUsuario)
     {
         
@@ -148,12 +147,12 @@ public class GenericSearchService
         List<object> lista = new List<object>();
 
         // adiciona na lista final com base na condicional informada
-        if (tFichas == Fichas.Ambas || tFichas == Fichas.Notas)
+        if (tFichas == TipoFichas.Ambas || tFichas == TipoFichas.Notas)
         {
             lista.AddRange(notasDb);
         }
 
-        if (tFichas == Fichas.Ambas || tFichas == Fichas.Ordens)
+        if (tFichas == TipoFichas.Ambas || tFichas == TipoFichas.Ordens)
         {
             lista.AddRange(ordensDb);
         }

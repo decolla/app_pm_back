@@ -449,7 +449,7 @@ public class DiretorioService
         int? pagina,
         int? tamanho,
         dynamic? busca,
-        Fichas tipo)
+        TipoFichas? tipo)
     {
         if (busca == null) throw new ArgumentNullException(nameof(busca));
 
@@ -465,7 +465,7 @@ public class DiretorioService
         List<object> itensPaginados = new();
         int totalGeral = 0;
 
-        if (tipo == Fichas.Ambas || tipo == Fichas.Notas)
+        if (tipo == TipoFichas.Ambas || tipo == TipoFichas.Notas)
         {
             var queryNotas = _context.PM_Notas
                 .AsNoTracking()
@@ -480,7 +480,7 @@ public class DiretorioService
             if (componente.HasValue)
                 queryNotas = queryNotas.Where(n => n.IdsAtivo != null && n.IdsAtivo.Contains(componente.Value));
 
-            if (tipo == Fichas.Notas)
+            if (tipo == TipoFichas.Notas)
             {
                 totalGeral = await queryNotas.CountAsync();
                 itensPaginados.AddRange(await queryNotas.Skip((p - 1) * t).Take(t).ToListAsync());
@@ -490,7 +490,7 @@ public class DiretorioService
             itensPaginados.AddRange(await queryNotas.ToListAsync()); 
         }
         
-        if (tipo == Fichas.Ambas || tipo == Fichas.Ordens)
+        if (tipo == TipoFichas.Ambas || tipo == TipoFichas.Ordens)
         {
             var queryOrdens = _context.PM_Ordens
                 .AsNoTracking()
@@ -503,7 +503,7 @@ public class DiretorioService
             if (componente.HasValue)
                 queryOrdens = queryOrdens.Where(o => o.IdsAtivo != null && o.IdsAtivo.Contains(componente.Value));
 
-            if (tipo == Fichas.Ordens)
+            if (tipo == TipoFichas.Ordens)
             {
                 totalGeral = await queryOrdens.CountAsync();
                 itensPaginados.AddRange(await queryOrdens.Skip((p - 1) * t).Take(t).ToListAsync());

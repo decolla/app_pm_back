@@ -208,12 +208,12 @@ public class DadosRenovacaoController : ControllerBase
     /// </summary>
     [HttpPost("renovacao-fichas")]
     [Authorize(Policy = "Edit")]
-    public async Task<IActionResult> GerarRenovacaoFichas(Fichas buscaTabela, CancellationToken cancellationToken)
+    public async Task<IActionResult> GerarRenovacaoFichas(TipoFichas buscaTabela, CancellationToken cancellationToken)
     {
         try
         {
             var message = "";
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Notas)
+            if (buscaTabela == TipoFichas.Ambas || buscaTabela == TipoFichas.Notas)
             {
                 var idNotas = await _context.PM_Notas
                     .Select(n => n.IdNota)
@@ -225,7 +225,7 @@ public class DadosRenovacaoController : ControllerBase
                 message = "Notas classificadas com sucesso";
             }
 
-            if (buscaTabela == Fichas.Ambas || buscaTabela == Fichas.Ordens)
+            if (buscaTabela == TipoFichas.Ambas || buscaTabela == TipoFichas.Ordens)
             {
                 var idsOrdens = await _context.PM_Ordens
                     .Select(n => n.IdOrdem)

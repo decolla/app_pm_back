@@ -100,16 +100,16 @@ public class DiretoriosController : ControllerBase
     public async Task<IActionResult> VincularFicha(
         [FromQuery] long idDiretorio,
         [FromQuery] long idFicha,
-        [FromQuery] Fichas tipo)
+        [FromQuery] TipoFichas tipo)
     {
         try
         {
-            if (tipo == Fichas.Notas)
+            if (tipo == TipoFichas.Notas)
             {
                 var resultado = await _diretorioService.VincularNotaAoDiretorioAsync(idDiretorio, idFicha);
                 return Ok(resultado);
             }
-            else if (tipo == Fichas.Ordens)
+            else if (tipo == TipoFichas.Ordens)
             {
                 var resultado = await _diretorioService.VincularOrdemAoDiretorioAsync(idDiretorio, idFicha);
                 return Ok(resultado);
@@ -181,16 +181,16 @@ public class DiretoriosController : ControllerBase
     public async Task<IActionResult> DesvincularFicha(
         [FromQuery] long idDiretorio,
         [FromQuery] long idFicha,
-        [FromQuery] Fichas tipo)
+        [FromQuery] TipoFichas tipo)
     {
         try
         {
-            if (tipo == Fichas.Notas)
+            if (tipo == TipoFichas.Notas)
             {
                 await _diretorioService.RemoverNotaDoDiretorioAsync(idDiretorio, idFicha);
                 return Ok();
             }
-            else if (tipo == Fichas.Ordens)
+            else if (tipo == TipoFichas.Ordens)
             {
                 await _diretorioService.RemoverOrdemDoDiretorioAsync(idDiretorio, idFicha);
                 return Ok();
@@ -235,7 +235,7 @@ public class DiretoriosController : ControllerBase
     /// <param name="busca">Filtro de busca</param>
     /// <returns></returns>
     [HttpGet("fichas")]
-    public async Task<IActionResult> ObterFichasDiretorio([FromQuery] long idDiretorio, [FromQuery] Fichas tipo,
+    public async Task<IActionResult> ObterFichasDiretorio([FromQuery] long idDiretorio, [FromQuery] TipoFichas tipo,
         [FromQuery] int? pagina, [FromQuery] int? tamanho, [FromQuery] BuscaDiretorioDto? busca)
     {
         try

@@ -217,7 +217,7 @@ public enum StatusFichas
 /// <summary>
 /// Tipo de fichas a serem geradas durante a busca de fichas.
 /// </summary>
-public enum Fichas
+public enum TipoFichas
 {
     Ambas = 0,
     Notas = 1,
