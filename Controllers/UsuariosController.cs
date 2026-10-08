@@ -27,7 +27,7 @@ public class UsuariosController : ControllerBase
         _service = service;
         _mapper = mapper;
     }
-    
+
     // /// <summary>
     // /// Sincroniza os usuários do portal com o sistema, apenas usuários com role Admin no Keycloak podem chamar.
     // /// </summary>
@@ -43,19 +43,24 @@ public class UsuariosController : ControllerBase
     //     var result = await _service.SincronizarUsuariosPortalAsync(payload);
     //     return Ok(result);
     // }
-    
+
     /// <summary>
     /// Aciona a sincronização buscando os usuários ativamente na API do Portal.
     /// Apenas usuários com role Admin no Keycloak podem chamar.
     /// </summary>
     [HttpPost("sincronizar-portal")]
-    [Authorize(Policy = "Admin")] 
+    [Authorize(Policy = "Admin")]
     public async Task<IActionResult> SincronizarPortal()
     {
-        try 
+        try
         {
             var totalSincronizados = await _service.SincronizarUsuariosPortalAsync();
-            return Ok(new { message = $"Sincronização concluída com sucesso. {totalSincronizados} usuários foram processados." });
+            return Ok(new
+            {
+                message =
+                    $"Sincronização concluída com sucesso. Total de usuários sincronizados: {totalSincronizados.Count}",
+                totalSincronizados
+            });
         }
         catch (HttpRequestException httpEx)
         {
@@ -71,7 +76,7 @@ public class UsuariosController : ControllerBase
     /// Retorna os usuários de nível intermediário que não estão vinculados a nenhum GPM ou CTM.
     /// </summary>
     [HttpGet("intermediarios-sem-vinculo")]
-    [Authorize(Policy = "Manage")] 
+    [Authorize(Policy = "Manage")]
     public async Task<IActionResult> ObterIntermediariosSemVinculo()
     {
         try
@@ -113,7 +118,7 @@ public class UsuariosController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Lista os registros cadastrados com paginação.
     /// </summary>
     /// <param name="pagina">Número da página (1-based) para paginação.</param>
@@ -150,7 +155,7 @@ public class UsuariosController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Obtém um registro pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro (deve ser maior que zero).</param>
@@ -204,7 +209,7 @@ public class UsuariosController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Atualiza um registro existente.
     /// </summary>
     /// <param name="id">Identificador exclusivo na rota (deve ser maior que zero).</param>
@@ -249,7 +254,7 @@ public class UsuariosController : ControllerBase
             return BadRequest(new { message = $"Erro ao atualizar {_operador}." });
         }
     }
-        
+
     /// <summary>
     /// Atualiza um registro existente.
     /// </summary>
@@ -267,7 +272,7 @@ public class UsuariosController : ControllerBase
         try
         {
             List<UsuarioModel> usuarios = _mapper.Map<List<UsuarioModel>>(listUsr);
-            
+
             var result = await _service.AtualizarUsuariosList(usuarios);
             return Ok(usuarios);
         }
@@ -277,7 +282,7 @@ public class UsuariosController : ControllerBase
         }
     }
 
-        /// <summary>
+    /// <summary>
     /// Exclui um registro pelo seu identificador.
     /// </summary>
     /// <param name="id">Identificador exclusivo do registro a ser excluído.</param>
@@ -302,7 +307,7 @@ public class UsuariosController : ControllerBase
             return BadRequest(new { message = $"Erro ao deletar {_operador}." });
         }
     }
-        
+
     /// <summary>
     /// Atribui a responsabilidade de uma ordem para um usuário
     /// </summary>
@@ -318,9 +323,9 @@ public class UsuariosController : ControllerBase
             {
                 return ValidationProblem(ModelState);
             }
-            
 
-            var resposta = await _service.AtribuirPermissao(nome,ordem);
+
+            var resposta = await _service.AtribuirPermissao(nome, ordem);
             return Ok(resposta);
         }
         catch (Exception e)
@@ -328,7 +333,7 @@ public class UsuariosController : ControllerBase
             return BadRequest(new { message = $"Erro ao criar {_operador}: {e.Message}." });
         }
     }
-    
+
     /// <summary>
     /// Busca uma lista de funcionários com base nos filtros passados 
     /// </summary>
@@ -338,7 +343,8 @@ public class UsuariosController : ControllerBase
     /// <param name="schema">Esquema do usuário</param>
     /// <returns></returns>
     [HttpGet("pesquisar")]
-    public async Task<IActionResult> Pesquisar([FromQuery] string? cpf, [FromQuery] string? nome, [FromQuery] string? funcao, [FromQuery] string? schema)
+    public async Task<IActionResult> Pesquisar([FromQuery] string? cpf, [FromQuery] string? nome,
+        [FromQuery] string? funcao, [FromQuery] string? schema)
     {
         try
         {

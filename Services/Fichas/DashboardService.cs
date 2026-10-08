@@ -24,6 +24,7 @@ public class DashboardService
         _logger = logger;
         _context = context;
         _cache = cache;
+        _userContext = userContext;
     }
 
     /// <summary>
