@@ -26,6 +26,16 @@ public class AlmoxarifadoDto
 
     // Escopo externo (armazenar apenas o ID)
     [SheetColumn("Id Escopo")] public string? IdEscopo { get; set; }
+
+    /// <summary>
+    /// Identificadores das ferramentas que serão vinculadas ao almoxarifado.
+    /// </summary>
+    public List<long> IdsFerramentas { get; set; } = new();
+
+    /// <summary>
+    /// Identificadores dos usuários que serão vinculados ao almoxarifado.
+    /// </summary>
+    public List<long> IdsUsuarios { get; set; } = new();
 }
 
 #pragma warning restore CS1591

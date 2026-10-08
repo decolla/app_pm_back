@@ -45,7 +45,10 @@ public class AlmoxarifadosController : ControllerBase
         {
             var almoxarifado = _mapper.Map<AlmoxarifadoModel>(dto);
 
-            var criado = await _service.CreateAsync(almoxarifado);
+            var criado = await _service.CriarComAssociacoesAsync(
+                almoxarifado,
+                dto.IdsFerramentas,
+                dto.IdsUsuarios);
             return CreatedAtAction(nameof(ObterPorId), new { id = criado.IdAlmoxarifado }, criado);
         }
         catch (Exception e)

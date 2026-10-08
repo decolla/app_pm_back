@@ -18,6 +18,8 @@ public class DashboardService
     private readonly ILogger<DashboardService> _logger;
     private readonly IMemoryCache _cache;
     private readonly IUserContext _userContext;
+    private readonly PizzaDashboard _pizzaDashboard;
+    private readonly RankingDashboard _rankingDashboard;
 
     public DashboardService(AppDbContext context, ILogger<DashboardService> logger, IMemoryCache cache, IUserContext userContext)
     {
@@ -25,6 +27,8 @@ public class DashboardService
         _context = context;
         _cache = cache;
         _userContext = userContext;
+        _pizzaDashboard = new PizzaDashboard();
+        _rankingDashboard = new RankingDashboard(this);
     }
 
     /// <summary>
@@ -45,8 +49,16 @@ public class DashboardService
         {
             _logger.LogInformation("Dados não encontrados no cache. Gerando dados do dashboard...");
             
+            var usuario = _userContext.GetUsuarioIdAtual();
+            if (usuario == null)
+                _logger.LogError("Não foi possível obter o ID do usuário atual.");
+            
             // aplica a filtragem em notas e ordens
             List<NotaModel> notas = await GetNotasAsync();
+            List<NotaModel> notasUser = notas
+                .Where(n => n.Usuarios.Any(u => u.IdUsuario == usuario))
+                .ToList();
+
             List<OrdemModel> ordens = await GetOrdensAsync();
 
             var statusSemana = RelacaoStatusOrdensSemana(notas, UnidadeTempo.Meses);
@@ -54,20 +66,20 @@ public class DashboardService
             if(dashboardDto == null)
                 dashboardDto = new DashboardDto();
             
-            dashboardDto.RelacaoStatusOrdens = RelacaoStatusOrdens(notas, notas.Count);
-            dashboardDto.NotasAbertasRelacaoPrazo = NotasAbertasRelacaoPrazo(notas);
-            dashboardDto.TopLiOcorrencias = TopLiOcorrencias(notas, ordens)
+            dashboardDto.RelacaoStatusOrdens = _pizzaDashboard.RelacaoStatusOrdens(notas, notas.Count);
+            dashboardDto.NotasAbertasRelacaoPrazo = _pizzaDashboard.NotasAbertasRelacaoPrazo(notas);
+            dashboardDto.TopLiOcorrencias = _rankingDashboard.TopLiOcorrencias(notas, ordens)
                 .ToDictionary(x => x.Key, x => (x.Value.notas, x.Value.ordens));
             dashboardDto.RelacaoStatusOrdensSemana = statusSemana.Item1;
             dashboardDto.NotasAbertasRelacaoPrazoSemana = statusSemana.Item2;
-            dashboardDto.RankingTempoVida = RankingTempoVida(notas, ordens)
+            dashboardDto.RankingTempoVida = _rankingDashboard.RankingTempoVida(notas, ordens)
                 .Select(x =>
                 (
                     (x.Item1.Item1, x.Item1.Item2),
                     (x.Item2.Item1, x.Item2.Item2)
                 ))
                 .ToList();
-            dashboardDto.NotasUsuario = await NotasUsuario();
+            dashboardDto.NotasUsuario = NotasUsuario(notasUser);
             
             
             // adiciona ao cache o dashboard gerado, com prioridade alta e expiração de 24 horas
@@ -126,106 +138,6 @@ public class DashboardService
         {
             throw new ArgumentException("Erro ao obter ordens:", ex);
         }
-    }
-
-    /// <summary>
-    /// Estatísticas de status de notas 
-    /// </summary>
-    /// <param name="notas"></param>
-    /// <param name="totalNotas"></param>
-    /// <returns></returns>
-    private object RelacaoStatusOrdens(List<NotaModel> notas, int totalNotas)
-    {
-        int notasComOrdem = notas.Count(n => n.Ordens != null && n.Ordens.Any());
-        int notasSemOrdem = totalNotas - notasComOrdem;
-        int notasRejeitadas = notas.Count(n => n.StatusNota == StatusFichas.Reprovada);
-        int notasConcluidas = notas.Count(n => n.StatusNota == StatusFichas.Concluida);
-
-        return new
-        {
-            NotasSemOrdem = notasSemOrdem,
-            NotasComOrdem = notasComOrdem,
-            NotasRejeitadas = notasRejeitadas,
-            NotasConcluidas = notasConcluidas
-        };
-    }
-
-    /// <summary>
-    /// Estatísticas de notas abertas com relação ao seu prazo
-    /// </summary>
-    /// <param name="notas"></param>
-    /// <returns></returns>
-    private object NotasAbertasRelacaoPrazo(List<NotaModel> notas)
-    {
-        int notasComOrdemNoPrazo = notas
-            .Select(n => n.Ordens)
-            .Count(o => o.Count > 0 &&
-                        o.Any(oo => oo.FimPlanejado > DateTime.Now));
-
-        int notasSemOrdemNoPrazo = notas
-            .Count(n => n.Ordens.Count == 0 &&
-                        n.DataAvaria.HasValue &&
-                        n.DataAvaria.Value < DateTime.Now);
-
-        int notasSemOrdemAtrasadas = notas
-            .Select(n => n.Ordens)
-            .Count(o => o.Any(oo => oo.FimReal < DateTime.Now));
-
-        int notasComOrdemAtrasadas = notas
-            .Select(n => n.Ordens)
-            .Count(o => o.Any(oo => oo.FimReal > DateTime.Now));
-
-        _logger.LogInformation("Notas abertas com realção ao prazo geradas com suceeso.");
-
-        return new
-        {
-            NotasComOrdemNoPrazo = notasComOrdemNoPrazo,
-            NotasSemOrdemNoPrazo = notasSemOrdemNoPrazo,
-            NotasSemOrdemAtrasadas = notasSemOrdemAtrasadas,
-            NotasComOrdemAtrasadas = notasComOrdemAtrasadas
-        };
-    }
-
-    /// <summary>
-    /// Estatísticas de top LI por ocorrência
-    /// </summary>
-    /// <param name="notas"></param>
-    /// <param name="ordens"></param>
-    /// <returns></returns>
-    private Dictionary<string, (int notas, int ordens)> TopLiOcorrencias(List<NotaModel> notas, List<OrdemModel> ordens)
-    {
-        var liOcorrencias = new Dictionary<string, (int notas, int ordens)>();
-
-        // processa ocorrência das fichas 
-        void ProcessarOcorrencia(string? idLi, bool ehNota)
-        {
-            if (string.IsNullOrEmpty(idLi))
-                return;
-
-            if (!liOcorrencias.TryGetValue(idLi, out var ocorrencia))
-            {
-                ocorrencia = (0, 0);
-            }
-
-            if (ehNota)
-                ocorrencia.notas++;
-            else
-                ocorrencia.ordens++;
-
-            liOcorrencias[idLi] = ocorrencia;
-        }
-
-        // chama a função para cada nota e ordem
-        foreach (var nota in notas) ProcessarOcorrencia(nota.IdLi, true);
-        foreach (var ordem in ordens) ProcessarOcorrencia(ordem.IdLi, false);
-
-        _logger.LogInformation("Top (7) ocorrências de locais de insalação gerados com sucesso.");
-
-        // ordena as notas
-        return liOcorrencias
-            .OrderByDescending(x => x.Value)
-            .Take(7)
-            .ToDictionary(x => x.Key, x => x.Value);
     }
 
     /// <summary>
@@ -306,80 +218,11 @@ public class DashboardService
     }
 
     /// <summary>
-    /// Ranking de tempo de vida das notas e ordens
-    /// </summary>
-    /// <param name="notas"></param>
-    /// <param name="ordens"></param>
-    /// <returns></returns>
-    private List<((long?, TimeSpan?), (long?, TimeSpan?))> RankingTempoVida(List<NotaModel> notas,
-        List<OrdemModel> ordens)
-    {
-        var rankingTotal = new List<((long?, TimeSpan?), (long?, TimeSpan?))>();
-
-        // processa todas notas e ordens 
-        foreach (var nota in notas)
-        {
-            if (nota.StatusNota == StatusFichas.Concluida) continue;
-
-            var ordemAssociada = nota.Ordens?.FirstOrDefault(o => o.DataCriacao.HasValue);
-
-            TimeSpan? vidaNota = DateTime.UtcNow - nota.DataNota;
-            TimeSpan? vidaOrdem = ordemAssociada?.DataCriacao != null && ordemAssociada?.DataCriacao > nota.DataNota
-                ? DateTime.UtcNow - ordemAssociada?.DataCriacao
-                : (TimeSpan?)null;
-
-            rankingTotal.Add(((nota.IdNota, vidaNota), (ordemAssociada?.IdOrdem, vidaOrdem)));
-        }
-
-        // hash para não duplicar ordens já processadas
-        var idsOrdensJaProcessadas = notas
-            .SelectMany(n => n.Ordens ?? new List<OrdemModel>())
-            .Select(o => o.IdOrdem)
-            .ToHashSet();
-
-        // processam ordens soltas
-        foreach (var ordem in ordens)
-        {
-            if (idsOrdensJaProcessadas.Contains(ordem.IdOrdem) || ordem.StatusOrdem == StatusFichas.Concluida)
-                continue;
-
-            var notaAssociada = ordem.Nota;
-
-            TimeSpan? vidaOrdem = DateTime.UtcNow - ordem.DataCriacao;
-            TimeSpan? vidaNota = notaAssociada?.DataNota != null && ordem.DataCriacao < notaAssociada?.DataNota
-                ? DateTime.UtcNow - notaAssociada?.DataNota
-                : (TimeSpan?)null;
-
-            rankingTotal.Add(((notaAssociada?.IdNota, vidaNota), (ordem.IdOrdem, vidaOrdem)));
-        }
-
-        // limpa e ordena gerando um top 20
-        var top = rankingTotal
-            .Where(r => r.Item1.Item2.HasValue || r.Item2.Item2.HasValue)
-            .OrderByDescending(r => r.Item1.Item2 ?? r.Item2.Item2 ?? TimeSpan.MaxValue)
-            .Take(7)
-            .ToList();
-
-        _logger.LogInformation("Ranking de top (7) tempos de vida gerado com sucesso.");
-
-        return top;
-    }
-    
-    /// <summary>
     /// Estatísticas de notas do usuário atual
     /// </summary>
     /// <returns></returns>
-    public async Task<Dictionary<StatusFichas, int>> NotasUsuario()
+    public Dictionary<StatusFichas, int> NotasUsuario(List<NotaModel> notas)
     {
-        // busca o usuário 
-        var usuario = _userContext.GetUsuarioIdAtual();
-        if (usuario == null)
-            _logger.LogError("Não foi possível obter o ID do usuário atual.");
-        
-        var notas = await _context.PM_Usuarios
-            .Where(u => u.IdUsuario == usuario)
-            .SelectMany(u => u.Notas)
-            .ToListAsync();
         
         if (!notas.Any())
         {
