@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using app_pm_back.Auth;
+using app_pm_back.Data;
 using app_pm_back.Interfaces;
+using app_pm_back.Models.Domain;
 using app_pm_back.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace app_pm_back.Extensions;
 
@@ -53,38 +56,59 @@ public static class KeycloakExtensions
                 // mapeia roles do client Keycloak
                 options.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = context =>
-                    {
-                        var identity = context.Principal?.Identity as ClaimsIdentity;
+                    OnTokenValidated = async context =>
+                    {var identity = context.Principal?.Identity as ClaimsIdentity;
                         var resourceAccess = context.Principal?.FindFirst("resource_access")?.Value;
-
-                        if (identity is null || string.IsNullOrWhiteSpace(resourceAccess))
-                            return Task.CompletedTask;
-
-                        try
+                        
+                        if (identity != null && !string.IsNullOrWhiteSpace(resourceAccess))
                         {
-                            using var document = JsonDocument.Parse(resourceAccess);
-
-                            if (!document.RootElement.TryGetProperty(clientId, out var client))
-                                return Task.CompletedTask;
-
-                            if (!client.TryGetProperty("roles", out var roles))
-                                return Task.CompletedTask;
-
-                            foreach (var role in roles.EnumerateArray())
+                            try
                             {
-                                var roleName = role.GetString();
+                                using var document = JsonDocument.Parse(resourceAccess);
+                                if (document.RootElement.TryGetProperty(clientId, out var client) && 
+                                    client.TryGetProperty("roles", out var roles))
+                                {
+                                    foreach (var role in roles.EnumerateArray())
+                                    {
+                                        var roleName = role.GetString();
+                                        if (!string.IsNullOrWhiteSpace(roleName))
+                                            identity.AddClaim(new Claim(ClaimTypes.Role, roleName));
+                                    }
+                                }
+                            }
+                            catch (JsonException) { }
+                        }
 
-                                if (!string.IsNullOrWhiteSpace(roleName))
-                                    identity.AddClaim(new Claim(ClaimTypes.Role, roleName));
+                        // cadastro automático de usuários no banco de dados se não existirem
+                        if (identity != null)
+                        {
+                            var portalId = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                                        ?? context.Principal?.FindFirst("sub")?.Value;
+                            
+                            if (!string.IsNullOrEmpty(portalId))
+                            {
+                                // obtém o DbContext apenas para este request
+                                var dbContext = context.HttpContext.RequestServices.GetRequiredService<AppDbContext>();
+
+                                bool usuarioExiste = await dbContext.Set<UsuarioModel>().AnyAsync(u => u.PortalId == portalId);
+
+                                if (!usuarioExiste)
+                                {
+                                    var name = context.Principal?.FindFirst("name")?.Value 
+                                            ?? context.Principal?.FindFirst("preferred_username")?.Value;
+
+                                    var novoUsuario = new UsuarioModel
+                                    {
+                                        PortalId = portalId,
+                                        Nome = name ?? "Utilizador Auto-Cadastrado",
+                                        NivelPermissao = NivelPermissao.Usuario, // acesso mínimo até a sincronização diária atualizar
+                                    };
+
+                                    dbContext.Set<UsuarioModel>().Add(novoUsuario);
+                                    await dbContext.SaveChangesAsync();
+                                }
                             }
                         }
-                        catch (JsonException)
-                        {
-                            // ignora o formato inválido
-                        }
-
-                        return Task.CompletedTask;
                     }
                 };
             });

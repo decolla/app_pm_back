@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using app_pm_back.Data;
 using app_pm_back.DTO;
+using app_pm_back.Interfaces;
 using app_pm_back.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,17 +16,19 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
     private readonly HttpClient _httpClient;
     private readonly string _clientId;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ITokenService _tokenService;
 
     /// <summary>
     /// Inicializa uma nova instância da classe <see cref="UsuarioService"/>.
     /// </summary>
     public UsuarioService(AppDbContext context, ILogger<UsuarioService> logger, HttpClient httpClient,
-        IConfiguration configuration, IHttpContextAccessor httpContextAccessor) : base(context)
+        IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ITokenService tokenService) : base(context)
     {
         _logger = logger;
         _httpClient = httpClient;
         _clientId = configuration["Keycloak:ClientId"] ?? "comgas!pm";
         _httpContextAccessor = httpContextAccessor;
+        _tokenService = tokenService;
     }
 
 
@@ -135,53 +138,63 @@ public class UsuarioService : BaseCrudService<UsuarioModel>
         return usuarios;
     }
 
+    /// <summary>
+    /// Chamado pelo Frontend. Usa o token do utilizador logado.
+    /// </summary>
     public async Task<List<UsuarioModel>> SincronizarUsuariosPortalAsync()
     {
-        var schema = Config.RouteConfig.GetDatabaseSchema();
-
-        // transformar o ! em %21 para evitar problemas de URL
-        var encodedClientId = Uri.EscapeDataString(_clientId);
-
-        // URL do thiagão 
-        string url = $"https://10.3.192.200/portal/api/{schema}/43000/0/All/Application/ByClientId/{encodedClientId}";
-
-        _logger.LogInformation("Sincronizando usuários do portal.");
-
-        // repassa o token bearer para o portal
         var authHeader = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault();
-        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
+        var token = authHeader?.StartsWith("Bearer ") == true ? authHeader.Substring(7).Trim() : authHeader;
+
+        if (string.IsNullOrEmpty(token))
         {
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        }
-
-        var response = await _httpClient.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-
-        var usuariosPortal = await response.Content.ReadFromJsonAsync<List<PortalAppUserResponseDto>>();
-
-        if (usuariosPortal == null || !usuariosPortal.Any())
-        {
-            _logger.LogWarning("Nenhum usuário retornado do portal para sincronização.");
+            _logger.LogWarning("Sincronização manual falhou: Token ausente.");
             return new List<UsuarioModel>();
         }
 
-        _logger.LogInformation("Sincronizando {Count} usuários do portal.", usuariosPortal.Count);
+        return await ExecutarSincronizacaoCoreAsync(token);
+    }
+
+    /// <summary>
+    /// Chamado pelo Hangfire
+    /// </summary>
+    public async Task<List<UsuarioModel>> SincronizarUsuariosPortalBackgroundAsync()
+    {
+        _logger.LogInformation("Gerando token M2M para sincronização em background...");
+        var token = await _tokenService.GetAdminAccessTokenAsync();
+        
+        return await ExecutarSincronizacaoCoreAsync(token);
+    }
+
+    /// <summary>
+    /// Lógica central partilhada.
+    /// </summary>
+    private async Task<List<UsuarioModel>> ExecutarSincronizacaoCoreAsync(string token)
+    {
+        var schema = Config.RouteConfig.GetDatabaseSchema();
+        var encodedClientId = Uri.EscapeDataString(_clientId);
+        string url = $"https://10.3.192.200/portal/api/{schema}/43000/0/All/Application/ByClientId/{encodedClientId}";
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.TryAddWithoutValidation("Accept", "*/*");
+        request.Headers.TryAddWithoutValidation("Authorization", $"Bearer {token}");
+
+        var response = await _httpClient.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        var usuariosPortal = await response.Content.ReadFromJsonAsync<List<PortalAppUserResponseDto>>();
+        if (usuariosPortal == null || !usuariosPortal.Any()) return new List<UsuarioModel>();
 
         List<UsuarioModel> usuariosAtualizados = new List<UsuarioModel>();
 
         foreach (var item in usuariosPortal)
         {
             var pUser = item.User;
-
             var usuario = await _context.Set<UsuarioModel>().FirstOrDefaultAsync(u => u.PortalId == pUser.Id);
 
             if (usuario == null)
             {
-                usuario = new UsuarioModel
-                {
-                    PortalId = pUser.Id,
-                };
+                usuario = new UsuarioModel { PortalId = pUser.Id };
                 _context.Set<UsuarioModel>().Add(usuario);
             }
             

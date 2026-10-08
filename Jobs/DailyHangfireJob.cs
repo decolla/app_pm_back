@@ -4,6 +4,7 @@ using app_pm_back.DTO;
 using app_pm_back.Models.Domain;
 using app_pm_back.Services;
 using app_pm_back.Services.GenericServices;
+using app_pm_back.Services.Manutencao;
 using Confluent.Kafka;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,18 +16,21 @@ public class DailyHangfireJob
     private readonly ConfiguracaoGlobalService _configuracaoGlobalService;
     private readonly ILogger<DailyHangfireJob> _logger;
     private readonly KafkaProducerService _kafkaProducerService;
+    private readonly IServiceProvider _serviceProvider;
 
     public DailyHangfireJob(AppDbContext context, ILogger<DailyHangfireJob> logger,
-        ConfiguracaoGlobalService configuracaoGlobalService, KafkaProducerService kafkaProducerService)
+        ConfiguracaoGlobalService configuracaoGlobalService, KafkaProducerService kafkaProducerService, IServiceProvider serviceProvider)
     {
         _context = context;
         _logger = logger;
         _configuracaoGlobalService = configuracaoGlobalService;
         _kafkaProducerService = kafkaProducerService;
+        _serviceProvider = serviceProvider;
     }
 
     public async Task RunDailyRoutine()
     {
+        // verifica se a criação de fichas preventivas está habilitada nas configurações globais
         var config = await _configuracaoGlobalService.ObterConfiguracaoAsync();
         if (config.CriarFichasPreventivas == CriarFichasPreventivas.NaoCriar)
         {
@@ -36,10 +40,23 @@ public class DailyHangfireJob
         }
         else
         {
+            // se estiver habilitado, inicia a rotina de geração de fichas preventivas
             _logger.LogInformation("Iniciando rotina diária de geração de fichas preventivas...");
             await ManutencaoGeneratorJobAsync();
         }
+        
+        // sincroniza os usuários do portal com o banco de dados
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var usuarioService = scope.ServiceProvider.GetRequiredService<UsuarioService>();
+            
+            _logger.LogInformation("Iniciando sincronização diária de utilizadores via Hangfire...");
+            
+            // roda em background
+            await usuarioService.SincronizarUsuariosPortalBackgroundAsync(); 
+        }
 
+        // notifica os usuários das notas que atingiram a data de conclusão planejada
         await NotifyNotasEnd();
     }
 

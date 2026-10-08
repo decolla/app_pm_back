@@ -1,5 +1,6 @@
 using System.Reflection;
 using api.Communications.Service.Impl.Data;
+using app_pm_back.Config;
 using app_pm_back.Data;
 using app_pm_back.DTO;
 using app_pm_back.Interfaces;
@@ -226,6 +227,14 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<CustoAcumuladoService>();
 
 builder.Services.AddSingleton<KafkaProducerService>();
+
+builder.Services.Configure<KeycloakConfig>(builder.Configuration.GetSection("Keycloak"));
+
+builder.Services.AddHttpClient<ITokenService, TokenService>()
+    .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    });
 
 builder.Services.AddHttpClient<UsuarioService>()
     .ConfigurePrimaryHttpMessageHandler(() =>
