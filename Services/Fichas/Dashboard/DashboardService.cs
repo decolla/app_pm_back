@@ -82,7 +82,7 @@ public class DashboardService
                 .ToList();
             dashboardDto.NotasUsuario = _pizzaDashboard.NotasUsuario(notasUser);
             dashboardDto.TempoMedioGrupo = _histogramaDashboard.TempoMedioGrupo(ordens, notas);
-            
+            dashboardDto.FichasGrupo = _histogramaDashboard.HistogramaGrupo(ordens, notas);
             
             // adiciona ao cache o dashboard gerado, com prioridade alta e expiração de 24 horas
             var cacheOptions = new MemoryCacheEntryOptions()

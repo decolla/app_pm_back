@@ -172,8 +172,16 @@ public class HistogramaDashboard
         if (!todosOsDados.Any()) return new List<object>();
 
         // agrupa por grupo e calcula a média de dias de tratamento
-        var resultadoHistograma = todosOsDados;
-
-        return null;
+        var resultadoHistograma = todosOsDados.GroupBy(d => d.Grupo)
+            .Select(g => new
+            {
+                GrupoTrab = g.Key,
+                TotalFichasAbertas = g.Select(d => d.Status == StatusFichas.Aberta).Count(),
+                TotalFichasFechadas = g.Select(d => d.Status == StatusFichas.Concluida).Count()
+            })
+            .OrderBy(r => r.GrupoTrab)
+            .ToList<object>();
+         
+        return resultadoHistograma;
     }
 }

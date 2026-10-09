@@ -19,4 +19,6 @@ public class DashboardDto
     public Dictionary<StatusFichas, int> NotasUsuario { get; set; }
     
     public List<object> TempoMedioGrupo { get; set; }
+    
+    public List<object> FichasGrupo { get; set;}
 }
