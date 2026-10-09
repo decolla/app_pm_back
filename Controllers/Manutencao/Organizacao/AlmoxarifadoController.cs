@@ -189,7 +189,7 @@ public class AlmoxarifadosController : ControllerBase
                 almoxarifado,
                 dto.IdsFerramentas,
                 dto.IdsUsuarios);
-            return Ok(new { message = $"{_operador} atualizado com sucesso: {result.IdAlmoxarifado}" });
+            return Ok(result);
         }
         catch (Exception)
         {
