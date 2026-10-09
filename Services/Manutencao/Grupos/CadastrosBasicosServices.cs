@@ -34,17 +34,29 @@ public class CtmService : BaseCrudService<CtmModel>
     /// </summary>
     /// <param name="ctmId">O ID do centro de trabalho.</param>
     /// <returns>A lista de usuários associados ao centro de trabalho.</returns>
-    public async Task<List<UsuarioModel>> GetUsuariosCtmAsync(long ctmId)
+    public async Task<(List<UsuarioModel> Usuarios, double OrdensPorUsuario)> GetUsuariosCtmAsync(long ctmId)
     {
         var ctm = await _context.Set<CtmModel>().FindAsync(ctmId);
         if (ctm == null)
         {
-            return new List<UsuarioModel>();
+            return new ValueTuple<List<UsuarioModel>, double>();
         }
 
-        return await _context.Set<UsuarioModel>().Where(u => u.Ctms.Contains(ctm)).ToListAsync();
+        var usuarios = await _context.Set<UsuarioModel>().Where(u => u.Ctms.Contains(ctm)).ToListAsync();
+
+        // conta o número de ordens associadas ao centro de trabalho
+        var ordensUsuario = _context
+            .Set<OrdemModel>()
+            .Count(o => o.IdCtm != null && o.IdCtm == ctmId);
+
+        if (usuarios.Count == 0)
+        {
+            return(usuarios, 0);
+        }
+
+        return(usuarios, ordensUsuario / usuarios.Count);
     }
-    
+
     /// <summary>
     /// Adiciona usuários a um centro de trabalho.
     /// </summary>
@@ -58,7 +70,7 @@ public class CtmService : BaseCrudService<CtmModel>
         var ctm = await _context.Set<CtmModel>()
             .Include(g => g.Usuarios)
             .FirstOrDefaultAsync(g => g.IdCTM == ctmId);
-        
+
         if (ctm == null)
         {
             throw new KeyNotFoundException($"Centro de trabalho com ID {ctmId} não encontrado.");
@@ -69,7 +81,7 @@ public class CtmService : BaseCrudService<CtmModel>
             await _context.Set<UsuarioModel>()
                 .Where(u => idsUsuarios.Contains(u.IdUsuario))
                 .ToListAsync();
-        
+
         // usuarios a serem removidos
         var usuariosRemover = ctm.Usuarios.Where(u => !idsUsuarios.Contains(u.IdUsuario)).ToList();
         foreach (var u in usuariosRemover)
@@ -79,15 +91,15 @@ public class CtmService : BaseCrudService<CtmModel>
 
         var idsAtuais = ctm.Usuarios.Select(u => u.IdUsuario).ToList();
         var usuariosAdicionar = listaUsuarios.Where(u => !idsAtuais.Contains(u.IdUsuario)).ToList();
-        
+
         // adiciona os usuários ainda não adicionados
         foreach (var u in usuariosAdicionar)
         {
             ctm.Usuarios.Add(u);
         }
 
-        await _context.SaveChangesAsync(); 
-        
+        await _context.SaveChangesAsync();
+
         return ctm.Usuarios.ToList();
     }
 
@@ -152,7 +164,6 @@ public class CtmService : BaseCrudService<CtmModel>
             await _context.SaveChangesAsync();
             return ficha;
         }
-
     }
 }
 
@@ -181,7 +192,7 @@ public class GpmService : BaseCrudService<GpmModel>
         var gpm = await _context.Set<GpmModel>()
             .Include(g => g.Usuarios)
             .FirstOrDefaultAsync(g => g.IdGPM == gpmId);
-        
+
         if (gpm == null)
         {
             throw new KeyNotFoundException($"Grupo de planejamento com ID {gpmId} não encontrado.");
@@ -192,7 +203,7 @@ public class GpmService : BaseCrudService<GpmModel>
             await _context.Set<UsuarioModel>()
                 .Where(u => idsUsuarios.Contains(u.IdUsuario))
                 .ToListAsync();
-        
+
         // usuarios a serem removidos
         var usuariosRemover = gpm.Usuarios.Where(u => !idsUsuarios.Contains(u.IdUsuario)).ToList();
         foreach (var u in usuariosRemover)
@@ -202,15 +213,15 @@ public class GpmService : BaseCrudService<GpmModel>
 
         var idsAtuais = gpm.Usuarios.Select(u => u.IdUsuario).ToList();
         var usuariosAdicionar = listaUsuarios.Where(u => !idsAtuais.Contains(u.IdUsuario)).ToList();
-        
+
         // adiciona os usuários ainda não adicionados
         foreach (var u in usuariosAdicionar)
         {
             gpm.Usuarios.Add(u);
         }
 
-        await _context.SaveChangesAsync(); 
-        
+        await _context.SaveChangesAsync();
+
         return gpm.Usuarios.ToList();
     }
 
@@ -219,15 +230,27 @@ public class GpmService : BaseCrudService<GpmModel>
     /// </summary>
     /// <param name="gpmId">O ID do grupo de planejamento.</param>
     /// <returns>A lista de usuários associados ao grupo de planejamento.</returns>
-    public async Task<List<UsuarioModel>> GetUsuariosGpmAsync(long gpmId)
+    public async Task<(List<UsuarioModel> Usuarios, double OrdensPorUsuario)> GetUsuariosGpmAsync(long gpmId)
     {
         var gpm = await _context.Set<GpmModel>().FindAsync(gpmId);
         if (gpm == null)
         {
-            return new List<UsuarioModel>();
+            return new ValueTuple<List<UsuarioModel>, int>();
         }
 
-        return await _context.Set<UsuarioModel>().Where(u => u.Gpms.Contains(gpm)).ToListAsync();
+        var usuarios = await _context.Set<UsuarioModel>().Where(u => u.Gpms.Contains(gpm)).ToListAsync();
+
+        // conta o número de ordens associadas ao centro de trabalho
+        var ordensUsuario = _context
+            .Set<OrdemModel>()
+            .Count(o => o.IdGpm != null && o.IdGpm == gpmId);
+
+        if (usuarios.Count == 0)
+        {
+            return(usuarios, 0);
+        }
+
+        return(usuarios, ordensUsuario / usuarios.Count);
     }
 
     /// <summary>
@@ -273,6 +296,7 @@ public class GpmService : BaseCrudService<GpmModel>
             {
                 ficha.Usuarios.Add(u);
             }
+
             await _context.SaveChangesAsync();
             return ficha;
         }
@@ -297,6 +321,5 @@ public class GpmService : BaseCrudService<GpmModel>
             await _context.SaveChangesAsync();
             return ficha;
         }
-
     }
 }

@@ -145,7 +145,7 @@ public class CentrosTrabalhoController : ControllerBase
         try
         {
             var todos = await _service.GetUsuariosCtmAsync(id);
-            var dto = _mapper.Map<List<UsuarioDto>>(todos);
+            var dto = _mapper.Map<(List<UsuarioDto>, double)>(todos);
             return Ok(dto);
         }
         catch (Exception e)
