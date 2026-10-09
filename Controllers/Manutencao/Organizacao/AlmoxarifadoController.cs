@@ -185,7 +185,10 @@ public class AlmoxarifadosController : ControllerBase
             }
 
             var almoxarifado = _mapper.Map<AlmoxarifadoModel>(dto);
-            var result = await _service.UpdateNotaAsync(almoxarifado);
+            var result = await _service.AtualizarComAssociacoesAsync(
+                almoxarifado,
+                dto.IdsFerramentas,
+                dto.IdsUsuarios);
             return Ok(new { message = $"{_operador} atualizado com sucesso: {result.IdAlmoxarifado}" });
         }
         catch (Exception)

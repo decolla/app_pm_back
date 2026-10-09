@@ -6,7 +6,7 @@ namespace app_pm_back.Services.FichasServices;
 public class RankingDashboard
 {
 
-    public RankingDashboard(DashboardService dashboardService)
+    public RankingDashboard()
     {
     }
 

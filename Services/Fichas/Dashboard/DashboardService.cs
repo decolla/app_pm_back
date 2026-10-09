@@ -28,8 +28,8 @@ public class DashboardService
         _cache = cache;
         _userContext = userContext;
         _pizzaDashboard = new PizzaDashboard();
-        _rankingDashboard = new RankingDashboard(this);
-        _histogramaDashboard = new HistogramaDashboard(this);
+        _rankingDashboard = new RankingDashboard();
+        _histogramaDashboard = new HistogramaDashboard();
     }
 
     /// <summary>
@@ -81,6 +81,7 @@ public class DashboardService
                 ))
                 .ToList();
             dashboardDto.NotasUsuario = _pizzaDashboard.NotasUsuario(notasUser);
+            dashboardDto.TempoMedioGrupo = _histogramaDashboard.TempoMedioGrupo(ordens, notas);
             
             
             // adiciona ao cache o dashboard gerado, com prioridade alta e expiração de 24 horas

@@ -4,8 +4,7 @@ namespace app_pm_back.Services.Fichas.Dashboard;
 
 public class HistogramaDashboard
 {
-
-    public HistogramaDashboard(DashboardService dashboardService)
+    public HistogramaDashboard()
     {
     }
 
@@ -80,8 +79,101 @@ public class HistogramaDashboard
                 NotasComOrdemAtrasadas = notasComOrdemAtrasadas
             });
         }
-        
+
 
         return (relacaoStatus, relacaoPrazo);
+    }
+
+    public List<object> TempoMedioGrupo(List<OrdemModel> ordens, List<NotaModel> notas)
+    {
+        var dadosOrdens = ordens
+            .Where(o => o.DataCriacao.HasValue && o.FimReal.HasValue && o.GPM != null)
+            .Select(o => new
+            {
+                Grupo = o.GPM,
+                DataReferencia = o.DataCriacao.Value,
+                DiasTratamento = (o.FimReal.Value - o.DataCriacao.Value).TotalDays
+            });
+        
+        var dadosNotas = notas
+            .Where(n => n.DataNota.HasValue && n.GPM != null)
+            .Select(n => new
+            {
+                Nota = n,
+                OrdemConcluida = n.Ordens.FirstOrDefault(o => o.FimReal.HasValue)
+            })
+            .Where(x => x.OrdemConcluida != null)
+            .Select(x => new
+            {
+                Grupo = x.Nota.GPM,
+                DataReferencia = x.Nota.DataNota.Value,
+                DiasTratamento = (x.OrdemConcluida.FimReal.Value - x.Nota.DataNota.Value).TotalDays
+            });
+
+        // combina os dados de ordens e notas em uma única lista
+        var todosOsDados = dadosOrdens.Concat(dadosNotas).ToList();
+
+        if (!todosOsDados.Any()) return new List<object>();
+
+        // alinha a contagem a cada 7 dias
+        var dataMinimaGlobal = todosOsDados.Min(d => d.DataReferencia).Date;
+
+        // agrupa por data
+        var resultadoHistograma = todosOsDados
+            .GroupBy(d => new
+            {
+                d.Grupo,
+                // calcula o número do intervalo de 7 dias desde a data mínima global
+                NumeroIntervalo = (int)(d.DataReferencia.Date - dataMinimaGlobal).TotalDays / 7
+            })
+            .Select(g =>
+            {
+                var dataInicioIntervalo = dataMinimaGlobal.AddDays(g.Key.NumeroIntervalo * 7);
+                var dataFimIntervalo = dataInicioIntervalo.AddDays(6);
+                var tempoMedioEmDias = g.Average(d => d.DiasTratamento);
+
+                return new
+                {
+                    GrupoTrab = g.Key.Grupo,
+                    IntervaloSeteDias = $"{dataInicioIntervalo:dd/MM/yyyy} a {dataFimIntervalo:dd/MM/yyyy}",
+                    TotalFichasNoPeriodo = g.Count(),
+                    TempoMedioDias = Math.Round(tempoMedioEmDias, 2),
+                    TempoMedioFormatado = TimeSpan.FromDays(tempoMedioEmDias).ToString(@"dd\.hh\:mm\:ss")
+                };
+            })
+            .OrderBy(r => r.GrupoTrab)
+            .ThenBy(r => r.IntervaloSeteDias)
+            .ToList<object>();
+
+        return resultadoHistograma;
+    }
+
+    public List<Object> HistogramaGrupo(List<OrdemModel> ordens, List<NotaModel> notas)
+    {
+        var dadosOrdens = ordens
+            .Where (o => o.GPM != null && o.StatusOrdem != null)
+            .Select(o => new
+            {
+                Grupo = o.GPM,
+                Status = o.StatusOrdem
+            });
+        
+        var dadosNotas = notas
+            .Where(n => n.GPM != null && n.StatusNota != null)
+            .Select(n => new
+            {
+                Grupo = n.GPM,
+                Status = n.StatusNota
+            });
+        
+        // combina os dados de ordens e notas em uma única lista
+        var todosOsDados = dadosOrdens.Concat(dadosNotas).ToList();
+
+        if (!todosOsDados.Any()) return new List<object>();
+
+        // agrupa por grupo e calcula a média de dias de tratamento
+        var resultadoHistograma = todosOsDados;
+
+        return null;
     }
 }

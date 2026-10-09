@@ -17,4 +17,6 @@ public class DashboardDto
     public List<((long?, TimeSpan?), (long?, TimeSpan?))> RankingTempoVida { get; set; }
     
     public Dictionary<StatusFichas, int> NotasUsuario { get; set; }
+    
+    public List<object> TempoMedioGrupo { get; set; }
 }
