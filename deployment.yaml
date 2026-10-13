@@ -39,9 +39,13 @@ spec:
             - name: Keycloak__ClientId
               value: "comgas!pm"
             - name: Keycloak__Url
-              value: "$(KEYCLOAK__URL)"
+              value: "https://10.3.192.200/keycloak"
             - name: Keycloak__Authority
-              value: "$(KEYCLOAK__AUTHORITY)"
+              value: "https://10.3.192.200/keycloak/realms/portal"
+            - name: Keycloak__Realm
+              value: "portal"        
+            - name: Keycloak__ClientSecret
+              value: "FTAaj4dbp1vahX1nRU3l7NB16A87WArFv1e4hsajUHclUnH2HJKwZv4mm7CcNvD6QdjVZOgr4HlzMDMhKKUYNw"
           envFrom:
           - configMapRef:
               name: env-config
