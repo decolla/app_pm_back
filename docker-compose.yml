@@ -15,7 +15,7 @@ services:
       SCHEMA: ${SCHEMA}
 #      Services__APM: ${APM}
       Keycloak__Url: ${KeycloakUrl:-http://10.3.192.200/keycloak}
-      Keycloak__ClientId: ${KeycloakClientId:-comgas§pm}
+      Keycloak__ClientId: ${KeycloakClientId:-comgas!pm-back}
       Keycloak__Realm: ${KeycloakRealm:-portal}
       ConnectionStrings__DefaultConnection: ${PHYSIS_POSTGRESQL}; Include Error Detail=True
 #    depends_on:
