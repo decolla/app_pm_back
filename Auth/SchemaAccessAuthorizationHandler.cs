@@ -15,26 +15,36 @@ public class SchemaAccessAuthorizationHandler(IApplicationSchemaProvider schemaP
         AuthorizationHandlerContext context,
         SchemaAccessRequirement requirement)
     {
-        // o Keycloak envia os schemas/organizações permitidas no claim organization
-        var organizationClaim = context.User.FindFirst("organization")?.Value;
+        var schema = schemaProvider.Schema;
+        var organizationClaims = context.User.FindAll("organization").Select(c => c.Value).ToList();
 
-        if (string.IsNullOrWhiteSpace(organizationClaim))
+        if (organizationClaims.Count == 0)
             return Task.CompletedTask;
 
-        try
+        // formato 1: claim multivalorado ["lri", "comgas", ...] (o seu token atual)
+        if (organizationClaims.Any(v => string.Equals(v, schema, StringComparison.OrdinalIgnoreCase)))
         {
-            using var document = JsonDocument.Parse(organizationClaim);
-
-            // acesso é liberado apenas se o schema configurado existir dentro do claim organization
-            if (document.RootElement.ValueKind == JsonValueKind.Object &&
-                document.RootElement.TryGetProperty(schemaProvider.Schema, out _))
-            {
-                context.Succeed(requirement);
-            }
+            context.Succeed(requirement);
+            return Task.CompletedTask;
         }
-        catch (JsonException)
+
+        // formato 2: objeto JSON {"comgas": {...}}
+        foreach (var value in organizationClaims)
         {
-            //se o claim for invaĺido, o usuário não tem acesso
+            try
+            {
+                using var document = JsonDocument.Parse(value);
+                if (document.RootElement.ValueKind == JsonValueKind.Object &&
+                    document.RootElement.TryGetProperty(schema, out _))
+                {
+                    context.Succeed(requirement);
+                    return Task.CompletedTask;
+                }
+            }
+            catch (JsonException)
+            {
+                // valor que não é JSON, ignora e segue para o próximo
+            }
         }
 
         return Task.CompletedTask;
