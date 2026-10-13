@@ -102,7 +102,7 @@ public class TokenService : ITokenService
             { "client_id", _keycloak.ClientId },
             { "client_secret", _keycloak.ClientSecret },
             { "grant_type", "client_credentials" },
-            { "scope", $"portal-backend-aud {_keycloak.ClientId}-aud" }
+            { "scope", $"portal-back-aud {_keycloak.ClientId}-aud" }
         });
 
         // URL do Keycloak para obter o token de acesso admin
