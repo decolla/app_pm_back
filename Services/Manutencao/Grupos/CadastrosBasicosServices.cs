@@ -235,7 +235,7 @@ public class GpmService : BaseCrudService<GpmModel>
         var gpm = await _context.Set<GpmModel>().FindAsync(gpmId);
         if (gpm == null)
         {
-            return new ValueTuple<List<UsuarioModel>, int>();
+            return new ValueTuple<List<UsuarioModel>, double>();
         }
 
         var usuarios = await _context.Set<UsuarioModel>().Where(u => u.Gpms.Contains(gpm)).ToListAsync();

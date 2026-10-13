@@ -98,16 +98,36 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
 
         // busca todos os usuários de uma vez
         var userIds = result
-            .Where(a => !string.IsNullOrEmpty(a.IdUsuario))
+            .Where(a => !string.IsNullOrEmpty(a.IdUsuario) && long.TryParse(a.IdUsuario, out _))
             .Select(a => long.Parse(a.IdUsuario!))
             .Distinct()
             .ToList();
 
-        var usuariosCache = await _context.PM_Usuarios
-            .AsNoTracking()
-            .Include(u => u.Gpms)
-            .Where(u => userIds.Contains(u.IdUsuario))
-            .ToDictionaryAsync(u => u.IdUsuario);
+        var nonNumericIds = result
+            .Where(a => !string.IsNullOrEmpty(a.IdUsuario) && !long.TryParse(a.IdUsuario, out _))
+            .Select(a => a.IdUsuario!)
+            .Distinct()
+            .ToList();
+
+        var usuariosCache = userIds.Any()
+            ? await _context.PM_Usuarios
+                .AsNoTracking()
+                .Include(u => u.Gpms)
+                .Where(u => userIds.Contains(u.IdUsuario))
+                .ToDictionaryAsync(u => u.IdUsuario)
+            : new Dictionary<long, UsuarioModel>();
+
+        var usuariosPortalList = nonNumericIds.Any()
+            ? await _context.PM_Usuarios
+                .AsNoTracking()
+                .Include(u => u.Gpms)
+                .Where(u => u.PortalId != null && nonNumericIds.Contains(u.PortalId))
+                .ToListAsync()
+            : new List<UsuarioModel>();
+
+        var usuariosPortalCache = usuariosPortalList
+            .GroupBy(u => u.PortalId!)
+            .ToDictionary(g => g.Key, g => g.First());
 
         List<MensagemAuditoria> audits = new();
 
@@ -143,14 +163,35 @@ public class AuditoriaService : BaseCrudService<AuditoriaModel>
             {
                 usuariosCache.TryGetValue(uid, out user);
             }
+            else if (!string.IsNullOrEmpty(audit.IdUsuario) && usuariosPortalCache.TryGetValue(audit.IdUsuario, out var userPortal))
+            {
+                user = userPortal;
+            }
 
-            string nomeUsuario = user?.Nome ?? "Usuário não encontrado";
+            string nomeUsuario;
+            if (user != null)
+            {
+                nomeUsuario = user.Nome ?? audit.IdUsuario ?? "Usuário não encontrado";
+            }
+            else if (!string.IsNullOrEmpty(audit.IdUsuario) && !long.TryParse(audit.IdUsuario, out _))
+            {
+                nomeUsuario = audit.IdUsuario;
+            }
+            else
+            {
+                nomeUsuario = "Usuário não encontrado";
+            }
+
             // unidade formatada
             string? unidade = user?.Gpms?.FirstOrDefault()?.Nome;
 
+            string tabelaOrigem = audit.NomeTabela.StartsWith("PM_")
+                ? audit.NomeTabela.Substring(3)
+                : audit.NomeTabela;
+
             audits.Add(new MensagemAuditoria()
             {
-                TabelaOrigem = audit.NomeTabela.Substring(3),
+                TabelaOrigem = tabelaOrigem,
                 NomeUsuario = nomeUsuario,
                 Acao = ação,
                 Unidade = unidade,

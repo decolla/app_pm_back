@@ -91,12 +91,12 @@ public class NotaService : BaseCrudService<NotaModel>
                     {
                         var propInfo = typeof(NotaModel).GetProperty(property.Metadata.Name);
 
-                        if (property.Metadata.Name == "IdNota" ||
-                            property.Metadata.Name == "Classificacao" ||
-                            property.Metadata.Name == "MetodoClassificacao" ||
-                            property.Metadata.Name == "UltimaClassificacao" ||
-                            property.Metadata.Name == "DataClassificacao")
-                            continue; // não sobrescreve a PK
+                        // if (property.Metadata.Name == "IdNota" ||
+                        //     property.Metadata.Name == "Classificacao" ||
+                        //     property.Metadata.Name == "MetodoClassificacao" ||
+                        //     property.Metadata.Name == "UltimaClassificacao" ||
+                        //     property.Metadata.Name == "DataClassificacao")
+                        //     continue; // não sobrescreve a PK
 
                         if (propInfo != null && propInfo.CanRead)
                         {
