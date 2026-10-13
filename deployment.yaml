@@ -46,6 +46,8 @@ spec:
               value: "portal"        
             - name: Keycloak__ClientSecret
               value: "FTAaj4dbp1vahX1nRU3l7NB16A87WArFv1e4hsajUHclUnH2HJKwZv4mm7CcNvD6QdjVZOgr4HlzMDMhKKUYNw"
+            - name: Keycloak__AllowInsecureCertificate
+              value: "true"
           envFrom:
           - configMapRef:
               name: env-config

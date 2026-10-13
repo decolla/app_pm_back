@@ -33,6 +33,8 @@ public static class KeycloakExtensions
             throw new InvalidOperationException("The configuration key Keycloak:ClientId is missing.");
 
         var authority = $"{keycloakUrl.TrimEnd('/')}/realms/{realm}";
+        
+        var allowInsecure = configuration.GetValue<bool>("Keycloak:AllowInsecureCertificate");
 
         // valida tokens JWT localmente usando metadata OpenID e chaves públicas JWKS do Keycloak
         services
@@ -42,6 +44,16 @@ public static class KeycloakExtensions
                 options.Authority = authority;
                 options.RequireHttpsMetadata = !authority.StartsWith("http://", StringComparison.OrdinalIgnoreCase);
                 options.MapInboundClaims = false;
+                
+                if (allowInsecure)
+                {
+                    options.BackchannelHttpHandler = new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback =
+                            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    };
+                }
+
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
