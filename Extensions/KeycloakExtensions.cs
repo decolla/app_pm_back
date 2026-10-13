@@ -42,6 +42,7 @@ public static class KeycloakExtensions
             .AddJwtBearer(options =>
             {
                 options.Authority = authority;
+                options.IncludeErrorDetails = true;
                 options.RequireHttpsMetadata = !authority.StartsWith("http://", StringComparison.OrdinalIgnoreCase);
                 options.MapInboundClaims = false;
                 
